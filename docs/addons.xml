@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.2.9" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.3.0" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.0" />
@@ -11,13 +11,13 @@
     </extension>
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Cliente IPTV local para provedores Xtream.</summary>
-      <description lang="pt_BR">TV ao vivo, VOD e séries com cache SQLite local, metadados TMDB e slots de InfoWall unificados.</description>
+      <description lang="pt_BR">TV ao vivo, VOD e séries com cache SQLite local, metadados TMDB e layout padrão v0.2.6.</description>
       <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.2.9 - Aplicação das características de slot de VOD e Séries para todo o add-on.</news>
+      <news>0.3.0 - Aplicação fiel do estilo de slots de VOD e Séries da v0.2.6.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

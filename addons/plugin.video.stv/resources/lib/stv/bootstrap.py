@@ -27,12 +27,11 @@ def _show_home(request: Request, fanart: str) -> None:
             label,
             url,
             icon=icon_path,
-            poster=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="movie",
+            media_type="video",
         )
-    finish_directory(request.handle, content="movies", view_mode=54)
+    finish_directory(request.handle, content="videos", view_mode=54)
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
@@ -46,10 +45,9 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             label,
             request.url(action=action, section=section),
             icon=icon_path,
-            poster=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="movie",
+            media_type="video",
         )
         
     # 2. Dynamic categories from database / Xtream
@@ -62,13 +60,12 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             cat.name,
             request.url(action="category", section=section, category_id=cat.category_id, title=cat.name),
             icon=folder_icon,
-            poster=folder_icon,
             fanart=fanart,
             is_folder=True,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="movie" if section == "vod" else "tvshow" if section == "series" else "video",
         )
 
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "movies" if section == "vod" else "tvshows" if section == "series" else "videos"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -80,7 +77,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
-            finish_directory(request.handle, content="movies", view_mode=54)
+            finish_directory(request.handle, content="videos", view_mode=54)
             return
 
     ensure_streams_loaded(app, section, category_id)
@@ -126,7 +123,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV com as mesmas caracteristicas de slot de poster de VOD
+            # Canais Live TV recebem poster no mesmo estilo de VOD
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
@@ -143,7 +140,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
 
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "movies" if section in {"vod", "live"} else "tvshows" if section == "series" else "videos"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -222,23 +219,26 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_folder = True
                 is_playable = False
                 media_type = "tvshow"
+                poster_val = icon_url
             elif section == "vod":
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "movie"
+                poster_val = icon_url
             else:
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "movie"
+                poster_val = icon_url
 
             add_folder(
                 request.handle,
                 item.name,
                 url,
                 icon=icon_url,
-                poster=icon_url,
+                poster=poster_val,
                 clearlogo=icon_url if section == "live" else "",
                 fanart=item.fanart or fanart,
                 is_folder=is_folder,
@@ -248,7 +248,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type=media_type,
             )
             
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "movies" if section in {"vod", "live"} else "tvshows" if section == "series" else "videos"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -270,23 +270,26 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_folder = True
             is_playable = False
             media_type = "tvshow"
+            poster_val = icon_url
         elif section == "vod":
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "movie"
+            poster_val = icon_url
         else:
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "movie"
+            poster_val = icon_url
 
         add_folder(
             request.handle,
             item.name,
             url,
             icon=icon_url,
-            poster=icon_url,
+            poster=poster_val,
             clearlogo=icon_url if section == "live" else "",
             fanart=item.fanart or fanart,
             is_folder=is_folder,
@@ -296,7 +299,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type=media_type,
         )
         
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "movies" if section in {"vod", "live"} else "tvshows" if section == "series" else "videos"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 

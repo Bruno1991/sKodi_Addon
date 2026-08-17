@@ -1,3 +1,0 @@
-0.2.9
-- Aplicação das mesmas características de slots de arte de VOD e Séries (poster, thumb, fanart, landscape, clearlogo) para todo o add-on.
-- Padronização de layout InfoWall com cards de alta definição na tela principal, categorias e TV ao vivo.

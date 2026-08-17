@@ -1,0 +1,4 @@
+0.3.0
+- Restauração fiel do comportamento visual e de slots da versão 0.2.6.
+- Aplicação do mesmo padrão de slots de poster de VOD/Séries aos canais de TV ao vivo.
+- Preservação do menu principal e navegação nativa.
