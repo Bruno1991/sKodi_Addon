@@ -1,0 +1,5 @@
+0.2.2
+- Trava e padronização completa do modo de visualização InfoWall (ViewMode 54) em todo o add-on.
+- Enquadramento perfeito de capas e pôsteres verticais (2:3) para filmes e séries.
+- Enquadramento de miniaturas e logos para canais ao vivo e episódios (16:9).
+- Remoção de distorções de escala em pastas, menus e itens de busca.
