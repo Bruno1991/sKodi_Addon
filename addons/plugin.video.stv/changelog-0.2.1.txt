@@ -1,0 +1,7 @@
+0.2.1
+- Otimização do carregamento sob demanda do catálogo Xtream (categorias e mídias por seção).
+- Suporte a gzip e certificados SSL autoassinados no cliente HTTP.
+- Correção completa da interface de configurações (settings.xml) e suporte a pt_BR e en_GB.
+- Suporte completo a navegação de séries (temporadas e episódios).
+- Popup interativo de Sincronização LAN e gerenciamento de backup.
+- Exibição de artwork e posters na visualização WideList do Kodi.

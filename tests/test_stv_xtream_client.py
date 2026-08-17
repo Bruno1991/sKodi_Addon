@@ -15,12 +15,15 @@ class XtreamClientTests(unittest.TestCase):
     def test_host_normalization(self) -> None:
         client = XtreamClient(host="http://server.com:8080/", username="user", password="pwd")
         self.assertEqual(client.host, "http://server.com:8080")
+        self.assertTrue(client.is_configured)
 
         client2 = XtreamClient(host="server.com:8080", username="user", password="pwd")
         self.assertEqual(client2.host, "http://server.com:8080")
 
+        client_empty = XtreamClient(host="", username="", password="")
+        self.assertFalse(client_empty.is_configured)
         with self.assertRaises(ValueError):
-            XtreamClient(host="", username="user", password="pwd")
+            client_empty.request("get_live_categories")
 
     def test_stream_url_generation(self) -> None:
         client = XtreamClient(host="http://iptv.example:8080", username="alice", password="secretpassword")

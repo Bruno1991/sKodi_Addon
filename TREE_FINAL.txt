@@ -203,6 +203,8 @@ s_kodi_addon/
 │   ├── plugin.video.stv/
 │   │   ├── resources/
 │   │   │   ├── language/
+│   │   │   │   ├── resource.language.en_gb/
+│   │   │   │   │   └── strings.po
 │   │   │   │   └── resource.language.pt_br/
 │   │   │   │       └── strings.po
 │   │   │   ├── lib/
@@ -232,6 +234,7 @@ s_kodi_addon/
 │   │   │   │       │   └── __init__.py
 │   │   │   │       ├── ui/
 │   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── dialogs.py
 │   │   │   │       │   ├── directory.py
 │   │   │   │       │   └── player.py
 │   │   │   │       ├── __init__.py
@@ -240,6 +243,7 @@ s_kodi_addon/
 │   │   │   │       └── routing.py
 │   │   │   └── settings.xml
 │   │   ├── addon.xml
+│   │   ├── changelog-0.2.1.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -247,6 +251,7 @@ s_kodi_addon/
 │   │   ├── addon.xml
 │   │   ├── changelog-1.0.0.txt
 │   │   ├── changelog-1.1.0.txt
+│   │   ├── changelog-1.1.1.txt
 │   │   ├── fanart.jpg
 │   │   └── icon.png
 │   ├── resource.images.saile/
@@ -338,16 +343,17 @@ s_kodi_addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
+│   │   │   ├── changelog-0.2.1.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.2.0.zip
-│   │   │   └── plugin.video.stv-0.2.0.zip.sha256
+│   │   │   ├── plugin.video.stv-0.2.1.zip
+│   │   │   └── plugin.video.stv-0.2.1.zip.sha256
 │   │   ├── repository.srepo/
-│   │   │   ├── changelog-1.1.0.txt
+│   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── repository.srepo-1.1.0.zip
-│   │   │   └── repository.srepo-1.1.0.zip.sha256
+│   │   │   ├── repository.srepo-1.1.1.zip
+│   │   │   └── repository.srepo-1.1.1.zip.sha256
 │   │   ├── resource.images.saile/
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
@@ -361,9 +367,13 @@ s_kodi_addon/
 │   │       └── script.module.saile.core-1.0.0.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
+│   ├── addons.xml.gz
+│   ├── addons.xml.gz.md5
+│   ├── addons.xml.gz.sha256
 │   ├── addons.xml.md5
+│   ├── addons.xml.sha256
 │   ├── index.html
-│   ├── repository.srepo-1.1.0.zip
+│   ├── repository.srepo-1.1.1.zip
 │   ├── script.js
 │   ├── SHA256SUMS
 │   └── style.css
@@ -388,6 +398,7 @@ s_kodi_addon/
 │   ├── test_navigation_contract.py
 │   ├── test_routing.py
 │   ├── test_saile_core.py
+│   ├── test_stv_http_client.py
 │   ├── test_stv_persistence.py
 │   ├── test_stv_tmdb_client.py
 │   └── test_stv_xtream_client.py

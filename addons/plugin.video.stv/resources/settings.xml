@@ -1,46 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings version="1">
   <section id="plugin.video.stv">
-    <category id="provider" label="Provedor Xtream">
-      <group id="credentials">
-        <setting id="xtream_url" type="string" label="URL Provider" help="Ex.: https://provedor.exemplo">
+    <category id="provider" label="30010" help="">
+      <group id="credentials" label="30011">
+        <setting id="xtream_url" type="string" label="30012" help="30013">
           <level>0</level>
-          <default />
-          <constraints><allowempty>true</allowempty></constraints>
-          <control type="edit" format="string"><heading>URL Provider</heading></control>
-        </setting>
-        <setting id="xtream_username" type="string" label="Usuário">
-          <level>0</level>
-          <default />
-          <constraints><allowempty>true</allowempty></constraints>
-          <control type="edit" format="string"><heading>Usuário</heading></control>
-        </setting>
-        <setting id="xtream_password" type="string" label="Senha">
-          <level>0</level>
-          <default />
-          <constraints><allowempty>true</allowempty></constraints>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string">
-            <heading>Senha</heading>
+            <heading>30012</heading>
+          </control>
+        </setting>
+        <setting id="xtream_username" type="string" label="30014" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30014</heading>
+          </control>
+        </setting>
+        <setting id="xtream_password" type="string" label="30015" help="">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30015</heading>
             <hidden>true</hidden>
           </control>
         </setting>
       </group>
     </category>
-    <category id="metadata" label="Metadados">
-      <group id="tmdb">
-        <setting id="tmdb_bearer_token" type="string" label="TMDB Bearer Token">
+    <category id="metadata" label="30020" help="">
+      <group id="tmdb" label="30021">
+        <setting id="tmdb_bearer_token" type="string" label="30022" help="">
           <level>1</level>
-          <default />
-          <constraints><allowempty>true</allowempty></constraints>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string">
-            <heading>TMDB Bearer Token</heading>
+            <heading>30022</heading>
             <hidden>true</hidden>
           </control>
         </setting>
-        <setting id="tmdb_language" type="string" label="Idioma TMDB">
+        <setting id="tmdb_language" type="string" label="30023" help="">
           <level>1</level>
           <default>pt-BR</default>
-          <control type="edit" format="string"><heading>Idioma TMDB</heading></control>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30023</heading>
+          </control>
         </setting>
       </group>
     </category>

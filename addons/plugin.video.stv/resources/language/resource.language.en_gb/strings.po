@@ -2,74 +2,74 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sTv\n"
-"Language: pt_BR\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgctxt "#30000"
 msgid "TV ao vivo"
-msgstr "TV ao vivo"
+msgstr "Live TV"
 
 msgctxt "#30001"
 msgid "Filmes (VOD)"
-msgstr "Filmes (VOD)"
+msgstr "Movies (VOD)"
 
 msgctxt "#30002"
 msgid "Séries"
-msgstr "Séries"
+msgstr "Series"
 
 msgctxt "#30003"
 msgid "Busca"
-msgstr "Busca"
+msgstr "Search"
 
 msgctxt "#30004"
 msgid "Favoritos"
-msgstr "Favoritos"
+msgstr "Favorites"
 
 msgctxt "#30005"
 msgid "Continuar assistindo"
-msgstr "Continuar assistindo"
+msgstr "Continue Watching"
 
 msgctxt "#30006"
 msgid "Sincronizar Dados"
-msgstr "Sincronizar Dados"
+msgstr "Sync Data"
 
 msgctxt "#30007"
 msgid "Configurações"
-msgstr "Configurações"
+msgstr "Settings"
 
 msgctxt "#30010"
 msgid "Provedor Xtream"
-msgstr "Provedor Xtream"
+msgstr "Xtream Provider"
 
 msgctxt "#30011"
 msgid "Credenciais da Conta"
-msgstr "Credenciais da Conta"
+msgstr "Account Credentials"
 
 msgctxt "#30012"
 msgid "URL do Servidor Xtream"
-msgstr "URL do Servidor Xtream"
+msgstr "Xtream Server URL"
 
 msgctxt "#30013"
 msgid "Ex.: http://servidor.com:8080"
-msgstr "Ex.: http://servidor.com:8080"
+msgstr "E.g.: http://server.com:8080"
 
 msgctxt "#30014"
 msgid "Usuário"
-msgstr "Usuário"
+msgstr "Username"
 
 msgctxt "#30015"
 msgid "Senha"
-msgstr "Senha"
+msgstr "Password"
 
 msgctxt "#30020"
 msgid "Metadados"
-msgstr "Metadados"
+msgstr "Metadata"
 
 msgctxt "#30021"
 msgid "Configurações do TMDB"
-msgstr "Configurações do TMDB"
+msgstr "TMDB Settings"
 
 msgctxt "#30022"
 msgid "TMDB Bearer Token"
@@ -77,4 +77,4 @@ msgstr "TMDB Bearer Token"
 
 msgctxt "#30023"
 msgid "Idioma dos Metadados"
-msgstr "Idioma dos Metadados"
+msgstr "Metadata Language"

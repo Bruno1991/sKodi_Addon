@@ -16,14 +16,20 @@ def artwork_path(scope: str, filename: str) -> str:
 
 
 def artwork_absolute_path(scope: str, filename: str) -> str:
-    """Retorna o caminho absoluto de um asset no sistema de arquivos."""
-    import xbmcaddon
-
+    """Retorna o caminho absoluto de um asset no sistema de arquivos usando Kodi VFS."""
     if scope not in _ALLOWED_SCOPES:
         raise ValueError(f"Escopo de artwork inválido: {scope}")
     clean_name = os.path.basename(filename)
-    addon_path = xbmcaddon.Addon("resource.images.saile").getAddonInfo("path")
-    return os.path.join(addon_path, "resources", "media", scope, clean_name)
+
+    try:
+        import xbmcaddon
+        import xbmcvfs
+        addon_path = xbmcaddon.Addon(ARTWORK_ADDON_ID).getAddonInfo("path")
+        full_path = os.path.join(addon_path, "resources", "media", scope, clean_name)
+        return xbmcvfs.translatePath(full_path)
+    except Exception:
+        # Fallback para ambiente de teste fora do Kodi
+        return os.path.join("addons", ARTWORK_ADDON_ID, "resources", "media", scope, clean_name)
 
 
 def common_art(filename: str) -> str:
