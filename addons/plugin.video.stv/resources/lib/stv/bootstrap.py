@@ -282,11 +282,11 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
-def _play_item(app: AppContainer, section: str, stream_id: str, extension: str) -> None:
+def _play_item(request: Request, app: AppContainer, section: str, stream_id: str, extension: str) -> None:
     from stv.ui.player import play_video
     
     url = app.xtream.stream_url(section, stream_id, extension)
-    play_video(app, section, stream_id, url)
+    play_video(request.handle, app, section, stream_id, url)
 
 
 def run(argv: list[str]) -> None:
@@ -336,7 +336,7 @@ def run(argv: list[str]) -> None:
         stream_id = request.params.get("stream_id", "")
         extension = request.params.get("extension", "")
         if section in VALID_SECTIONS and stream_id:
-            _play_item(app, section, stream_id, extension)
+            _play_item(request, app, section, stream_id, extension)
             return
 
     if request.action == "sync":
