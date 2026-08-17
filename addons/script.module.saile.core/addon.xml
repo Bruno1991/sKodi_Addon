@@ -10,7 +10,7 @@
     <description lang="pt_BR">Caminhos portáveis, artwork compartilhado, notificações, erros e diagnóstico de capacidades.</description>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
-    <source>https://github.com/Bruno1991/saile-repo-dev</source>
+    <source>https://github.com/Bruno1991/sKodi_Addon</source>
     <news>1.0.0 - Módulo compartilhado inicial.</news>
     <assets>
       <icon>icon.png</icon>

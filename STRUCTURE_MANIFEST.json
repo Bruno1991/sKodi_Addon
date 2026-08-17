@@ -653,8 +653,8 @@
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
-      "bytes": 1165,
-      "sha256": "37d7c5c094c22990e0228667d5a49ec44c28faa091b4eefb2aa56e6c0831b7d1"
+      "bytes": 1187,
+      "sha256": "3b7adeb6a4f7ca1c943ab0b38fc35149064b47a0c66ad88373f7dd02605d7bfd"
     },
     {
       "path": "addons/plugin.video.stv/default.py",
@@ -798,8 +798,8 @@
     },
     {
       "path": "addons/repository.srepo/addon.xml",
-      "bytes": 1073,
-      "sha256": "53a9be62d2719fc357e49dfbc35d22df794e9a53366578bbca4a2376eb4fd030"
+      "bytes": 1084,
+      "sha256": "1ac49e8d97bbbde908856dc8795e6598e4d11c01d126dbe58628000a2a34fe22"
     },
     {
       "path": "addons/repository.srepo/changelog-1.0.0.txt",
@@ -823,8 +823,8 @@
     },
     {
       "path": "addons/resource.images.saile/addon.xml",
-      "bytes": 848,
-      "sha256": "f2be809ffae49a1af9cee82bfa270ab95e9d51db030635979b06da0cb597819e"
+      "bytes": 862,
+      "sha256": "5690417769ec4185b497265699a2831c15ed2dabf88cd31beaac60422afb0cfa"
     },
     {
       "path": "addons/resource.images.saile/changelog-1.0.0.txt",
@@ -888,8 +888,8 @@
     },
     {
       "path": "addons/script.module.saile.core/addon.xml",
-      "bytes": 926,
-      "sha256": "56790f76432d1d22ed333019c38da16d5d48a60ed17fbeb40ea8c62b023921bd"
+      "bytes": 943,
+      "sha256": "33cd3710fc804d8787ac9417e6ed01bfb3c4e6b39853a4c5c5841c8e7cadf1c5"
     },
     {
       "path": "addons/script.module.saile.core/changelog-1.0.0.txt",
@@ -1129,17 +1129,17 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 490,
-      "sha256": "01f57bf4297a634dcb5e295a5441234e49238144e0acd913bfbecf4ed4a888d9"
+      "sha256": "6e0295fcabdd3930795540e4900c3f4a46a72dc899430d97fd545b13ca3deafd"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 4005,
-      "sha256": "253442e8160ff4d34106b964ca8efee71803d66b2d1f8a77a9e89daca9bbf34c"
+      "bytes": 3984,
+      "sha256": "49635097211568d964e91967a12d2981e0ac41686d415b82ec831014983303a0"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "273f73eb98c63f2bfa43d5912b9ac142fce480847732550aee6cc217eb95599c"
+      "sha256": "04c73784a22cb381bc178059fcff9ef4b5830e151e7f55fa7331cb48c9dd8e15"
     },
     {
       "path": "docs/index.html",
@@ -1148,8 +1148,8 @@
     },
     {
       "path": "docs/repository.srepo-1.1.0.zip",
-      "bytes": 148471,
-      "sha256": "8e7cdbaaec287c61e4128176165f8dfedb1d4778cbb0c511b3852f9eda770362"
+      "bytes": 148472,
+      "sha256": "25fcd6bb88fe7d84b536637e32d943cc48e74c6323748b28a33a44265b69e458"
     },
     {
       "path": "docs/script.js",
@@ -1173,13 +1173,13 @@
     },
     {
       "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.2.0.zip",
-      "bytes": 295216,
-      "sha256": "b16a3275ecc3d4e4571ce37d6fd836e690693e2551db4f406823089615923d0d"
+      "bytes": 295219,
+      "sha256": "bb274e652fd132a14ccbcd4f69e06dace1a430bd18377b15d3bc592bd39abdd4"
     },
     {
       "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.2.0.zip.sha256",
       "bytes": 66,
-      "sha256": "0ef5bdb8adca3a7e69af0210c96b038356ac6ef289e1084dd6ad4b2782ee01f3"
+      "sha256": "30fad868bf5dedc789625d7b2801379a4165ee9cffecc04341e370c56d817037"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.0.txt",
@@ -1198,13 +1198,13 @@
     },
     {
       "path": "docs/zips/repository.srepo/repository.srepo-1.1.0.zip",
-      "bytes": 148471,
-      "sha256": "8e7cdbaaec287c61e4128176165f8dfedb1d4778cbb0c511b3852f9eda770362"
+      "bytes": 148472,
+      "sha256": "25fcd6bb88fe7d84b536637e32d943cc48e74c6323748b28a33a44265b69e458"
     },
     {
       "path": "docs/zips/repository.srepo/repository.srepo-1.1.0.zip.sha256",
       "bytes": 66,
-      "sha256": "91a29d5f3dafae6444edad6f8f000c549fa78dfe44413680abfbc10301652888"
+      "sha256": "1cb9497089f1716a437c504325274d7c5fa18190785aacd5937b300f73184946"
     },
     {
       "path": "docs/zips/resource.images.saile/fanart.jpg",
@@ -1218,13 +1218,13 @@
     },
     {
       "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.1.zip",
-      "bytes": 373364,
-      "sha256": "a5c50d21c915d5805ef4ca89dc7cd076e074d385c898ff7e4f53f9aed1d80644"
+      "bytes": 373368,
+      "sha256": "d5c414fb6fb06e0c394a8f580185a8014c3c6c264f0a5f7cb3de3860b7475732"
     },
     {
       "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.1.zip.sha256",
       "bytes": 66,
-      "sha256": "f7df3c11d28e7b7f13313e3041e673310456c4b6ff0445c7e9915b9cfc6439a9"
+      "sha256": "f3412d676cfbb3a7dd7e13ece218d031ac3172d27ce6c0651ae80dda5d4b7822"
     },
     {
       "path": "docs/zips/script.module.saile.core/changelog-1.0.0.txt",
@@ -1243,13 +1243,13 @@
     },
     {
       "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.0.zip",
-      "bytes": 149455,
-      "sha256": "30c65de600b08c112d3ebc30dc93c029b06d2ffbd9b982a70ac5858e36410f1a"
+      "bytes": 149458,
+      "sha256": "5e7040261853b7a7194d56616f1f7fac23d0f6b164b4e47ceb58d3daf8bbff2f"
     },
     {
       "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.0.zip.sha256",
       "bytes": 66,
-      "sha256": "f9272219a598ec0f5a58b0fa3db6ce4c50c86e7b50ece0f88aa40067ae023d62"
+      "sha256": "8e489aeffc3a7d8e78bbfc5152d529f46ff5ab6c894f334459167795d7f78181"
     },
     {
       "path": "examples/kodi_router_pattern.py",

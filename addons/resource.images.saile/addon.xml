@@ -6,7 +6,7 @@
     <description lang="pt_BR">Ícones fixos e recursos visuais compartilhados utilizados pelo sTv.</description>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
-    <source>https://github.com/Bruno1991/saile-repo-dev</source>
+    <source>https://github.com/Bruno1991/sKodi_Addon</source>
     <news>1.0.1 - Corrige a dependência inválida kodi.resource que impedia instalação.
 1.0.0 - Pacote inicial de artes compartilhadas.</news>
     <assets>
