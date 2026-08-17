@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings version="1">
+  <section id="plugin.video.stv">
+    <category id="provider" label="Provedor Xtream">
+      <group id="credentials">
+        <setting id="xtream_url" type="string" label="URL Provider" help="Ex.: https://provedor.exemplo">
+          <level>0</level>
+          <default />
+          <constraints><allowempty>true</allowempty></constraints>
+          <control type="edit" format="string"><heading>URL Provider</heading></control>
+        </setting>
+        <setting id="xtream_username" type="string" label="Usuário">
+          <level>0</level>
+          <default />
+          <constraints><allowempty>true</allowempty></constraints>
+          <control type="edit" format="string"><heading>Usuário</heading></control>
+        </setting>
+        <setting id="xtream_password" type="string" label="Senha">
+          <level>0</level>
+          <default />
+          <constraints><allowempty>true</allowempty></constraints>
+          <control type="edit" format="string">
+            <heading>Senha</heading>
+            <hidden>true</hidden>
+          </control>
+        </setting>
+      </group>
+    </category>
+    <category id="metadata" label="Metadados">
+      <group id="tmdb">
+        <setting id="tmdb_bearer_token" type="string" label="TMDB Bearer Token">
+          <level>1</level>
+          <default />
+          <constraints><allowempty>true</allowempty></constraints>
+          <control type="edit" format="string">
+            <heading>TMDB Bearer Token</heading>
+            <hidden>true</hidden>
+          </control>
+        </setting>
+        <setting id="tmdb_language" type="string" label="Idioma TMDB">
+          <level>1</level>
+          <default>pt-BR</default>
+          <control type="edit" format="string"><heading>Idioma TMDB</heading></control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

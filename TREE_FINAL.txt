@@ -1,0 +1,427 @@
+s_kodi_addon/
+├── .agents/
+│   ├── .github/
+│   │   └── workflows/
+│   │       └── ci.yml
+│   ├── contracts/
+│   │   ├── crypto-envelope.schema.json
+│   │   ├── error-envelope.schema.json
+│   │   └── log-event.schema.json
+│   ├── docs/
+│   │   ├── ARCHITECTURE.md
+│   │   ├── ERROR_AND_LOGGING_CONTRACT.md
+│   │   ├── PROJECT_TREE.md
+│   │   ├── SECURITY_RESILIENCE_CONTRACT.md
+│   │   ├── TEST_STRATEGY.md
+│   │   ├── TOOLCHAIN_MATRIX.md
+│   │   └── VALIDATION_STATUS.md
+│   ├── infrastructure/
+│   │   ├── scripts/
+│   │   │   ├── build-all.bash
+│   │   │   ├── build-all.ps1
+│   │   │   ├── build-all.sh
+│   │   │   └── verify-package.py
+│   │   └── sql/
+│   │       ├── ansi/
+│   │       │   └── 001_core_schema.sql
+│   │       ├── mysql/
+│   │       │   └── 001_core_schema.sql
+│   │       ├── postgresql/
+│   │       │   └── 001_core_schema.sql
+│   │       └── sqlite/
+│   │           └── 001_core_schema.sql
+│   ├── managed/
+│   │   ├── dotnet/
+│   │   │   ├── Corporate.Security/
+│   │   │   │   ├── AesGcmEncryptionService.cs
+│   │   │   │   ├── Corporate.Security.csproj
+│   │   │   │   ├── CryptoContractException.cs
+│   │   │   │   ├── EnvironmentKeyProvider.cs
+│   │   │   │   ├── IEncryptionService.cs
+│   │   │   │   ├── IKeyProvider.cs
+│   │   │   │   ├── LoggingExtensions.cs
+│   │   │   │   └── ServiceCollectionExtensions.cs
+│   │   │   └── Corporate.Security.Tests/
+│   │   │       ├── AesGcmEncryptionServiceTests.cs
+│   │   │       └── Corporate.Security.Tests.csproj
+│   │   ├── java/
+│   │   │   ├── src/
+│   │   │   │   ├── main/
+│   │   │   │   │   └── java/
+│   │   │   │   │       └── com/
+│   │   │   │   │           └── example/
+│   │   │   │   │               └── corporate/
+│   │   │   │   │                   └── security/
+│   │   │   │   │                       ├── AesGcmCipher.java
+│   │   │   │   │                       ├── CryptoException.java
+│   │   │   │   │                       ├── EnvironmentKeyProvider.java
+│   │   │   │   │                       ├── KeyProvider.java
+│   │   │   │   │                       └── StructuredLogger.java
+│   │   │   │   └── test/
+│   │   │   │       └── java/
+│   │   │   │           └── com/
+│   │   │   │               └── example/
+│   │   │   │                   └── corporate/
+│   │   │   │                       └── security/
+│   │   │   │                           └── AesGcmCipherTest.java
+│   │   │   └── pom.xml
+│   │   └── kotlin/
+│   │       ├── src/
+│   │       │   ├── main/
+│   │       │   │   └── kotlin/
+│   │       │   │       └── com/
+│   │       │   │           └── example/
+│   │       │   │               └── corporate/
+│   │       │   │                   └── security/
+│   │       │   │                       ├── AesGcmCipher.kt
+│   │       │   │                       └── StructuredLogger.kt
+│   │       │   └── test/
+│   │       │       └── kotlin/
+│   │       │           └── com/
+│   │       │               └── example/
+│   │       │                   └── corporate/
+│   │       │                       └── security/
+│   │       │                           └── AesGcmCipherTest.kt
+│   │       ├── ANDROID_INTEGRATION.md
+│   │       └── pom.xml
+│   ├── manifest/
+│   │   ├── MANIFEST.json
+│   │   └── SHA256SUMS.txt
+│   ├── native/
+│   │   ├── arduino/
+│   │   │   ├── src/
+│   │   │   │   ├── CorporateAesGcm.cpp
+│   │   │   │   ├── CorporateAesGcm.h
+│   │   │   │   ├── ResilientHttpClient.cpp
+│   │   │   │   └── ResilientHttpClient.h
+│   │   │   ├── library.json
+│   │   │   ├── platformio.ini
+│   │   │   └── SECURITY.md
+│   │   ├── assembly-x86_64/
+│   │   │   ├── include/
+│   │   │   │   └── mbuc_secure_copy.h
+│   │   │   ├── CMakeLists.txt
+│   │   │   ├── secure_copy.S
+│   │   │   └── test_secure_copy.c
+│   │   └── cpp/
+│   │       ├── include/
+│   │       │   └── mbuc/
+│   │       │       └── security/
+│   │       │           └── aes_gcm.hpp
+│   │       ├── src/
+│   │       │   └── aes_gcm.cpp
+│   │       ├── tests/
+│   │       │   └── aes_gcm_test.cpp
+│   │       └── CMakeLists.txt
+│   ├── services/
+│   │   └── reference-api/
+│   │       ├── src/
+│   │       │   └── reference_api/
+│   │       │       ├── __init__.py
+│   │       │       └── main.py
+│   │       ├── tests/
+│   │       │   └── test_api.py
+│   │       └── pyproject.toml
+│   ├── systems/
+│   │   └── rust/
+│   │       ├── src/
+│   │       │   └── lib.rs
+│   │       └── Cargo.toml
+│   ├── web-scripting/
+│   │   ├── php/
+│   │   │   ├── src/
+│   │   │   │   ├── AesGcmService.php
+│   │   │   │   ├── CryptoException.php
+│   │   │   │   ├── EnvironmentKeyProvider.php
+│   │   │   │   ├── JsonLogger.php
+│   │   │   │   └── KeyProvider.php
+│   │   │   ├── tests/
+│   │   │   │   └── AesGcmServiceTest.php
+│   │   │   ├── composer.json
+│   │   │   └── phpunit.xml
+│   │   ├── python/
+│   │   │   ├── src/
+│   │   │   │   └── corporate_security/
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── aes_gcm.py
+│   │   │   │       ├── errors.py
+│   │   │   │       ├── resilient_http.py
+│   │   │   │       └── structured_logging.py
+│   │   │   ├── tests/
+│   │   │   │   ├── test_aes_gcm.py
+│   │   │   │   └── test_circuit_breaker.py
+│   │   │   └── pyproject.toml
+│   │   ├── python-kodi/
+│   │   │   ├── resources/
+│   │   │   │   └── lib/
+│   │   │   │       └── mbuc_kodi_security/
+│   │   │   │           ├── __init__.py
+│   │   │   │           ├── aes_gcm.py
+│   │   │   │           └── errors.py
+│   │   │   ├── addon.xml
+│   │   │   ├── build_addon.py
+│   │   │   └── README.md
+│   │   ├── typescript/
+│   │   │   ├── src/
+│   │   │   │   ├── aes-gcm.ts
+│   │   │   │   ├── errors.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── resilient-http.ts
+│   │   │   │   └── structured-logger.ts
+│   │   │   ├── test/
+│   │   │   │   └── aes-gcm.test.ts
+│   │   │   ├── package.json
+│   │   │   ├── pnpm-lock.yaml
+│   │   │   ├── pnpm-workspace.yaml
+│   │   │   └── tsconfig.json
+│   │   └── web-vanilla/
+│   │       ├── aes-gcm.js
+│   │       ├── app.js
+│   │       ├── index.html
+│   │       └── styles.css
+│   ├── .dockerignore
+│   ├── .editorconfig
+│   ├── .gitattributes
+│   ├── .gitignore
+│   ├── AGENTS.md
+│   ├── BASE.md
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── SECURITY.md
+│   └── VERSION
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   └── bug_report.yml
+│   ├── workflows/
+│   │   └── ci.yml
+│   └── pull_request_template.md
+├── .vscode/
+│   ├── extensions.json
+│   ├── settings.json
+│   └── tasks.json
+├── addons/
+│   ├── plugin.video.stv/
+│   │   ├── resources/
+│   │   │   ├── language/
+│   │   │   │   └── resource.language.pt_br/
+│   │   │   │       └── strings.po
+│   │   │   ├── lib/
+│   │   │   │   └── stv/
+│   │   │   │       ├── app/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── services.py
+│   │   │   │       │   └── sync.py
+│   │   │   │       ├── domain/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── catalog.py
+│   │   │   │       │   └── models.py
+│   │   │   │       ├── infrastructure/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   └── http.py
+│   │   │   │       ├── persistence/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── database.py
+│   │   │   │       │   └── repository.py
+│   │   │   │       ├── providers/
+│   │   │   │       │   ├── tmdb/
+│   │   │   │       │   │   ├── __init__.py
+│   │   │   │       │   │   └── client.py
+│   │   │   │       │   ├── xtream/
+│   │   │   │       │   │   ├── __init__.py
+│   │   │   │       │   │   └── client.py
+│   │   │   │       │   └── __init__.py
+│   │   │   │       ├── ui/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── directory.py
+│   │   │   │       │   └── player.py
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── bootstrap.py
+│   │   │   │       ├── navigation_contract.py
+│   │   │   │       └── routing.py
+│   │   │   └── settings.xml
+│   │   ├── addon.xml
+│   │   ├── default.py
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   ├── repository.srepo/
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── changelog-1.1.0.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   ├── resource.images.saile/
+│   │   ├── resources/
+│   │   │   └── media/
+│   │   │       ├── common/
+│   │   │       │   ├── check.png
+│   │   │       │   ├── erro.png
+│   │   │       │   ├── folder.png
+│   │   │       │   ├── search.png
+│   │   │       │   └── sync.png
+│   │   │       └── stv/
+│   │   │           ├── favoritos.png
+│   │   │           ├── live.png
+│   │   │           ├── series.png
+│   │   │           └── vod.png
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   └── script.module.saile.core/
+│       ├── lib/
+│       │   └── saile_core/
+│       │       ├── __init__.py
+│       │       ├── artwork.py
+│       │       ├── capabilities.py
+│       │       ├── errors.py
+│       │       ├── notifications.py
+│       │       └── paths.py
+│       ├── addon.xml
+│       ├── changelog-1.0.0.txt
+│       ├── fanart.jpg
+│       └── icon.png
+├── artwork/
+│   ├── addons/
+│   │   ├── fanarts/
+│   │   │   └── Style-1/
+│   │   │       ├── plugin.video.stv/
+│   │   │       │   └── fanart.jpg
+│   │   │       ├── repository.srepo/
+│   │   │       │   └── fanart.jpg
+│   │   │       ├── resource.images.saile/
+│   │   │       │   └── fanart.jpg
+│   │   │       └── script.module.saile.core/
+│   │   │           └── fanart.jpg
+│   │   └── icons/
+│   │       └── Detailed-Flat-Circular/
+│   │           ├── plugin.video.stv/
+│   │           │   └── icon.png
+│   │           ├── repository.srepo/
+│   │           │   └── icon.png
+│   │           ├── resource.images.saile/
+│   │           │   └── icon.png
+│   │           └── script.module.saile.core/
+│   │               └── icon.png
+│   ├── common/
+│   │   ├── html/
+│   │   │   ├── check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   ├── png/
+│   │   │   ├── check.png
+│   │   │   ├── erro.png
+│   │   │   ├── favoritos.png
+│   │   │   ├── folder.png
+│   │   │   ├── live.png
+│   │   │   ├── search.png
+│   │   │   ├── series.png
+│   │   │   ├── sync.png
+│   │   │   └── vod.png
+│   │   └── svg/
+│   │       ├── check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   ├── artwork-manifest.json
+│   └── README.md
+├── docs/
+│   ├── zips/
+│   │   ├── plugin.video.stv/
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── plugin.video.stv-0.2.0.zip
+│   │   │   └── plugin.video.stv-0.2.0.zip.sha256
+│   │   ├── repository.srepo/
+│   │   │   ├── changelog-1.1.0.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── repository.srepo-1.1.0.zip
+│   │   │   └── repository.srepo-1.1.0.zip.sha256
+│   │   ├── resource.images.saile/
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── resource.images.saile-1.0.1.zip
+│   │   │   └── resource.images.saile-1.0.1.zip.sha256
+│   │   └── script.module.saile.core/
+│   │       ├── changelog-1.0.0.txt
+│   │       ├── fanart.jpg
+│   │       ├── icon.png
+│   │       ├── script.module.saile.core-1.0.0.zip
+│   │       └── script.module.saile.core-1.0.0.zip.sha256
+│   ├── .nojekyll
+│   ├── addons.xml
+│   ├── addons.xml.md5
+│   ├── index.html
+│   ├── repository.srepo-1.1.0.zip
+│   ├── script.js
+│   ├── SHA256SUMS
+│   └── style.css
+├── examples/
+│   ├── kodi_router_pattern.py
+│   ├── sqlite_transaction_pattern.py
+│   ├── xtream_url_pattern.py
+│   └── ytdlp_resolution_pattern.py
+├── schemas/
+│   ├── LAN_SYNC_CONTRACT.md
+│   └── stv_reference.sql
+├── templates/
+│   ├── ADR_TEMPLATE.md
+│   ├── BUG_REPORT_TEMPLATE.md
+│   ├── CHANGE_PLAN_TEMPLATE.md
+│   ├── RELEASE_CHECKLIST.md
+│   └── RFC_TEMPLATE.md
+├── tests/
+│   ├── test_artwork_manifest.py
+│   ├── test_databases.py
+│   ├── test_dependency_graph.py
+│   ├── test_navigation_contract.py
+│   ├── test_routing.py
+│   ├── test_saile_core.py
+│   ├── test_stv_persistence.py
+│   ├── test_stv_tmdb_client.py
+│   └── test_stv_xtream_client.py
+├── tools/
+│   ├── site_template/
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── bootstrap_artwork.py
+│   ├── build_repo.py
+│   ├── clean_build.py
+│   ├── colorize_common_svgs.py
+│   ├── generate_structure_manifest.py
+│   ├── print_tree.py
+│   ├── secret_scan.py
+│   ├── select_artwork.py
+│   └── validate_addons.py
+├── .env
+├── .gitignore
+├── AGENTS.md
+├── COMPATIBILITY_MATRIX.md
+├── LICENSE
+├── Makefile
+├── OFFICIAL_REFERENCE_MAP.md
+├── PACKAGE_INVENTORY.md
+├── PACKAGE_RELEASE_NOTES.md
+├── PROJECT_CONSTITUTION.md
+├── pyproject.toml
+├── README.md
+├── REPOSITORY_BLUEPRINT.md
+├── ROADMAP_ARCHITECTURE.md
+├── ROADMAP_TRACEABILITY_MATRIX.md
+├── SECURITY_AND_ENV_POLICY.md
+├── skills-manifest.json
+├── SKILLS_INDEX.md
+├── STRUCTURE_MANIFEST.json
+└── TREE_FINAL.txt

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SAILE Ecosystem - sRepo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="container">
+        <header>
+            <h1>sRepo</h1>
+            <p class="subtitle">Repositório estático Kodi para o ecossistema SAILE</p>
+            {{HERO_BUTTON}}
+        </header>
+        
+        <div class="grid">
+            {{ADDON_CARDS}}
+        </div>
+        
+        <div class="footer-links">
+            <a href="SHA256SUMS">Ver SHA256SUMS</a>
+        </div>
+    </div>
+    
+    <div style="display: none;">
+        {{KODI_LINKS}}
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

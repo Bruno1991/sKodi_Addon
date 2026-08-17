@@ -1,0 +1,4 @@
+1.0.0
+- Pacote inicial de artes compartilhadas.
+- Common: search, erro, check, sync e folder.
+- sTv: live, vod, series e favoritos.

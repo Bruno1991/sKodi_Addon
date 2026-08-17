@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<addons>
+  <addon id="plugin.video.stv" name="sTv" version="0.2.0" provider-name="Saile">
+    <requires>
+      <import addon="xbmc.python" version="3.0.0" />
+      <import addon="resource.images.saile" version="1.0.0" />
+      <import addon="script.module.saile.core" version="1.0.0" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+      <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <summary lang="pt_BR">Cliente IPTV local para provedores Xtream.</summary>
+      <description lang="pt_BR">TV ao vivo, VOD e séries com cache SQLite local e metadados opcionais do TMDB.</description>
+      <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
+      <language>pt</language>
+      <platform>all</platform>
+      <license>GPL-3.0-or-later</license>
+      <source>https://github.com/Bruno1991/saile-repo-dev</source>
+      <news>0.2.0 - Navegação hierárquica e artwork compartilhado.</news>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+    </extension>
+  </addon>
+  <addon id="repository.srepo" name="sRepo" version="1.1.0" provider-name="Saile">
+    <extension point="xbmc.addon.repository" name="sRepo">
+      <dir>
+        <info compressed="false">https://bruno1991.github.io/saile-repo-dev/addons.xml</info>
+        <checksum>https://bruno1991.github.io/saile-repo-dev/addons.xml.md5</checksum>
+        <datadir zip="true">https://bruno1991.github.io/saile-repo-dev/zips/</datadir>
+        <hashes>false</hashes>
+      </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <summary lang="pt_BR">Repositório oficial do ecossistema SAILE.</summary>
+      <description lang="pt_BR">Instala e atualiza o sTv e seus módulos compartilhados pelo GitHub Pages.</description>
+      <platform>all</platform>
+      <license>GPL-3.0-or-later</license>
+      <source>https://github.com/Bruno1991/saile-repo-dev</source>
+      <news>1.1.0 - Adiciona artwork e core compartilhados.</news>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+    </extension>
+  </addon>
+  <addon id="resource.images.saile" name="SAILE Artwork Resources" version="1.0.1" provider-name="Saile">
+    <extension point="kodi.resource.images" compile="false" />
+    <extension point="xbmc.addon.metadata">
+      <summary lang="pt_BR">Artes compartilhadas do ecossistema SAILE.</summary>
+      <description lang="pt_BR">Ícones fixos e recursos visuais compartilhados utilizados pelo sTv.</description>
+      <platform>all</platform>
+      <license>GPL-3.0-or-later</license>
+      <source>https://github.com/Bruno1991/saile-repo-dev</source>
+      <news>1.0.1 - Corrige a dependência inválida kodi.resource que impedia instalação.
+1.0.0 - Pacote inicial de artes compartilhadas.</news>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+    </extension>
+  </addon>
+  <addon id="script.module.saile.core" name="SAILE Core" version="1.0.0" provider-name="Saile">
+    <requires>
+      <import addon="xbmc.python" version="3.0.0" />
+      <import addon="resource.images.saile" version="1.0.0" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.addon.metadata">
+      <summary lang="pt_BR">Infraestrutura Python compartilhada do ecossistema SAILE.</summary>
+      <description lang="pt_BR">Caminhos portáveis, artwork compartilhado, notificações, erros e diagnóstico de capacidades.</description>
+      <platform>all</platform>
+      <license>GPL-3.0-or-later</license>
+      <source>https://github.com/Bruno1991/saile-repo-dev</source>
+      <news>1.0.0 - Módulo compartilhado inicial.</news>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+    </extension>
+  </addon>
+</addons>

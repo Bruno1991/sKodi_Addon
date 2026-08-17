@@ -1,0 +1,139 @@
+{
+  "version": "2.0.0",
+  "status": "dynamic-artwork",
+  "shared_resource_addon": "resource.images.saile",
+  "fixed_shared_asset_count": 9,
+  "replacement_rule": "Replace files keeping the canonical filename and compatible dimensions.",
+  "icon_style": "Detailed-Flat-Circular",
+  "fanart_style": "Style-1",
+  "assets": [
+    {
+      "source": "artwork/addons/icons/Detailed-Flat-Circular/repository.srepo/icon.png",
+      "addon_id": "repository.srepo",
+      "role": "addon_icon",
+      "destination": "addons/repository.srepo/icon.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/icons/Detailed-Flat-Circular/plugin.video.stv/icon.png",
+      "addon_id": "plugin.video.stv",
+      "role": "addon_icon",
+      "destination": "addons/plugin.video.stv/icon.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/icons/Detailed-Flat-Circular/resource.images.saile/icon.png",
+      "addon_id": "resource.images.saile",
+      "role": "addon_icon",
+      "destination": "addons/resource.images.saile/icon.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/icons/Detailed-Flat-Circular/script.module.saile.core/icon.png",
+      "addon_id": "script.module.saile.core",
+      "role": "addon_icon",
+      "destination": "addons/script.module.saile.core/icon.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/fanarts/Style-1/repository.srepo/fanart.jpg",
+      "addon_id": "repository.srepo",
+      "role": "addon_fanart",
+      "destination": "addons/repository.srepo/fanart.jpg",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/fanarts/Style-1/plugin.video.stv/fanart.jpg",
+      "addon_id": "plugin.video.stv",
+      "role": "addon_fanart",
+      "destination": "addons/plugin.video.stv/fanart.jpg",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/fanarts/Style-1/resource.images.saile/fanart.jpg",
+      "addon_id": "resource.images.saile",
+      "role": "addon_fanart",
+      "destination": "addons/resource.images.saile/fanart.jpg",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/fanarts/Style-1/script.module.saile.core/fanart.jpg",
+      "addon_id": "script.module.saile.core",
+      "role": "addon_fanart",
+      "destination": "addons/script.module.saile.core/fanart.jpg",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/search.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/search.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/erro.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/erro.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/check.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/check.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/sync.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/sync.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/folder.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/folder.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/live.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "stv",
+      "destination": "addons/resource.images.saile/resources/media/stv/live.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/vod.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "stv",
+      "destination": "addons/resource.images.saile/resources/media/stv/vod.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/series.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "stv",
+      "destination": "addons/resource.images.saile/resources/media/stv/series.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/favoritos.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "stv",
+      "destination": "addons/resource.images.saile/resources/media/stv/favoritos.png",
+      "temporary": false
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Bootstrap artwork
+        run: python tools/bootstrap_artwork.py
+      - name: Validate add-ons and secrets
+        run: |
+          python tools/validate_addons.py
+          python tools/secret_scan.py
+      - name: Compile
+        run: python -m compileall -q addons tools tests
+      - name: Test
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Build repository
+        run: python tools/build_repo.py

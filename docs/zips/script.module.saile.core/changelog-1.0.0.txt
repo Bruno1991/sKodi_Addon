@@ -1,0 +1,5 @@
+1.0.0
+- Resolvedor de artwork compartilhado.
+- Notificações padronizadas com ícones de erro e sucesso.
+- Erros com códigos SAILE.
+- Detecção inicial de capacidades do dispositivo.

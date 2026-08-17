@@ -1,0 +1,24 @@
+name: Bug report
+description: Relate um problema reproduzível
+title: "[BUG] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Descreva o comportamento observado e o esperado.
+    validations:
+      required: true
+  - type: input
+    id: kodi
+    attributes:
+      label: Versão do Kodi e plataforma
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs sanitizados
+      description: Remova host, usuário, senha, tokens e URLs temporárias.

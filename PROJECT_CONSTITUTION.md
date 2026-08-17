@@ -1,0 +1,42 @@
+# Constituição de engenharia do ecossistema SAILE
+
+## Artigo 1 — Local-first
+
+sTv executa no dispositivo do usuário dentro do Kodi. Serviços externos são provedores de dados ou mídia; não existe backend próprio obrigatório, banco remoto central, fila remota ou autenticação SAILE.
+
+## Artigo 2 — Responsabilidades dos add-ons ativos
+
+- `repository.srepo`: descoberta, instalação e atualização pelo GitHub Pages.
+- `resource.images.saile`: artes fixas compartilhadas e somente elas (9 ícones).
+- `script.module.saile.core`: infraestrutura comum estável, sem regras de domínio.
+- `plugin.video.stv`: Xtream, TV ao vivo, VOD, séries, favoritos, busca, TMDB e reprodução de vídeo.
+
+Dependências comuns são explícitas e versionadas.
+
+## Artigo 3 — Navegação contratual
+
+A ordem dos atalhos da home (`TV ao Vivo` → `VOD` → `Séries` → `Sincronizar Dados`) e das seções (`Buscar` → `Favoritos` → Conteúdo dinâmico) é requisito funcional coberto por testes. Provedores, ordenação alfabética e configurações não podem reorganizar os atalhos fixos.
+
+## Artigo 4 — Persistência
+
+O sTv usa SQLite próprio em `special://profile/addon_data/plugin.video.stv/stv.db`. Catálogo, cache e estado do usuário são separados. Migrações são versionadas, transacionais e testadas. Atualizações do add-on não apagam dados.
+
+## Artigo 5 — Sincronização LAN
+
+A sincronização é manual, opcional e acionada pelo usuário. Cada dispositivo mantém banco independente. O protocolo troca registros sanitizados, nunca arquivos SQLite ou segredos.
+
+## Artigo 6 — Segurança
+
+`.env` é ferramenta local. GitHub PAT pertence apenas ao fluxo administrativo. Credenciais Xtream vêm das configurações do Kodi. Qualquer chave distribuída em software cliente deve ser considerada recuperável e possuir escopo mínimo.
+
+## Artigo 7 — Experiência Kodi
+
+A UI usa APIs públicas do Kodi, navegação por controle remoto e artwork real. Falhas de rede, metadados ou imagens degradam com mensagens seguras, sem derrubar a navegação.
+
+## Artigo 8 — Dependências condicionais
+
+Serviços em segundo plano e integrações PVR são adiados até necessidade funcional comprovada.
+
+## Artigo 9 — Evidência
+
+Nenhuma tarefa é concluída por plausibilidade. A conclusão exige evidência proporcional: testes, parse XML, inspeção do ZIP, checksum, migração, instalação limpa ou reprodução em Kodi real.

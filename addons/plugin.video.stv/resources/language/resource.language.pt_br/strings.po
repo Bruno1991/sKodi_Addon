@@ -1,0 +1,40 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: sTv\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "#30000"
+msgid "TV ao vivo"
+msgstr "TV ao vivo"
+
+msgctxt "#30001"
+msgid "Filmes (VOD)"
+msgstr "Filmes (VOD)"
+
+msgctxt "#30002"
+msgid "Séries"
+msgstr "Séries"
+
+msgctxt "#30003"
+msgid "Busca"
+msgstr "Busca"
+
+msgctxt "#30004"
+msgid "Favoritos"
+msgstr "Favoritos"
+
+msgctxt "#30005"
+msgid "Continuar assistindo"
+msgstr "Continuar assistindo"
+
+msgctxt "#30006"
+msgid "Sincronizar conteúdo"
+msgstr "Sincronizar conteúdo"
+
+msgctxt "#30007"
+msgid "Configurações"
+msgstr "Configurações"
