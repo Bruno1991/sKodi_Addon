@@ -7,6 +7,9 @@
 *.p12
 *.pfx
 
+# Instruções de agente locais
+.agents/
+
 # Python
 __pycache__/
 *.py[cod]

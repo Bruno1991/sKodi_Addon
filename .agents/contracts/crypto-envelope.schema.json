@@ -1,8 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.example.invalid/mbuc/crypto-envelope-v1.json",
-  "title": "AES-256-GCM Text Envelope v1",
-  "type": "string",
-  "pattern": "^v1\\.[A-Za-z0-9_-]{38,}$",
-  "description": "Base64url without padding of 12-byte nonce, 16-byte tag and ciphertext. AAD is external and mandatory."
-}
