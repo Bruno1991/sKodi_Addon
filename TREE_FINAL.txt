@@ -380,8 +380,7 @@ s_kodi_addon/
 ├── examples/
 │   ├── kodi_router_pattern.py
 │   ├── sqlite_transaction_pattern.py
-│   ├── xtream_url_pattern.py
-│   └── ytdlp_resolution_pattern.py
+│   └── xtream_url_pattern.py
 ├── schemas/
 │   ├── LAN_SYNC_CONTRACT.md
 │   └── stv_reference.sql

@@ -703,7 +703,7 @@
       "title": "Testes de contrato",
       "category": "quality",
       "path": ".agents/skills/09-quality-security/contract-tests/SKILL.md",
-      "mission": "Validar adaptadores contra fixtures de payload Xtream, yt-dlp e TMDB."
+      "mission": "Validar adaptadores contra fixtures de payload Xtream e TMDB."
     },
     {
       "id": "09.05",

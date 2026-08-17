@@ -9,7 +9,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 292,
+  "file_count_excluding_manifest": 291,
   "files": [
     {
       "path": ".agents/.dockerignore",
@@ -1312,11 +1312,6 @@
       "sha256": "65a753412a0e64190c06e89579916237fc4225e25757d5332943a4ac8434d78b"
     },
     {
-      "path": "examples/ytdlp_resolution_pattern.py",
-      "bytes": 965,
-      "sha256": "0aa3c51258466b33ccdf25f1427270ef6a4c42177a4ca0892de9a46c53f134ee"
-    },
-    {
       "path": "pyproject.toml",
       "bytes": 246,
       "sha256": "361908bf02a06d0b9e179419093ecc5f8f5359e8847ab36072dfffa24b5534e7"
@@ -1333,8 +1328,8 @@
     },
     {
       "path": "skills-manifest.json",
-      "bytes": 29541,
-      "sha256": "4338f13243893d9f6ca59762aee76f55caa7e13110b2072bea07fd9404982e4f"
+      "bytes": 29533,
+      "sha256": "95d06a70f50c2081d124836217c20f5c6d1184acb3435a72dd2bde55f92cc622"
     },
     {
       "path": "templates/ADR_TEMPLATE.md",
