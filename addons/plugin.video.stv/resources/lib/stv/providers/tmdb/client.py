@@ -1,4 +1,4 @@
-"""Cliente para busca e enriquecimento de metadados via TMDB API v3."""
+"""Cliente para busca e enriquecimento de metadados via TMDB API v3 com chave nativa integrada."""
 from __future__ import annotations
 
 import urllib.parse
@@ -8,36 +8,37 @@ from stv.infrastructure.http import HttpClient
 
 
 class TmdbClient:
-    """Consome a API v3 do The Movie Database (TMDB) usando autenticação Bearer."""
+    """Consome a API v3 do The Movie Database (TMDB) com chave nativa integrada."""
 
     API_BASE = "https://api.themoviedb.org/3"
     IMAGE_BASE_BACKDROP = "https://image.tmdb.org/t/p/w1280"
     IMAGE_BASE_POSTER = "https://image.tmdb.org/t/p/w500"
+    DEFAULT_API_KEY = "e5df95f7e157b9709d093c1a6be7e1c5"
 
     def __init__(
         self,
-        bearer_token: str = "",
+        api_key: str = DEFAULT_API_KEY,
         language: str = "pt-BR",
         http: HttpClient | None = None,
     ) -> None:
-        self.bearer_token = bearer_token.strip()
-        self.language = language
+        self.api_key = api_key.strip() if api_key else self.DEFAULT_API_KEY
+        self.language = language or "pt-BR"
         self.http = http or HttpClient(timeout=8.0, user_agent="sTv-TMDB/1.0")
 
     def _request(self, endpoint: str, params: dict[str, str] | None = None) -> dict[str, Any]:
-        if not self.bearer_token:
+        if not self.api_key:
             return {}
 
-        query_params = {"language": self.language, "include_adult": "false"}
+        query_params = {
+            "api_key": self.api_key,
+            "language": self.language,
+            "include_adult": "false",
+        }
         if params:
             query_params.update(params)
 
-        url = f"{self.API_BASE}/{endpoint.lstrip('?')}"
-        if query_params:
-            url = f"{url}?{urllib.parse.urlencode(query_params)}"
-
+        url = f"{self.API_BASE}/{endpoint.lstrip('?')}?{urllib.parse.urlencode(query_params)}"
         headers = {
-            "Authorization": f"Bearer {self.bearer_token}",
             "Accept": "application/json",
         }
 

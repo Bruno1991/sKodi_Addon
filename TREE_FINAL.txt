@@ -246,6 +246,7 @@ s_kodi_addon/
 │   │   ├── changelog-0.2.1.txt
 │   │   ├── changelog-0.2.2.txt
 │   │   ├── changelog-0.2.3.txt
+│   │   ├── changelog-0.2.4.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -345,11 +346,11 @@ s_kodi_addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.2.3.txt
+│   │   │   ├── changelog-0.2.4.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.2.3.zip
-│   │   │   └── plugin.video.stv-0.2.3.zip.sha256
+│   │   │   ├── plugin.video.stv-0.2.4.zip
+│   │   │   └── plugin.video.stv-0.2.4.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg

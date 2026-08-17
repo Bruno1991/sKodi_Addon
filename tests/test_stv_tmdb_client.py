@@ -12,10 +12,10 @@ from stv.providers.tmdb.client import TmdbClient
 
 
 class TmdbClientTests(unittest.TestCase):
-    def test_search_without_token_returns_empty(self) -> None:
-        client = TmdbClient(bearer_token="")
-        self.assertIsNone(client.search_movie("Inception"))
-        self.assertIsNone(client.search_tv("Breaking Bad"))
+    def test_client_initialization_with_default_key(self) -> None:
+        client = TmdbClient()
+        self.assertEqual(client.api_key, TmdbClient.DEFAULT_API_KEY)
+        self.assertEqual(client.language, "pt-BR")
 
     def test_image_url_formatting(self) -> None:
         url = TmdbClient.format_fanart_url("/backdrop123.jpg", None)

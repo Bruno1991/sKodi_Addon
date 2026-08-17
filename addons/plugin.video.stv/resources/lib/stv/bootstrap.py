@@ -301,7 +301,6 @@ def run(argv: list[str]) -> None:
         "xtream_url": addon.getSetting("xtream_url"),
         "xtream_username": addon.getSetting("xtream_username"),
         "xtream_password": addon.getSetting("xtream_password"),
-        "tmdb_bearer_token": addon.getSetting("tmdb_bearer_token"),
         "tmdb_language": addon.getSetting("tmdb_language"),
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
     }

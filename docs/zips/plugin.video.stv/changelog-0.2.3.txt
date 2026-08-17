@@ -1,3 +1,0 @@
-0.2.3
-- Resolução direta de streaming via xbmcplugin.setResolvedUrl para fechar o diálogo de carregamento imediatamente no início do vídeo.
-- Eliminação do spinner contínuo girando na tela durante a reprodução.

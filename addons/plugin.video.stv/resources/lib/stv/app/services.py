@@ -48,6 +48,5 @@ class AppContainer:
     @property
     def tmdb(self) -> 'TmdbClient':
         from stv.providers.tmdb.client import TmdbClient
-        bearer = self.settings.get("tmdb_bearer_token", "")
         lang = self.settings.get("tmdb_language", "pt-BR")
-        return TmdbClient(bearer_token=bearer, language=lang)
+        return TmdbClient(language=lang)

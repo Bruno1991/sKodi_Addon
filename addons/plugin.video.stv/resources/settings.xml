@@ -38,19 +38,8 @@
     </category>
     <category id="metadata" label="30020" help="">
       <group id="tmdb" label="30021">
-        <setting id="tmdb_bearer_token" type="string" label="30022" help="">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>30022</heading>
-            <hidden>true</hidden>
-          </control>
-        </setting>
         <setting id="tmdb_language" type="string" label="30023" help="">
-          <level>1</level>
+          <level>0</level>
           <default>pt-BR</default>
           <constraints>
             <allowempty>false</allowempty>
