@@ -21,7 +21,7 @@ def add_folder(
     rating: float | None = None,
     duration: int | None = None,
 ) -> None:
-    """Adiciona um item ao diretório Kodi com enquadramento de arte padronizado para InfoWall (ViewMode 54)."""
+    """Adiciona um item ao diretório Kodi com enquadramento de arte proporcional e nítido para InfoWall (54) e WideList."""
     import xbmcgui
     import xbmcplugin
 
@@ -31,32 +31,38 @@ def add_folder(
 
     item = xbmcgui.ListItem(label=label, offscreen=True)
 
-    # 1. Enquadramento de Arte Padronizado por Tipo de Mídia
-    # - poster: proporção 2:3 vertical (Capas de Filmes, Séries e Pastas)
-    # - fanart/landscape: proporção 16:9 widescreen (Backdrops)
-    # - thumb: miniatura primária do item
-    # - clearlogo/icon: logos e ícones sem distorção
-    resolved_poster = poster or (icon if media_type in {"movie", "tvshow", "season"} or is_folder else "")
-    resolved_fanart = fanart or (icon if not resolved_poster else "")
-    resolved_landscape = landscape or resolved_fanart
-
+    # 1. Enquadramento de Arte Sem Distorção e Sem Zoom
+    # - Pastas, Menus e Canais: usam 'icon', 'thumb' e 'clearlogo' sem forçar 'poster' 2:3 (evita zoom/corte)
+    # - Filmes (VOD) e Séries: recebem 'poster' 2:3 vertical nativo
+    # - Episódios: recebem 'thumb' e 'landscape' 16:9
     art: dict[str, str] = {
         "icon": icon,
-        "thumb": icon or resolved_poster,
-        "fanart": resolved_fanart,
+        "thumb": icon,
     }
-    if resolved_poster:
-        art["poster"] = resolved_poster
-    if resolved_landscape:
-        art["landscape"] = resolved_landscape
+
+    if fanart:
+        art["fanart"] = fanart
+        art["landscape"] = landscape or fanart
+    elif landscape:
+        art["landscape"] = landscape
+
+    # 'poster' só é atribuído quando for filme/série com capa vertical real
+    if poster:
+        art["poster"] = poster
+    elif not is_folder and media_type in {"movie", "tvshow", "season"} and icon:
+        art["poster"] = icon
+
+    if clearlogo:
+        art["clearlogo"] = clearlogo
+    elif icon:
+        art["clearlogo"] = icon
+
     if banner:
         art["banner"] = banner
-    if clearlogo or icon:
-        art["clearlogo"] = clearlogo or icon
 
     item.setArt(art)
 
-    # 2. Metadados para Painel Lateral de Informações do InfoWall
+    # 2. Metadados para Painel Lateral do InfoWall
     info_dict = {
         "title": label,
         "plot": plot or label,
@@ -108,6 +114,6 @@ def finish_directory(handle: int, content: str = "videos", view_mode: int = 54) 
 
     xbmcplugin.endOfDirectory(handle, succeeded=True, cacheToDisc=False)
 
-    # Trava a visualização no modo InfoWall (54)
+    # Trava a visualização no modo InfoWall (54) de forma consistente
     if view_mode:
         xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")

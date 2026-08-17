@@ -1,0 +1,5 @@
+0.2.6
+- Eliminação do zoom e corte indevido de ícones e pastas no InfoWall e WideList.
+- Enquadramento proporcional 1:1 nativo para ícones de menus, categorias e pastas.
+- Atribuição exclusiva do slot de pôster vertical 2:3 para filmes e séries reais.
+- Exibição limpa de logotipos para canais de TV ao vivo.
