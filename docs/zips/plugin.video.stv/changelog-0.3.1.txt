@@ -1,3 +1,0 @@
-0.3.1
-- Aplicação das características de slots e visual de VOD e Séries para a seção de TV ao Vivo.
-- VOD e Séries mantidos 100% inalterados e perfeitos.

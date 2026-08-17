@@ -29,9 +29,9 @@ def _show_home(request: Request, fanart: str) -> None:
             icon=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="video",
+            media_type="movie",
         )
-    finish_directory(request.handle, content="videos", view_mode=54)
+    finish_directory(request.handle, content="movies", view_mode=54)
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
