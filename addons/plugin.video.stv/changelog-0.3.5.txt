@@ -1,0 +1,4 @@
+0.3.5
+- Separação hierárquica das séries por pastas de temporadas (Temporada 1, 2, etc.).
+- Exibição limpa de episódios dentro de cada temporada selecionada.
+- Menu principal, VOD, Séries e TV ao Vivo mantidos com visual de InfoWall padronizado.

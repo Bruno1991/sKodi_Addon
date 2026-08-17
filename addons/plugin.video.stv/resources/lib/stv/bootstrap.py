@@ -144,7 +144,67 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
-def _show_series_info(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
+def _show_series_seasons(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
+    from stv.ui.directory import add_folder, finish_directory
+    from saile_core.notifications import notify_error
+
+    # Verificação de Controle Parental para Séries Adultas
+    if is_restricted(name=series_title):
+        import xbmcaddon
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=series_title):
+            finish_directory(request.handle, content="tvshows", view_mode=54)
+            return
+
+    try:
+        data = app.xtream.get_series_info(series_id)
+        episodes_by_season = data.get("episodes", {})
+        info = data.get("info", {})
+        series_cover = info.get("cover") or fanart
+        series_plot = info.get("plot", "")
+        seasons_meta = {str(s.get("season_number", "")): s for s in data.get("seasons", []) if isinstance(s, dict)}
+
+        sorted_season_keys = sorted(
+            episodes_by_season.keys(),
+            key=lambda k: int(k) if str(k).isdigit() else 999
+        )
+
+        for season_num in sorted_season_keys:
+            episodes = episodes_by_season[season_num]
+            if not isinstance(episodes, list) or not episodes:
+                continue
+
+            season_info = seasons_meta.get(str(season_num), {})
+            season_name = season_info.get("name") or f"Temporada {season_num}"
+            season_cover = season_info.get("cover") or series_cover
+            season_plot = season_info.get("overview") or series_plot
+            label = f"{season_name} ({len(episodes)} episódios)"
+
+            url = request.url(
+                action="series_episodes",
+                section="series",
+                series_id=series_id,
+                season_num=str(season_num),
+                title=series_title,
+            )
+            add_folder(
+                request.handle,
+                label,
+                url,
+                icon=season_cover,
+                poster=season_cover,
+                fanart=series_cover,
+                is_folder=True,
+                plot=season_plot,
+                media_type="tvshow",
+            )
+    except Exception as exc:
+        notify_error("sTv", f"Erro ao obter temporadas: {exc}")
+
+    finish_directory(request.handle, content="tvshows", view_mode=54)
+
+
+def _show_series_episodes(request: Request, app: AppContainer, series_id: str, season_num: str, series_title: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory
     from saile_core.notifications import notify_error
 
@@ -162,34 +222,33 @@ def _show_series_info(request: Request, app: AppContainer, series_id: str, serie
         info = data.get("info", {})
         series_cover = info.get("cover") or fanart
         series_plot = info.get("plot", "")
+        episodes = episodes_by_season.get(str(season_num), [])
 
-        for season_num, episodes in episodes_by_season.items():
-            if not isinstance(episodes, list):
+        for ep in episodes:
+            if not isinstance(ep, dict):
                 continue
-            for ep in episodes:
-                if not isinstance(ep, dict):
-                    continue
-                ep_id = str(ep.get("id", ""))
-                ep_title = str(ep.get("title") or f"Episódio {ep.get('episode_num', '')}").strip()
-                ep_ext = str(ep.get("container_extension", "mp4"))
-                ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
-                ep_thumb = str(ep.get("info", {}).get("movie_image") or series_cover)
-                season_label = f"T{season_num.zfill(2)}E{str(ep.get('episode_num', '1')).zfill(2)} - {ep_title}"
+            ep_id = str(ep.get("id", ""))
+            ep_num = str(ep.get("episode_num", "1"))
+            ep_title = str(ep.get("title") or f"Episódio {ep_num}").strip()
+            ep_ext = str(ep.get("container_extension", "mp4"))
+            ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
+            ep_thumb = str(ep.get("info", {}).get("movie_image") or series_cover)
+            label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
-                url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
-                add_folder(
-                    request.handle,
-                    season_label,
-                    url,
-                    icon=ep_thumb,
-                    poster=series_cover,
-                    fanart=series_cover,
-                    landscape=ep_thumb,
-                    is_folder=False,
-                    is_playable=True,
-                    plot=ep_plot,
-                    media_type="episode",
-                )
+            url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
+            add_folder(
+                request.handle,
+                label,
+                url,
+                icon=ep_thumb,
+                poster=series_cover,
+                fanart=series_cover,
+                landscape=ep_thumb,
+                is_folder=False,
+                is_playable=True,
+                plot=ep_plot,
+                media_type="episode",
+            )
     except Exception as exc:
         notify_error("sTv", f"Erro ao obter episódios: {exc}")
 
@@ -352,11 +411,19 @@ def run(argv: list[str]) -> None:
             _show_category(request, app, section, category_id, fanart, category_name=title)
             return
 
-    if request.action == "series_info":
+    if request.action in {"series_info", "series_seasons"}:
         series_id = request.params.get("series_id", "")
         title = request.params.get("title", "Série")
         if series_id:
-            _show_series_info(request, app, series_id, title, fanart)
+            _show_series_seasons(request, app, series_id, title, fanart)
+            return
+
+    if request.action == "series_episodes":
+        series_id = request.params.get("series_id", "")
+        season_num = request.params.get("season_num", "1")
+        title = request.params.get("title", "Série")
+        if series_id:
+            _show_series_episodes(request, app, series_id, season_num, title, fanart)
             return
 
     if request.action == "play":
