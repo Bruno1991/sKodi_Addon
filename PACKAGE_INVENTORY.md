@@ -4,16 +4,17 @@
 
 - Add-ons ativos: **4**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **20**
+- Testes unitários: **23**
 - ZIPs Kodi gerados em `docs/zips/`: **4**
 - Manifesto estrutural de referência: `STRUCTURE_MANIFEST.json`
+- Relatório de estado atual: `STATE.md`
 
 ## Add-ons Ativos
 
-- `plugin.video.stv`: Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB).
-- `repository.srepo`: Repositório oficial para Kodi (distribuição via GitHub Pages).
-- `resource.images.saile`: Recurso com 9 ícones de interface compartilhados.
-- `script.module.saile.core`: Infraestrutura Python comum estável.
+- `plugin.video.stv` (v0.3.5): Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB, Controle Parental).
+- `repository.srepo` (v1.0.0): Repositório oficial para Kodi (distribuição via GitHub Pages).
+- `resource.images.saile` (v1.0.0): Recurso com 9 ícones de interface compartilhados.
+- `script.module.saile.core` (v1.0.0): Infraestrutura Python comum estável.
 
 ## Decisões Incorporadas
 
@@ -23,14 +24,17 @@
   - Home: `TV ao Vivo` → `VOD` → `Séries` → `Sincronizar Dados`.
   - Seções: `Buscar` → `Favoritos` → conteúdo dinâmico.
 - Sincronização LAN é manual sob demanda e não compartilha SQLite bruto.
-- Remoção total do sFy e yt-dlp para manter foco estrito em IPTV.
+- Separação hierárquica das séries por pastas de temporadas (`Temporada 1`, `Temporada 2`, etc.).
+- Modo InfoWall (54) padronizado em todas as telas com visual de cinema.
+- Controle parental com PIN numérico de até 6 dígitos e bloqueio de configurações.
+- Integração nativa de chave do TMDB v3.
 
 ## Validações Executadas
 
 ```text
 4 add-ons válidos
 9 artes compartilhadas válidas
-20 testes unitários aprovados
+23 testes unitários aprovados
 0 segredos conhecidos encontrados
 4 ZIPs Kodi gerados
 ```

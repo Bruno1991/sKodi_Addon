@@ -9,7 +9,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 195,
+  "file_count_excluding_manifest": 196,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -63,8 +63,8 @@
     },
     {
       "path": "PACKAGE_INVENTORY.md",
-      "bytes": 1962,
-      "sha256": "326d98ecb004d480fa044ac8106c10754804058e76bc25e7d203f218c4409651"
+      "bytes": 2296,
+      "sha256": "64d1bd1da9e658900a09b25dda06c002c93710a75f9eabf4b094fc2344a4b89c"
     },
     {
       "path": "PACKAGE_RELEASE_NOTES.md",
@@ -107,9 +107,14 @@
       "sha256": "14aec287785f126c3cc78f486aa4af83abbf91feb1c9461737c8ee2b737d6e6c"
     },
     {
+      "path": "STATE.md",
+      "bytes": 4210,
+      "sha256": "8e161ea2b5923a108ba15e928a1760f6f8a458febacaf9603cfcfe321dd4c140"
+    },
+    {
       "path": "TREE_FINAL.txt",
-      "bytes": 19805,
-      "sha256": "7402c4962c922b97f9d4236f642abb8f0e76e8310ff8338d75069abf041c5ac1"
+      "bytes": 19848,
+      "sha256": "2ceba22e8975c857234520c3051c466b4a92e5ba42f96500b05948bd5f4c6713"
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",

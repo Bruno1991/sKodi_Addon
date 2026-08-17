@@ -445,5 +445,6 @@ s_kodi_addon/
 ├── SECURITY_AND_ENV_POLICY.md
 ├── skills-manifest.json
 ├── SKILLS_INDEX.md
+├── STATE.md
 ├── STRUCTURE_MANIFEST.json
 └── TREE_FINAL.txt
