@@ -1,0 +1,3 @@
+1.1.1
+- Atualiza endpoints de distribuição para GitHub Pages sKodi_Addon.
+- Compatibilidade estendida com Kodi 19, 20 e 21.

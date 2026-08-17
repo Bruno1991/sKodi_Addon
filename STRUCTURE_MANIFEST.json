@@ -9,7 +9,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 282,
+  "file_count_excluding_manifest": 287,
   "files": [
     {
       "path": ".agents/.dockerignore",
@@ -798,8 +798,8 @@
     },
     {
       "path": "addons/repository.srepo/addon.xml",
-      "bytes": 1084,
-      "sha256": "1ac49e8d97bbbde908856dc8795e6598e4d11c01d126dbe58628000a2a34fe22"
+      "bytes": 1347,
+      "sha256": "729dbaae3aa97bc2f400b8e3f683949f7d1c4e2e11b8f328466c596026691e59"
     },
     {
       "path": "addons/repository.srepo/changelog-1.0.0.txt",
@@ -810,6 +810,11 @@
       "path": "addons/repository.srepo/changelog-1.1.0.txt",
       "bytes": 141,
       "sha256": "983da5ed914e717805085dafd1dc550172a01625656ba71c6f53baf7422d99d9"
+    },
+    {
+      "path": "addons/repository.srepo/changelog-1.1.1.txt",
+      "bytes": 126,
+      "sha256": "06efe44c27f40a0bda8664fe2c0d07f1bb255df4a72b762fcd8734bd03e8a005"
     },
     {
       "path": "addons/repository.srepo/fanart.jpg",
@@ -1129,27 +1134,47 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 490,
-      "sha256": "6e0295fcabdd3930795540e4900c3f4a46a72dc899430d97fd545b13ca3deafd"
+      "sha256": "291975e02f517ae4a1556880458a6f19c39fd11b484f597bb850f02ba1a56b9a"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 3984,
-      "sha256": "49635097211568d964e91967a12d2981e0ac41686d415b82ec831014983303a0"
+      "bytes": 4278,
+      "sha256": "89c134f58b290775c39cb8495c219bffb3cc7973aa45d6b0ea711ea9e3139417"
+    },
+    {
+      "path": "docs/addons.xml.gz",
+      "bytes": 1146,
+      "sha256": "f1b20cfb4e8eeb40621c33fc0744c3e13ffe3b1c9b33ec22252a5824aaa11953"
+    },
+    {
+      "path": "docs/addons.xml.gz.md5",
+      "bytes": 34,
+      "sha256": "fe86a540dde2fc2b40cabc10d6497453364b8d6f5f3e3bf5e3d5d6b048ad1c95"
+    },
+    {
+      "path": "docs/addons.xml.gz.sha256",
+      "bytes": 66,
+      "sha256": "bb0026ca98e5e6d9401d642e90ffe81d27923cdf934ec394a2b67097f639d088"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "04c73784a22cb381bc178059fcff9ef4b5830e151e7f55fa7331cb48c9dd8e15"
+      "sha256": "b25290638478e836425a22384977693ba94f2c595ee31c9e2713f4bf668c2e3c"
+    },
+    {
+      "path": "docs/addons.xml.sha256",
+      "bytes": 66,
+      "sha256": "f309e8b83f4007c650cd83135f217f1240b6b57504a2b7dd9b3b5b2b0aa786bc"
     },
     {
       "path": "docs/index.html",
       "bytes": 2015,
-      "sha256": "e666705fbca5732c322a47d389737988cd77259ece9f3f35ac100c681e9978c7"
+      "sha256": "c529f5bde95350fad72a52bee6ca8ffbee1dee26729df86742e32797f93cf70b"
     },
     {
-      "path": "docs/repository.srepo-1.1.0.zip",
-      "bytes": 148472,
-      "sha256": "25fcd6bb88fe7d84b536637e32d943cc48e74c6323748b28a33a44265b69e458"
+      "path": "docs/repository.srepo-1.1.1.zip",
+      "bytes": 148759,
+      "sha256": "66c9ec81255f8f23d51e05b05c87fa3961c6d526ef5ef9c9daddd307e9b94f63"
     },
     {
       "path": "docs/script.js",
@@ -1182,9 +1207,9 @@
       "sha256": "30fad868bf5dedc789625d7b2801379a4165ee9cffecc04341e370c56d817037"
     },
     {
-      "path": "docs/zips/repository.srepo/changelog-1.1.0.txt",
-      "bytes": 141,
-      "sha256": "983da5ed914e717805085dafd1dc550172a01625656ba71c6f53baf7422d99d9"
+      "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
+      "bytes": 126,
+      "sha256": "06efe44c27f40a0bda8664fe2c0d07f1bb255df4a72b762fcd8734bd03e8a005"
     },
     {
       "path": "docs/zips/repository.srepo/fanart.jpg",
@@ -1197,14 +1222,14 @@
       "sha256": "bc14dd9e82a324b81c616136ec08b9367d6861c3a423b1b194a1b88a3e60d49c"
     },
     {
-      "path": "docs/zips/repository.srepo/repository.srepo-1.1.0.zip",
-      "bytes": 148472,
-      "sha256": "25fcd6bb88fe7d84b536637e32d943cc48e74c6323748b28a33a44265b69e458"
+      "path": "docs/zips/repository.srepo/repository.srepo-1.1.1.zip",
+      "bytes": 148759,
+      "sha256": "66c9ec81255f8f23d51e05b05c87fa3961c6d526ef5ef9c9daddd307e9b94f63"
     },
     {
-      "path": "docs/zips/repository.srepo/repository.srepo-1.1.0.zip.sha256",
+      "path": "docs/zips/repository.srepo/repository.srepo-1.1.1.zip.sha256",
       "bytes": 66,
-      "sha256": "1cb9497089f1716a437c504325274d7c5fa18190785aacd5937b300f73184946"
+      "sha256": "8daa02ea3fc8597b56d3aff7f8849310972d0e03b16a126456e2f0aa5ff8265c"
     },
     {
       "path": "docs/zips/resource.images.saile/fanart.jpg",
@@ -1368,8 +1393,8 @@
     },
     {
       "path": "tools/build_repo.py",
-      "bytes": 6476,
-      "sha256": "ed783bc84dc13c3475feb74e30b1f537a77ac1a60dc17217eba0bef445247a71"
+      "bytes": 7064,
+      "sha256": "efbfcccd958f679e00ecdf04306ecec1f0a052c07430df440f12a4d5f7e8b20e"
     },
     {
       "path": "tools/clean_build.py",

@@ -1,4 +1,0 @@
-1.1.0
-- Adiciona resource.images.saile.
-- Adiciona script.module.saile.core.
-- Atualiza dependências e distribuição do add-on sTv (IPTV).

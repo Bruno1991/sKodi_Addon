@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import hashlib
 import html
 import os
@@ -57,7 +58,9 @@ def build_addons_xml(addon_roots: list[ET.Element]) -> bytes:
     for addon in addon_roots:
         root.append(addon)
     ET.indent(root, space="  ")
-    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    xml_str = ET.tostring(root, encoding="utf-8").decode("utf-8")
+    header = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    return (header + xml_str).encode("utf-8")
 
 
 def build_index(packages: list[tuple[str, str, Path]], site_dir: Path) -> str:
@@ -149,6 +152,20 @@ def build_site(site_dir: Path) -> list[tuple[str, str, Path]]:
     (site_dir / "addons.xml.md5").write_text(
         hashlib.md5(addons_xml).hexdigest() + "\n", encoding="utf-8"
     )
+    (site_dir / "addons.xml.sha256").write_text(
+        hashlib.sha256(addons_xml).hexdigest() + "\n", encoding="utf-8"
+    )
+
+    # Also build addons.xml.gz and checksums for Kodi gzip repository fetching
+    addons_gz = gzip.compress(addons_xml, mtime=0)
+    (site_dir / "addons.xml.gz").write_bytes(addons_gz)
+    (site_dir / "addons.xml.gz.md5").write_text(
+        hashlib.md5(addons_gz).hexdigest() + "\n", encoding="utf-8"
+    )
+    (site_dir / "addons.xml.gz.sha256").write_text(
+        hashlib.sha256(addons_gz).hexdigest() + "\n", encoding="utf-8"
+    )
+
     sums = [f"{sha256(path)}  {path.relative_to(site_dir).as_posix()}" for _, _, path in packages]
     (site_dir / "SHA256SUMS").write_text("\n".join(sums) + "\n", encoding="utf-8")
     (site_dir / "index.html").write_text(build_index(packages, site_dir), encoding="utf-8")

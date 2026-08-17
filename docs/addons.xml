@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <addons>
   <addon id="plugin.video.stv" name="sTv" version="0.2.0" provider-name="Saile">
     <requires>
@@ -24,13 +24,17 @@
       </assets>
     </extension>
   </addon>
-  <addon id="repository.srepo" name="sRepo" version="1.1.0" provider-name="Saile">
+  <addon id="repository.srepo" name="sRepo" version="1.1.1" provider-name="Saile">
     <extension point="xbmc.addon.repository" name="sRepo">
+      <dir minversion="19.0.0">
+        <info compressed="false">https://bruno1991.github.io/sKodi_Addon/addons.xml</info>
+        <checksum>https://bruno1991.github.io/sKodi_Addon/addons.xml.md5</checksum>
+        <datadir zip="true">https://bruno1991.github.io/sKodi_Addon/zips/</datadir>
+      </dir>
       <dir>
         <info compressed="false">https://bruno1991.github.io/sKodi_Addon/addons.xml</info>
         <checksum>https://bruno1991.github.io/sKodi_Addon/addons.xml.md5</checksum>
         <datadir zip="true">https://bruno1991.github.io/sKodi_Addon/zips/</datadir>
-        <hashes>false</hashes>
       </dir>
     </extension>
     <extension point="xbmc.addon.metadata">
@@ -39,7 +43,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.1.0 - Adiciona artwork e core compartilhados.</news>
+      <news>1.1.1 - Atualiza endpoints de distribuição e compatibilidade Kodi.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
