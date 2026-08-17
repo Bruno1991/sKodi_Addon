@@ -50,6 +50,21 @@
         </setting>
       </group>
     </category>
+    <category id="parental" label="30040" help="">
+      <group id="security" label="30041">
+        <setting id="parental_pin" type="string" label="30042" help="30043">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30042</heading>
+            <hidden>true</hidden>
+          </control>
+        </setting>
+      </group>
+    </category>
     <category id="advanced" label="30030" help="">
       <group id="cache" label="30031">
         <setting id="cache_ttl_hours" type="integer" label="30032" help="30033">

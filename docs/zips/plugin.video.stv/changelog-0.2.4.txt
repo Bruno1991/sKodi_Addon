@@ -1,3 +1,0 @@
-0.2.4
-- Integração nativa e automática da chave TMDB API v3.
-- Remoção da necessidade de digitar token manual longo nas configurações.

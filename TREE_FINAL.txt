@@ -240,6 +240,7 @@ s_kodi_addon/
 │   │   │   │       ├── __init__.py
 │   │   │   │       ├── bootstrap.py
 │   │   │   │       ├── navigation_contract.py
+│   │   │   │       ├── parental.py
 │   │   │   │       └── routing.py
 │   │   │   └── settings.xml
 │   │   ├── addon.xml
@@ -247,6 +248,7 @@ s_kodi_addon/
 │   │   ├── changelog-0.2.2.txt
 │   │   ├── changelog-0.2.3.txt
 │   │   ├── changelog-0.2.4.txt
+│   │   ├── changelog-0.2.5.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -346,11 +348,11 @@ s_kodi_addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.2.4.txt
+│   │   │   ├── changelog-0.2.5.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.2.4.zip
-│   │   │   └── plugin.video.stv-0.2.4.zip.sha256
+│   │   │   ├── plugin.video.stv-0.2.5.zip
+│   │   │   └── plugin.video.stv-0.2.5.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -401,6 +403,7 @@ s_kodi_addon/
 │   ├── test_routing.py
 │   ├── test_saile_core.py
 │   ├── test_stv_http_client.py
+│   ├── test_stv_parental.py
 │   ├── test_stv_persistence.py
 │   ├── test_stv_tmdb_client.py
 │   └── test_stv_xtream_client.py

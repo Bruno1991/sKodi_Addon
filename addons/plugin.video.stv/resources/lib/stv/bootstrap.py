@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 
 from stv.navigation_contract import HOME_ENTRIES, SECTION_FIXED_ENTRIES, VALID_SECTIONS
+from stv.parental import is_restricted, verify_parental_pin, verify_settings_access
 from stv.routing import Request
 from stv.app.services import AppContainer
 from stv.app.sync import ensure_categories_loaded, ensure_streams_loaded
@@ -59,7 +60,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
         add_folder(
             request.handle,
             cat.name,
-            request.url(action="category", section=section, category_id=cat.category_id),
+            request.url(action="category", section=section, category_id=cat.category_id, title=cat.name),
             icon=folder_icon,
             fanart=fanart,
             poster=folder_icon,
@@ -71,8 +72,16 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
-def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str) -> None:
+def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
     from stv.ui.directory import add_folder, finish_directory
+
+    # Verificação de Controle Parental para a Categoria
+    if is_restricted(category_name=category_name):
+        import xbmcaddon
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
+            finish_directory(request.handle, content="videos", view_mode=54)
+            return
 
     ensure_streams_loaded(app, section, category_id)
     items = app.catalog.get_media_items(section, category_id)
@@ -102,7 +111,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             )
         elif section == "vod":
             # Filmes VOD possuem poster vertical 2:3 e reprodução direta
-            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
                 item.name,
@@ -118,7 +127,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             )
         else:
             # Canais Live TV utilizam logo/thumbnail
-            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
                 item.name,
@@ -141,6 +150,14 @@ def _show_series_info(request: Request, app: AppContainer, series_id: str, serie
     from stv.ui.directory import add_folder, finish_directory
     from saile_core.notifications import notify_error
 
+    # Verificação de Controle Parental para Séries Adultas
+    if is_restricted(name=series_title):
+        import xbmcaddon
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=series_title):
+            finish_directory(request.handle, content="episodes", view_mode=54)
+            return
+
     try:
         data = app.xtream.get_series_info(series_id)
         episodes_by_season = data.get("episodes", {})
@@ -161,7 +178,7 @@ def _show_series_info(request: Request, app: AppContainer, series_id: str, serie
                 ep_thumb = str(ep.get("info", {}).get("movie_image") or series_cover)
                 season_label = f"T{season_num.zfill(2)}E{str(ep.get('episode_num', '1')).zfill(2)} - {ep_title}"
 
-                url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext)
+                url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
                 add_folder(
                     request.handle,
                     season_label,
@@ -205,12 +222,12 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_playable = False
                 media_type = "tvshow"
             elif section == "vod":
-                url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+                url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "movie"
             else:
-                url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+                url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "video"
@@ -253,12 +270,12 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_playable = False
             media_type = "tvshow"
         elif section == "vod":
-            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "movie"
         else:
-            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension)
+            url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "video"
@@ -282,8 +299,15 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
-def _play_item(request: Request, app: AppContainer, section: str, stream_id: str, extension: str) -> None:
+def _play_item(request: Request, app: AppContainer, section: str, stream_id: str, extension: str, title: str = "") -> None:
     from stv.ui.player import play_video
+    import xbmcaddon
+
+    # Verificação de Controle Parental para Reprodução de Conteúdo Restrito
+    if is_restricted(name=title):
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=title or "Conteúdo Restrito"):
+            return
     
     url = app.xtream.stream_url(section, stream_id, extension)
     play_video(request.handle, app, section, stream_id, url)
@@ -319,8 +343,9 @@ def run(argv: list[str]) -> None:
     if request.action == "category":
         section = request.params.get("section", "")
         category_id = request.params.get("category_id", "")
+        title = request.params.get("title", "")
         if section in VALID_SECTIONS and category_id:
-            _show_category(request, app, section, category_id, fanart)
+            _show_category(request, app, section, category_id, fanart, category_name=title)
             return
 
     if request.action == "series_info":
@@ -334,9 +359,15 @@ def run(argv: list[str]) -> None:
         section = request.params.get("section", "")
         stream_id = request.params.get("stream_id", "")
         extension = request.params.get("extension", "")
+        title = request.params.get("title", "")
         if section in VALID_SECTIONS and stream_id:
-            _play_item(request, app, section, stream_id, extension)
+            _play_item(request, app, section, stream_id, extension, title=title)
             return
+
+    if request.action in {"settings", "open_settings"}:
+        if verify_settings_access(addon):
+            addon.openSettings()
+        return
 
     if request.action == "sync":
         show_sync_dialog(app)

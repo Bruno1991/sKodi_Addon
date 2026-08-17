@@ -71,10 +71,6 @@ msgctxt "#30021"
 msgid "Configurações do TMDB"
 msgstr "Configurações do TMDB"
 
-msgctxt "#30022"
-msgid "TMDB Bearer Token"
-msgstr "TMDB Bearer Token"
-
 msgctxt "#30023"
 msgid "Idioma dos Metadados"
 msgstr "Idioma dos Metadados"
@@ -110,3 +106,19 @@ msgstr "24 Horas"
 msgctxt "#30037"
 msgid "48 Horas"
 msgstr "48 Horas"
+
+msgctxt "#30040"
+msgid "Controle Parental"
+msgstr "Controle Parental"
+
+msgctxt "#30041"
+msgid "Segurança e Proteção de Conteúdo"
+msgstr "Segurança e Proteção de Conteúdo"
+
+msgctxt "#30042"
+msgid "Senha Parental (PIN até 6 dígitos)"
+msgstr "Senha Parental (PIN até 6 dígitos)"
+
+msgctxt "#30043"
+msgid "Bloqueia conteúdos adultos/18+ e protege o acesso às configurações"
+msgstr "Bloqueia conteúdos adultos/18+ e protege o acesso às configurações"

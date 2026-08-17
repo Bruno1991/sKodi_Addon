@@ -1,0 +1,5 @@
+0.2.5
+- Implementação de Controle Parental com PIN de até 6 dígitos e teclado numérico com máscara oculta.
+- Bloqueio sob demanda ao abrir categorias ou reproduzir canais/filmes/séries adultos ou restritos (18+ / XXX).
+- Proteção automática do menu de configurações com a mesma senha cadastrada.
+- Cadastro inicial intuitivo na primeira tentativa de acesso a conteúdo protegido.
