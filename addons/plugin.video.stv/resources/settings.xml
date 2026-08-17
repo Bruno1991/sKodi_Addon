@@ -61,5 +61,24 @@
         </setting>
       </group>
     </category>
+    <category id="advanced" label="30030" help="">
+      <group id="cache" label="30031">
+        <setting id="cache_ttl_hours" type="integer" label="30032" help="30033">
+          <level>0</level>
+          <default>12</default>
+          <constraints>
+            <options>
+              <option label="30034">6</option>
+              <option label="30035">12</option>
+              <option label="30036">24</option>
+              <option label="30037">48</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string">
+            <heading>30032</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>

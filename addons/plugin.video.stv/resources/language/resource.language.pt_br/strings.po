@@ -78,3 +78,35 @@ msgstr "TMDB Bearer Token"
 msgctxt "#30023"
 msgid "Idioma dos Metadados"
 msgstr "Idioma dos Metadados"
+
+msgctxt "#30030"
+msgid "Avançado"
+msgstr "Avançado"
+
+msgctxt "#30031"
+msgid "Gerenciamento de Cache"
+msgstr "Gerenciamento de Cache"
+
+msgctxt "#30032"
+msgid "Validade do Cache do Catálogo"
+msgstr "Validade do Cache do Catálogo"
+
+msgctxt "#30033"
+msgid "Tempo em horas para revalidação automática dos canais e categorias"
+msgstr "Tempo em horas para revalidação automática dos canais e categorias"
+
+msgctxt "#30034"
+msgid "6 Horas"
+msgstr "6 Horas"
+
+msgctxt "#30035"
+msgid "12 Horas (Padrão)"
+msgstr "12 Horas (Padrão)"
+
+msgctxt "#30036"
+msgid "24 Horas"
+msgstr "24 Horas"
+
+msgctxt "#30037"
+msgid "48 Horas"
+msgstr "48 Horas"

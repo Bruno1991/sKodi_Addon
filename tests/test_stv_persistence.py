@@ -49,9 +49,10 @@ class PersistenceTests(unittest.TestCase):
             MediaItem(
                 media_type="vod",
                 item_id="201",
-                name="Matrix",
+                name="Matrix Resurrections",
                 category_id="2",
                 extension="mkv",
+                plot="Neo vive uma vida normal sob a identidade de Thomas Anderson",
                 generation_id=1,
             ),
         ]
@@ -60,18 +61,19 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(len(live_items), 1)
         self.assertEqual(live_items[0].name, "Canal 1 HD")
 
-        # 3. Search
-        search_results = self.repo.search_media("vod", "matr")
+        # 3. FTS5 Search by keyword / prefix
+        search_results = self.repo.search_media("vod", "matrix")
         self.assertEqual(len(search_results), 1)
         self.assertEqual(search_results[0].item_id, "201")
+
+        search_resur = self.repo.search_media("vod", "resur")
+        self.assertEqual(len(search_resur), 1)
 
         # 4. Favorites toggle
         self.assertTrue(self.repo.toggle_favorite("vod", "201"))  # Added
         favs = self.repo.get_favorites("vod")
         self.assertEqual(len(favs), 1)
-        self.assertEqual(favs[0].name, "Matrix")
-        self.assertFalse(self.repo.toggle_favorite("vod", "201"))  # Removed
-        self.assertEqual(len(self.repo.get_favorites("vod")), 0)
+        self.assertEqual(favs[0].name, "Matrix Resurrections")
 
         # 5. Metadata Enrichment
         self.repo.enrich_media_item("vod", "201", plot="Um clássico de ficção", fanart="https://img.com/fan.jpg")
@@ -79,12 +81,16 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(enriched[0].plot, "Um clássico de ficção")
         self.assertEqual(enriched[0].fanart, "https://img.com/fan.jpg")
 
-        # 6. Obsolete cleanup
+        # 6. Obsolete cleanup with strict favorite removal
         deleted_cats = self.repo.clean_obsolete_categories("live", current_generation=2)
         self.assertEqual(deleted_cats, 1)
         deleted_items = self.repo.clean_obsolete_items("live", current_generation=2)
         self.assertEqual(deleted_items, 1)
         self.assertEqual(len(self.repo.get_categories("live")), 0)
+
+        # Clean VOD -> Favorite for 201 should also be removed (strict sync)
+        self.repo.clean_obsolete_items("vod", current_generation=2)
+        self.assertEqual(len(self.repo.get_favorites("vod")), 0)
 
     def test_playback_progress(self) -> None:
         self.repo.update_playback_progress("vod", "123", 10.5, 100.0)

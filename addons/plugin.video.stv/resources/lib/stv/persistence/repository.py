@@ -161,10 +161,46 @@ class CatalogRepository:
         ]
 
     def search_media(self, media_type: str, query: str) -> list[MediaItem]:
-        """Pesquisa itens de mídia pelo título/nome de forma insensível a maiúsculas."""
-        sql = "SELECT * FROM media_items WHERE media_type = ? AND name LIKE ? ORDER BY name COLLATE NOCASE"
+        """Pesquisa itens de mídia usando FTS5 com fallback para LIKE."""
+        cleaned_query = query.strip()
+        if not cleaned_query:
+            return []
+
+        # 1. Tentar busca via FTS5
+        fts_sql = """
+        SELECT m.* FROM media_items m
+        JOIN media_items_fts f ON m.rowid = f.rowid
+        WHERE f.media_type = ? AND media_items_fts MATCH ?
+        ORDER BY rank
+        LIMIT 100
+        """
+        try:
+            # Formata query para FTS5 com prefix matching
+            fts_query = " ".join(f'"{token}"*' for token in cleaned_query.split())
+            with self.db.connect() as connection:
+                rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
+                if rows:
+                    return [
+                        MediaItem(
+                            media_type=row["media_type"],
+                            item_id=row["item_id"],
+                            name=row["name"],
+                            category_id=row["category_id"],
+                            icon=row["icon"],
+                            fanart=row["fanart"],
+                            plot=row["plot"],
+                            extension=row["extension"],
+                            generation_id=row["generation_id"],
+                        )
+                        for row in rows
+                    ]
+        except Exception:
+            pass
+
+        # 2. Fallback resiliente com LIKE
+        fallback_sql = "SELECT * FROM media_items WHERE media_type = ? AND name LIKE ? ORDER BY name COLLATE NOCASE LIMIT 100"
         with self.db.connect() as connection:
-            rows = connection.execute(sql, (media_type, f"%{query}%")).fetchall()
+            rows = connection.execute(fallback_sql, (media_type, f"%{cleaned_query}%")).fetchall()
 
         return [
             MediaItem(
@@ -227,11 +263,18 @@ class CatalogRepository:
             return cursor.rowcount
 
     def clean_obsolete_items(self, media_type: str, current_generation: int) -> int:
-        """Remove itens de gerações anteriores que foram excluídos do servidor."""
+        """Remove itens obsoletos e sincroniza estritamente os favoritos."""
         sql = "DELETE FROM media_items WHERE media_type = ? AND generation_id < ?"
+        clean_favs_sql = """
+        DELETE FROM favorites WHERE media_type = ? AND item_id NOT IN (
+            SELECT item_id FROM media_items WHERE media_type = ?
+        )
+        """
         with self.db.connect() as connection:
             cursor = connection.execute(sql, (media_type, current_generation))
-            return cursor.rowcount
+            deleted_items = cursor.rowcount
+            connection.execute(clean_favs_sql, (media_type, media_type))
+            return deleted_items
 
     def update_playback_progress(self, media_type: str, item_id: str, position: float, total: float) -> None:
         """Registra o progresso de reprodução em segundos."""
