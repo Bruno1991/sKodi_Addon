@@ -107,8 +107,12 @@ def _retry_remove(function, path: str, _excinfo: BaseException) -> None:
 
 
 def remove_path(path: Path) -> None:
+    import sys
     if path.is_dir():
-        shutil.rmtree(path, onexc=_retry_remove)
+        if sys.version_info >= (3, 12):
+            shutil.rmtree(path, onexc=_retry_remove)
+        else:
+            shutil.rmtree(path, onerror=lambda func, p, exc: _retry_remove(func, p, exc[1]))
     else:
         try:
             path.unlink()
