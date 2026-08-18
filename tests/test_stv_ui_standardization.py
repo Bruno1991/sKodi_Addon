@@ -26,7 +26,7 @@ class UIStandardizationTests(unittest.TestCase):
         data = [
             {
                 "stream_id": 1,
-                "name": "Canal 1",
+                "name": "BR | GLOBO SP FHD [VIP]",
                 "stream_icon": "http://img.com/1.png",
                 "epg_channel_id": "canal-1.br",
             },
@@ -38,6 +38,9 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(len(parsed), 4)
         self.assertEqual(parsed[0].icon, "http://img.com/1.png")
         self.assertEqual(parsed[0].epg_id, "canal-1.br")
+        self.assertEqual(parsed[0].name, "Globo SP")
+        self.assertEqual(parsed[0].source_name, "BR | GLOBO SP FHD [VIP]")
+        self.assertEqual(parsed[0].normalized_name, "GLOBO SP")
         self.assertEqual(parsed[1].icon, "http://img.com/2.png")
         self.assertEqual(parsed[2].icon, "http://img.com/3.png")
         self.assertEqual(parsed[3].icon, "")
@@ -54,6 +57,8 @@ class UIStandardizationTests(unittest.TestCase):
         vod_parsed = _parse_streams("vod", 100, vod_data)
         self.assertEqual(vod_parsed[0].icon, "http://img.com/c1.jpg")
         self.assertEqual(vod_parsed[0].fanart, "http://img.com/b1.jpg")
+        self.assertEqual(vod_parsed[0].name, "Filme 1")
+        self.assertEqual(vod_parsed[0].normalized_name, "")
 
         series_data = [
             {

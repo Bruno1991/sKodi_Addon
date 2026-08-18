@@ -4,6 +4,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
+from saile_epg import clean_channel_title, normalize_channel_name
 from stv.domain.models import Category, MediaItem
 
 if TYPE_CHECKING:
@@ -45,7 +46,9 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
             continue
 
         item_id = str(item.get("stream_id") or item.get("series_id") or "").strip()
-        name = str(item.get("name") or item.get("title") or "").strip()
+        source_name = str(item.get("name") or item.get("title") or "").strip()
+        name = clean_channel_title(source_name) if media_type == "live" else source_name
+        normalized_name = normalize_channel_name(source_name) if media_type == "live" else ""
         raw_cat = str(item.get("category_id") or "").strip()
         category_id = raw_cat if (raw_cat and raw_cat != "0") else (default_category_id or raw_cat or "0")
 
@@ -62,7 +65,7 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
         plot = str(item.get("plot", "")).strip()
         epg_id = str(item.get("epg_channel_id") or item.get("tvg_id") or "").strip()
 
-        if item_id and name:
+        if item_id and source_name and name:
             items.append(
                 MediaItem(
                     media_type=media_type,
@@ -74,6 +77,8 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
                     extension=extension,
                     plot=plot,
                     epg_id=epg_id,
+                    source_name=source_name,
+                    normalized_name=normalized_name,
                     generation_id=generation_id,
                 )
             )

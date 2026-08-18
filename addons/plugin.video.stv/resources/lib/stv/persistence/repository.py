@@ -41,8 +41,8 @@ class CatalogRepository:
         sql = """
         INSERT INTO media_items (
             media_type, item_id, category_id, name, icon, fanart, plot,
-            extension, epg_id, generation_id, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            extension, epg_id, source_name, normalized_name, generation_id, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         ON CONFLICT (media_type, item_id) DO UPDATE SET
             category_id = excluded.category_id,
             name = excluded.name,
@@ -51,6 +51,8 @@ class CatalogRepository:
             plot = CASE WHEN excluded.plot != '' THEN excluded.plot ELSE media_items.plot END,
             extension = excluded.extension,
             epg_id = excluded.epg_id,
+            source_name = excluded.source_name,
+            normalized_name = excluded.normalized_name,
             generation_id = excluded.generation_id,
             updated_at = CURRENT_TIMESTAMP
         """
@@ -65,6 +67,8 @@ class CatalogRepository:
                 i.plot,
                 i.extension,
                 i.epg_id,
+                i.source_name or i.name,
+                i.normalized_name,
                 i.generation_id,
             )
             for i in items
@@ -172,6 +176,8 @@ class CatalogRepository:
                 plot=row["plot"],
                 extension=row["extension"],
                 epg_id=row["epg_id"],
+                source_name=row["source_name"],
+                normalized_name=row["normalized_name"],
                 generation_id=row["generation_id"],
             )
             for row in rows
@@ -208,6 +214,8 @@ class CatalogRepository:
                             plot=row["plot"],
                             extension=row["extension"],
                             epg_id=row["epg_id"],
+                            source_name=row["source_name"],
+                            normalized_name=row["normalized_name"],
                             generation_id=row["generation_id"],
                         )
                         for row in rows
@@ -216,9 +224,30 @@ class CatalogRepository:
             pass
 
         # 2. Fallback resiliente com LIKE
-        fallback_sql = "SELECT * FROM media_items WHERE media_type = ? AND name LIKE ? ORDER BY name COLLATE NOCASE LIMIT 100"
+        from saile_epg import normalize_channel_name
+
+        normalized_query = normalize_channel_name(cleaned_query) if media_type == "live" else ""
+        fallback_sql = """
+        SELECT * FROM media_items
+        WHERE media_type = ?
+          AND (
+            name LIKE ?
+            OR source_name LIKE ?
+            OR (? != '' AND normalized_name LIKE ?)
+          )
+        ORDER BY name COLLATE NOCASE LIMIT 100
+        """
         with self.db.connect() as connection:
-            rows = connection.execute(fallback_sql, (media_type, f"%{cleaned_query}%")).fetchall()
+            rows = connection.execute(
+                fallback_sql,
+                (
+                    media_type,
+                    f"%{cleaned_query}%",
+                    f"%{cleaned_query}%",
+                    normalized_query,
+                    f"%{normalized_query}%",
+                ),
+            ).fetchall()
 
         return [
             MediaItem(
@@ -231,6 +260,8 @@ class CatalogRepository:
                 plot=row["plot"],
                 extension=row["extension"],
                 epg_id=row["epg_id"],
+                source_name=row["source_name"],
+                normalized_name=row["normalized_name"],
                 generation_id=row["generation_id"],
             )
             for row in rows
@@ -258,6 +289,8 @@ class CatalogRepository:
                 plot=row["plot"],
                 extension=row["extension"],
                 epg_id=row["epg_id"],
+                source_name=row["source_name"],
+                normalized_name=row["normalized_name"],
                 generation_id=row["generation_id"],
             )
             for row in rows

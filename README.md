@@ -32,6 +32,8 @@ A sincronização LAN é sempre manual sob demanda do usuário.
 
 O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. Abrir listas e canais consulta somente o cache local, sem requisições por item.
 
+Os canais ao vivo guardam o título original do provedor, um nome limpo para exibição e uma chave canônica produzida pelo mesmo normalizador do EPG. Tags de qualidade e redundância não interferem no matching, enquanto regiões e números do canal permanecem distintos.
+
 Todas as rotas de diretório usam o contrato `InfoWall` (`view mode 54`). Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
 
 ## Artwork Compartilhado

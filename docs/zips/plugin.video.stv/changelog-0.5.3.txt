@@ -1,0 +1,4 @@
+0.5.3
+- Padroniza os nomes de canais ao vivo com a mesma regra usada pelo módulo EPG.
+- Preserva o nome original do provedor e a identidade de afiliadas regionais.
+- Migra o banco local para o schema 5 sem apagar favoritos ou o catálogo existente.

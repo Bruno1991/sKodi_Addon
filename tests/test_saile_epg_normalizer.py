@@ -29,6 +29,22 @@ class EpgNormalizerTests(unittest.TestCase):
         self.assertEqual(normalize_channel_name("Globo São Paulo HD"), "GLOBO SAO PAULO")
         self.assertEqual(normalize_channel_name("SPORTV 2 FHD"), "SPORTV 2")
 
+    def test_quality_variants_share_canonical_channel_key(self) -> None:
+        variants = (
+            "BR | GLOBO RJ 4K HEVC",
+            "Globo RJ FHD",
+            "GLOBO RJ HD [BACKUP]",
+            "Globo RJ SD",
+        )
+        self.assertEqual(
+            {normalize_channel_name(name) for name in variants},
+            {"GLOBO RJ"},
+        )
+        self.assertEqual(
+            {clean_channel_title(name) for name in variants},
+            {"Globo RJ"},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

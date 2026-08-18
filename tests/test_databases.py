@@ -65,7 +65,14 @@ class DatabaseTests(unittest.TestCase):
                         PRIMARY KEY (media_type, item_id)
                     );
                     INSERT INTO media_items(media_type, item_id, name)
-                    VALUES ('live', '1', 'Canal preservado');
+                    VALUES ('live', '1', 'BR | GLOBO SP FHD [VIP]');
+                    CREATE TABLE favorites (
+                        media_type TEXT NOT NULL,
+                        item_id TEXT NOT NULL,
+                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (media_type, item_id)
+                    );
+                    INSERT INTO favorites(media_type, item_id) VALUES ('live', '1');
                     CREATE TABLE epg_programs(channel_key TEXT, start_time TEXT);
                     """
                 )
@@ -75,11 +82,17 @@ class DatabaseTests(unittest.TestCase):
                 columns = {row[1] for row in connection.execute("PRAGMA table_info(media_items)")}
                 version = connection.execute("SELECT version FROM schema_version").fetchone()[0]
                 preserved = connection.execute(
-                    "SELECT name FROM media_items WHERE item_id = '1'"
+                    "SELECT name, source_name, normalized_name FROM media_items WHERE item_id = '1'"
+                ).fetchone()
+                favorite_count = connection.execute(
+                    "SELECT COUNT(*) FROM favorites WHERE media_type = 'live' AND item_id = '1'"
                 ).fetchone()[0]
             self.assertIn("epg_id", columns)
-            self.assertEqual(version, 4)
-            self.assertEqual(preserved, "Canal preservado")
+            self.assertIn("source_name", columns)
+            self.assertIn("normalized_name", columns)
+            self.assertEqual(version, 5)
+            self.assertEqual(preserved, ("Globo SP", "BR | GLOBO SP FHD [VIP]", "GLOBO SP"))
+            self.assertEqual(favorite_count, 1)
             self.assertNotIn("epg_programs", table_names(path))
 
 

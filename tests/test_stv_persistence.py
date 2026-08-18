@@ -6,9 +6,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-LIB_DIR = Path(__file__).resolve().parents[1] / "addons" / "plugin.video.stv" / "resources" / "lib"
-if str(LIB_DIR) not in sys.path:
-    sys.path.insert(0, str(LIB_DIR))
+ROOT = Path(__file__).resolve().parents[1]
+LIB_DIR = ROOT / "addons" / "plugin.video.stv" / "resources" / "lib"
+EPG_LIB = ROOT / "addons" / "script.module.saile.epg" / "lib"
+for path in (LIB_DIR, EPG_LIB):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from stv.domain.models import Category, MediaItem
 from stv.persistence.database import Database
@@ -45,6 +48,8 @@ class PersistenceTests(unittest.TestCase):
                 category_id="1",
                 extension="ts",
                 epg_id="canal-1.br",
+                source_name="BR | CANAL 1 FHD",
+                normalized_name="CANAL 1",
                 generation_id=1,
             ),
             MediaItem(
@@ -62,6 +67,11 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(len(live_items), 1)
         self.assertEqual(live_items[0].name, "Canal 1 HD")
         self.assertEqual(live_items[0].epg_id, "canal-1.br")
+        self.assertEqual(live_items[0].source_name, "BR | CANAL 1 FHD")
+        self.assertEqual(live_items[0].normalized_name, "CANAL 1")
+
+        normalized_results = self.repo.search_media("live", "canal 1 FHD")
+        self.assertEqual([item.item_id for item in normalized_results], ["101"])
 
         # 3. FTS5 Search by keyword / prefix
         search_results = self.repo.search_media("vod", "matrix")
@@ -70,6 +80,7 @@ class PersistenceTests(unittest.TestCase):
 
         search_resur = self.repo.search_media("vod", "resur")
         self.assertEqual(len(search_resur), 1)
+        self.assertEqual(self.repo.search_media("vod", "inexistente"), [])
 
         # 4. Favorites toggle
         self.assertTrue(self.repo.toggle_favorite("vod", "201"))  # Added

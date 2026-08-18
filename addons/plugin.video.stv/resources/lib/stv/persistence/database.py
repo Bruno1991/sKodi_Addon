@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-CURRENT_SCHEMA_VERSION = 4
+CURRENT_SCHEMA_VERSION = 5
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS media_items (
     plot TEXT NOT NULL DEFAULT '',
     extension TEXT NOT NULL DEFAULT '',
     epg_id TEXT NOT NULL DEFAULT '',
+    source_name TEXT NOT NULL DEFAULT '',
+    normalized_name TEXT NOT NULL DEFAULT '',
     payload_json TEXT NOT NULL DEFAULT '{}',
     generation_id INTEGER NOT NULL DEFAULT 0,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -129,6 +131,10 @@ class Database:
                     "INSERT INTO schema_version(version) VALUES (?)",
                     (CURRENT_SCHEMA_VERSION,),
                 )
+                connection.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
+                    "ON media_items(media_type, normalized_name)"
+                )
                 return
 
             version = int(row["version"])
@@ -147,5 +153,66 @@ class Database:
                 connection.execute("DROP TABLE IF EXISTS epg_programs")
                 connection.execute(
                     "UPDATE schema_version SET version = ?",
+                    (4,),
+                )
+            if version < 5:
+                if self.fts_available:
+                    for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):
+                        connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
+                columns = {
+                    str(item["name"])
+                    for item in connection.execute("PRAGMA table_info(media_items)").fetchall()
+                }
+                if "source_name" not in columns:
+                    connection.execute(
+                        "ALTER TABLE media_items ADD COLUMN source_name TEXT NOT NULL DEFAULT ''"
+                    )
+                if "normalized_name" not in columns:
+                    connection.execute(
+                        "ALTER TABLE media_items ADD COLUMN normalized_name TEXT NOT NULL DEFAULT ''"
+                    )
+
+                from saile_epg import clean_channel_title, normalize_channel_name
+
+                rows = connection.execute(
+                    "SELECT media_type, item_id, name FROM media_items"
+                ).fetchall()
+                updates = []
+                for item in rows:
+                    source_name = str(item["name"])
+                    if str(item["media_type"]) == "live":
+                        display_name = clean_channel_title(source_name)
+                        normalized_name = normalize_channel_name(source_name)
+                    else:
+                        display_name = source_name
+                        normalized_name = ""
+                    updates.append(
+                        (
+                            display_name,
+                            source_name,
+                            normalized_name,
+                            item["media_type"],
+                            item["item_id"],
+                        )
+                    )
+                connection.executemany(
+                    """
+                    UPDATE media_items
+                    SET name = ?, source_name = ?, normalized_name = ?
+                    WHERE media_type = ? AND item_id = ?
+                    """,
+                    updates,
+                )
+                connection.execute(
+                    "UPDATE schema_version SET version = ?",
                     (CURRENT_SCHEMA_VERSION,),
                 )
+                if self.fts_available:
+                    connection.execute(
+                        "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
+                    )
+                    connection.executescript(FTS5_SCHEMA)
+            connection.execute(
+                "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
+                "ON media_items(media_type, normalized_name)"
+            )

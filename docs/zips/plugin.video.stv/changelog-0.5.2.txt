@@ -1,3 +1,0 @@
-0.5.2
-- Atualiza o módulo EPG para aceitar XML, gzip real, gzip com cabeçalho incorreto e ZIP.
-- Detalha falhas de formato sem expor a resposta ou as credenciais do provedor.

@@ -28,4 +28,6 @@ class MediaItem:
     plot: str = ""
     extension: str = ""
     epg_id: str = ""
+    source_name: str = ""
+    normalized_name: str = ""
     generation_id: int = 0

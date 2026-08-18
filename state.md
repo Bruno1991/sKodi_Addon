@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
 **Data de Atualização:** 18 de Agosto de 2026
-**Status do Projeto:** Implementado e validado no host (sTv v0.5.2)
+**Status do Projeto:** Implementado e validado no host (sTv v0.5.3)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,11 +11,11 @@
 
 | Add-on ID | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- |
-| **`plugin.video.stv`** | `0.5.2` | Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB, Controle Parental, InfoWall 54 universal). |
+| **`plugin.video.stv`** | `0.5.3` | Add-on principal de IPTV/Xtream com nomes de canais alinhados ao EPG, favoritos, TMDB, controle parental e InfoWall 54 universal. |
 | **`repository.srepo`** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | `1.0.0` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | `1.0.2` | XMLTV autorizado, matching de canais, horários UTC, cache próprio e detecção robusta de XML/gzip/ZIP. |
+| **`script.module.saile.epg`** | `1.0.3` | XMLTV autorizado, normalização canônica compartilhada, horários UTC, cache próprio e detecção robusta de XML/gzip/ZIP. |
 
 ---
 
@@ -44,7 +44,7 @@ python tools/build_repo.py
 python tools/generate_structure_manifest.py
 ```
 
-- **Testes Unitários:** 49/49 testes aprovados no host.
+- **Testes Unitários:** 50/50 testes aprovados no host.
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
 - **Repositório Kodi (`docs/`):** gerado com os 5 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 
