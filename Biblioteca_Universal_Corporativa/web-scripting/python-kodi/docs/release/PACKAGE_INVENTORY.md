@@ -4,9 +4,9 @@
 
 - Add-ons ativos: **5**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **42**
+- Testes unitários: **67**
 - ZIPs Kodi gerados em `docs/zips/`: **5**
-- Manifesto estrutural de referência: `STRUCTURE_MANIFEST.json`
+- Manifesto estrutural de referência: `../generated/STRUCTURE_MANIFEST.json`
 
 ## Add-ons Ativos
 
@@ -31,7 +31,7 @@
 ```text
 5 add-ons válidos
 9 artes compartilhadas válidas
-42 testes unitários aprovados
+67 testes unitários aprovados
 0 segredos conhecidos encontrados
 5 ZIPs Kodi gerados
 ```
@@ -43,5 +43,5 @@
 - `tools/validate_addons.py`: Validação estática de `addon.xml`, `settings.xml` e artwork.
 - `tools/secret_scan.py`: Auditoria de credenciais e tokens em arquivos versionáveis.
 - `tools/build_repo.py`: Empacotamento de ZIPs, geração de `addons.xml`, MD5, SHA256 e HTML.
-- `tools/generate_structure_manifest.py`: Geração do `STRUCTURE_MANIFEST.json`.
-- `tools/print_tree.py`: Geração da árvore do projeto (`TREE_FINAL.txt`).
+- `tools/generate_structure_manifest.py`: geração de `docs/generated/STRUCTURE_MANIFEST.json`.
+- `tools/print_tree.py`: geração da árvore do projeto em `docs/generated/TREE_FINAL.txt`.

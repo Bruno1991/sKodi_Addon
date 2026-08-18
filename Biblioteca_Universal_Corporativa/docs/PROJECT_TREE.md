@@ -1,7 +1,7 @@
 # Árvore real do projeto
 
 ```text
-Mega_Biblioteca_Universal_Corporativa/
+Biblioteca_Universal_Corporativa/
 ├── .dockerignore
 ├── .editorconfig
 ├── .gitattributes
@@ -9,7 +9,12 @@ Mega_Biblioteca_Universal_Corporativa/
     └── workflows/
         └── ci.yml
 ├── .gitignore
+├── .vscode/
+    └── extensions.json
+    └── settings.json
+    └── tasks.json
 ├── AGENTS.md
+├── BASE.md
 ├── contracts/
     └── crypto-envelope.schema.json
     └── error-envelope.schema.json
@@ -162,6 +167,26 @@ Mega_Biblioteca_Universal_Corporativa/
     └── python-kodi/
         └── addon.xml
         └── build_addon.py
+        └── docs/
+            └── architecture/
+                └── PROJECT_CONSTITUTION.md
+                └── REPOSITORY_BLUEPRINT.md
+                └── ROADMAP_ARCHITECTURE.md
+                └── ROADMAP_TRACEABILITY_MATRIX.md
+            └── generated/
+                └── STRUCTURE_MANIFEST.json
+                └── TREE_FINAL.txt
+            └── governance/
+                └── SECURITY_AND_ENV_POLICY.md
+                └── SKILLS_INDEX.md
+            └── README.md
+            └── reference/
+                └── COMPATIBILITY_MATRIX.md
+                └── OFFICIAL_REFERENCE_MAP.md
+            └── release/
+                └── PACKAGE_INVENTORY.md
+                └── PACKAGE_RELEASE_NOTES.md
+                └── STATE.md
         └── README.md
         └── resources/
             └── lib/

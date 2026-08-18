@@ -16,10 +16,10 @@ Itens condicionais ou futuros não devem ser criados sem ADR e prova técnica:
 
 ## Ordem obrigatória de leitura
 
-1. `PROJECT_CONSTITUTION.md`
-2. `ROADMAP_ARCHITECTURE.md`
-3. `REPOSITORY_BLUEPRINT.md`
-4. `SECURITY_AND_ENV_POLICY.md`
+1. `Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/architecture/PROJECT_CONSTITUTION.md`
+2. `Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/architecture/ROADMAP_ARCHITECTURE.md`
+3. `Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/architecture/REPOSITORY_BLUEPRINT.md`
+4. `Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/governance/SECURITY_AND_ENV_POLICY.md`
 5. ADRs e documentações técnicas
 6. Skills aplicáveis em `.agents/`
 

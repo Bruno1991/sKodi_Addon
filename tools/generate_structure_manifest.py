@@ -7,10 +7,16 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_PATH = ROOT / "STRUCTURE_MANIFEST.json"
+KODI_DOCS = (
+    ROOT
+    / "Biblioteca_Universal_Corporativa"
+    / "web-scripting"
+    / "python-kodi"
+    / "docs"
+)
+MANIFEST_PATH = KODI_DOCS / "generated" / "STRUCTURE_MANIFEST.json"
 ARTWORK_MANIFEST = ROOT / "artwork" / "artwork-manifest.json"
 EXCLUDED_PATHS = {
-    "STRUCTURE_MANIFEST.json",
     ".vscode/settings.json",
 }
 EXCLUDED_PREFIXES = ("Biblioteca_Universal_Corporativa/",)
@@ -90,6 +96,7 @@ def build_manifest() -> dict[str, object]:
 
 def main() -> int:
     data = build_manifest()
+    MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",

@@ -44,6 +44,7 @@ python tools/secret_scan.py
 python -m unittest discover -s tests -p "test_*.py" -v
 python tools/build_repo.py
 python tools/generate_structure_manifest.py
+python tools/print_tree.py
 ```
 
 - **Testes Unitários:** 67/67 testes aprovados no host.

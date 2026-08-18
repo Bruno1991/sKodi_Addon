@@ -9,7 +9,7 @@
 - Cliente Xtream para autenticação, listagem de categorias/mídias e geração de stream URLs.
 - Cliente TMDB integrado para enriquecimento de metadados sob demanda.
 - Persistência e repositório SQLite robusto para sTv (`stv.db`).
-- Suíte expandida com 20 testes unitários cobrindo persistência, clientes, contratos, roteamento e core.
+- Suíte com 67 testes unitários cobrindo persistência, clientes, contratos, roteamento, EPG e core.
 - Pipeline de build determinístico gerando `docs/` e ZIPs compatíveis com Kodi.
 - Verificação de segredos e políticas de segurança 100% conformes.
 - `script.module.saile.epg` independente, com XMLTV autorizado, UTC e cache próprio.

@@ -22,6 +22,7 @@ s_Kodi_Addon/
 │   │   │   │       ├── domain/
 │   │   │   │       │   ├── __init__.py
 │   │   │   │       │   ├── catalog.py
+│   │   │   │       │   ├── live_channels.py
 │   │   │   │       │   └── models.py
 │   │   │   │       ├── infrastructure/
 │   │   │   │       │   ├── __init__.py
@@ -72,6 +73,11 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.4.3.txt
 │   │   ├── changelog-0.4.6.txt
 │   │   ├── changelog-0.5.0.txt
+│   │   ├── changelog-0.5.1.txt
+│   │   ├── changelog-0.5.2.txt
+│   │   ├── changelog-0.5.3.txt
+│   │   ├── changelog-0.6.0.txt
+│   │   ├── changelog-0.7.0.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -121,15 +127,22 @@ s_Kodi_Addon/
 │       │       ├── providers/
 │       │       │   ├── __init__.py
 │       │       │   ├── base.py
-│       │       │   └── xmltv.py
+│       │       │   ├── xmltv.py
+│       │       │   └── xtream.py
 │       │       ├── __init__.py
 │       │       ├── database.py
+│       │       ├── errors.py
 │       │       ├── models.py
 │       │       ├── normalizer.py
 │       │       ├── repository.py
 │       │       └── service.py
 │       ├── addon.xml
 │       ├── changelog-1.0.0.txt
+│       ├── changelog-1.0.1.txt
+│       ├── changelog-1.0.2.txt
+│       ├── changelog-1.0.3.txt
+│       ├── changelog-1.1.0.txt
+│       ├── changelog-1.2.0.txt
 │       ├── fanart.jpg
 │       └── icon.png
 ├── artwork/
@@ -192,15 +205,17 @@ s_Kodi_Addon/
 │   ├── artwork-manifest.json
 │   └── README.md
 ├── decisions/
-│   └── ADR-0001-modulo-epg-local.md
+│   ├── ADR-0001-modulo-epg-local.md
+│   ├── ADR-0002-canais-epg-e-variantes.md
+│   └── ADR-0003-grade-profissional-e-qualidade-no-player.md
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.5.0.txt
+│   │   │   ├── changelog-0.7.0.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.5.0.zip
-│   │   │   └── plugin.video.stv-0.5.0.zip.sha256
+│   │   │   ├── plugin.video.stv-0.7.0.zip
+│   │   │   └── plugin.video.stv-0.7.0.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -220,11 +235,11 @@ s_Kodi_Addon/
 │   │   │   ├── script.module.saile.core-1.0.0.zip
 │   │   │   └── script.module.saile.core-1.0.0.zip.sha256
 │   │   └── script.module.saile.epg/
-│   │       ├── changelog-1.0.0.txt
+│   │       ├── changelog-1.2.0.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.epg-1.0.0.zip
-│   │       └── script.module.saile.epg-1.0.0.zip.sha256
+│   │       ├── script.module.saile.epg-1.2.0.zip
+│   │       └── script.module.saile.epg-1.2.0.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz
@@ -261,7 +276,9 @@ s_Kodi_Addon/
 │   ├── test_saile_epg_normalizer.py
 │   ├── test_saile_epg_persistence.py
 │   ├── test_saile_epg_xmltv.py
+│   ├── test_saile_epg_xtream.py
 │   ├── test_stv_http_client.py
+│   ├── test_stv_live_channels.py
 │   ├── test_stv_parental.py
 │   ├── test_stv_persistence.py
 │   ├── test_stv_tmdb_client.py
@@ -283,21 +300,8 @@ s_Kodi_Addon/
 │   └── validate_addons.py
 ├── .gitignore
 ├── AGENTS.md
-├── COMPATIBILITY_MATRIX.md
 ├── LICENSE
 ├── Makefile
-├── OFFICIAL_REFERENCE_MAP.md
-├── PACKAGE_INVENTORY.md
-├── PACKAGE_RELEASE_NOTES.md
-├── PROJECT_CONSTITUTION.md
 ├── pyproject.toml
 ├── README.md
-├── REPOSITORY_BLUEPRINT.md
-├── ROADMAP_ARCHITECTURE.md
-├── ROADMAP_TRACEABILITY_MATRIX.md
-├── SECURITY_AND_ENV_POLICY.md
-├── skills-manifest.json
-├── SKILLS_INDEX.md
-├── state.md
-├── STRUCTURE_MANIFEST.json
-└── TREE_FINAL.txt
+└── skills-manifest.json

@@ -4,6 +4,8 @@
 s_kodi_addon/
 ├── .agents/                             # instruções e base corporativa
 ├── .github/workflows/
+├── Biblioteca_Universal_Corporativa/
+│   └── web-scripting/python-kodi/docs/   # documentação técnica canônica
 ├── addons/
 │   ├── repository.srepo/
 │   ├── resource.images.saile/

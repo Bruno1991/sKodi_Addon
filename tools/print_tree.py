@@ -4,6 +4,13 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+KODI_DOCS = (
+    ROOT
+    / "Biblioteca_Universal_Corporativa"
+    / "web-scripting"
+    / "python-kodi"
+    / "docs"
+)
 EXCLUDE = {
     ".git",
     ".env",
@@ -35,7 +42,8 @@ def walk(path: Path, prefix: str = "", lines: list[str] | None = None) -> list[s
 def main() -> int:
     lines = [ROOT.name + "/"]
     walk(ROOT, lines=lines)
-    output_file = ROOT / "TREE_FINAL.txt"
+    output_file = KODI_DOCS / "generated" / "TREE_FINAL.txt"
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Árvore gerada em {output_file} ({len(lines)} entradas)")
     return 0
