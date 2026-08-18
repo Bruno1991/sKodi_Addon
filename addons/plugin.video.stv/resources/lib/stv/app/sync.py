@@ -48,7 +48,15 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
         name = str(item.get("name") or item.get("title") or "").strip()
         category_id = str(item.get("category_id") or default_category_id or "").strip()
 
-        icon = str(item.get("stream_icon") or item.get("cover") or "").strip()
+        icon = str(item.get("stream_icon") or item.get("logo") or item.get("icon") or item.get("cover") or item.get("movie_image") or "").strip()
+        fanart = str(item.get("fanart") or "").strip()
+        if not fanart and media_type in {"vod", "series"}:
+            backdrop = item.get("backdrop_path")
+            if isinstance(backdrop, list) and backdrop:
+                fanart = str(backdrop[0]).strip()
+            elif isinstance(backdrop, str):
+                fanart = backdrop.strip()
+
         extension = str(item.get("container_extension", "")).strip()
         plot = str(item.get("plot", "")).strip()
 
@@ -60,6 +68,7 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
                     name=name,
                     category_id=category_id,
                     icon=icon,
+                    fanart=fanart,
                     extension=extension,
                     plot=plot,
                     generation_id=generation_id,

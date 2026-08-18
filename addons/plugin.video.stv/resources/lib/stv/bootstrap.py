@@ -16,6 +16,19 @@ def _icon(scope: str, filename: str) -> str:
     return artwork_path(scope, filename)
 
 
+def _item_icon(section: str, icon_str: str) -> str:
+    """Retorna uma URL de imagem válida ou o ícone oficial da respectiva seção."""
+    if icon_str and (icon_str.startswith(("http://", "https://", "special://", "/")) or "\\" in icon_str):
+        return icon_str.strip()
+    section_map = {
+        "live": "live.png",
+        "vod": "vod.png",
+        "series": "series.png",
+    }
+    filename = section_map.get(section, "folder.png")
+    return _icon("stv" if section in section_map else "common", filename)
+
+
 def _show_home(request: Request, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory
 
@@ -29,9 +42,10 @@ def _show_home(request: Request, fanart: str) -> None:
             icon=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="movie",
+            media_type="video",
         )
-    finish_directory(request.handle, content="movies", view_mode=54)
+    # content="videos" exibe os cards em proporção natural sem aplicar zoom 2:3 nos ícones
+    finish_directory(request.handle, content="videos", view_mode=54)
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
@@ -47,7 +61,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             icon=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="video",
         )
         
     # 2. Dynamic categories from database / Xtream
@@ -62,11 +76,11 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             icon=folder_icon,
             fanart=fanart,
             is_folder=True,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="video",
         )
 
-    content_type = "tvshows" if section == "series" else "movies"
-    finish_directory(request.handle, content=content_type, view_mode=54)
+    # Pastas de categorias sem zoom
+    finish_directory(request.handle, content="videos", view_mode=54)
 
 
 def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
@@ -77,13 +91,14 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
-            finish_directory(request.handle, content="movies", view_mode=54)
+            finish_directory(request.handle, content="videos", view_mode=54)
             return
 
     ensure_streams_loaded(app, section, category_id)
     items = app.catalog.get_media_items(section, category_id)
+
     for item in items:
-        icon_url = item.icon if item.icon.startswith("http") else _icon("common", "check.png")
+        icon_url = _item_icon(section, item.icon)
         fav_action = request.url(action="toggle_fav", section=section, stream_id=item.item_id)
         enrich_action = request.url(action="enrich", section=section, stream_id=item.item_id, title=item.name)
         context_menu = [
@@ -123,28 +138,86 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV com o mesmo padrão e características de VOD
+            # Canais Live TV: card proporcional e limpo sem zoom ou corte
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
                 item.name,
                 url,
                 icon=icon_url,
-                poster=icon_url,
-                clearlogo=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
                 plot=item.plot,
-                media_type="movie",
+                media_type="video",
             )
 
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
-def _show_series_info(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
+def _show_series_seasons(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
+    from stv.ui.directory import add_folder, finish_directory
+    from saile_core.notifications import notify_error
+
+    # Verificação de Controle Parental para Séries Adultas
+    if is_restricted(name=series_title):
+        import xbmcaddon
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=series_title):
+            finish_directory(request.handle, content="tvshows", view_mode=54)
+            return
+
+    try:
+        data = app.xtream.get_series_info(series_id)
+        episodes_by_season = data.get("episodes", {})
+        info = data.get("info", {})
+        series_cover = info.get("cover") or fanart
+        series_plot = info.get("plot", "")
+        seasons_meta = {str(s.get("season_number", "")): s for s in data.get("seasons", []) if isinstance(s, dict)}
+
+        sorted_season_keys = sorted(
+            episodes_by_season.keys(),
+            key=lambda k: int(k) if str(k).isdigit() else 999
+        )
+
+        for season_num in sorted_season_keys:
+            episodes = episodes_by_season[season_num]
+            if not isinstance(episodes, list) or not episodes:
+                continue
+
+            season_info = seasons_meta.get(str(season_num), {})
+            season_name = season_info.get("name") or f"Temporada {season_num}"
+            raw_cover = str(season_info.get("cover") or series_cover or "")
+            season_cover = _item_icon("series", raw_cover)
+            season_plot = season_info.get("overview") or series_plot
+            label = f"{season_name} ({len(episodes)} episódios)"
+
+            url = request.url(
+                action="series_episodes",
+                section="series",
+                series_id=series_id,
+                season_num=str(season_num),
+                title=series_title,
+            )
+            add_folder(
+                request.handle,
+                label,
+                url,
+                icon=season_cover,
+                fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
+                is_folder=True,
+                plot=season_plot,
+                media_type="tvshow",
+            )
+    except Exception as exc:
+        notify_error("sTv", f"Erro ao obter temporadas: {exc}")
+
+    finish_directory(request.handle, content="tvshows", view_mode=54)
+
+
+def _show_series_episodes(request: Request, app: AppContainer, series_id: str, season_num: str, series_title: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory
     from saile_core.notifications import notify_error
 
@@ -162,34 +235,33 @@ def _show_series_info(request: Request, app: AppContainer, series_id: str, serie
         info = data.get("info", {})
         series_cover = info.get("cover") or fanart
         series_plot = info.get("plot", "")
+        episodes = episodes_by_season.get(str(season_num), [])
 
-        for season_num, episodes in episodes_by_season.items():
-            if not isinstance(episodes, list):
+        for ep in episodes:
+            if not isinstance(ep, dict):
                 continue
-            for ep in episodes:
-                if not isinstance(ep, dict):
-                    continue
-                ep_id = str(ep.get("id", ""))
-                ep_title = str(ep.get("title") or f"Episódio {ep.get('episode_num', '')}").strip()
-                ep_ext = str(ep.get("container_extension", "mp4"))
-                ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
-                ep_thumb = str(ep.get("info", {}).get("movie_image") or series_cover)
-                season_label = f"T{season_num.zfill(2)}E{str(ep.get('episode_num', '1')).zfill(2)} - {ep_title}"
+            ep_id = str(ep.get("id", ""))
+            ep_num = str(ep.get("episode_num", "1"))
+            ep_title = str(ep.get("title") or f"Episódio {ep_num}").strip()
+            ep_ext = str(ep.get("container_extension", "mp4"))
+            ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
+            raw_thumb = str(ep.get("info", {}).get("movie_image") or series_cover or "")
+            ep_thumb = _item_icon("series", raw_thumb)
+            label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
-                url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
-                add_folder(
-                    request.handle,
-                    season_label,
-                    url,
-                    icon=ep_thumb,
-                    poster=series_cover,
-                    fanart=series_cover,
-                    landscape=ep_thumb,
-                    is_folder=False,
-                    is_playable=True,
-                    plot=ep_plot,
-                    media_type="episode",
-                )
+            url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
+            add_folder(
+                request.handle,
+                label,
+                url,
+                icon=ep_thumb,
+                fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
+                landscape=ep_thumb,
+                is_folder=False,
+                is_playable=True,
+                plot=ep_plot,
+                media_type="episode",
+            )
     except Exception as exc:
         notify_error("sTv", f"Erro ao obter episódios: {exc}")
 
@@ -205,8 +277,9 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
     if keyboard.isConfirmed() and keyboard.getText():
         query = keyboard.getText().strip()
         items = app.catalog.search_media(section, query)
+
         for item in items:
-            icon_url = item.icon if item.icon.startswith("http") else _icon("common", "check.png")
+            icon_url = _item_icon(section, item.icon)
             fav_action = request.url(action="toggle_fav", section=section, stream_id=item.item_id)
             enrich_action = request.url(action="enrich", section=section, stream_id=item.item_id, title=item.name)
             context_menu = [
@@ -227,11 +300,12 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type = "movie"
                 poster_val = icon_url
             else:
+                # Live TV: sem zoom
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
-                media_type = "movie"
-                poster_val = icon_url
+                media_type = "video"
+                poster_val = ""
 
             add_folder(
                 request.handle,
@@ -239,7 +313,6 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 url,
                 icon=icon_url,
                 poster=poster_val,
-                clearlogo=icon_url if section == "live" else "",
                 fanart=item.fanart or fanart,
                 is_folder=is_folder,
                 is_playable=is_playable,
@@ -248,7 +321,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type=media_type,
             )
             
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -256,8 +329,9 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     from stv.ui.directory import add_folder, finish_directory
     
     items = app.catalog.get_favorites(section)
+
     for item in items:
-        icon_url = item.icon if item.icon.startswith("http") else _icon("common", "check.png")
+        icon_url = _item_icon(section, item.icon)
         fav_action = request.url(action="toggle_fav", section=section, stream_id=item.item_id)
         enrich_action = request.url(action="enrich", section=section, stream_id=item.item_id, title=item.name)
         context_menu = [
@@ -278,11 +352,12 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type = "movie"
             poster_val = icon_url
         else:
+            # Live TV: sem zoom
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
-            media_type = "movie"
-            poster_val = icon_url
+            media_type = "video"
+            poster_val = ""
 
         add_folder(
             request.handle,
@@ -290,7 +365,6 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             url,
             icon=icon_url,
             poster=poster_val,
-            clearlogo=icon_url if section == "live" else "",
             fanart=item.fanart or fanart,
             is_folder=is_folder,
             is_playable=is_playable,
@@ -299,7 +373,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type=media_type,
         )
         
-    content_type = "tvshows" if section == "series" else "movies"
+    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
