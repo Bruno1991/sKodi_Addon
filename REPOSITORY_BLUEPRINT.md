@@ -66,9 +66,20 @@ flowchart TD
 
 - contrato público de canais, programas e snapshots;
 - parsing XMLTV com limites de segurança;
+- fallback manual de EPG curto pela API Xtream;
 - normalização e matching determinístico de canais;
 - timestamps UTC e cache SQLite próprio;
 - providers sem dependência do `plugin.video.stv` ou da UI Kodi.
+
+## Projeção de TV ao vivo do sTv
+
+- o catálogo bruto Xtream continua preservado no SQLite do sTv;
+- o módulo EPG fornece a identidade e o nome oficial dos canais sincronizados;
+- o sTv agrupa variantes por `epg_id` exato ou nome normalizado único;
+- canais agrupados aparecem uma vez na raiz de TV ao Vivo;
+- canais não reconhecidos permanecem nas categorias originais;
+- categorias sem itens remanescentes são ocultadas;
+- a seleção de variante ocorre somente no clique, sem backend ou serviço contínuo.
 
 ## Add-ons futuros condicionais
 

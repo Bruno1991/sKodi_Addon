@@ -29,7 +29,16 @@ class DatabaseTests(unittest.TestCase):
             StvDatabase(path).initialize()
             names = table_names(path)
             self.assertTrue(
-                {"schema_version", "categories", "media_items", "favorites", "playback_progress"} <= names
+                {
+                    "schema_version",
+                    "categories",
+                    "media_items",
+                    "favorites",
+                    "live_channel_favorites",
+                    "catalog_sync_state",
+                    "playback_progress",
+                }
+                <= names
             )
             self.assertNotIn("epg_programs", names)
 
@@ -90,7 +99,7 @@ class DatabaseTests(unittest.TestCase):
             self.assertIn("epg_id", columns)
             self.assertIn("source_name", columns)
             self.assertIn("normalized_name", columns)
-            self.assertEqual(version, 5)
+            self.assertEqual(version, 7)
             self.assertEqual(preserved, ("Globo SP", "BR | GLOBO SP FHD [VIP]", "GLOBO SP"))
             self.assertEqual(favorite_count, 1)
             self.assertNotIn("epg_programs", table_names(path))

@@ -46,6 +46,9 @@ def play_video(handle: int, app: "AppContainer", media_type: str, item_id: str, 
         if (resume["position"] / resume["total"]) < 0.95:
             listitem.setProperty("StartOffset", str(resume["position"]))
 
-    # Notifica o Kodi que a URL foi resolvida com sucesso.
-    # Isso instrui o motor do Kodi a iniciar a reprodução nativa e FECHAR o diálogo/ícone de carregamento.
-    xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=listitem)
+    if handle >= 0:
+        # Clique em item navegável: resolve a URL pelo handle do diretório.
+        xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=listitem)
+    else:
+        # Ações de contexto usam RunPlugin e não recebem um handle reproduzível.
+        xbmc.Player().play(url, listitem=listitem)

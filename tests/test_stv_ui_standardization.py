@@ -17,11 +17,63 @@ for path in (STV_LIB, CORE_LIB, EPG_LIB):
         sys.path.insert(0, str(path))
 
 from stv.app.sync import _parse_streams
-from stv.bootstrap import _episode_thumbnail, _format_live_channel_metadata, _item_icon
+from stv.bootstrap import (
+    _episode_thumbnail,
+    _format_live_channel_metadata,
+    _item_icon,
+    _show_section,
+)
+from stv.domain.live_channels import build_live_catalog
+from stv.domain.models import Category, MediaItem
+from stv.routing import Request
 from stv.ui.directory import INFOWALL_VIEW_MODE, finish_directory
 
 
 class UIStandardizationTests(unittest.TestCase):
+    def test_live_root_promotes_epg_groups_and_hides_absorbed_category(self) -> None:
+        from saile_epg.models import EpgChannel
+
+        matched = MediaItem(
+            "live", "1", "Globo", "10", epg_id="globo", normalized_name="GLOBO"
+        )
+        unmatched = MediaItem(
+            "live", "2", "Canal Local", "20", normalized_name="CANAL LOCAL"
+        )
+        live_catalog = build_live_catalog(
+            (EpgChannel("xtream", "globo", "globo", "Globo", "GLOBO"),),
+            (matched, unmatched),
+        )
+        app = SimpleNamespace(
+            get_live_catalog=lambda: live_catalog,
+            catalog=SimpleNamespace(
+                is_catalog_complete=lambda _section: True,
+                get_categories=lambda _section: [
+                    Category("10", "Abertos", media_type="live"),
+                    Category("20", "Locais", media_type="live"),
+                    Category("30", "Ainda não carregada", media_type="live"),
+                ]
+            ),
+        )
+        added_labels: list[str] = []
+        request = Request("plugin://plugin.video.stv/", 7, {})
+        with (
+            patch("stv.bootstrap.ensure_categories_loaded"),
+            patch("stv.bootstrap._add_promoted_live_channel") as promoted,
+            patch("stv.ui.directory.init_directory"),
+            patch("stv.ui.directory.finish_directory"),
+            patch(
+                "stv.ui.directory.add_folder",
+                side_effect=lambda _handle, label, *_args, **_kwargs: added_labels.append(label),
+            ),
+            patch("stv.bootstrap._icon", return_value="icon.png"),
+        ):
+            _show_section(request, app, "live", "fanart.jpg")
+
+        promoted.assert_called_once()
+        self.assertNotIn("Abertos", added_labels)
+        self.assertIn("Locais", added_labels)
+        self.assertNotIn("Ainda não carregada", added_labels)
+
     def test_parse_streams_live_logos_and_epg_id(self) -> None:
         data = [
             {

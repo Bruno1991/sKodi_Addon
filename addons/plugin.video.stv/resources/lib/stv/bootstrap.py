@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import sys
 
+from stv.domain.live_channels import LiveChannelGroup
+from stv.domain.models import MediaItem
 from stv.navigation_contract import HOME_ENTRIES, SECTION_FIXED_ENTRIES, VALID_SECTIONS
 from stv.parental import is_restricted, verify_parental_pin, verify_settings_access
 from stv.routing import Request
@@ -27,6 +29,91 @@ def _item_icon(section: str, icon_str: str) -> str:
     }
     filename = section_map.get(section, "folder.png")
     return _icon("stv" if section in section_map else "common", filename)
+
+
+def _add_promoted_live_channel(
+    request: Request,
+    app: AppContainer,
+    group: LiveChannelGroup,
+    fanart: str,
+) -> None:
+    from stv.ui.directory import add_folder
+
+    channel = group.channel
+    variant = group.variants[0]
+    icon_url = _item_icon("live", channel.icon_url or variant.icon)
+    _normalized_title, live_plot = _format_live_channel_metadata(
+        app,
+        channel.display_name,
+        default_plot=variant.plot,
+        epg_id=channel.epg_id,
+    )
+    favorite_action = request.url(
+        action="toggle_channel_fav",
+        channel_key=channel.channel_key,
+    )
+    quality_action = request.url(
+        action="choose_channel_quality",
+        channel_key=channel.channel_key,
+        title=channel.display_name,
+    )
+    context_menu = [
+        ("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})"),
+        ("Escolher Qualidade", f"RunPlugin({quality_action})"),
+    ]
+    url = request.url(
+        action="play_channel",
+        channel_key=channel.channel_key,
+        title=channel.display_name,
+    )
+    add_folder(
+        request.handle,
+        channel.display_name,
+        url,
+        icon=icon_url,
+        clearlogo=icon_url,
+        fanart=variant.fanart or fanart,
+        is_folder=False,
+        is_playable=True,
+        context_menu=context_menu,
+        plot=live_plot,
+        media_type="video",
+    )
+
+
+def _add_unmatched_live_item(
+    request: Request,
+    app: AppContainer,
+    item: MediaItem,
+    fanart: str,
+) -> None:
+    from stv.ui.directory import add_folder
+
+    icon_url = _item_icon("live", item.icon)
+    favorite_action = request.url(
+        action="toggle_fav",
+        section="live",
+        stream_id=item.item_id,
+    )
+    add_folder(
+        request.handle,
+        item.name,
+        request.url(
+            action="play",
+            section="live",
+            stream_id=item.item_id,
+            extension=item.extension,
+            title=item.name,
+        ),
+        icon=icon_url,
+        clearlogo=icon_url,
+        fanart=item.fanart or fanart,
+        is_folder=False,
+        is_playable=True,
+        context_menu=[("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})")],
+        plot=item.plot,
+        media_type="video",
+    )
 
 
 def _episode_thumbnail(episode: dict[str, object], series_cover: str = "") -> str:
@@ -128,6 +215,20 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
     # 2. Dynamic categories from database / Xtream
     ensure_categories_loaded(app, section)
     categories = app.catalog.get_categories(section)
+    if section == "live":
+        live_catalog = app.get_live_catalog()
+        for group in live_catalog.groups:
+            _add_promoted_live_channel(request, app, group, fanart)
+
+        visible_category_ids = live_catalog.visible_category_ids(
+            [category.category_id for category in categories],
+            catalog_complete=app.catalog.is_catalog_complete("live"),
+        )
+        categories = [
+            category
+            for category in categories
+            if category.category_id in visible_category_ids
+        ]
     folder_icon = _icon("common", "folder.png")
     for cat in categories:
         add_folder(
@@ -159,6 +260,8 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
 
     ensure_streams_loaded(app, section, category_id)
     items = app.catalog.get_media_items(section, category_id)
+    if section == "live":
+        items = list(app.get_live_catalog().unmatched_in_category(category_id))
 
     if not items:
         # Item informativo para manter o container no modo InfoWall mesmo se a categoria estiver sem itens
@@ -365,6 +468,18 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
         query = keyboard.getText().strip()
         items = app.catalog.search_media(section, query)
 
+        if section == "live":
+            result_ids = {item.item_id for item in items}
+            live_catalog = app.get_live_catalog()
+            for group in live_catalog.groups:
+                if any(variant.item_id in result_ids for variant in group.variants):
+                    _add_promoted_live_channel(request, app, group, fanart)
+            for item in live_catalog.unmatched_items:
+                if item.item_id in result_ids:
+                    _add_unmatched_live_item(request, app, item, fanart)
+            finish_directory(request.handle, content=content_type, view_mode=54)
+            return
+
         for item in items:
             icon_url = _item_icon(section, item.icon)
             fav_action = request.url(action="toggle_fav", section=section, stream_id=item.item_id)
@@ -427,6 +542,22 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     init_directory(request.handle, content_type)
 
     items = app.catalog.get_favorites(section)
+
+    if section == "live":
+        live_catalog = app.get_live_catalog()
+        favorite_variant_ids = {item.item_id for item in items}
+        favorite_channel_keys = set(app.catalog.get_favorite_channel_keys())
+        for group in live_catalog.groups:
+            if (
+                group.channel.channel_key in favorite_channel_keys
+                or any(variant.item_id in favorite_variant_ids for variant in group.variants)
+            ):
+                _add_promoted_live_channel(request, app, group, fanart)
+        for item in live_catalog.unmatched_items:
+            if item.item_id in favorite_variant_ids:
+                _add_unmatched_live_item(request, app, item, fanart)
+        finish_directory(request.handle, content=content_type, view_mode=54)
+        return
 
     for item in items:
         icon_url = _item_icon(section, item.icon)
@@ -497,6 +628,57 @@ def _play_item(request: Request, app: AppContainer, section: str, stream_id: str
     play_video(request.handle, app, section, stream_id, url)
 
 
+def _play_live_channel(
+    request: Request,
+    app: AppContainer,
+    channel_key: str,
+    title: str,
+    requested_rank: int | None = None,
+) -> None:
+    from stv.ui.player import play_video
+    import xbmcaddon
+
+    if is_restricted(name=title):
+        addon = xbmcaddon.Addon()
+        if not verify_parental_pin(addon, reason=title or "Conteúdo Restrito"):
+            return
+    variant = app.choose_live_variant(channel_key, requested_rank=requested_rank)
+    url = app.xtream.stream_url("live", variant.item_id, variant.extension)
+    play_video(request.handle, app, "live", variant.item_id, url)
+
+
+def _choose_live_channel_quality(
+    request: Request,
+    app: AppContainer,
+    channel_key: str,
+    title: str,
+) -> None:
+    import xbmcgui
+    from stv.domain.live_channels import variant_quality
+
+    group = app.get_live_catalog().get_group(channel_key)
+    if group is None:
+        return
+    qualities: list[tuple[int, str]] = []
+    for variant in group.variants:
+        quality = variant_quality(variant)
+        if quality not in qualities:
+            qualities.append(quality)
+    qualities.sort(key=lambda value: -value[0])
+    selected = xbmcgui.Dialog().select(
+        f"{title} — Qualidade",
+        [label for _rank, label in qualities],
+    )
+    if selected >= 0:
+        _play_live_channel(
+            request,
+            app,
+            channel_key,
+            title,
+            requested_rank=qualities[selected][0],
+        )
+
+
 def run(argv: list[str]) -> None:
     """Entrypoint estrutural com o contrato oficial de navegação do sTv."""
     import xbmcaddon
@@ -514,6 +696,8 @@ def run(argv: list[str]) -> None:
         "tmdb_language": addon.getSetting("tmdb_language"),
         "epg_enabled": addon.getSetting("epg_enabled") or "true",
         "cache_ttl_hours": addon.getSetting("cache_ttl_hours") or "12",
+        "live_max_quality": addon.getSetting("live_max_quality") or "auto",
+        "live_bandwidth_limit_mbps": addon.getSetting("live_bandwidth_limit_mbps") or "0",
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
         "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
@@ -561,6 +745,20 @@ def run(argv: list[str]) -> None:
             _play_item(request, app, section, stream_id, extension, title=title)
             return
 
+    if request.action == "play_channel":
+        channel_key = request.params.get("channel_key", "")
+        title = request.params.get("title", "Canal")
+        if channel_key:
+            _play_live_channel(request, app, channel_key, title)
+            return
+
+    if request.action == "choose_channel_quality":
+        channel_key = request.params.get("channel_key", "")
+        title = request.params.get("title", "Canal")
+        if channel_key:
+            _choose_live_channel_quality(request, app, channel_key, title)
+            return
+
     if request.action in {"settings", "open_settings"}:
         if verify_settings_access(addon):
             addon.openSettings()
@@ -591,6 +789,26 @@ def run(argv: list[str]) -> None:
             added = app.catalog.toggle_favorite(section, stream_id)
             msg = "Adicionado aos Favoritos" if added else "Removido dos Favoritos"
             notify_success("sTv", msg)
+            xbmc.executebuiltin("Container.Refresh")
+            return
+
+    if request.action == "toggle_channel_fav":
+        channel_key = request.params.get("channel_key", "")
+        if channel_key:
+            import xbmc
+            from saile_core.notifications import notify_success
+
+            group = app.get_live_catalog().get_group(channel_key)
+            legacy_item_ids = (
+                tuple(variant.item_id for variant in group.variants)
+                if group is not None
+                else ()
+            )
+            added = app.catalog.toggle_channel_favorite(channel_key, legacy_item_ids)
+            notify_success(
+                "sTv",
+                "Adicionado aos Favoritos" if added else "Removido dos Favoritos",
+            )
             xbmc.executebuiltin("Container.Refresh")
             return
 

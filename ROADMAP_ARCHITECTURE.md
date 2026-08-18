@@ -26,7 +26,8 @@ sTv
 ├── TV ao Vivo
 │   ├── Buscar
 │   ├── Favoritos
-│   └── categorias/canais dinâmicos
+│   ├── canais reconhecidos pelo EPG (uma entrada por canal)
+│   └── categorias remanescentes com canais sem EPG
 ├── VOD
 │   ├── Buscar
 │   ├── Favoritos
@@ -47,7 +48,9 @@ sTv
 5. `Buscar` e `Favoritos` aparecem sempre antes do conteúdo de cada seção.
 6. URL de reprodução direta é construída no último momento pelo player.
 7. TMDB enriquece metadados (plot, pôster e fanart HD) sob demanda.
-8. O módulo EPG sincroniza XMLTV somente por ação manual e o sTv consulta Agora/Próximo localmente.
+8. O módulo EPG sincroniza XMLTV somente por ação manual, tenta a API curta Xtream como fallback e o sTv consulta Agora/Próximo localmente.
+9. Canais vinculados ao EPG são projetados uma única vez na raiz de TV ao Vivo; resoluções e backups permanecem variantes internas.
+10. A escolha automática sonda somente as variantes do canal clicado, respeita os limites do usuário e não cria serviço em segundo plano.
 
 ## Artwork
 

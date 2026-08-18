@@ -76,7 +76,45 @@ class AppContainer:
             return (None, None)
         return self.epg.get_now_next(epg_id=epg_id, channel_name=channel_name)
 
-    def sync_epg(self) -> dict[str, int]:
-        """Sincroniza manualmente o XMLTV do Xtream no módulo EPG independente."""
-        return self.epg.sync_xmltv(self.xtream.xmltv_url())
+    def sync_epg(self) -> dict[str, object]:
+        """Tenta XMLTV e usa a API curta do Xtream como fallback manual."""
+        try:
+            return self.epg.sync_xmltv(self.xtream.xmltv_url())
+        except Exception:
+            # O XMLTV de alguns painéis passa por proxies que devolvem formatos
+            # incompatíveis ou provocam erros fora do parser. A sincronização é
+            # manual, portanto ainda tentamos a API curta oficial do Xtream.
+            live_streams = self.xtream.request("get_live_streams")
+            return self.epg.sync_xtream(self.xtream.request, live_streams)
+
+    def get_live_catalog(self) -> 'LiveCatalog':
+        from stv.domain.live_channels import build_live_catalog
+
+        return build_live_catalog(
+            self.epg.list_channels(),
+            self.catalog.get_all_media_items("live"),
+        )
+
+    def choose_live_variant(
+        self,
+        channel_key: str,
+        requested_rank: int | None = None,
+    ) -> 'MediaItem':
+        from stv.domain.live_channels import choose_live_variant
+
+        group = self.get_live_catalog().get_group(channel_key)
+        if group is None:
+            raise ValueError("Canal do EPG não encontrado no catálogo local")
+        try:
+            bandwidth_limit = float(self.settings.get("live_bandwidth_limit_mbps", "0") or 0)
+        except (TypeError, ValueError):
+            bandwidth_limit = 0.0
+        max_quality = self.settings.get("live_max_quality", "auto") or "auto"
+        return choose_live_variant(
+            group.variants,
+            max_quality=max_quality,
+            bandwidth_limit_mbps=bandwidth_limit,
+            requested_rank=requested_rank,
+            probe=lambda item: self.xtream.probe_stream("live", item.item_id, item.extension),
+        )
 

@@ -4,8 +4,9 @@ from pathlib import Path
 
 from saile_epg.database import EpgDatabase
 from saile_epg.errors import EpgSyncError
-from saile_epg.models import EpgProgram
+from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.providers.xmltv import XmltvProvider
+from saile_epg.providers.xtream import RequestCallable, XtreamEpgProvider
 from saile_epg.repository import EpgRepository
 
 DEFAULT_PROVIDER_ID = "xtream"
@@ -27,8 +28,7 @@ class EpgService:
 
         return cls(addon_data_path("script.module.saile.epg", "epg.db"))
 
-    def sync_xmltv(self, url: str, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, int]:
-        snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
+    def _store_snapshot(self, snapshot: EpgSnapshot, source: str) -> dict[str, object]:
         try:
             self.repository.replace_snapshot(snapshot)
         except Exception as exc:
@@ -40,7 +40,25 @@ class EpgService:
             "channel_count": len(snapshot.channels),
             "program_count": len(snapshot.programs),
             "synced_at_utc": snapshot.fetched_at_utc,
+            "source": source,
         }
+
+    def sync_xmltv(self, url: str, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, object]:
+        snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
+        return self._store_snapshot(snapshot, "XMLTV")
+
+    def sync_xtream(
+        self,
+        request: RequestCallable,
+        live_streams: object,
+        provider_id: str = DEFAULT_PROVIDER_ID,
+    ) -> dict[str, object]:
+        snapshot = XtreamEpgProvider(
+            request=request,
+            live_streams=live_streams,
+            provider_id=provider_id,
+        ).fetch()
+        return self._store_snapshot(snapshot, "Xtream API")
 
     def get_now_next(
         self,
@@ -50,6 +68,20 @@ class EpgService:
         at_utc: int | None = None,
     ) -> tuple[EpgProgram | None, EpgProgram | None]:
         return self.repository.get_now_next(provider_id, epg_id, channel_name, at_utc)
+
+    def list_channels(
+        self,
+        provider_id: str = DEFAULT_PROVIDER_ID,
+    ) -> tuple[EpgChannel, ...]:
+        return self.repository.list_channels(provider_id)
+
+    def resolve_channel(
+        self,
+        epg_id: str,
+        channel_name: str,
+        provider_id: str = DEFAULT_PROVIDER_ID,
+    ) -> EpgChannel | None:
+        return self.repository.resolve_channel(provider_id, epg_id, channel_name)
 
     def status(self, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, int] | None:
         return self.repository.sync_status(provider_id)

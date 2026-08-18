@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 
 from saile_epg.database import EpgDatabase
-from saile_epg.models import EpgProgram, EpgSnapshot
+from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.normalizer import normalize_channel_name
 
 
@@ -80,34 +80,65 @@ class EpgRepository:
                 ),
             )
 
-    def _resolve_channel_key(self, provider_id: str, epg_id: str, channel_name: str) -> str:
+    @staticmethod
+    def _channel_from_row(row: object) -> EpgChannel:
+        return EpgChannel(
+            provider_id=row["provider_id"],
+            channel_key=row["channel_key"],
+            epg_id=row["epg_id"],
+            display_name=row["display_name"],
+            normalized_name=row["normalized_name"],
+            icon_url=row["icon_url"],
+        )
+
+    def list_channels(self, provider_id: str) -> tuple[EpgChannel, ...]:
+        with self.database.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT * FROM epg_channels
+                WHERE provider_id = ?
+                ORDER BY display_name COLLATE NOCASE, channel_key
+                """,
+                (provider_id,),
+            ).fetchall()
+        return tuple(self._channel_from_row(row) for row in rows)
+
+    def resolve_channel(
+        self,
+        provider_id: str,
+        epg_id: str,
+        channel_name: str,
+    ) -> EpgChannel | None:
         with self.database.connect() as connection:
             if epg_id.strip():
                 row = connection.execute(
                     """
-                    SELECT channel_key FROM epg_channels
+                    SELECT * FROM epg_channels
                     WHERE provider_id = ? AND epg_id = ? COLLATE NOCASE
                     LIMIT 1
                     """,
                     (provider_id, epg_id.strip()),
                 ).fetchone()
                 if row:
-                    return str(row["channel_key"])
+                    return self._channel_from_row(row)
 
             normalized_name = normalize_channel_name(channel_name)
             if normalized_name:
-                row = connection.execute(
+                rows = connection.execute(
                     """
-                    SELECT channel_key FROM epg_channels
+                    SELECT * FROM epg_channels
                     WHERE provider_id = ? AND normalized_name = ?
                     ORDER BY channel_key
-                    LIMIT 1
                     """,
                     (provider_id, normalized_name),
-                ).fetchone()
-                if row:
-                    return str(row["channel_key"])
-        return ""
+                ).fetchall()
+                if len(rows) == 1:
+                    return self._channel_from_row(rows[0])
+        return None
+
+    def _resolve_channel_key(self, provider_id: str, epg_id: str, channel_name: str) -> str:
+        channel = self.resolve_channel(provider_id, epg_id, channel_name)
+        return channel.channel_key if channel else ""
 
     def get_now_next(
         self,

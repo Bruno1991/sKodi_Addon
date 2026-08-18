@@ -174,6 +174,7 @@ def sync_full_catalog(app: "AppContainer") -> bool:
     try:
         generation_id = int(time.time())
         sections = [("live", "TV ao Vivo"), ("vod", "VOD"), ("series", "Séries")]
+        app.catalog.begin_catalog_sync([section for section, _title in sections])
 
         for idx, (section, title) in enumerate(sections):
             pct_base = int((idx / len(sections)) * 100)
@@ -206,6 +207,7 @@ def sync_full_catalog(app: "AppContainer") -> bool:
         for section, _ in sections:
             app.catalog.clean_obsolete_categories(section, generation_id)
             app.catalog.clean_obsolete_items(section, generation_id)
+            app.catalog.mark_catalog_synced(section, generation_id)
 
         dialog.update(100, "Catálogo sincronizado com sucesso!")
         time.sleep(0.5)

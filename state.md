@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
 **Data de Atualização:** 18 de Agosto de 2026
-**Status do Projeto:** Implementado e validado no host (sTv v0.5.3)
+**Status do Projeto:** Implementado e validado no host; reteste em Kodi pendente (sTv v0.6.0)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,11 +11,11 @@
 
 | Add-on ID | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- |
-| **`plugin.video.stv`** | `0.5.3` | Add-on principal de IPTV/Xtream com nomes de canais alinhados ao EPG, favoritos, TMDB, controle parental e InfoWall 54 universal. |
+| **`plugin.video.stv`** | `0.6.0` | Add-on IPTV/Xtream com canais EPG promovidos, variantes automáticas, favoritos, TMDB, controle parental e InfoWall 54. |
 | **`repository.srepo`** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | `1.0.0` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | `1.0.3` | XMLTV autorizado, normalização canônica compartilhada, horários UTC, cache próprio e detecção robusta de XML/gzip/ZIP. |
+| **`script.module.saile.epg`** | `1.1.0` | XMLTV autorizado, fallback de EPG curto Xtream, matching público, UTC e cache independente. |
 
 ---
 
@@ -28,7 +28,8 @@
 - **VOD e Séries**: Cartazes 2:3 de cinema com metadados TMDB e fanarts.
 - **Roteamento Estrutural**: Correção no roteamento de séries e temporadas (`series_info` e `series_episodes`).
 - **Controle Parental**: Proteção com PIN de até 6 dígitos e teclado mascarado para conteúdos adultos e configurações.
-- **EPG modular**: sincronização manual pelo sTv, processamento no módulo independente e leitura local Agora/Próximo.
+- **EPG modular**: XMLTV primário e fallback manual `get_short_epg`; reteste com o provedor real ainda pendente.
+- **TV ao vivo projetada pelo EPG**: uma entrada por canal sincronizado, variantes internas e categorias remanescentes apenas para itens sem EPG.
 - **Episódios**: frame do próprio episódio priorizado nos slots de capa, thumb e landscape.
 
 ---
@@ -44,7 +45,7 @@ python tools/build_repo.py
 python tools/generate_structure_manifest.py
 ```
 
-- **Testes Unitários:** 50/50 testes aprovados no host.
+- **Testes Unitários:** 60/60 testes aprovados no host.
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
 - **Repositório Kodi (`docs/`):** gerado com os 5 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 

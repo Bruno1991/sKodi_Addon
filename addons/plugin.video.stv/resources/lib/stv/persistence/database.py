@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-CURRENT_SCHEMA_VERSION = 5
+CURRENT_SCHEMA_VERSION = 7
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -50,6 +50,17 @@ CREATE TABLE IF NOT EXISTS favorites (
     item_id TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (media_type, item_id)
+);
+
+CREATE TABLE IF NOT EXISTS live_channel_favorites (
+    channel_key TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS catalog_sync_state (
+    media_type TEXT PRIMARY KEY,
+    generation_id INTEGER NOT NULL,
+    completed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS playback_progress (
@@ -212,6 +223,11 @@ class Database:
                         "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
                     )
                     connection.executescript(FTS5_SCHEMA)
+            if version < 7:
+                connection.execute(
+                    "UPDATE schema_version SET version = ?",
+                    (CURRENT_SCHEMA_VERSION,),
+                )
             connection.execute(
                 "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
                 "ON media_items(media_type, normalized_name)"

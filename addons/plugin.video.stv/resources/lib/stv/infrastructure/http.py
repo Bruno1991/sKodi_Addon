@@ -4,6 +4,7 @@ from __future__ import annotations
 import gzip
 import json
 import ssl
+import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -28,7 +29,12 @@ class HttpClient:
         ctx.verify_mode = ssl.CERT_NONE
         return ctx
 
-    def get_raw(self, url: str, headers: dict[str, str] | None = None) -> bytes:
+    def get_raw(
+        self,
+        url: str,
+        headers: dict[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> bytes:
         """Executa uma requisição GET retornando os bytes decodificados (descomprimindo gzip se necessário)."""
         request_headers = {
             "User-Agent": self.user_agent,
@@ -38,7 +44,11 @@ class HttpClient:
         }
         request = Request(url, headers=request_headers, method="GET")
         try:
-            with urlopen(request, timeout=self.timeout, context=self._ssl_context) as response:
+            with urlopen(
+                request,
+                timeout=self.timeout if timeout is None else timeout,
+                context=self._ssl_context,
+            ) as response:
                 content = response.read()
                 # Verifica se a resposta está comprimida em Gzip
                 is_gzip = response.info().get("Content-Encoding") == "gzip" or content.startswith(b"\x1f\x8b")
@@ -49,11 +59,17 @@ class HttpClient:
                         pass
                 return content
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
-            raise RuntimeError(f"Falha ao conectar ao servidor: {exc}") from exc
+            # HTTPError pode conter a URL completa com credenciais Xtream.
+            raise RuntimeError("Falha ao conectar ao servidor IPTV") from exc
 
-    def get_json(self, url: str, headers: dict[str, str] | None = None) -> object:
+    def get_json(
+        self,
+        url: str,
+        headers: dict[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> object:
         """Executa uma requisição GET retornando a resposta decodificada como JSON."""
-        content = self.get_raw(url, headers=headers)
+        content = self.get_raw(url, headers=headers, timeout=timeout)
         text = content.decode("utf-8", errors="replace").lstrip("\ufeff").strip()
         if not text:
             return []
@@ -66,3 +82,36 @@ class HttpClient:
                 return json.loads(fallback_text)
             except Exception:
                 raise RuntimeError(f"Resposta JSON inválida do servidor: {exc}") from exc
+
+    def probe_stream(
+        self,
+        url: str,
+        sample_bytes: int = 128 * 1024,
+        timeout: float = 4.0,
+    ) -> float | None:
+        """Mede uma amostra curta sem registrar a URL autenticada; retorna Mbps."""
+        request = Request(
+            url,
+            headers={
+                "User-Agent": self.user_agent,
+                "Accept": "*/*",
+                "Range": f"bytes=0-{sample_bytes - 1}",
+                "Connection": "close",
+            },
+            method="GET",
+        )
+        started = time.monotonic()
+        received = 0
+        try:
+            with urlopen(request, timeout=timeout, context=self._ssl_context) as response:
+                while received < sample_bytes:
+                    chunk = response.read(min(32 * 1024, sample_bytes - received))
+                    if not chunk:
+                        break
+                    received += len(chunk)
+        except (HTTPError, URLError, TimeoutError, OSError, TypeError):
+            return None
+        elapsed = max(time.monotonic() - started, 0.001)
+        if received < 188:
+            return None
+        return (received * 8) / elapsed / 1_000_000

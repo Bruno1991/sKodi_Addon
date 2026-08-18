@@ -296,6 +296,29 @@ class CatalogRepository:
             for row in rows
         ]
 
+    def get_all_media_items(self, media_type: str) -> list[MediaItem]:
+        """Recupera o catálogo local completo de uma seção sem alterar categorias."""
+        sql = "SELECT * FROM media_items WHERE media_type = ? ORDER BY name COLLATE NOCASE"
+        with self.db.connect() as connection:
+            rows = connection.execute(sql, (media_type,)).fetchall()
+        return [
+            MediaItem(
+                media_type=row["media_type"],
+                item_id=row["item_id"],
+                name=row["name"],
+                category_id=row["category_id"],
+                icon=row["icon"],
+                fanart=row["fanart"],
+                plot=row["plot"],
+                extension=row["extension"],
+                epg_id=row["epg_id"],
+                source_name=row["source_name"],
+                normalized_name=row["normalized_name"],
+                generation_id=row["generation_id"],
+            )
+            for row in rows
+        ]
+
     def get_favorite_ids(self, media_type: str) -> list[str]:
         """Retorna o estado de favoritos mesmo quando o catálogo estiver temporariamente vazio."""
         with self.db.connect() as connection:
@@ -325,6 +348,55 @@ class CatalogRepository:
                 (media_type, item_id),
             )
 
+    def get_favorite_channel_keys(self) -> list[str]:
+        with self.db.connect() as connection:
+            rows = connection.execute(
+                "SELECT channel_key FROM live_channel_favorites ORDER BY created_at"
+            ).fetchall()
+        return [str(row["channel_key"]) for row in rows]
+
+    def toggle_channel_favorite(
+        self,
+        channel_key: str,
+        legacy_item_ids: Sequence[str] = (),
+    ) -> bool:
+        with self.db.connect() as connection:
+            exists = connection.execute(
+                "SELECT 1 FROM live_channel_favorites WHERE channel_key = ?",
+                (channel_key,),
+            ).fetchone()
+            legacy_exists = False
+            if legacy_item_ids:
+                placeholders = ",".join("?" for _item_id in legacy_item_ids)
+                legacy_exists = connection.execute(
+                    f"""
+                    SELECT 1 FROM favorites
+                    WHERE media_type = 'live' AND item_id IN ({placeholders})
+                    LIMIT 1
+                    """,
+                    tuple(legacy_item_ids),
+                ).fetchone() is not None
+            if exists or legacy_exists:
+                connection.execute(
+                    "DELETE FROM live_channel_favorites WHERE channel_key = ?",
+                    (channel_key,),
+                )
+                if legacy_item_ids:
+                    placeholders = ",".join("?" for _item_id in legacy_item_ids)
+                    connection.execute(
+                        f"""
+                        DELETE FROM favorites
+                        WHERE media_type = 'live' AND item_id IN ({placeholders})
+                        """,
+                        tuple(legacy_item_ids),
+                    )
+                return False
+            connection.execute(
+                "INSERT INTO live_channel_favorites(channel_key) VALUES (?)",
+                (channel_key,),
+            )
+            return True
+
     def clean_obsolete_categories(self, media_type: str, current_generation: int) -> int:
         """Remove categorias de gerações anteriores que não existem mais no servidor."""
         sql = "DELETE FROM categories WHERE media_type = ? AND generation_id < ?"
@@ -338,6 +410,37 @@ class CatalogRepository:
         with self.db.connect() as connection:
             cursor = connection.execute(sql, (media_type, current_generation))
             return cursor.rowcount
+
+    def mark_catalog_synced(self, media_type: str, generation_id: int) -> None:
+        with self.db.connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO catalog_sync_state(media_type, generation_id, completed_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(media_type) DO UPDATE SET
+                    generation_id = excluded.generation_id,
+                    completed_at = CURRENT_TIMESTAMP
+                """,
+                (media_type, generation_id),
+            )
+
+    def begin_catalog_sync(self, media_types: Sequence[str]) -> None:
+        if not media_types:
+            return
+        placeholders = ",".join("?" for _media_type in media_types)
+        with self.db.connect() as connection:
+            connection.execute(
+                f"DELETE FROM catalog_sync_state WHERE media_type IN ({placeholders})",
+                tuple(media_types),
+            )
+
+    def is_catalog_complete(self, media_type: str) -> bool:
+        with self.db.connect() as connection:
+            row = connection.execute(
+                "SELECT 1 FROM catalog_sync_state WHERE media_type = ?",
+                (media_type,),
+            ).fetchone()
+        return row is not None
 
     def update_playback_progress(self, media_type: str, item_id: str, position: float, total: float) -> None:
         """Registra o progresso de reprodução em segundos."""

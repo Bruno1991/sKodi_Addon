@@ -118,8 +118,21 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(progress["position"], 10.5)
         self.assertEqual(progress["total"], 100.0)
 
+    def test_group_favorite_absorbs_legacy_variant_favorite(self) -> None:
+        self.repo.add_favorite("live", "101")
+        self.assertFalse(
+            self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102"))
+        )
+        self.assertEqual(self.repo.get_favorite_ids("live"), [])
+
+        self.assertTrue(
+            self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102"))
+        )
+        self.assertEqual(self.repo.get_favorite_channel_keys(), ["globo.rj.br"])
+
     def test_cache_ttl_logic(self) -> None:
         self.assertFalse(self.repo.is_cache_valid("live", 12))
+        self.assertFalse(self.repo.is_catalog_complete("live"))
 
         cat = Category(category_id="1", name="News", media_type="live", generation_id=1)
         self.repo.upsert_categories([cat])
@@ -131,6 +144,10 @@ class PersistenceTests(unittest.TestCase):
 
         self.assertFalse(self.repo.is_cache_valid("live", 12))
         self.assertTrue(self.repo.is_cache_valid("live", 48))
+        self.repo.mark_catalog_synced("live", 1)
+        self.assertTrue(self.repo.is_catalog_complete("live"))
+        self.repo.begin_catalog_sync(("live",))
+        self.assertFalse(self.repo.is_catalog_complete("live"))
 
 
 if __name__ == "__main__":

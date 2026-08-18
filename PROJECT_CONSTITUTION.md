@@ -46,4 +46,4 @@ Nenhuma tarefa é concluída por plausibilidade. A conclusão exige evidência p
 
 ## Artigo 10 — EPG modular
 
-O sTv consome uma API interna estável de EPG e não conhece parsing XMLTV nem schema do cache. Sincronização da grade é manual; listagens consultam somente o banco local. Horários são normalizados para UTC.
+O sTv consome uma API interna estável de EPG e não conhece parsing XMLTV nem schema do cache. Sincronização da grade é manual; XMLTV é a fonte primária e a API curta autorizada do Xtream é fallback quando necessário. Listagens consultam somente o banco local. Horários são normalizados para UTC.

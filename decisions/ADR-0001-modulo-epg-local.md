@@ -9,7 +9,7 @@ O EPG anterior vivia dentro do `plugin.video.stv` e consultava uma fonte externa
 
 ## Decisão
 
-Criar `script.module.saile.epg` como add-on Python independente. O módulo recebe XMLTV autorizado, normaliza horários para Unix timestamp UTC, resolve canais por ID exato ou nome normalizado e mantém `epg.db` em seu próprio perfil.
+Criar `script.module.saile.epg` como add-on Python independente. O módulo recebe XMLTV autorizado, normaliza horários para Unix timestamp UTC, resolve canais por ID exato ou nome normalizado e mantém `epg.db` em seu próprio perfil. Quando o XMLTV não puder ser processado, a sincronização manual pode usar `get_short_epg` da API Xtream como provider de fallback.
 
 O sTv conserva apenas `epg_id` junto ao canal, aciona a sincronização manual e consome `get_now_next`. Nenhuma rota de navegação inicia download de EPG.
 

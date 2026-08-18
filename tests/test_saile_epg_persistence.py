@@ -55,6 +55,14 @@ class EpgPersistenceTests(unittest.TestCase):
         self.assertIsNotNone(current)
         self.assertEqual(current.title, "Jornal")
 
+        channels = self.repository.list_channels("xtream")
+        self.assertEqual(len(channels), 1)
+        self.assertEqual(channels[0].display_name, "Globo SP")
+        resolved = self.repository.resolve_channel("xtream", "", "BR | GLOBO SP FHD")
+        self.assertIsNotNone(resolved)
+        assert resolved is not None
+        self.assertEqual(resolved.channel_key, "globo.sp.br")
+
     def test_empty_snapshot_preserves_previous_cache(self) -> None:
         self.repository.replace_snapshot(self._snapshot())
         with self.assertRaises(ValueError):

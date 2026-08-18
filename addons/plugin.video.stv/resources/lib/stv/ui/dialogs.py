@@ -67,7 +67,8 @@ def show_sync_dialog(app: "AppContainer") -> None:
             progress.update(100, "EPG atualizado")
             notify_success(
                 "sTv",
-                f"EPG: {result['channel_count']} canais e {result['program_count']} programas",
+                f"EPG ({result.get('source', 'local')}): "
+                f"{result['channel_count']} canais e {result['program_count']} programas",
             )
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:

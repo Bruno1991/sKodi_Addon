@@ -39,7 +39,12 @@ class XtreamClient:
         """Verifica se as credenciais mínimas foram preenchidas."""
         return bool(self.host and self.username and self.password)
 
-    def request(self, action: str, **params: object) -> Any:
+    def request(
+        self,
+        action: str,
+        request_timeout: float | None = None,
+        **params: object,
+    ) -> Any:
         """Executa uma chamada autenticada à API player_api.php."""
         if not self.is_configured:
             raise ValueError("Servidor Xtream não configurado nas configurações do add-on")
@@ -50,7 +55,10 @@ class XtreamClient:
             "action": action,
             **{key: str(value) for key, value in params.items() if value is not None},
         }
-        return self.http.get_json(f"{self.host}/player_api.php?{urlencode(query)}")
+        return self.http.get_json(
+            f"{self.host}/player_api.php?{urlencode(query)}",
+            timeout=request_timeout,
+        )
 
     def get_series_info(self, series_id: str) -> dict[str, Any]:
         """Obtém detalhes de temporadas e episódios de uma série."""
@@ -72,3 +80,7 @@ class XtreamClient:
         root = roots.get(media_type, "live")
         ext = extension.lstrip(".") or ("ts" if media_type == "live" else "mp4")
         return f"{self.host}/{root}/{self.username}/{self.password}/{stream_id}.{ext}"
+
+    def probe_stream(self, media_type: str, stream_id: str, extension: str = "") -> float | None:
+        """Sonda somente a variante solicitada e nunca expõe sua URL autenticada."""
+        return self.http.probe_stream(self.stream_url(media_type, stream_id, extension))

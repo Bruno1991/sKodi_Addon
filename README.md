@@ -30,9 +30,11 @@ Cada seção: Buscar → Favoritos → Categorias e conteúdo dinâmico
 
 A sincronização LAN é sempre manual sob demanda do usuário.
 
-O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. Abrir listas e canais consulta somente o cache local, sem requisições por item.
+O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. XMLTV é a fonte primária; se o documento não puder ser processado, o módulo tenta o EPG curto autorizado da API Xtream. Abrir listas e canais consulta somente o cache local, sem requisições de guia por item.
 
 Os canais ao vivo guardam o título original do provedor, um nome limpo para exibição e uma chave canônica produzida pelo mesmo normalizador do EPG. Tags de qualidade e redundância não interferem no matching, enquanto regiões e números do canal permanecem distintos.
+
+Em TV ao Vivo, cada canal reconhecido pelo EPG aparece uma única vez no nível principal com o nome do guia. Suas variantes SD/HD/FHD/4K ficam internas. Canais sem EPG permanecem em suas categorias; categorias totalmente absorvidas são ocultadas. A escolha automática respeita a qualidade máxima e o limite de banda configurados e sonda apenas o canal clicado.
 
 Todas as rotas de diretório usam o contrato `InfoWall` (`view mode 54`). Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
 
