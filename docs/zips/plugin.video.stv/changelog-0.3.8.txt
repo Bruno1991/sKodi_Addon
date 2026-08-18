@@ -1,0 +1,4 @@
+0.3.8
+- Padronizacao uniforme da TV ao vivo com as mesmas caracteristicas de slot de VOD e Series.
+- Integracao de posters verticais e visualizacao InfoWall (54) nativa.
+- Atualizacao para resource.images.saile 1.0.3.

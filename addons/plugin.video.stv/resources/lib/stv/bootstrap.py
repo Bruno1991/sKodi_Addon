@@ -42,10 +42,9 @@ def _show_home(request: Request, fanart: str) -> None:
             icon=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="video",
+            media_type="movie",
         )
-    # content="videos" exibe os cards em proporção natural sem aplicar zoom 2:3 nos ícones
-    finish_directory(request.handle, content="videos", view_mode=54)
+    finish_directory(request.handle, content="movies", view_mode=54)
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
@@ -61,7 +60,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             icon=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="video",
+            media_type="tvshow" if section == "series" else "movie",
         )
         
     # 2. Dynamic categories from database / Xtream
@@ -76,11 +75,11 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             icon=folder_icon,
             fanart=fanart,
             is_folder=True,
-            media_type="video",
+            media_type="tvshow" if section == "series" else "movie",
         )
 
-    # Pastas de categorias sem zoom
-    finish_directory(request.handle, content="videos", view_mode=54)
+    content_type = "tvshows" if section == "series" else "movies"
+    finish_directory(request.handle, content=content_type, view_mode=54)
 
 
 def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
@@ -91,7 +90,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
-            finish_directory(request.handle, content="videos", view_mode=54)
+            finish_directory(request.handle, content="movies", view_mode=54)
             return
 
     ensure_streams_loaded(app, section, category_id)
@@ -107,7 +106,6 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
         ]
 
         if section == "series":
-            # Séries recebem poster vertical 2:3
             url = request.url(action="series_info", section=section, series_id=item.item_id, title=item.name)
             add_folder(
                 request.handle,
@@ -122,7 +120,6 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="tvshow",
             )
         elif section == "vod":
-            # Filmes VOD recebem poster vertical 2:3
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
@@ -138,22 +135,24 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV: card proporcional e limpo sem zoom ou corte
+            # Canais Live TV no mesmo padrão de VOD
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
                 item.name,
                 url,
                 icon=icon_url,
+                poster=icon_url,
+                clearlogo=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
                 plot=item.plot,
-                media_type="video",
+                media_type="movie",
             )
 
-    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
+    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -206,6 +205,7 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
                 label,
                 url,
                 icon=season_cover,
+                poster=season_cover,
                 fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 is_folder=True,
                 plot=season_plot,
@@ -255,6 +255,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 label,
                 url,
                 icon=ep_thumb,
+                poster=series_cover,
                 fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 landscape=ep_thumb,
                 is_folder=False,
@@ -300,12 +301,11 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type = "movie"
                 poster_val = icon_url
             else:
-                # Live TV: sem zoom
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
-                media_type = "video"
-                poster_val = ""
+                media_type = "movie"
+                poster_val = icon_url
 
             add_folder(
                 request.handle,
@@ -313,6 +313,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 url,
                 icon=icon_url,
                 poster=poster_val,
+                clearlogo=icon_url if section == "live" else "",
                 fanart=item.fanart or fanart,
                 is_folder=is_folder,
                 is_playable=is_playable,
@@ -321,7 +322,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type=media_type,
             )
             
-    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
+    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
@@ -352,12 +353,11 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type = "movie"
             poster_val = icon_url
         else:
-            # Live TV: sem zoom
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
-            media_type = "video"
-            poster_val = ""
+            media_type = "movie"
+            poster_val = icon_url
 
         add_folder(
             request.handle,
@@ -365,6 +365,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             url,
             icon=icon_url,
             poster=poster_val,
+            clearlogo=icon_url if section == "live" else "",
             fanart=item.fanart or fanart,
             is_folder=is_folder,
             is_playable=is_playable,
@@ -373,7 +374,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type=media_type,
         )
         
-    content_type = "tvshows" if section == "series" else ("videos" if section == "live" else "movies")
+    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 

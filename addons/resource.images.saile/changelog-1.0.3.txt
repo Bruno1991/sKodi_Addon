@@ -1,0 +1,2 @@
+1.0.3
+- Restauracao dos icones originais de alta definicao.

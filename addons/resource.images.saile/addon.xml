@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="resource.images.saile" name="SAILE Artwork Resources" version="1.0.2" provider-name="Saile">
+<addon id="resource.images.saile" name="SAILE Artwork Resources" version="1.0.3" provider-name="Saile">
   <extension point="kodi.resource.images" compile="false" />
   <extension point="xbmc.addon.metadata">
     <summary lang="pt_BR">Artes compartilhadas do ecossistema SAILE.</summary>
-    <description lang="pt_BR">Ícones fixos e recursos visuais compartilhados com proporção 2:3 nativa para InfoWall sem corte.</description>
+    <description lang="pt_BR">Ícones fixos e recursos visuais compartilhados utilizados pelo sTv.</description>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>1.0.2 - Enquadramento 2:3 perfeito para InfoWall eliminando zoom de ícones.</news>
+    <news>1.0.3 - Restauração dos ícones originais de alta definição.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

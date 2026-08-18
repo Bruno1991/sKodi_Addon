@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.stv" name="sTv" version="0.3.7" provider-name="Saile">
+<addon id="plugin.video.stv" name="sTv" version="0.3.8" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
-    <import addon="resource.images.saile" version="1.0.2" />
+    <import addon="resource.images.saile" version="1.0.3" />
     <import addon="script.module.saile.core" version="1.0.0" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
@@ -10,13 +10,13 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="pt_BR">Cliente IPTV local para provedores Xtream.</summary>
-    <description lang="pt_BR">TV ao vivo, VOD e séries com cache SQLite local, metadados TMDB e apresentação InfoWall 2:3 sem corte.</description>
+    <description lang="pt_BR">TV ao vivo, VOD e séries com cache SQLite local, metadados TMDB e apresentação padronizada.</description>
     <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
     <language>pt</language>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>0.3.7 - Enquadramento 2:3 perfeito para InfoWall (54) eliminando corte e zoom.</news>
+    <news>0.3.8 - Padronização uniforme da TV ao vivo no mesmo estilo de VOD e Séries.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
