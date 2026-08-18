@@ -454,11 +454,19 @@ def run(argv: list[str]) -> None:
             _show_category(request, app, section, category_id, fanart, category_name=title)
             return
 
-    if request.action == "series_info":
+    if request.action in {"series_info", "series_seasons"}:
         series_id = request.params.get("series_id", "")
         title = request.params.get("title", "Série")
         if series_id:
-            _show_series_info(request, app, series_id, title, fanart)
+            _show_series_seasons(request, app, series_id, title, fanart)
+            return
+
+    if request.action == "series_episodes":
+        series_id = request.params.get("series_id", "")
+        season_num = request.params.get("season_num", "1")
+        title = request.params.get("title", "Série")
+        if series_id:
+            _show_series_episodes(request, app, series_id, season_num, title, fanart)
             return
 
     if request.action == "play":

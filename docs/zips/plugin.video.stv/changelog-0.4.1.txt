@@ -1,0 +1,4 @@
+0.4.1
+- Correcao estrutural do roteamento de series_info e series_episodes no run().
+- Trava consistente do modo InfoWall (54) em series, temporadas e lista de episodios.
+- Preservacao integral do enquadramento perfeito de logos de canais de TV ao vivo e VOD.

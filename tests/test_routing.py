@@ -38,5 +38,15 @@ class RoutingTests(unittest.TestCase):
         self.assertEqual(app.xtream.username, "testuser")
 
 
+    def test_stv_series_routing_params(self) -> None:
+        req1 = StvRequest.from_argv(["plugin://plugin.video.stv/", "1", "?action=series_info&section=series&series_id=45&title=MinhaSerie"])
+        self.assertEqual(req1.action, "series_info")
+        self.assertEqual(req1.params.get("series_id"), "45")
+
+        req2 = StvRequest.from_argv(["plugin://plugin.video.stv/", "1", "?action=series_episodes&section=series&series_id=45&season_num=2&title=MinhaSerie"])
+        self.assertEqual(req2.action, "series_episodes")
+        self.assertEqual(req2.params.get("season_num"), "2")
+
+
 if __name__ == "__main__":
     unittest.main()
