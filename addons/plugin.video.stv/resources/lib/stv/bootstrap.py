@@ -36,30 +36,28 @@ def _add_promoted_live_channel(
     app: AppContainer,
     group: LiveChannelGroup,
     fanart: str,
+    now_next: tuple[object | None, object | None] | None = None,
 ) -> None:
     from stv.ui.directory import add_folder
 
     channel = group.channel
     variant = group.variants[0]
     icon_url = _item_icon("live", channel.icon_url or variant.icon)
-    _normalized_title, live_plot = _format_live_channel_metadata(
-        app,
+    if now_next is None:
+        now_next = app.get_channel_epg(channel.display_name, epg_id=channel.epg_id)
+    live_plot, label2, epg_properties = _format_epg_card(
         channel.display_name,
-        default_plot=variant.plot,
-        epg_id=channel.epg_id,
+        variant.plot,
+        now_next[0],
+        now_next[1],
     )
     favorite_action = request.url(
         action="toggle_channel_fav",
         channel_key=channel.channel_key,
     )
-    quality_action = request.url(
-        action="choose_channel_quality",
-        channel_key=channel.channel_key,
-        title=channel.display_name,
-    )
     context_menu = [
         ("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})"),
-        ("Escolher Qualidade", f"RunPlugin({quality_action})"),
+        ("Configurações de reprodução", f"RunPlugin({request.url(action='open_settings')})"),
     ]
     url = request.url(
         action="play_channel",
@@ -78,6 +76,8 @@ def _add_promoted_live_channel(
         context_menu=context_menu,
         plot=live_plot,
         media_type="video",
+        label2=label2,
+        properties=epg_properties,
     )
 
 
@@ -141,21 +141,57 @@ def _format_live_channel_metadata(
     epg_id: str = "",
 ) -> tuple[str, str]:
     """Retorna (label_limpo, plot_formatado_com_epg) para o canal de TV ao vivo."""
-    from datetime import datetime
-
     from saile_epg.normalizer import clean_channel_title
 
     clean_title = clean_channel_title(channel_raw_name)
-
     now_prog, next_prog = app.get_channel_epg(channel_raw_name, epg_id=epg_id)
+    plot, _label2, _properties = _format_epg_card(
+        clean_title, default_plot, now_prog, next_prog
+    )
+    return clean_title, plot
+
+
+def _format_epg_card(
+    channel_title: str,
+    default_plot: str,
+    now_prog: object | None,
+    next_prog: object | None,
+) -> tuple[str, str, dict[str, str]]:
+    """Formata um card de canal com Agora/Próximo e progresso reutilizável."""
+    import time
+    from datetime import datetime
+
     if not now_prog and not next_prog:
-        return clean_title, default_plot or clean_title
+        return (
+            default_plot or f"{channel_title}\n\nProgramação indisponível",
+            "Programação indisponível",
+            {"EPG.Status": "unavailable", "EPG.Progress": "0"},
+        )
 
     plot_parts: list[str] = []
+    properties = {"EPG.Status": "available", "EPG.Progress": "0"}
+    label2 = "Programação indisponível"
     if now_prog:
         start_label = datetime.fromtimestamp(now_prog.start_utc).strftime("%H:%M")
         end_label = datetime.fromtimestamp(now_prog.end_utc).strftime("%H:%M")
-        plot_parts.append(f"[B]NO AR[/B] ({start_label} - {end_label}): {now_prog.title}")
+        plot_parts.append(
+            f"[B][COLOR=FF4FC3F7]AGORA[/COLOR][/B]  {start_label} — {end_label}\n"
+            f"[B]{now_prog.title}[/B]"
+        )
+        label2 = f"{start_label}  {now_prog.title}"
+        duration = max(1, now_prog.end_utc - now_prog.start_utc)
+        progress = max(
+            0,
+            min(100, int(((int(time.time()) - now_prog.start_utc) / duration) * 100)),
+        )
+        properties.update(
+            {
+                "EPG.NowTitle": now_prog.title,
+                "EPG.NowStart": start_label,
+                "EPG.NowEnd": end_label,
+                "EPG.Progress": str(progress),
+            }
+        )
         if now_prog.description:
             plot_parts.append(f"\n{now_prog.description}")
 
@@ -164,13 +200,22 @@ def _format_live_channel_metadata(
         next_end = datetime.fromtimestamp(next_prog.end_utc).strftime("%H:%M")
         prefix = "\n\n" if plot_parts else ""
         plot_parts.append(
-            f"{prefix}[B]A SEGUIR[/B] ({next_start} - {next_end}): {next_prog.title}"
+            f"{prefix}[B]A SEGUIR[/B]  {next_start} — {next_end}\n{next_prog.title}"
         )
+        properties.update(
+            {
+                "EPG.NextTitle": next_prog.title,
+                "EPG.NextStart": next_start,
+                "EPG.NextEnd": next_end,
+            }
+        )
+        if not now_prog:
+            label2 = f"A seguir {next_start}  {next_prog.title}"
         if next_prog.description and not now_prog:
             plot_parts.append(f"\n{next_prog.description}")
 
     full_plot = "".join(plot_parts).strip()
-    return clean_title, full_plot or default_plot or clean_title
+    return full_plot or default_plot or channel_title, label2, properties
 
 
 def _show_home(request: Request, fanart: str) -> None:
@@ -217,8 +262,17 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
     categories = app.catalog.get_categories(section)
     if section == "live":
         live_catalog = app.get_live_catalog()
+        schedule = app.get_live_schedule(
+            tuple(group.channel.channel_key for group in live_catalog.groups)
+        )
         for group in live_catalog.groups:
-            _add_promoted_live_channel(request, app, group, fanart)
+            _add_promoted_live_channel(
+                request,
+                app,
+                group,
+                fanart,
+                now_next=schedule.get(group.channel.channel_key, (None, None)),
+            )
 
         visible_category_ids = live_catalog.visible_category_ids(
             [category.category_id for category in categories],
@@ -633,7 +687,6 @@ def _play_live_channel(
     app: AppContainer,
     channel_key: str,
     title: str,
-    requested_rank: int | None = None,
 ) -> None:
     from stv.ui.player import play_video
     import xbmcaddon
@@ -642,41 +695,19 @@ def _play_live_channel(
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=title or "Conteúdo Restrito"):
             return
-    variant = app.choose_live_variant(channel_key, requested_rank=requested_rank)
-    url = app.xtream.stream_url("live", variant.item_id, variant.extension)
-    play_video(request.handle, app, "live", variant.item_id, url)
-
-
-def _choose_live_channel_quality(
-    request: Request,
-    app: AppContainer,
-    channel_key: str,
-    title: str,
-) -> None:
-    import xbmcgui
     from stv.domain.live_channels import variant_quality
 
-    group = app.get_live_catalog().get_group(channel_key)
-    if group is None:
-        return
-    qualities: list[tuple[int, str]] = []
-    for variant in group.variants:
-        quality = variant_quality(variant)
-        if quality not in qualities:
-            qualities.append(quality)
-    qualities.sort(key=lambda value: -value[0])
-    selected = xbmcgui.Dialog().select(
-        f"{title} — Qualidade",
-        [label for _rank, label in qualities],
+    variant = app.choose_live_variant(channel_key)
+    _rank, quality_label = variant_quality(variant)
+    url = app.xtream.stream_url("live", variant.item_id, variant.extension)
+    play_video(
+        request.handle,
+        app,
+        "live",
+        variant.item_id,
+        url,
+        video_quality=quality_label,
     )
-    if selected >= 0:
-        _play_live_channel(
-            request,
-            app,
-            channel_key,
-            title,
-            requested_rank=qualities[selected][0],
-        )
 
 
 def run(argv: list[str]) -> None:
@@ -750,13 +781,6 @@ def run(argv: list[str]) -> None:
         title = request.params.get("title", "Canal")
         if channel_key:
             _play_live_channel(request, app, channel_key, title)
-            return
-
-    if request.action == "choose_channel_quality":
-        channel_key = request.params.get("channel_key", "")
-        title = request.params.get("title", "Canal")
-        if channel_key:
-            _choose_live_channel_quality(request, app, channel_key, title)
             return
 
     if request.action in {"settings", "open_settings"}:

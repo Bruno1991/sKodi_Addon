@@ -159,6 +159,34 @@ def ensure_streams_loaded(app: "AppContainer", section: str, category_id: str) -
         notify_error("sTv", f"Erro ao carregar mídias: {exc}")
 
 
+def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) -> dict[str, int]:
+    """Atualiza toda a TV ao vivo durante uma ação manual de sincronização."""
+    if not app.xtream.is_configured:
+        raise ValueError("Dados Xtream não configurados")
+
+    generation_id = int(time.time())
+    app.catalog.begin_catalog_sync(("live",))
+    raw_categories = app.xtream.request("get_live_categories")
+    categories = _parse_categories("live", generation_id, raw_categories)
+    if not categories:
+        raise ValueError("O provedor retornou categorias de TV vazias")
+    app.catalog.upsert_categories(categories)
+
+    streams_payload = (
+        app.xtream.request("get_live_streams") if raw_streams is None else raw_streams
+    )
+    streams = _parse_streams("live", generation_id, streams_payload)
+    if not streams:
+        raise ValueError("O provedor retornou canais de TV vazios")
+    for offset in range(0, len(streams), 500):
+        app.catalog.upsert_media_items(streams[offset : offset + 500])
+
+    app.catalog.clean_obsolete_categories("live", generation_id)
+    app.catalog.clean_obsolete_items("live", generation_id)
+    app.catalog.mark_catalog_synced("live", generation_id)
+    return {"category_count": len(categories), "stream_count": len(streams)}
+
+
 def sync_full_catalog(app: "AppContainer") -> bool:
     """Executa a sincronização completa de todas as categorias e canais/filmes/séries com barra de progresso."""
     if not app.xtream.is_configured:

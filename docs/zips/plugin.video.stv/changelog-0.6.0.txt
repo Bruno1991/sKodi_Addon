@@ -1,7 +1,0 @@
-0.6.0
-- Promove canais reconhecidos pelo EPG para o nível principal de TV ao Vivo.
-- Exibe uma única opção com o nome e o ícone do EPG, agrupando SD, HD, FHD e 4K internamente.
-- Mantém canais sem correspondência dentro das categorias e oculta categorias totalmente absorvidas.
-- Escolhe a melhor variante disponível respeitando qualidade máxima, limite de banda e sondagem curta.
-- Permite escolha manual de qualidade e migra favoritos de variantes para o canal lógico.
-- Atualiza o banco local para o schema 7 sem apagar dados do usuário.

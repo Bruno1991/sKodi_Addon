@@ -35,7 +35,7 @@ def show_sync_dialog(app: "AppContainer") -> None:
     """Exibe o menu modal de sincronização e gerenciamento de dados do sTv."""
     import xbmc
     import xbmcgui
-    from saile_core.notifications import notify_error, notify_success
+    from saile_core.notifications import notify_error, notify_info, notify_success
     from stv.app.sync import sync_full_catalog
 
     options = [
@@ -62,14 +62,17 @@ def show_sync_dialog(app: "AppContainer") -> None:
         progress = xbmcgui.DialogProgress()
         progress.create("sTv", "Sincronizando guia XMLTV autorizado...")
         try:
-            progress.update(10, "Baixando e validando XMLTV...")
-            result = app.sync_epg()
+            progress.update(10, "Atualizando canais de TV ao vivo...")
+            result = app.sync_epg(refresh_live_catalog=True)
             progress.update(100, "EPG atualizado")
-            notify_success(
-                "sTv",
+            message = (
                 f"EPG ({result.get('source', 'local')}): "
-                f"{result['channel_count']} canais e {result['program_count']} programas",
+                f"{result['channel_count']} canais e {result['program_count']} programas"
             )
+            if result["program_count"]:
+                notify_success("sTv", message)
+            else:
+                notify_info("sTv", f"{message}. O provedor não enviou horários.")
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
             from saile_epg import EpgSyncError

@@ -14,4 +14,4 @@ __all__ = [
     "clean_channel_title",
     "normalize_channel_name",
 ]
-__version__ = "1.1.0"
+__version__ = "1.2.0"

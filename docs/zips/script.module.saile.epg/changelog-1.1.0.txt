@@ -1,4 +1,0 @@
-1.1.0
-- Expõe canais do guia e matching determinístico para o catálogo virtual do sTv.
-- Usa get_short_epg da API Xtream como fallback manual quando o XMLTV não pode ser processado.
-- Deduplica variantes pelo epg_id e preserva o snapshot anterior se ambas as fontes falharem.

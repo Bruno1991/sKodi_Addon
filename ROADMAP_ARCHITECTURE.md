@@ -48,9 +48,11 @@ sTv
 5. `Buscar` e `Favoritos` aparecem sempre antes do conteúdo de cada seção.
 6. URL de reprodução direta é construída no último momento pelo player.
 7. TMDB enriquece metadados (plot, pôster e fanart HD) sob demanda.
-8. O módulo EPG sincroniza XMLTV somente por ação manual, tenta a API curta Xtream como fallback e o sTv consulta Agora/Próximo localmente.
-9. Canais vinculados ao EPG são projetados uma única vez na raiz de TV ao Vivo; resoluções e backups permanecem variantes internas.
-10. A escolha automática sonda somente as variantes do canal clicado, respeita os limites do usuário e não cria serviço em segundo plano.
+8. O módulo EPG sincroniza XMLTV somente por ação manual, tenta a API curta Xtream como fallback e preserva todo canal declarado mesmo sem programação atual.
+9. A sincronização manual do EPG também atualiza integralmente o catálogo de TV ao vivo; identidades Xtream ausentes de um XMLTV parcial completam o catálogo sem substituir nomes oficiais existentes.
+10. Canais vinculados ao EPG são projetados uma única vez na raiz de TV ao Vivo; resoluções e backups permanecem variantes internas.
+11. A grade carrega Agora/Próximo em lote e expõe horários, descrição e progresso no card InfoWall.
+12. A escolha automática sonda somente as variantes do canal clicado, respeita qualidade e banda definidas nas configurações e não cria serviço em segundo plano.
 
 ## Artwork
 

@@ -34,7 +34,9 @@ O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. XMLTV �
 
 Os canais ao vivo guardam o título original do provedor, um nome limpo para exibição e uma chave canônica produzida pelo mesmo normalizador do EPG. Tags de qualidade e redundância não interferem no matching, enquanto regiões e números do canal permanecem distintos.
 
-Em TV ao Vivo, cada canal reconhecido pelo EPG aparece uma única vez no nível principal com o nome do guia. Suas variantes SD/HD/FHD/4K ficam internas. Canais sem EPG permanecem em suas categorias; categorias totalmente absorvidas são ocultadas. A escolha automática respeita a qualidade máxima e o limite de banda configurados e sonda apenas o canal clicado.
+Em TV ao Vivo, todo stream que declara uma identidade EPG aparece uma única vez no nível principal com o nome oficial do guia quando disponível. A existência do canal não depende de haver programação no horário atual. Suas variantes SD/HD/FHD/4K ficam internas; canais realmente sem EPG permanecem em suas categorias e categorias totalmente absorvidas são ocultadas. A grade InfoWall carrega Agora/Próximo em lote, com horários, descrição e progresso. A escolha automática respeita a qualidade máxima e o limite de banda definidos em `Configurações → Reprodução de TV ao Vivo` e sonda apenas o canal clicado.
+
+O Kodi não oferece a add-ons Python uma API para inserir URLs independentes como resoluções selecionáveis no menu nativo do player. O sTv seleciona a variante antes de reproduzir e informa ao player a resolução escolhida; troca contínua exigiria um manifesto adaptativo real ou integração PVR/InputStream.
 
 Todas as rotas de diretório usam o contrato `InfoWall` (`view mode 54`). Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
 

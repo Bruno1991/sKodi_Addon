@@ -1,0 +1,6 @@
+0.7.0
+- Retira das categorias todos os streams que declaram uma identidade EPG e os agrupa em um único canal lógico.
+- Atualiza todo o catálogo de TV ao vivo junto da sincronização manual do EPG.
+- Profissionaliza o InfoWall com Agora, Próximo, horários, descrição e progresso carregados em lote.
+- Move qualidade máxima e limite de banda para uma seção própria das configurações.
+- Informa ao player a resolução efetivamente escolhida, mantendo seleção automática antes da reprodução.

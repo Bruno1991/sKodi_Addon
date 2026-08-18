@@ -92,7 +92,7 @@ class XmltvProvider:
             headers={
                 "Accept": "application/xml, text/xml, application/gzip",
                 "Accept-Encoding": "gzip",
-                "User-Agent": "SAILE-EPG/1.0.2",
+                "User-Agent": "SAILE-EPG/1.2.0",
             },
         )
         try:
@@ -276,18 +276,18 @@ class XmltvProvider:
                     raise ValueError("XMLTV excede o limite seguro de programas")
             element.clear()
 
-        referenced = {program.channel_key for program in programs}
-        filtered_channels = tuple(
-            channel for key, channel in sorted(channels.items()) if key in referenced
-        )
+        # A identidade do canal não depende de haver programação na janela
+        # atual. Isso permite ao consumidor projetar todos os canais declarados
+        # pelo guia e degradar somente o texto para "sem programação".
+        filtered_channels = tuple(channel for _key, channel in sorted(channels.items()))
         filtered_programs = tuple(
             program for program in programs if program.channel_key in channels
         )
         if not root_seen:
             raise XmltvFormatError("XMLTV sem elemento raiz")
-        if not filtered_channels or not filtered_programs:
+        if not filtered_channels:
             raise XmltvEmptyGuideError(
-                "XMLTV não contém canais e programas válidos na janela configurada"
+                "XMLTV não contém canais declarados"
             )
         return EpgSnapshot(
             provider_id=self.provider_id,

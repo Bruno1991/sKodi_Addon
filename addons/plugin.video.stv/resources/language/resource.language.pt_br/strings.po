@@ -202,3 +202,7 @@ msgstr "30 Mbps"
 msgctxt "#30075"
 msgid "50 Mbps"
 msgstr "50 Mbps"
+
+msgctxt "#30076"
+msgid "Qualidade e conexão"
+msgstr "Qualidade e conexão"

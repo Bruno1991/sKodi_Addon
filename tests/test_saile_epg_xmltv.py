@@ -69,6 +69,22 @@ class XmltvProviderTests(unittest.TestCase):
         self.assertEqual(snapshot.programs[0].title, "Encontro")
         self.assertEqual(snapshot.programs[0].category, "Variedades")
 
+    def test_channel_without_program_in_current_window_is_preserved(self) -> None:
+        xmltv = b"""<tv>
+          <channel id="globo"><display-name>Globo</display-name></channel>
+          <channel id="canal-local"><display-name>Canal Local</display-name></channel>
+          <programme start="20260818100000 -0300" stop="20260818120000 -0300" channel="globo">
+            <title>Jornal</title>
+          </programme>
+        </tv>"""
+
+        snapshot = XmltvProvider("https://example/xmltv.php").parse(
+            BytesIO(xmltv), fetched_at_utc=FETCHED_AT
+        )
+
+        self.assertEqual([channel.epg_id for channel in snapshot.channels], ["canal-local", "globo"])
+        self.assertEqual([program.channel_key for program in snapshot.programs], ["globo"])
+
     def test_invalid_or_empty_xmltv_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
             XmltvProvider("https://example/xmltv.php").parse(BytesIO(b"<tv />"))

@@ -76,15 +76,27 @@ class AppContainer:
             return (None, None)
         return self.epg.get_now_next(epg_id=epg_id, channel_name=channel_name)
 
-    def sync_epg(self) -> dict[str, object]:
-        """Tenta XMLTV e usa a API curta do Xtream como fallback manual."""
+    def sync_epg(self, refresh_live_catalog: bool = False) -> dict[str, object]:
+        """Atualiza TV, tenta XMLTV e usa a API curta Xtream como fallback."""
+        live_streams: object | None = None
+        if refresh_live_catalog:
+            from stv.app.sync import sync_live_catalog
+
+            live_streams = self.xtream.request("get_live_streams")
+            sync_live_catalog(self, raw_streams=live_streams)
         try:
-            return self.epg.sync_xmltv(self.xtream.xmltv_url())
+            if live_streams is None:
+                return self.epg.sync_xmltv(self.xtream.xmltv_url())
+            return self.epg.sync_xmltv(
+                self.xtream.xmltv_url(),
+                live_streams=live_streams,
+            )
         except Exception:
             # O XMLTV de alguns painéis passa por proxies que devolvem formatos
             # incompatíveis ou provocam erros fora do parser. A sincronização é
             # manual, portanto ainda tentamos a API curta oficial do Xtream.
-            live_streams = self.xtream.request("get_live_streams")
+            if live_streams is None:
+                live_streams = self.xtream.request("get_live_streams")
             return self.epg.sync_xtream(self.xtream.request, live_streams)
 
     def get_live_catalog(self) -> 'LiveCatalog':
@@ -95,10 +107,17 @@ class AppContainer:
             self.catalog.get_all_media_items("live"),
         )
 
+    def get_live_schedule(
+        self,
+        channel_keys: tuple[str, ...],
+    ) -> dict[str, tuple['EpgProgram' | None, 'EpgProgram' | None]]:
+        if self.settings.get("epg_enabled", "true").lower() == "false":
+            return {key: (None, None) for key in channel_keys}
+        return self.epg.get_now_next_many(channel_keys)
+
     def choose_live_variant(
         self,
         channel_key: str,
-        requested_rank: int | None = None,
     ) -> 'MediaItem':
         from stv.domain.live_channels import choose_live_variant
 
@@ -114,7 +133,6 @@ class AppContainer:
             group.variants,
             max_quality=max_quality,
             bandwidth_limit_mbps=bandwidth_limit,
-            requested_rank=requested_rank,
             probe=lambda item: self.xtream.probe_stream("live", item.item_id, item.extension),
         )
 

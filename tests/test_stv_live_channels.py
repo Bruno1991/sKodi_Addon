@@ -16,6 +16,7 @@ for path in (
 from saile_epg.models import EpgChannel
 from saile_epg import EpgSyncError
 from stv.app.services import AppContainer
+from stv.app.sync import sync_live_catalog
 from stv.domain.live_channels import (
     build_live_catalog,
     choose_live_variant,
@@ -164,6 +165,52 @@ class LiveChannelCatalogTests(unittest.TestCase):
         result = app.sync_epg()
 
         self.assertEqual(result["source"], "Xtream API")
+
+    def test_manual_epg_flow_can_refresh_complete_live_catalog(self) -> None:
+        calls: list[tuple[str, object]] = []
+
+        class FakeCatalog:
+            def begin_catalog_sync(self, sections: object) -> None:
+                calls.append(("begin", tuple(sections)))
+
+            def upsert_categories(self, categories: object) -> None:
+                calls.append(("categories", len(categories)))
+
+            def upsert_media_items(self, items: object) -> None:
+                calls.append(("items", len(items)))
+
+            def clean_obsolete_categories(self, section: str, _generation: int) -> None:
+                calls.append(("clean_categories", section))
+
+            def clean_obsolete_items(self, section: str, _generation: int) -> None:
+                calls.append(("clean_items", section))
+
+            def mark_catalog_synced(self, section: str, _generation: int) -> None:
+                calls.append(("complete", section))
+
+        xtream = SimpleNamespace(
+            is_configured=True,
+            request=lambda action, **_params: (
+                [{"category_id": "10", "category_name": "Abertos"}]
+                if action == "get_live_categories"
+                else []
+            ),
+        )
+        app = SimpleNamespace(xtream=xtream, catalog=FakeCatalog())
+        result = sync_live_catalog(
+            app,
+            raw_streams=[
+                {
+                    "stream_id": 1,
+                    "name": "Globo HD",
+                    "category_id": "10",
+                    "epg_channel_id": "globo",
+                }
+            ],
+        )
+
+        self.assertEqual(result, {"category_count": 1, "stream_count": 1})
+        self.assertIn(("complete", "live"), calls)
 
 
 if __name__ == "__main__":

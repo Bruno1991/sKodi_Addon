@@ -6,7 +6,11 @@ from saile_epg.database import EpgDatabase
 from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.providers.xmltv import XmltvProvider
-from saile_epg.providers.xtream import RequestCallable, XtreamEpgProvider
+from saile_epg.providers.xtream import (
+    RequestCallable,
+    XtreamEpgProvider,
+    extract_xtream_channels,
+)
 from saile_epg.repository import EpgRepository
 
 DEFAULT_PROVIDER_ID = "xtream"
@@ -43,9 +47,38 @@ class EpgService:
             "source": source,
         }
 
-    def sync_xmltv(self, url: str, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, object]:
+    def sync_xmltv(
+        self,
+        url: str,
+        provider_id: str = DEFAULT_PROVIDER_ID,
+        live_streams: object | None = None,
+    ) -> dict[str, object]:
         snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
-        return self._store_snapshot(snapshot, "XMLTV")
+        source = "XMLTV"
+        if live_streams is not None:
+            by_epg_id = {
+                channel.epg_id.casefold(): channel for channel in snapshot.channels
+            }
+            before = len(by_epg_id)
+            for channel in extract_xtream_channels(live_streams, provider_id):
+                by_epg_id.setdefault(channel.epg_id.casefold(), channel)
+            if len(by_epg_id) > before:
+                source = "XMLTV + catálogo Xtream"
+                snapshot = EpgSnapshot(
+                    provider_id=snapshot.provider_id,
+                    channels=tuple(
+                        sorted(
+                            by_epg_id.values(),
+                            key=lambda channel: (
+                                channel.display_name.casefold(),
+                                channel.channel_key.casefold(),
+                            ),
+                        )
+                    ),
+                    programs=snapshot.programs,
+                    fetched_at_utc=snapshot.fetched_at_utc,
+                )
+        return self._store_snapshot(snapshot, source)
 
     def sync_xtream(
         self,
@@ -68,6 +101,14 @@ class EpgService:
         at_utc: int | None = None,
     ) -> tuple[EpgProgram | None, EpgProgram | None]:
         return self.repository.get_now_next(provider_id, epg_id, channel_name, at_utc)
+
+    def get_now_next_many(
+        self,
+        channel_keys: tuple[str, ...],
+        provider_id: str = DEFAULT_PROVIDER_ID,
+        at_utc: int | None = None,
+    ) -> dict[str, tuple[EpgProgram | None, EpgProgram | None]]:
+        return self.repository.get_now_next_many(provider_id, channel_keys, at_utc)
 
     def list_channels(
         self,

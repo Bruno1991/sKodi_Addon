@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 EPG_LIB = Path(__file__).resolve().parents[1] / "addons" / "script.module.saile.epg" / "lib"
 if str(EPG_LIB) not in sys.path:
@@ -12,6 +13,7 @@ if str(EPG_LIB) not in sys.path:
 from saile_epg.database import EpgDatabase
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.repository import EpgRepository
+from saile_epg.service import EpgService
 
 
 class EpgPersistenceTests(unittest.TestCase):
@@ -70,6 +72,50 @@ class EpgPersistenceTests(unittest.TestCase):
         status = self.repository.sync_status("xtream")
         self.assertIsNotNone(status)
         self.assertEqual(status["program_count"], 2)
+
+    def test_channel_catalog_is_persisted_without_current_programs(self) -> None:
+        snapshot = EpgSnapshot(
+            "xtream",
+            (EpgChannel("xtream", "local", "local", "Canal Local", "CANAL LOCAL"),),
+            (),
+            2_000,
+        )
+        self.repository.replace_snapshot(snapshot)
+
+        self.assertEqual([channel.epg_id for channel in self.repository.list_channels("xtream")], ["local"])
+        self.assertEqual(self.repository.sync_status("xtream")["program_count"], 0)
+
+    def test_now_next_many_returns_all_requested_channels(self) -> None:
+        self.repository.replace_snapshot(self._snapshot())
+
+        schedule = self.repository.get_now_next_many(
+            "xtream", ("globo.sp.br", "sem-programacao"), at_utc=1_000
+        )
+
+        self.assertEqual(schedule["globo.sp.br"][0].title, "Jornal")
+        self.assertEqual(schedule["globo.sp.br"][1].title, "Novela")
+        self.assertEqual(schedule["sem-programacao"], (None, None))
+
+    def test_xmltv_catalog_is_completed_with_missing_xtream_epg_ids(self) -> None:
+        service = EpgService(Path(self.temp_dir.name) / "merged.db")
+        with patch("saile_epg.service.XmltvProvider.fetch", return_value=self._snapshot()):
+            result = service.sync_xmltv(
+                "https://protected.invalid/xmltv.php",
+                live_streams=[
+                    {
+                        "stream_id": 2,
+                        "name": "Canal Local HD",
+                        "epg_channel_id": "canal-local",
+                    }
+                ],
+            )
+
+        self.assertEqual(result["source"], "XMLTV + catálogo Xtream")
+        self.assertEqual(result["channel_count"], 2)
+        self.assertEqual(
+            {channel.epg_id for channel in service.list_channels()},
+            {"globo.sp.br", "canal-local"},
+        )
 
 
 if __name__ == "__main__":

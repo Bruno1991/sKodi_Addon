@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.stv" name="sTv" version="0.6.0" provider-name="Saile">
+<addon id="plugin.video.stv" name="sTv" version="0.7.0" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="resource.images.saile" version="1.0.3" />
     <import addon="script.module.saile.core" version="1.0.0" />
-    <import addon="script.module.saile.epg" version="1.1.0" />
+    <import addon="script.module.saile.epg" version="1.2.0" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="pt_BR">Cliente IPTV local para provedores Xtream.</summary>
-    <description lang="pt_BR">TV ao vivo com canais do EPG promovidos e variantes automáticas, VOD, séries, cache local, TMDB e InfoWall 54 universal.</description>
+    <description lang="pt_BR">TV ao vivo em grade InfoWall com Agora/Próximo, canais EPG unificados, variantes automáticas, VOD, séries, cache local e TMDB.</description>
     <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
     <language>pt</language>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>0.6.0 - Exibe cada canal do EPG uma vez e escolhe internamente sua melhor variante.</news>
+    <news>0.7.0 - Promove todo canal com identidade EPG, profissionaliza a grade e centraliza qualidade nas configurações.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

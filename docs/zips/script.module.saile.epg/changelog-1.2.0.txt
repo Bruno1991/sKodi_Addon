@@ -1,0 +1,5 @@
+1.2.0
+- Preserva no catálogo todos os canais declarados, mesmo quando não há programa na janela atual.
+- Mescla identidades EPG presentes no Xtream mas ausentes de um XMLTV parcial.
+- Remove o corte de 500 canais do fallback e trata programação como dado opcional.
+- Adiciona consulta em lote de Agora/Próximo para grades grandes.

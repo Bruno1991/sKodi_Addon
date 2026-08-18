@@ -21,6 +21,8 @@ def add_folder(
     year: int | str | None = None,
     rating: float | None = None,
     duration: int | None = None,
+    label2: str = "",
+    properties: dict[str, str] | None = None,
 ) -> None:
     """Adiciona um item ao diretório Kodi com o padrão de slot e enquadramento de VOD e Séries da v0.2.6."""
     import xbmcgui
@@ -30,7 +32,15 @@ def add_folder(
         from saile_core.artwork import common_art
         icon = common_art("folder.png")
 
-    item = xbmcgui.ListItem(label=label, offscreen=True)
+    try:
+        item = xbmcgui.ListItem(label=label, label2=label2, offscreen=True)
+    except TypeError:
+        item = xbmcgui.ListItem(label=label, offscreen=True)
+        if label2:
+            try:
+                item.setLabel2(label2)
+            except Exception:
+                pass
 
     art: dict[str, str] = {
         "icon": icon,
@@ -86,6 +96,9 @@ def add_folder(
 
     if is_playable:
         item.setProperty("IsPlayable", "true")
+
+    for key, value in (properties or {}).items():
+        item.setProperty(str(key), str(value))
 
     if context_menu:
         item.addContextMenuItems(context_menu)

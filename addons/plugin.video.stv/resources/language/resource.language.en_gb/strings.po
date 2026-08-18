@@ -138,3 +138,71 @@ msgstr "Enable EPG for Live Channels"
 msgctxt "#30053"
 msgid "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
 msgstr "Displays current and next program in the InfoWall sidepanel"
+
+msgctxt "#30060"
+msgid "Reprodução de TV ao Vivo"
+msgstr "Live TV Playback"
+
+msgctxt "#30061"
+msgid "Qualidade máxima automática"
+msgstr "Maximum automatic quality"
+
+msgctxt "#30062"
+msgid "Limita a resolução escolhida entre as variantes internas do canal"
+msgstr "Limits the resolution selected among the channel variants"
+
+msgctxt "#30063"
+msgid "Automática"
+msgstr "Automatic"
+
+msgctxt "#30064"
+msgid "4K"
+msgstr "4K"
+
+msgctxt "#30065"
+msgid "Full HD"
+msgstr "Full HD"
+
+msgctxt "#30066"
+msgid "HD"
+msgstr "HD"
+
+msgctxt "#30067"
+msgid "SD"
+msgstr "SD"
+
+msgctxt "#30068"
+msgid "Limite de banda"
+msgstr "Bandwidth limit"
+
+msgctxt "#30069"
+msgid "Reserva 30 por cento da banda informada para oscilações da rede"
+msgstr "Reserves 30 percent of the configured bandwidth for network fluctuations"
+
+msgctxt "#30070"
+msgid "Sem limite"
+msgstr "Unlimited"
+
+msgctxt "#30071"
+msgid "5 Mbps"
+msgstr "5 Mbps"
+
+msgctxt "#30072"
+msgid "10 Mbps"
+msgstr "10 Mbps"
+
+msgctxt "#30073"
+msgid "20 Mbps"
+msgstr "20 Mbps"
+
+msgctxt "#30074"
+msgid "30 Mbps"
+msgstr "30 Mbps"
+
+msgctxt "#30075"
+msgid "50 Mbps"
+msgstr "50 Mbps"
+
+msgctxt "#30076"
+msgid "Qualidade e conexão"
+msgstr "Quality and connection"

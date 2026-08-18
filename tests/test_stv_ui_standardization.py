@@ -18,6 +18,7 @@ for path in (STV_LIB, CORE_LIB, EPG_LIB):
 
 from stv.app.sync import _parse_streams
 from stv.bootstrap import (
+    _add_promoted_live_channel,
     _episode_thumbnail,
     _format_live_channel_metadata,
     _item_icon,
@@ -30,6 +31,26 @@ from stv.ui.directory import INFOWALL_VIEW_MODE, finish_directory
 
 
 class UIStandardizationTests(unittest.TestCase):
+    def test_promoted_channel_card_uses_settings_instead_of_quality_dialog(self) -> None:
+        from saile_epg.models import EpgChannel
+        from stv.domain.live_channels import LiveChannelGroup
+
+        group = LiveChannelGroup(
+            EpgChannel("xtream", "globo", "globo", "Globo", "GLOBO"),
+            (MediaItem("live", "1", "Globo", epg_id="globo", source_name="Globo HD"),),
+        )
+        app = SimpleNamespace(get_channel_epg=lambda *_args, **_kwargs: (None, None))
+        request = Request("plugin://plugin.video.stv/", 7, {})
+        with patch("stv.ui.directory.add_folder") as add_folder:
+            _add_promoted_live_channel(request, app, group, "fanart.jpg")
+
+        kwargs = add_folder.call_args.kwargs
+        labels = [label for label, _action in kwargs["context_menu"]]
+        self.assertIn("Configurações de reprodução", labels)
+        self.assertNotIn("Escolher Qualidade", labels)
+        self.assertEqual(kwargs["label2"], "Programação indisponível")
+        self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
+
     def test_live_root_promotes_epg_groups_and_hides_absorbed_category(self) -> None:
         from saile_epg.models import EpgChannel
 
@@ -45,6 +66,9 @@ class UIStandardizationTests(unittest.TestCase):
         )
         app = SimpleNamespace(
             get_live_catalog=lambda: live_catalog,
+            get_live_schedule=lambda channel_keys: {
+                key: (None, None) for key in channel_keys
+            },
             catalog=SimpleNamespace(
                 is_catalog_complete=lambda _section: True,
                 get_categories=lambda _section: [
@@ -199,7 +223,7 @@ class UIStandardizationTests(unittest.TestCase):
                 epg_id="globo.sp.br",
             )
             self.assertEqual(title_epg, "Globo SP")
-            self.assertIn("[B]NO AR[/B]", plot_epg)
+            self.assertIn("AGORA", plot_epg)
             self.assertIn("Jornal Nacional", plot_epg)
             self.assertIn("Notícias do dia no Brasil.", plot_epg)
             self.assertIn("[B]A SEGUIR[/B]", plot_epg)

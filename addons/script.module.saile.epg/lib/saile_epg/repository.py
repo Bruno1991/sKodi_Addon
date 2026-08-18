@@ -12,8 +12,8 @@ class EpgRepository:
         self.database = database
 
     def replace_snapshot(self, snapshot: EpgSnapshot) -> None:
-        if not snapshot.channels or not snapshot.programs:
-            raise ValueError("Snapshot XMLTV vazio; cache atual preservado")
+        if not snapshot.channels:
+            raise ValueError("Snapshot EPG sem canais; cache atual preservado")
 
         with self.database.connect() as connection:
             connection.execute(
@@ -186,6 +186,59 @@ class EpgRepository:
             )
 
         return (convert(current), convert(next_row))
+
+    def get_now_next_many(
+        self,
+        provider_id: str,
+        channel_keys: tuple[str, ...],
+        at_utc: int | None = None,
+    ) -> dict[str, tuple[EpgProgram | None, EpgProgram | None]]:
+        """Carrega Agora/Próximo de vários canais sem consultas N+1."""
+        unique_keys = tuple(dict.fromkeys(key for key in channel_keys if key))
+        if not unique_keys:
+            return {}
+        reference = int(time.time()) if at_utc is None else int(at_utc)
+        rows: list[object] = []
+        with self.database.connect() as connection:
+            for offset in range(0, len(unique_keys), 400):
+                chunk = unique_keys[offset : offset + 400]
+                placeholders = ",".join("?" for _key in chunk)
+                rows.extend(
+                    connection.execute(
+                        f"""
+                        SELECT * FROM epg_programs
+                        WHERE provider_id = ?
+                          AND channel_key IN ({placeholders})
+                          AND end_utc > ?
+                        ORDER BY channel_key, start_utc
+                        """,
+                        (provider_id, *chunk, reference),
+                    ).fetchall()
+                )
+
+        result: dict[str, tuple[EpgProgram | None, EpgProgram | None]] = {
+            key: (None, None) for key in unique_keys
+        }
+        for row in rows:
+            key = str(row["channel_key"])
+            current, next_program = result.get(key, (None, None))
+            program = EpgProgram(
+                provider_id=row["provider_id"],
+                channel_key=key,
+                title=row["title"],
+                start_utc=int(row["start_utc"]),
+                end_utc=int(row["end_utc"]),
+                description=row["description"],
+                category=row["category"],
+                icon_url=row["icon_url"],
+            )
+            if program.start_utc <= reference < program.end_utc:
+                if current is None or program.start_utc > current.start_utc:
+                    current = program
+            elif program.start_utc > reference and next_program is None:
+                next_program = program
+            result[key] = (current, next_program)
+        return result
 
     def sync_status(self, provider_id: str) -> dict[str, int] | None:
         with self.database.connect() as connection:

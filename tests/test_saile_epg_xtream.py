@@ -80,8 +80,26 @@ class XtreamEpgProviderTests(unittest.TestCase):
         with patch("saile_epg.providers.xtream.time.time", return_value=now):
             snapshot = XtreamEpgProvider(request, streams).fetch()
 
-        self.assertEqual([channel.epg_id for channel in snapshot.channels], ["globo"])
+        self.assertEqual([channel.epg_id for channel in snapshot.channels], ["globo", "off"])
         self.assertEqual(snapshot.programs[0].title, "Jornal")
+
+    def test_all_epg_ids_are_preserved_even_without_programs(self) -> None:
+        streams = [
+            {
+                "stream_id": str(index),
+                "name": f"Canal {index} HD",
+                "epg_channel_id": f"canal-{index}",
+            }
+            for index in range(1, 502)
+        ]
+
+        snapshot = XtreamEpgProvider(
+            lambda _action, **_params: {"epg_listings": []},
+            streams,
+        ).fetch()
+
+        self.assertEqual(len(snapshot.channels), 501)
+        self.assertEqual(snapshot.programs, ())
 
 
 if __name__ == "__main__":

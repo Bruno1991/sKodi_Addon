@@ -119,7 +119,6 @@ def choose_live_variant(
     max_quality: str = "auto",
     bandwidth_limit_mbps: float = 0.0,
     probe: Callable[[MediaItem], float | None] | None = None,
-    requested_rank: int | None = None,
 ) -> MediaItem:
     if not variants:
         raise ValueError("Canal sem variantes de reprodução")
@@ -136,7 +135,6 @@ def choose_live_variant(
         item
         for item in variants
         if variant_quality(item)[0] <= limit
-        and (requested_rank is None or variant_quality(item)[0] == requested_rank)
     ]
     if not candidates:
         candidates = list(variants)

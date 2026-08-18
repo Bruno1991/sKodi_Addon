@@ -35,10 +35,41 @@ class SailePlayer(xbmc.Player):
             pass
 
 
-def play_video(handle: int, app: "AppContainer", media_type: str, item_id: str, url: str) -> None:
+def play_video(
+    handle: int,
+    app: "AppContainer",
+    media_type: str,
+    item_id: str,
+    url: str,
+    video_quality: str = "",
+) -> None:
     """Resolve a URL de reprodução para o Kodi, encerrando o spinner de carregamento imediatamente."""
     listitem = xbmcgui.ListItem(path=url, offscreen=True)
     listitem.setProperty("IsPlayable", "true")
+    if video_quality:
+        dimensions = {
+            "4K": (3840, 2160),
+            "FHD": (1920, 1080),
+            "HD": (1280, 720),
+            "SD": (720, 480),
+        }.get(video_quality)
+        listitem.setProperty("sTv.Quality", video_quality)
+        if dimensions:
+            try:
+                stream = xbmc.VideoStreamDetail(*dimensions, aspect=16 / 9)
+                listitem.getVideoInfoTag().addVideoStream(stream)
+            except Exception:
+                try:
+                    listitem.addStreamInfo(
+                        "video",
+                        {
+                            "width": dimensions[0],
+                            "height": dimensions[1],
+                            "aspect": 16 / 9,
+                        },
+                    )
+                except Exception:
+                    pass
 
     # Retomada de onde parou (Resume Point)
     resume = app.catalog.get_playback_progress(media_type, item_id)

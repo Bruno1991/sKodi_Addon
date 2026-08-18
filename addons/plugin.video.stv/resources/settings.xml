@@ -59,40 +59,8 @@
         </setting>
       </group>
     </category>
-    <category id="parental" label="30040" help="">
-      <group id="security" label="30041">
-        <setting id="parental_pin" type="string" label="30042" help="30043">
-          <level>0</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>30042</heading>
-            <hidden>true</hidden>
-          </control>
-        </setting>
-      </group>
-    </category>
-    <category id="advanced" label="30030" help="">
-      <group id="cache" label="30031">
-        <setting id="cache_ttl_hours" type="integer" label="30032" help="30033">
-          <level>0</level>
-          <default>12</default>
-          <constraints>
-            <options>
-              <option label="30034">6</option>
-              <option label="30035">12</option>
-              <option label="30036">24</option>
-              <option label="30037">48</option>
-            </options>
-          </constraints>
-          <control type="spinner" format="string">
-            <heading>30032</heading>
-          </control>
-        </setting>
-      </group>
-      <group id="live_playback" label="30060">
+    <category id="playback" label="30060" help="">
+      <group id="live_playback" label="30076">
         <setting id="live_max_quality" type="string" label="30061" help="30062">
           <level>0</level>
           <default>auto</default>
@@ -124,6 +92,40 @@
           </constraints>
           <control type="spinner" format="string">
             <heading>30068</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+    <category id="parental" label="30040" help="">
+      <group id="security" label="30041">
+        <setting id="parental_pin" type="string" label="30042" help="30043">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30042</heading>
+            <hidden>true</hidden>
+          </control>
+        </setting>
+      </group>
+    </category>
+    <category id="advanced" label="30030" help="">
+      <group id="cache" label="30031">
+        <setting id="cache_ttl_hours" type="integer" label="30032" help="30033">
+          <level>0</level>
+          <default>12</default>
+          <constraints>
+            <options>
+              <option label="30034">6</option>
+              <option label="30035">12</option>
+              <option label="30036">24</option>
+              <option label="30037">48</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string">
+            <heading>30032</heading>
           </control>
         </setting>
       </group>

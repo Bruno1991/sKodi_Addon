@@ -14,6 +14,44 @@ from saile_epg.normalizer import clean_channel_title, normalize_channel_name
 RequestCallable = Callable[..., object]
 
 
+def group_xtream_epg_streams(live_streams: object) -> list[list[dict[str, object]]]:
+    """Agrupa todos os streams que declaram uma identidade EPG."""
+    if not isinstance(live_streams, list):
+        return []
+    representatives: dict[str, list[dict[str, object]]] = {}
+    for raw in live_streams:
+        if not isinstance(raw, dict):
+            continue
+        stream_id = str(raw.get("stream_id") or "").strip()
+        epg_id = str(raw.get("epg_channel_id") or raw.get("tvg_id") or "").strip()
+        name = str(raw.get("name") or "").strip()
+        if stream_id and epg_id and name:
+            representatives.setdefault(epg_id.casefold(), []).append(raw)
+    return list(representatives.values())
+
+
+def extract_xtream_channels(
+    live_streams: object,
+    provider_id: str = "xtream",
+) -> tuple[EpgChannel, ...]:
+    channels = []
+    for streams in group_xtream_epg_streams(live_streams):
+        stream = streams[0]
+        epg_id = str(stream.get("epg_channel_id") or stream.get("tvg_id") or "").strip()
+        display_name = clean_channel_title(str(stream.get("name") or "").strip())
+        channels.append(
+            EpgChannel(
+                provider_id=provider_id,
+                channel_key=epg_id,
+                epg_id=epg_id,
+                display_name=display_name,
+                normalized_name=normalize_channel_name(display_name),
+                icon_url=str(stream.get("stream_icon") or "").strip(),
+            )
+        )
+    return tuple(sorted(channels, key=lambda channel: channel.channel_key.casefold()))
+
+
 def _decode_text(value: object) -> str:
     text = str(value or "").strip()
     if not text:
@@ -57,38 +95,25 @@ class XtreamEpgProvider:
         live_streams: object,
         provider_id: str = "xtream",
         listing_limit: int = 12,
-        max_channels: int = 500,
     ) -> None:
         self.request = request
         self.live_streams = live_streams
         self.provider_id = provider_id
         self.listing_limit = listing_limit
-        self.max_channels = max_channels
 
     def _representatives(self) -> list[list[dict[str, object]]]:
-        if not isinstance(self.live_streams, list):
-            return []
-        representatives: dict[str, list[dict[str, object]]] = {}
-        for raw in self.live_streams:
-            if not isinstance(raw, dict):
-                continue
-            stream_id = str(raw.get("stream_id") or "").strip()
-            epg_id = str(raw.get("epg_channel_id") or raw.get("tvg_id") or "").strip()
-            name = str(raw.get("name") or "").strip()
-            if stream_id and epg_id and name:
-                representatives.setdefault(epg_id.casefold(), []).append(raw)
-            if len(representatives) >= self.max_channels:
-                break
-        return list(representatives.values())
+        return group_xtream_epg_streams(self.live_streams)
+
+    def _channel_from_stream(self, stream: dict[str, object]) -> EpgChannel:
+        return extract_xtream_channels([stream], self.provider_id)[0]
 
     def _fetch_channel(
         self,
         stream: dict[str, object],
         fetched_at: int,
-    ) -> tuple[EpgChannel, list[EpgProgram]] | None:
+    ) -> list[EpgProgram] | None:
         stream_id = str(stream.get("stream_id") or "").strip()
         epg_id = str(stream.get("epg_channel_id") or stream.get("tvg_id") or "").strip()
-        raw_name = str(stream.get("name") or "").strip()
         response = self.request(
             "get_short_epg",
             stream_id=stream_id,
@@ -127,36 +152,22 @@ class XtreamEpgProvider:
                         description=_decode_text(raw_listing.get("description")),
                     )
                 )
-        if not programs:
-            return None
-        display_name = clean_channel_title(raw_name)
-        channel = EpgChannel(
-            provider_id=self.provider_id,
-            channel_key=epg_id,
-            epg_id=epg_id,
-            display_name=display_name,
-            normalized_name=normalize_channel_name(display_name),
-            icon_url=str(stream.get("stream_icon") or "").strip(),
-        )
-        return (channel, programs)
+        return programs
 
     def _fetch_group(
         self,
         streams: list[dict[str, object]],
         fetched_at: int,
-    ) -> tuple[EpgChannel, list[EpgProgram]] | None:
-        last_error: Exception | None = None
+    ) -> tuple[EpgChannel, list[EpgProgram]]:
+        channel = self._channel_from_stream(streams[0])
         for stream in streams:
             try:
-                result = self._fetch_channel(stream, fetched_at)
-            except Exception as exc:
-                last_error = exc
+                programs = self._fetch_channel(stream, fetched_at)
+            except Exception:
                 continue
-            if result is not None:
-                return result
-        if last_error is not None:
-            raise last_error
-        return None
+            if programs:
+                return (channel, programs)
+        return (channel, [])
 
     def fetch(self) -> EpgSnapshot:
         representatives = self._representatives()
@@ -167,8 +178,6 @@ class XtreamEpgProvider:
             )
         fetched_at = int(time.time())
         results = []
-        first_error: Exception | None = None
-
         with ThreadPoolExecutor(max_workers=8, thread_name_prefix="saile-epg") as executor:
             futures = [
                 executor.submit(self._fetch_group, streams, fetched_at)
@@ -177,22 +186,11 @@ class XtreamEpgProvider:
             for future in as_completed(futures):
                 try:
                     result = future.result()
-                except Exception as exc:
-                    if first_error is None:
-                        first_error = exc
-                    result = None
-                if result is not None:
-                    results.append(result)
+                except Exception:
+                    continue
+                results.append(result)
         if not results:
-            if first_error is not None:
-                raise EpgSyncError(
-                    "EPG-XTREAM-UNAVAILABLE",
-                    "A API de EPG do provedor não respondeu",
-                ) from first_error
-            raise EpgSyncError(
-                "EPG-XTREAM-EMPTY",
-                "O provedor não retornou programação pela API Xtream",
-            )
+            raise EpgSyncError("EPG-XTREAM-CHANNELS", "Nenhum canal EPG pôde ser identificado")
 
         results.sort(key=lambda result: result[0].channel_key)
         channels = tuple(result[0] for result in results)

@@ -9,11 +9,11 @@ Provedores Xtream frequentemente repetem o mesmo canal em categorias e stream ID
 
 ## Decisão
 
-Preservar o catálogo bruto no SQLite do sTv e construir uma projeção local derivada do snapshot EPG. Correspondências por `epg_id` exato ou nome normalizado único formam um canal lógico. O nome e o ícone do EPG são apresentados uma vez na raiz de TV ao Vivo; os streams Xtream tornam-se variantes internas.
+Preservar o catálogo bruto no SQLite do sTv e construir uma projeção local derivada do snapshot EPG. Todo canal declarado no XMLTV ou por `epg_channel_id` no Xtream permanece no catálogo de identidades mesmo sem programa atual. Correspondências por `epg_id` exato ou nome normalizado único formam um canal lógico. O nome e o ícone oficiais do XMLTV têm precedência; os streams Xtream tornam-se variantes internas.
 
 Canais sem correspondência permanecem na categoria original. Uma categoria é ocultada somente quando há catálogo local suficiente para provar que todos os seus itens foram promovidos. Matching ambíguo nunca promove automaticamente.
 
-No clique, o sTv aplica qualidade máxima, limite de banda com margem de segurança e uma sondagem curta das variantes candidatas. Não existe varredura durante a navegação nem serviço contínuo. O usuário pode escolher uma qualidade manualmente pelo menu de contexto.
+No clique, o sTv aplica qualidade máxima, limite de banda com margem de segurança e uma sondagem curta das variantes candidatas. Não existe varredura durante a navegação nem serviço contínuo. As preferências manuais ficam na categoria de configurações `Reprodução de TV ao Vivo`; o card mantém somente favorito e acesso às configurações.
 
 ## Consequências
 
