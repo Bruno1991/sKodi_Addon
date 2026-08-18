@@ -1,6 +1,0 @@
-0.3.6
-- Eliminacao do zoom indevido em icones, logos e capas em todo o add-on.
-- Travamento do modo de visualizacao em InfoWall (54) em todos os niveis (Home, Secoes, Categorias, TV ao Vivo, VOD e Series).
-- Apresentacao proporcional de logos de canais de TV ao Vivo.
-- Separacao de temporadas de series em pastas independentes no padrao do Kodi.
-- Fallback oficial de icones por secao.

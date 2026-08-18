@@ -1,0 +1,4 @@
+0.3.7
+- Enquadramento 2:3 perfeito para InfoWall (54) eliminando corte e zoom.
+- Atualizacao da dependencia resource.images.saile para versao 1.0.2 com artes formatadas em 2:3.
+- Apresentacao estavel e sem distorcao em todos os niveis do add-on.

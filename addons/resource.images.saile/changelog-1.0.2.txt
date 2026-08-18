@@ -1,0 +1,3 @@
+1.0.2
+- Enquadramento 2:3 perfeito para InfoWall (54) no Kodi.
+- Eliminacao de corte e zoom em icones compartilhados de navegacao.
