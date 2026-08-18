@@ -1438,8 +1438,8 @@
     },
     {
       "path": "state.md",
-      "bytes": 2002,
-      "sha256": "ba06a6a2e299750b27bae067a51f242ae1a1ab26364a0078d243887ebc953027"
+      "bytes": 2768,
+      "sha256": "a6bbe36622260b00af5e30c18ebf84b38eecef9b457250083387d85633353ea8"
     },
     {
       "path": "templates/ADR_TEMPLATE.md",
