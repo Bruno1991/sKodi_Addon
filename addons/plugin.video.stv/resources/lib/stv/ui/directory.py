@@ -92,7 +92,17 @@ def add_folder(
     xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=item, isFolder=is_folder)
 
 
-def finish_directory(handle: int, content: str = "videos", view_mode: int = 54) -> None:
+def init_directory(handle: int, content: str = "movies") -> None:
+    """Inicializa o diretório definindo o tipo de conteúdo antes de adicionar itens."""
+    import xbmcplugin
+
+    try:
+        xbmcplugin.setContent(handle, content)
+    except Exception:
+        pass
+
+
+def finish_directory(handle: int, content: str = "movies", view_mode: int = 54) -> None:
     """Finaliza o diretório e trava a visualização no modo InfoWall (54)."""
     import xbmc
     import xbmcplugin

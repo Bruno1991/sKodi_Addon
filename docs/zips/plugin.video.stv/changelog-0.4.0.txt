@@ -1,0 +1,4 @@
+0.4.0
+- Trava definitiva do modo InfoWall (54) com inicializacao antecipada via init_directory (setContent).
+- Tratamento de categorias vazias para preservar o layout visual e impedir queda no modo List.
+- Mantido 100% o enquadramento perfeito de logos de canais de TV ao vivo, VOD e Series.

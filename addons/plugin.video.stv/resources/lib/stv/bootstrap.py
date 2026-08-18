@@ -30,7 +30,9 @@ def _item_icon(section: str, icon_str: str) -> str:
 
 
 def _show_home(request: Request, fanart: str) -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
+
+    init_directory(request.handle, "movies")
 
     for label, action, section, scope, filename in HOME_ENTRIES:
         url = request.url(action=action, section=section) if section else request.url(action=action)
@@ -48,7 +50,10 @@ def _show_home(request: Request, fanart: str) -> None:
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
+
+    content_type = "tvshows" if section == "series" else "movies"
+    init_directory(request.handle, content_type)
 
     # 1. Fixed navigation items (Buscar e Favoritos)
     for label, action, scope, filename in SECTION_FIXED_ENTRIES:
@@ -78,23 +83,38 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             media_type="tvshow" if section == "series" else "movie",
         )
 
-    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
 def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
+
+    content_type = "tvshows" if section == "series" else "movies"
+    init_directory(request.handle, content_type)
 
     # Verificação de Controle Parental para a Categoria
     if is_restricted(category_name=category_name):
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
-            finish_directory(request.handle, content="movies", view_mode=54)
+            finish_directory(request.handle, content=content_type, view_mode=54)
             return
 
     ensure_streams_loaded(app, section, category_id)
     items = app.catalog.get_media_items(section, category_id)
+
+    if not items:
+        # Item informativo para manter o container no modo InfoWall mesmo se a categoria estiver sem itens
+        empty_msg = "Nenhum canal/conteúdo disponível"
+        add_folder(
+            request.handle,
+            empty_msg,
+            "",
+            icon=_item_icon(section, ""),
+            fanart=fanart,
+            is_folder=False,
+            media_type="video",
+        )
 
     for item in items:
         icon_url = _item_icon(section, item.icon)
@@ -150,13 +170,14 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="video",
             )
 
-    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
 def _show_series_seasons(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
     from saile_core.notifications import notify_error
+
+    init_directory(request.handle, "tvshows")
 
     # Verificação de Controle Parental para Séries Adultas
     if is_restricted(name=series_title):
@@ -216,8 +237,10 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
 
 
 def _show_series_episodes(request: Request, app: AppContainer, series_id: str, season_num: str, series_title: str, fanart: str) -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
     from saile_core.notifications import notify_error
+
+    init_directory(request.handle, "episodes")
 
     # Verificação de Controle Parental para Séries Adultas
     if is_restricted(name=series_title):
@@ -269,8 +292,11 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
 
 def _show_search(request: Request, app: AppContainer, section: str, fanart: str) -> None:
     import xbmc
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
     
+    content_type = "tvshows" if section == "series" else "movies"
+    init_directory(request.handle, content_type)
+
     keyboard = xbmc.Keyboard("", "Buscar...")
     keyboard.doModal()
     if keyboard.isConfirmed() and keyboard.getText():
@@ -321,13 +347,15 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type=media_type,
             )
             
-    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
 def _show_favorites(request: Request, app: AppContainer, section: str, fanart: str) -> None:
-    from stv.ui.directory import add_folder, finish_directory
+    from stv.ui.directory import add_folder, finish_directory, init_directory
     
+    content_type = "tvshows" if section == "series" else "movies"
+    init_directory(request.handle, content_type)
+
     items = app.catalog.get_favorites(section)
 
     for item in items:
@@ -374,7 +402,6 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type=media_type,
         )
         
-    content_type = "tvshows" if section == "series" else "movies"
     finish_directory(request.handle, content=content_type, view_mode=54)
 
 
