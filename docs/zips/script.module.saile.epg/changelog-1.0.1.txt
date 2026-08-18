@@ -1,4 +1,0 @@
-1.0.1
-- Corrige a sincronização de XMLTV gzip em respostas HTTP sem suporte completo a posicionamento.
-- Detecta compactação tanto pelo cabeçalho HTTP quanto pelos bytes do arquivo.
-- Adiciona códigos de erro seguros sem expor a URL ou as credenciais Xtream.

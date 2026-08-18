@@ -1,0 +1,4 @@
+1.0.2
+- Usa os bytes reais do arquivo para distinguir XML, gzip e ZIP.
+- Tolera proxies que mantêm Content-Encoding gzip após descompactar a resposta.
+- Separa falhas de formato, XML, compactação e ausência de programação atual.

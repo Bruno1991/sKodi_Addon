@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.stv" name="sTv" version="0.5.1" provider-name="Saile">
+<addon id="plugin.video.stv" name="sTv" version="0.5.2" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="resource.images.saile" version="1.0.3" />
     <import addon="script.module.saile.core" version="1.0.0" />
-    <import addon="script.module.saile.epg" version="1.0.1" />
+    <import addon="script.module.saile.epg" version="1.0.2" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
@@ -17,7 +17,7 @@
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>0.5.1 - Corrige a sincronização EPG no Kodi e adiciona diagnóstico seguro por código.</news>
+    <news>0.5.2 - Compatibilidade adicional com XMLTV entregue por provedores e proxies.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

@@ -4,6 +4,7 @@ import gzip
 import tempfile
 import time
 import xml.etree.ElementTree as ET
+import zipfile
 from datetime import datetime, timedelta, timezone
 from typing import BinaryIO
 from urllib.error import HTTPError, URLError
@@ -15,8 +16,17 @@ from saile_epg.normalizer import normalize_channel_name
 
 MAX_PROGRAMS = 250_000
 MAX_DOWNLOAD_BYTES = 256 * 1024 * 1024
+MAX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
 DOWNLOAD_CHUNK_BYTES = 256 * 1024
 SPOOL_MEMORY_BYTES = 8 * 1024 * 1024
+
+
+class XmltvFormatError(ValueError):
+    pass
+
+
+class XmltvEmptyGuideError(ValueError):
+    pass
 
 
 def parse_xmltv_timestamp(value: str) -> int:
@@ -82,7 +92,7 @@ class XmltvProvider:
             headers={
                 "Accept": "application/xml, text/xml, application/gzip",
                 "Accept-Encoding": "gzip",
-                "User-Agent": "SAILE-EPG/1.0.1",
+                "User-Agent": "SAILE-EPG/1.0.2",
             },
         )
         try:
@@ -92,7 +102,7 @@ class XmltvProvider:
                     mode="w+b",
                 ) as buffer:
                     self._download(response, buffer)
-                    return self._parse_download(response, buffer)
+                    return self._parse_download(buffer)
         except EpgSyncError:
             raise
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
@@ -141,26 +151,66 @@ class XmltvProvider:
             raise EpgSyncError("EPG-EMPTY", "O provedor retornou um XMLTV vazio")
         buffer.seek(0)
 
-    def _parse_download(self, response: object, buffer: BinaryIO) -> EpgSnapshot:
-        headers = getattr(response, "headers", None)
-        get_header = getattr(headers, "get", None)
-        encoding = str(get_header("Content-Encoding", "") if callable(get_header) else "").lower()
-        magic = buffer.read(2)
+    def _parse_download(self, buffer: BinaryIO) -> EpgSnapshot:
+        magic = buffer.read(4)
         buffer.seek(0)
-        is_gzip = "gzip" in encoding or magic == b"\x1f\x8b"
 
         try:
-            if is_gzip:
+            # Os bytes reais são a fonte de verdade. Alguns proxies mantêm
+            # Content-Encoding: gzip mesmo depois de descompactar a resposta.
+            if magic.startswith(b"\x1f\x8b"):
                 with gzip.GzipFile(fileobj=buffer, mode="rb") as stream:
                     return self.parse(stream)
+            if magic.startswith(b"PK\x03\x04"):
+                return self._parse_zip(buffer)
             return self.parse(buffer)
         except EpgSyncError:
             raise
-        except (ET.ParseError, EOFError, OSError, TypeError, ValueError) as exc:
+        except XmltvFormatError as exc:
+            raise EpgSyncError(
+                "EPG-FORMAT",
+                "O provedor não retornou um arquivo XMLTV",
+            ) from exc
+        except XmltvEmptyGuideError as exc:
+            raise EpgSyncError(
+                "EPG-NO-PROGRAMS",
+                "O XMLTV não contém programação válida para o período atual",
+            ) from exc
+        except ET.ParseError as exc:
+            raise EpgSyncError(
+                "EPG-XML",
+                "O XMLTV recebido contém XML inválido",
+            ) from exc
+        except (gzip.BadGzipFile, zipfile.BadZipFile, EOFError) as exc:
+            raise EpgSyncError(
+                "EPG-COMPRESSION",
+                "O arquivo XMLTV compactado está corrompido",
+            ) from exc
+        except (OSError, TypeError, ValueError) as exc:
             raise EpgSyncError(
                 "EPG-PARSE",
                 "O XMLTV recebido é inválido ou incompatível",
             ) from exc
+
+    def _parse_zip(self, buffer: BinaryIO) -> EpgSnapshot:
+        with zipfile.ZipFile(buffer) as archive:
+            files = [item for item in archive.infolist() if not item.is_dir()]
+            xml_files = [
+                item
+                for item in files
+                if item.filename.lower().endswith((".xml", ".xmltv"))
+            ]
+            candidates = xml_files or (files if len(files) == 1 else [])
+            if not candidates:
+                raise XmltvFormatError("ZIP sem arquivo XMLTV identificável")
+            entry = candidates[0]
+            if entry.file_size > MAX_UNCOMPRESSED_BYTES:
+                raise EpgSyncError(
+                    "EPG-UNPACK-LIMIT",
+                    "O XMLTV excede o limite seguro após a descompactação",
+                )
+            with archive.open(entry, mode="r") as stream:
+                return self.parse(stream)
 
     def parse(self, stream: BinaryIO, fetched_at_utc: int | None = None) -> EpgSnapshot:
         fetched_at = int(time.time()) if fetched_at_utc is None else int(fetched_at_utc)
@@ -169,8 +219,15 @@ class XmltvProvider:
         channels: dict[str, EpgChannel] = {}
         programs: list[EpgProgram] = []
 
-        for _event, element in ET.iterparse(stream, events=("end",)):
+        root_seen = False
+        for event, element in ET.iterparse(stream, events=("start", "end")):
             tag = _local_tag(element)
+            if event == "start":
+                if not root_seen:
+                    root_seen = True
+                    if tag != "tv":
+                        raise XmltvFormatError("Elemento raiz XMLTV deve ser tv")
+                continue
             if tag == "channel":
                 channel_key = str(element.attrib.get("id", "")).strip()
                 if channel_key:
@@ -226,8 +283,12 @@ class XmltvProvider:
         filtered_programs = tuple(
             program for program in programs if program.channel_key in channels
         )
+        if not root_seen:
+            raise XmltvFormatError("XMLTV sem elemento raiz")
         if not filtered_channels or not filtered_programs:
-            raise ValueError("XMLTV não contém canais e programas válidos na janela configurada")
+            raise XmltvEmptyGuideError(
+                "XMLTV não contém canais e programas válidos na janela configurada"
+            )
         return EpgSnapshot(
             provider_id=self.provider_id,
             channels=filtered_channels,

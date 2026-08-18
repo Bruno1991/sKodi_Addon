@@ -5,4 +5,4 @@ from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.service import EpgService
 
 __all__ = ["EpgChannel", "EpgProgram", "EpgService", "EpgSnapshot", "EpgSyncError"]
-__version__ = "1.0.1"
+__version__ = "1.0.2"

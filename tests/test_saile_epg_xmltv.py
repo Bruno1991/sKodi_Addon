@@ -3,6 +3,7 @@ from __future__ import annotations
 import gzip
 import sys
 import unittest
+import zipfile
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
@@ -93,6 +94,29 @@ class XmltvProviderTests(unittest.TestCase):
 
         self.assertEqual(snapshot.programs[0].title, "Encontro")
 
+    def test_stale_gzip_header_does_not_recompress_plain_xml(self) -> None:
+        response = FakeHttpResponse(XMLTV, content_encoding="gzip")
+        with (
+            patch("saile_epg.providers.xmltv.urlopen", return_value=response),
+            patch("saile_epg.providers.xmltv.time.time", return_value=FETCHED_AT),
+        ):
+            snapshot = XmltvProvider("https://example/xmltv.php").fetch()
+
+        self.assertEqual(snapshot.programs[0].title, "Encontro")
+
+    def test_fetch_accepts_zip_with_xmltv_entry(self) -> None:
+        compressed = BytesIO()
+        with zipfile.ZipFile(compressed, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("guide.xml", XMLTV)
+        response = FakeHttpResponse(compressed.getvalue())
+        with (
+            patch("saile_epg.providers.xmltv.urlopen", return_value=response),
+            patch("saile_epg.providers.xmltv.time.time", return_value=FETCHED_AT),
+        ):
+            snapshot = XmltvProvider("https://example/xmltv.php").fetch()
+
+        self.assertEqual(snapshot.channels[0].display_name, "Globo SP")
+
     def test_fetch_detects_gzip_by_magic_bytes(self) -> None:
         response = FakeHttpResponse(gzip.compress(XMLTV))
         with (
@@ -112,6 +136,15 @@ class XmltvProviderTests(unittest.TestCase):
 
         self.assertEqual(raised.exception.code, "EPG-HTTP-READ")
         self.assertNotIn("example", str(raised.exception))
+
+    def test_non_xmltv_document_has_specific_safe_code(self) -> None:
+        response = FakeHttpResponse(b"<html><body>Unauthorized</body></html>")
+        with patch("saile_epg.providers.xmltv.urlopen", return_value=response):
+            with self.assertRaises(EpgSyncError) as raised:
+                XmltvProvider("https://example/xmltv.php").fetch()
+
+        self.assertEqual(raised.exception.code, "EPG-FORMAT")
+        self.assertNotIn("Unauthorized", str(raised.exception))
 
 
 if __name__ == "__main__":
