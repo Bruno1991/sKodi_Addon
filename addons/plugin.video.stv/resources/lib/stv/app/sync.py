@@ -46,7 +46,8 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
 
         item_id = str(item.get("stream_id") or item.get("series_id") or "").strip()
         name = str(item.get("name") or item.get("title") or "").strip()
-        category_id = str(item.get("category_id") or default_category_id or "").strip()
+        raw_cat = str(item.get("category_id") or "").strip()
+        category_id = raw_cat if (raw_cat and raw_cat != "0") else (default_category_id or raw_cat or "0")
 
         icon = str(item.get("stream_icon") or item.get("logo") or item.get("icon") or item.get("cover") or item.get("movie_image") or "").strip()
         fanart = str(item.get("fanart") or "").strip()
