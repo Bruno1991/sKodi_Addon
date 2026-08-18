@@ -1,0 +1,3 @@
+0.5.1
+- Corrige a sincronização do EPG XMLTV compactado no runtime do Kodi.
+- Exibe códigos de erro seguros e registra somente um rastreio técnico sem credenciais.

@@ -20,6 +20,17 @@ def _get_local_ip() -> str:
         return "127.0.0.1"
 
 
+def _exception_fingerprint(exc: Exception) -> str:
+    """Gera rastreio útil sem mensagem, URL, credencial ou caminho pessoal."""
+    frames: list[str] = []
+    traceback = exc.__traceback__
+    while traceback is not None:
+        filename = os.path.basename(traceback.tb_frame.f_code.co_filename)
+        frames.append(f"{filename}:{traceback.tb_lineno}")
+        traceback = traceback.tb_next
+    return " > ".join(frames[-8:]) or "sem-rastreio"
+
+
 def show_sync_dialog(app: "AppContainer") -> None:
     """Exibe o menu modal de sincronização e gerenciamento de dados do sTv."""
     import xbmc
@@ -60,7 +71,19 @@ def show_sync_dialog(app: "AppContainer") -> None:
             )
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
-            notify_error("sTv", f"Falha ao sincronizar EPG: {exc}")
+            from saile_epg import EpgSyncError
+
+            error_code = getattr(exc, "code", "EPG-UNEXPECTED")
+            xbmc.log(
+                f"[sTv][EPG] {type(exc).__name__} {error_code} "
+                f"({_exception_fingerprint(exc)})",
+                xbmc.LOGERROR,
+            )
+            if isinstance(exc, EpgSyncError):
+                message = str(exc)
+            else:
+                message = f"Falha interna ao processar o guia [{error_code}]"
+            notify_error("sTv", message)
         finally:
             progress.close()
 

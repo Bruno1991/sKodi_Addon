@@ -212,7 +212,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV: apresentação limpa no InfoWall 54 com metadados EPG da Claro
+            # TV ao vivo: apresentação limpa no InfoWall 54 com EPG local do provedor.
             display_title, live_plot = _format_live_channel_metadata(
                 app,
                 item.name,
@@ -387,7 +387,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type = "movie"
                 poster_val = icon_url
             else:
-                # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
+                # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
                 display_title, live_plot = _format_live_channel_metadata(
                     app,
                     item.name,
@@ -450,7 +450,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type = "movie"
             poster_val = icon_url
         else:
-            # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
+            # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
             display_title, live_plot = _format_live_channel_metadata(
                 app,
                 item.name,

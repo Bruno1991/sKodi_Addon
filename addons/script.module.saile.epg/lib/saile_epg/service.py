@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from saile_epg.database import EpgDatabase
+from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgProgram
 from saile_epg.providers.xmltv import XmltvProvider
 from saile_epg.repository import EpgRepository
@@ -28,7 +29,13 @@ class EpgService:
 
     def sync_xmltv(self, url: str, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, int]:
         snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
-        self.repository.replace_snapshot(snapshot)
+        try:
+            self.repository.replace_snapshot(snapshot)
+        except Exception as exc:
+            raise EpgSyncError(
+                "EPG-STORE",
+                "Não foi possível gravar o guia no cache local",
+            ) from exc
         return {
             "channel_count": len(snapshot.channels),
             "program_count": len(snapshot.programs),

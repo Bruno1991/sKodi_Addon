@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gzip
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -8,10 +9,14 @@ from typing import BinaryIO
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.normalizer import normalize_channel_name
 
 MAX_PROGRAMS = 250_000
+MAX_DOWNLOAD_BYTES = 256 * 1024 * 1024
+DOWNLOAD_CHUNK_BYTES = 256 * 1024
+SPOOL_MEMORY_BYTES = 8 * 1024 * 1024
 
 
 def parse_xmltv_timestamp(value: str) -> int:
@@ -71,20 +76,91 @@ class XmltvProvider:
 
     def fetch(self) -> EpgSnapshot:
         if not self.url.startswith(("http://", "https://")):
-            raise ValueError("URL XMLTV inválida")
+            raise EpgSyncError("EPG-URL", "URL XMLTV inválida")
         request = Request(
             self.url,
-            headers={"Accept": "application/xml, text/xml", "Accept-Encoding": "gzip", "User-Agent": "SAILE-EPG/1.0"},
+            headers={
+                "Accept": "application/xml, text/xml, application/gzip",
+                "Accept-Encoding": "gzip",
+                "User-Agent": "SAILE-EPG/1.0.1",
+            },
         )
         try:
             with urlopen(request, timeout=self.timeout) as response:
-                stream: BinaryIO = response
-                if str(response.headers.get("Content-Encoding", "")).lower() == "gzip":
-                    stream = gzip.GzipFile(fileobj=response)
-                return self.parse(stream)
+                with tempfile.SpooledTemporaryFile(
+                    max_size=SPOOL_MEMORY_BYTES,
+                    mode="w+b",
+                ) as buffer:
+                    self._download(response, buffer)
+                    return self._parse_download(response, buffer)
+        except EpgSyncError:
+            raise
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
             # A exceção pública não inclui a URL, que contém credenciais Xtream.
-            raise RuntimeError("Não foi possível baixar o XMLTV do provedor") from exc
+            raise EpgSyncError(
+                "EPG-DOWNLOAD",
+                "Não foi possível baixar o XMLTV do provedor",
+            ) from exc
+
+    @staticmethod
+    def _download(response: object, buffer: BinaryIO) -> None:
+        read = getattr(response, "read", None)
+        if not callable(read):
+            raise EpgSyncError(
+                "EPG-HTTP-READ",
+                "O provedor retornou uma resposta HTTP incompatível",
+            )
+
+        downloaded = 0
+        try:
+            while True:
+                chunk = read(DOWNLOAD_CHUNK_BYTES)
+                if not chunk:
+                    break
+                if not isinstance(chunk, (bytes, bytearray)):
+                    raise EpgSyncError(
+                        "EPG-HTTP-DATA",
+                        "O provedor retornou dados XMLTV incompatíveis",
+                    )
+                downloaded += len(chunk)
+                if downloaded > MAX_DOWNLOAD_BYTES:
+                    raise EpgSyncError(
+                        "EPG-DOWNLOAD-LIMIT",
+                        "O XMLTV excede o limite seguro de download",
+                    )
+                buffer.write(chunk)
+        except EpgSyncError:
+            raise
+        except (TimeoutError, OSError, TypeError) as exc:
+            raise EpgSyncError(
+                "EPG-DOWNLOAD",
+                "Não foi possível baixar o XMLTV do provedor",
+            ) from exc
+
+        if downloaded == 0:
+            raise EpgSyncError("EPG-EMPTY", "O provedor retornou um XMLTV vazio")
+        buffer.seek(0)
+
+    def _parse_download(self, response: object, buffer: BinaryIO) -> EpgSnapshot:
+        headers = getattr(response, "headers", None)
+        get_header = getattr(headers, "get", None)
+        encoding = str(get_header("Content-Encoding", "") if callable(get_header) else "").lower()
+        magic = buffer.read(2)
+        buffer.seek(0)
+        is_gzip = "gzip" in encoding or magic == b"\x1f\x8b"
+
+        try:
+            if is_gzip:
+                with gzip.GzipFile(fileobj=buffer, mode="rb") as stream:
+                    return self.parse(stream)
+            return self.parse(buffer)
+        except EpgSyncError:
+            raise
+        except (ET.ParseError, EOFError, OSError, TypeError, ValueError) as exc:
+            raise EpgSyncError(
+                "EPG-PARSE",
+                "O XMLTV recebido é inválido ou incompatível",
+            ) from exc
 
     def parse(self, stream: BinaryIO, fetched_at_utc: int | None = None) -> EpgSnapshot:
         fetched_at = int(time.time()) if fetched_at_utc is None else int(fetched_at_utc)

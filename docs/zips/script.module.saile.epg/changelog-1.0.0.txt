@@ -1,5 +1,0 @@
-1.0.0
-- Provedor EPG independente do plugin de vídeo.
-- Sincronização manual de XMLTV autorizado.
-- Normalização de canais e armazenamento SQLite em UTC.
-- Consulta local de programa atual e próximo programa.
