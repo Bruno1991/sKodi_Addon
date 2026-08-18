@@ -16,11 +16,20 @@ def dependencies(addon_id: str) -> set[str]:
 
 class DependencyGraphTests(unittest.TestCase):
     def test_plugins_use_shared_modules(self) -> None:
-        expected = {"resource.images.saile", "script.module.saile.core"}
+        expected = {
+            "resource.images.saile",
+            "script.module.saile.core",
+            "script.module.saile.epg",
+        }
         self.assertTrue(expected <= dependencies("plugin.video.stv"))
 
     def test_core_uses_shared_artwork(self) -> None:
         self.assertIn("resource.images.saile", dependencies("script.module.saile.core"))
+
+    def test_epg_module_depends_on_core_but_not_stv(self) -> None:
+        epg_dependencies = dependencies("script.module.saile.epg")
+        self.assertIn("script.module.saile.core", epg_dependencies)
+        self.assertNotIn("plugin.video.stv", epg_dependencies)
 
 
 if __name__ == "__main__":

@@ -57,21 +57,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="epg_cache_hours" type="integer" label="30054" help="30055">
-          <level>0</level>
-          <default>4</default>
-          <constraints>
-            <options>
-              <option label="30056">2</option>
-              <option label="30057">4</option>
-              <option label="30034">6</option>
-              <option label="30035">12</option>
-            </options>
-          </constraints>
-          <control type="spinner" format="string">
-            <heading>30054</heading>
-          </control>
-        </setting>
       </group>
     </category>
     <category id="parental" label="30040" help="">

@@ -5,6 +5,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
+CURRENT_SCHEMA_VERSION = 4
+
 SCHEMA = """
 PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL);
@@ -28,6 +30,7 @@ CREATE TABLE IF NOT EXISTS media_items (
     fanart TEXT NOT NULL DEFAULT '',
     plot TEXT NOT NULL DEFAULT '',
     extension TEXT NOT NULL DEFAULT '',
+    epg_id TEXT NOT NULL DEFAULT '',
     payload_json TEXT NOT NULL DEFAULT '{}',
     generation_id INTEGER NOT NULL DEFAULT 0,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,19 +59,6 @@ CREATE TABLE IF NOT EXISTS playback_progress (
     PRIMARY KEY (media_type, item_id)
 );
 
-CREATE TABLE IF NOT EXISTS epg_programs (
-    channel_key TEXT NOT NULL,
-    title TEXT NOT NULL,
-    start_time TEXT NOT NULL,
-    end_time TEXT NOT NULL,
-    synopsis TEXT NOT NULL DEFAULT '',
-    duration INTEGER NOT NULL DEFAULT 0,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (channel_key, start_time)
-);
-
-CREATE INDEX IF NOT EXISTS idx_epg_channel_time
-ON epg_programs(channel_key, start_time, end_time);
 """
 
 FTS5_SCHEMA = """
@@ -133,9 +123,29 @@ class Database:
             except sqlite3.OperationalError:
                 self.fts_available = False
 
-            row = connection.execute("SELECT COUNT(*) AS total FROM schema_version").fetchone()
-            if row["total"] == 0:
-                connection.execute("INSERT INTO schema_version(version) VALUES (3)")
-            else:
-                connection.execute("UPDATE schema_version SET version = 3")
+            row = connection.execute("SELECT version FROM schema_version LIMIT 1").fetchone()
+            if row is None:
+                connection.execute(
+                    "INSERT INTO schema_version(version) VALUES (?)",
+                    (CURRENT_SCHEMA_VERSION,),
+                )
+                return
 
+            version = int(row["version"])
+            if version > CURRENT_SCHEMA_VERSION:
+                raise RuntimeError(f"Schema sTv não suportado: {version}")
+            if version < 4:
+                columns = {
+                    str(item["name"])
+                    for item in connection.execute("PRAGMA table_info(media_items)").fetchall()
+                }
+                if "epg_id" not in columns:
+                    connection.execute(
+                        "ALTER TABLE media_items ADD COLUMN epg_id TEXT NOT NULL DEFAULT ''"
+                    )
+                # O EPG passou a ter banco próprio no script.module.saile.epg.
+                connection.execute("DROP TABLE IF EXISTS epg_programs")
+                connection.execute(
+                    "UPDATE schema_version SET version = ?",
+                    (CURRENT_SCHEMA_VERSION,),
+                )

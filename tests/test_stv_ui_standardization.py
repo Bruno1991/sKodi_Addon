@@ -1,115 +1,174 @@
 from __future__ import annotations
 
 import sys
+import tempfile
+import time
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 STV_LIB = ROOT / "addons" / "plugin.video.stv" / "resources" / "lib"
-CORE_LIB = ROOT / "addons" / "script.module.saile.core" / "resources" / "lib"
-if str(STV_LIB) not in sys.path:
-    sys.path.insert(0, str(STV_LIB))
-if str(CORE_LIB) not in sys.path:
-    sys.path.insert(0, str(CORE_LIB))
+CORE_LIB = ROOT / "addons" / "script.module.saile.core" / "lib"
+EPG_LIB = ROOT / "addons" / "script.module.saile.epg" / "lib"
+for path in (STV_LIB, CORE_LIB, EPG_LIB):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from stv.app.sync import _parse_streams
-from stv.bootstrap import _item_icon
+from stv.bootstrap import _episode_thumbnail, _format_live_channel_metadata, _item_icon
+from stv.ui.directory import INFOWALL_VIEW_MODE, finish_directory
 
 
 class UIStandardizationTests(unittest.TestCase):
-    def test_parse_streams_live_logos_and_icons(self) -> None:
+    def test_parse_streams_live_logos_and_epg_id(self) -> None:
         data = [
-            {"stream_id": 1, "name": "Canal 1", "stream_icon": "http://img.com/1.png"},
+            {
+                "stream_id": 1,
+                "name": "Canal 1",
+                "stream_icon": "http://img.com/1.png",
+                "epg_channel_id": "canal-1.br",
+            },
             {"stream_id": 2, "name": "Canal 2", "logo": "http://img.com/2.png"},
             {"stream_id": 3, "name": "Canal 3", "icon": "http://img.com/3.png"},
-            {"stream_id": 4, "name": "Canal 4"},  # No icon
+            {"stream_id": 4, "name": "Canal 4"},
         ]
         parsed = _parse_streams("live", 100, data, default_category_id="10")
         self.assertEqual(len(parsed), 4)
         self.assertEqual(parsed[0].icon, "http://img.com/1.png")
+        self.assertEqual(parsed[0].epg_id, "canal-1.br")
         self.assertEqual(parsed[1].icon, "http://img.com/2.png")
         self.assertEqual(parsed[2].icon, "http://img.com/3.png")
         self.assertEqual(parsed[3].icon, "")
 
     def test_parse_streams_vod_and_series_arts(self) -> None:
         vod_data = [
-            {"stream_id": 10, "name": "Filme 1", "cover": "http://img.com/c1.jpg", "backdrop_path": "http://img.com/b1.jpg"},
+            {
+                "stream_id": 10,
+                "name": "Filme 1",
+                "cover": "http://img.com/c1.jpg",
+                "backdrop_path": "http://img.com/b1.jpg",
+            },
         ]
         vod_parsed = _parse_streams("vod", 100, vod_data)
         self.assertEqual(vod_parsed[0].icon, "http://img.com/c1.jpg")
         self.assertEqual(vod_parsed[0].fanart, "http://img.com/b1.jpg")
 
         series_data = [
-            {"series_id": 20, "name": "Serie 1", "cover": "http://img.com/s1.jpg", "backdrop_path": ["http://img.com/sb1.jpg"]},
+            {
+                "series_id": 20,
+                "name": "Serie 1",
+                "cover": "http://img.com/s1.jpg",
+                "backdrop_path": ["http://img.com/sb1.jpg"],
+            },
         ]
         series_parsed = _parse_streams("series", 100, series_data)
         self.assertEqual(series_parsed[0].icon, "http://img.com/s1.jpg")
         self.assertEqual(series_parsed[0].fanart, "http://img.com/sb1.jpg")
 
     def test_item_icon_fallback_by_section(self) -> None:
-        # Valid URLs should be returned as-is
         self.assertEqual(_item_icon("live", "http://example.com/logo.png"), "http://example.com/logo.png")
         self.assertEqual(_item_icon("vod", "https://example.com/poster.jpg"), "https://example.com/poster.jpg")
         self.assertEqual(_item_icon("series", "special://home/art.png"), "special://home/art.png")
+        self.assertTrue(_item_icon("live", "").endswith("live.png"))
+        self.assertTrue(_item_icon("vod", "").endswith("vod.png"))
+        self.assertTrue(_item_icon("series", "").endswith("series.png"))
+        self.assertTrue(_item_icon("other", "").endswith("folder.png"))
 
-        # Empty/invalid URLs must fallback to official section icon
-        live_fallback = _item_icon("live", "")
-        self.assertTrue(live_fallback.endswith("live.png"), live_fallback)
+    def test_episode_frame_has_priority_over_series_cover(self) -> None:
+        episode = {"info": {"movie_image": "https://img.example/episode-frame.jpg"}}
+        self.assertEqual(
+            _episode_thumbnail(episode, "https://img.example/series-cover.jpg"),
+            "https://img.example/episode-frame.jpg",
+        )
+        self.assertEqual(
+            _episode_thumbnail({}, "https://img.example/series-cover.jpg"),
+            "https://img.example/series-cover.jpg",
+        )
 
-        vod_fallback = _item_icon("vod", "")
-        self.assertTrue(vod_fallback.endswith("vod.png"), vod_fallback)
-
-        series_fallback = _item_icon("series", "")
-        self.assertTrue(series_fallback.endswith("series.png"), series_fallback)
-
-        other_fallback = _item_icon("other", "")
-        self.assertTrue(other_fallback.endswith("folder.png"), other_fallback)
-
-    def test_format_live_channel_metadata_with_epg(self) -> None:
-        import tempfile
+    def test_format_live_channel_metadata_uses_module_cache(self) -> None:
+        from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
         from stv.app.services import AppContainer
-        from stv.bootstrap import _format_live_channel_metadata
-        from stv.domain.models import EpgProgram
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             settings = {
-                "profile_path": tmp_dir,
+                "profile_path": str(Path(tmp_dir) / "stv"),
+                "epg_profile_path": str(Path(tmp_dir) / "epg"),
                 "epg_enabled": "true",
-                "epg_cache_hours": "4",
             }
             app = AppContainer(settings)
-            
-            # 1. Sem EPG: deve retornar título limpo e plot default
-            title, plot = _format_live_channel_metadata(app, "BR | GLOBO SP FHD", default_plot="Canal de TV")
+            title, plot = _format_live_channel_metadata(
+                app,
+                "BR | GLOBO SP FHD",
+                default_plot="Canal de TV",
+                epg_id="globo.sp.br",
+            )
             self.assertEqual(title, "Globo SP")
             self.assertEqual(plot, "Canal de TV")
 
-            # 2. Com EPG populado: deve formatar 🔴 NO AR e ⏭️ A SEGUIR
-            programs = [
-                EpgProgram(
-                    channel_key="GLOBO",
-                    title="Jornal Nacional",
-                    start_time="2020-01-01 20:30",
-                    end_time="2099-01-01 21:20",
-                    synopsis="Notícias do dia no Brasil.",
+            now = int(time.time())
+            snapshot = EpgSnapshot(
+                provider_id="xtream",
+                fetched_at_utc=now,
+                channels=(
+                    EpgChannel(
+                        "xtream", "globo.sp.br", "globo.sp.br", "Globo SP", "GLOBO SP"
+                    ),
                 ),
-                EpgProgram(
-                    channel_key="GLOBO",
-                    title="Novela das Nove",
-                    start_time="2099-01-01 21:20",
-                    end_time="2099-01-01 22:25",
-                    synopsis="Capítulo de hoje.",
+                programs=(
+                    EpgProgram(
+                        "xtream",
+                        "globo.sp.br",
+                        "Jornal Nacional",
+                        now - 600,
+                        now + 600,
+                        "Notícias do dia no Brasil.",
+                    ),
+                    EpgProgram(
+                        "xtream",
+                        "globo.sp.br",
+                        "Novela das Nove",
+                        now + 600,
+                        now + 1_800,
+                    ),
                 ),
-            ]
-            app.catalog.upsert_epg_programs(programs)
+            )
+            app.epg.repository.replace_snapshot(snapshot)
 
-            title_epg, plot_epg = _format_live_channel_metadata(app, "BR | GLOBO SP FHD")
+            title_epg, plot_epg = _format_live_channel_metadata(
+                app,
+                "BR | GLOBO SP FHD",
+                epg_id="globo.sp.br",
+            )
             self.assertEqual(title_epg, "Globo SP")
-            self.assertIn("🔴 NO AR: Jornal Nacional", plot_epg)
+            self.assertIn("[B]NO AR[/B]", plot_epg)
+            self.assertIn("Jornal Nacional", plot_epg)
             self.assertIn("Notícias do dia no Brasil.", plot_epg)
-            self.assertIn("⏭️ A SEGUIR: Novela das Nove", plot_epg)
+            self.assertIn("[B]A SEGUIR[/B]", plot_epg)
+            self.assertIn("Novela das Nove", plot_epg)
+
+    def test_finish_directory_enforces_infowall_before_and_after_completion(self) -> None:
+        calls: list[str] = []
+        fake_xbmc = SimpleNamespace(executebuiltin=lambda command: calls.append(command))
+        fake_xbmcplugin = SimpleNamespace(
+            SORT_METHOD_UNSORTED=0,
+            SORT_METHOD_LABEL_IGNORE_THE=1,
+            SORT_METHOD_VIDEO_TITLE=2,
+            SORT_METHOD_GENRE=3,
+            setContent=lambda *_args: calls.append("setContent"),
+            addSortMethod=lambda *_args: None,
+            endOfDirectory=lambda *_args, **_kwargs: calls.append("endOfDirectory"),
+        )
+        with patch.dict(sys.modules, {"xbmc": fake_xbmc, "xbmcplugin": fake_xbmcplugin}):
+            finish_directory(7, content="episodes")
+
+        view_call = f"Container.SetViewMode({INFOWALL_VIEW_MODE})"
+        self.assertEqual(INFOWALL_VIEW_MODE, 54)
+        self.assertEqual(calls.count(view_call), 2)
+        self.assertLess(calls.index(view_call), calls.index("endOfDirectory"))
+        self.assertEqual(calls[-1], view_call)
 
 
 if __name__ == "__main__":
     unittest.main()
-

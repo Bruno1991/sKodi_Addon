@@ -4,7 +4,15 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDE = {".git", "site", "__pycache__", ".pytest_cache"}
+EXCLUDE = {
+    ".git",
+    ".env",
+    ".vscode",
+    "Biblioteca_Universal_Corporativa",
+    "site",
+    "__pycache__",
+    ".pytest_cache",
+}
 
 
 def walk(path: Path, prefix: str = "", lines: list[str] | None = None) -> list[str]:

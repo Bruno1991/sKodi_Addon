@@ -9,13 +9,15 @@ addons/
 ├── repository.srepo/
 ├── resource.images.saile/
 ├── script.module.saile.core/
+├── script.module.saile.epg/
 └── plugin.video.stv/
 ```
 
 - `repository.srepo`: instala e atualiza os add-ons do ecossistema no Kodi.
 - `resource.images.saile`: 9 ícones fixos compartilhados em alta definição.
 - `script.module.saile.core`: caminhos portáveis, artwork, notificações, erros padronizados e detecção de capacidades.
-- `plugin.video.stv`: cliente de TV ao vivo, VOD e séries com integração Xtream Codes, persistência SQLite e metadados TMDB.
+- `script.module.saile.epg`: XMLTV autorizado, matching de canais, horários UTC e cache SQLite independente.
+- `plugin.video.stv`: cliente de TV ao vivo, VOD e séries com integração Xtream Codes, persistência SQLite, EPG modular e metadados TMDB.
 
 ## Navegação Oficial (Contrato Imutável)
 
@@ -27,6 +29,10 @@ Cada seção: Buscar → Favoritos → Categorias e conteúdo dinâmico
 ```
 
 A sincronização LAN é sempre manual sob demanda do usuário.
+
+O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. Abrir listas e canais consulta somente o cache local, sem requisições por item.
+
+Todas as rotas de diretório usam o contrato `InfoWall` (`view mode 54`). Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
 
 ## Artwork Compartilhado
 

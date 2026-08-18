@@ -44,6 +44,7 @@ class PersistenceTests(unittest.TestCase):
                 name="Canal 1 HD",
                 category_id="1",
                 extension="ts",
+                epg_id="canal-1.br",
                 generation_id=1,
             ),
             MediaItem(
@@ -60,6 +61,7 @@ class PersistenceTests(unittest.TestCase):
         live_items = self.repo.get_media_items("live", "1")
         self.assertEqual(len(live_items), 1)
         self.assertEqual(live_items[0].name, "Canal 1 HD")
+        self.assertEqual(live_items[0].epg_id, "canal-1.br")
 
         # 3. FTS5 Search by keyword / prefix
         search_results = self.repo.search_media("vod", "matrix")
@@ -88,9 +90,14 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(deleted_items, 1)
         self.assertEqual(len(self.repo.get_categories("live")), 0)
 
-        # Clean VOD -> Favorite for 201 should also be removed (strict sync)
+        # Limpeza de catálogo nunca apaga o estado do usuário.
         self.repo.clean_obsolete_items("vod", current_generation=2)
-        self.assertEqual(len(self.repo.get_favorites("vod")), 0)
+        with self.db.connect() as connection:
+            favorite_count = connection.execute(
+                "SELECT COUNT(*) AS total FROM favorites WHERE media_type = 'vod'"
+            ).fetchone()["total"]
+        self.assertEqual(favorite_count, 1)
+        self.assertEqual(self.repo.get_favorite_ids("vod"), ["201"])
 
     def test_playback_progress(self) -> None:
         self.repo.update_playback_progress("vod", "123", 10.5, 100.0)

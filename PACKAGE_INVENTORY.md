@@ -2,10 +2,10 @@
 
 ## Resumo
 
-- Add-ons ativos: **4**
+- Add-ons ativos: **5**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **20**
-- ZIPs Kodi gerados em `docs/zips/`: **4**
+- Testes unitários: **42**
+- ZIPs Kodi gerados em `docs/zips/`: **5**
 - Manifesto estrutural de referência: `STRUCTURE_MANIFEST.json`
 
 ## Add-ons Ativos
@@ -14,25 +14,26 @@
 - `repository.srepo`: Repositório oficial para Kodi (distribuição via GitHub Pages).
 - `resource.images.saile`: Recurso com 9 ícones de interface compartilhados.
 - `script.module.saile.core`: Infraestrutura Python comum estável.
+- `script.module.saile.epg`: Provider XMLTV, matching e cache SQLite UTC independente.
 
 ## Decisões Incorporadas
 
 - `resource.images.saile` centraliza exatamente 9 artes fixas em PNG.
 - `script.module.saile.core` provê apenas caminhos portáveis, artwork, notificações, erros e capabilities.
+- `script.module.saile.epg` concentra toda a regra e persistência de EPG fora do sTv e do core.
 - Contrato imutável de navegação do sTv:
   - Home: `TV ao Vivo` → `VOD` → `Séries` → `Sincronizar Dados`.
   - Seções: `Buscar` → `Favoritos` → conteúdo dinâmico.
 - Sincronização LAN é manual sob demanda e não compartilha SQLite bruto.
-- Remoção total do sFy e yt-dlp para manter foco estrito em IPTV.
 
 ## Validações Executadas
 
 ```text
-4 add-ons válidos
+5 add-ons válidos
 9 artes compartilhadas válidas
-20 testes unitários aprovados
+42 testes unitários aprovados
 0 segredos conhecidos encontrados
-4 ZIPs Kodi gerados
+5 ZIPs Kodi gerados
 ```
 
 ## Ferramentas Operacionais

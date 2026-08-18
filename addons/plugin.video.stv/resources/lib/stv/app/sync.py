@@ -60,6 +60,7 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
 
         extension = str(item.get("container_extension", "")).strip()
         plot = str(item.get("plot", "")).strip()
+        epg_id = str(item.get("epg_channel_id") or item.get("tvg_id") or "").strip()
 
         if item_id and name:
             items.append(
@@ -72,6 +73,7 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
                     fanart=fanart,
                     extension=extension,
                     plot=plot,
+                    epg_id=epg_id,
                     generation_id=generation_id,
                 )
             )
@@ -99,7 +101,11 @@ def _get_stream_action(section: str) -> str:
 def ensure_categories_loaded(app: "AppContainer", section: str) -> None:
     """Carrega sob demanda as categorias da seção para o SQLite se ainda não existirem."""
     existing = app.catalog.get_categories(section)
-    if existing:
+    try:
+        ttl_hours = int(app.settings.get("cache_ttl_hours", "12"))
+    except (TypeError, ValueError):
+        ttl_hours = 12
+    if existing and app.catalog.is_cache_valid(section, ttl_hours):
         return
 
     if not app.xtream.is_configured:
@@ -171,8 +177,9 @@ def sync_full_catalog(app: "AppContainer") -> bool:
             cat_action = _get_category_action(section)
             raw_cats = app.xtream.request(cat_action)
             parsed_cats = _parse_categories(section, generation_id, raw_cats)
-            if parsed_cats:
-                app.catalog.upsert_categories(parsed_cats)
+            if not parsed_cats:
+                raise ValueError(f"O provedor retornou categorias vazias para {title}")
+            app.catalog.upsert_categories(parsed_cats)
 
             if dialog.iscanceled():
                 return False
@@ -181,10 +188,11 @@ def sync_full_catalog(app: "AppContainer") -> bool:
             stream_action = _get_stream_action(section)
             raw_streams = app.xtream.request(stream_action)
             parsed_streams = _parse_streams(section, generation_id, raw_streams)
-            if parsed_streams:
-                chunk_size = 500
-                for i in range(0, len(parsed_streams), chunk_size):
-                    app.catalog.upsert_media_items(parsed_streams[i : i + chunk_size])
+            if not parsed_streams:
+                raise ValueError(f"O provedor retornou conteúdo vazio para {title}")
+            chunk_size = 500
+            for i in range(0, len(parsed_streams), chunk_size):
+                app.catalog.upsert_media_items(parsed_streams[i : i + chunk_size])
 
             if dialog.iscanceled():
                 return False

@@ -22,6 +22,8 @@ O `.env` existe apenas na estação de desenvolvimento. Ele não é copiado para
 - conteúdo do `.env`;
 - arquivo SQLite completo.
 
+URLs XMLTV do Xtream contêm credenciais em query string. Elas podem ser construídas apenas no último momento, nunca são persistidas, registradas, sincronizadas ou incluídas em mensagens de erro.
+
 ## Logs e diagnóstico
 
 Sanitizar query strings, headers, usernames, paths pessoais e payloads externos. Pacotes de diagnóstico incluem somente versões, capacidades, schemas e logs redigidos.

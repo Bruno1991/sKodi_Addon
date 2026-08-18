@@ -11,7 +11,8 @@ ADDONS = [
     "repository.srepo",
     "plugin.video.stv",
     "resource.images.saile",
-    "script.module.saile.core"
+    "script.module.saile.core",
+    "script.module.saile.epg"
 ]
 
 COMMON_MAP = {

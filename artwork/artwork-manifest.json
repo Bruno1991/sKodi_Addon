@@ -36,6 +36,13 @@
       "temporary": false
     },
     {
+      "source": "artwork/addons/icons/Detailed-Flat-Circular/script.module.saile.epg/icon.png",
+      "addon_id": "script.module.saile.epg",
+      "role": "addon_icon",
+      "destination": "addons/script.module.saile.epg/icon.png",
+      "temporary": false
+    },
+    {
       "source": "artwork/addons/fanarts/Style-1/repository.srepo/fanart.jpg",
       "addon_id": "repository.srepo",
       "role": "addon_fanart",
@@ -61,6 +68,13 @@
       "addon_id": "script.module.saile.core",
       "role": "addon_fanart",
       "destination": "addons/script.module.saile.core/fanart.jpg",
+      "temporary": false
+    },
+    {
+      "source": "artwork/addons/fanarts/Style-1/script.module.saile.epg/fanart.jpg",
+      "addon_id": "script.module.saile.epg",
+      "role": "addon_fanart",
+      "destination": "addons/script.module.saile.epg/fanart.jpg",
       "temporary": false
     },
     {

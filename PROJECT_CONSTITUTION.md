@@ -9,6 +9,7 @@ sTv executa no dispositivo do usuário dentro do Kodi. Serviços externos são p
 - `repository.srepo`: descoberta, instalação e atualização pelo GitHub Pages.
 - `resource.images.saile`: artes fixas compartilhadas e somente elas (9 ícones).
 - `script.module.saile.core`: infraestrutura comum estável, sem regras de domínio.
+- `script.module.saile.epg`: ingestão XMLTV, matching de canais, cache UTC e consultas de programação.
 - `plugin.video.stv`: Xtream, TV ao vivo, VOD, séries, favoritos, busca, TMDB e reprodução de vídeo.
 
 Dependências comuns são explícitas e versionadas.
@@ -20,6 +21,8 @@ A ordem dos atalhos da home (`TV ao Vivo` → `VOD` → `Séries` → `Sincroniz
 ## Artigo 4 — Persistência
 
 O sTv usa SQLite próprio em `special://profile/addon_data/plugin.video.stv/stv.db`. Catálogo, cache e estado do usuário são separados. Migrações são versionadas, transacionais e testadas. Atualizações do add-on não apagam dados.
+
+O módulo EPG usa banco independente em `special://profile/addon_data/script.module.saile.epg/epg.db`. EPG é cache reconstruível e nunca é misturado ao estado do usuário do sTv.
 
 ## Artigo 5 — Sincronização LAN
 
@@ -40,3 +43,7 @@ Serviços em segundo plano e integrações PVR são adiados até necessidade fun
 ## Artigo 9 — Evidência
 
 Nenhuma tarefa é concluída por plausibilidade. A conclusão exige evidência proporcional: testes, parse XML, inspeção do ZIP, checksum, migração, instalação limpa ou reprodução em Kodi real.
+
+## Artigo 10 — EPG modular
+
+O sTv consome uma API interna estável de EPG e não conhece parsing XMLTV nem schema do cache. Sincronização da grade é manual; listagens consultam somente o banco local. Horários são normalizados para UTC.

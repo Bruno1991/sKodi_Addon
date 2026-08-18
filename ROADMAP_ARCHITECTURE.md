@@ -6,13 +6,17 @@
 flowchart LR
   REPO[repository.srepo] --> ART[resource.images.saile]
   REPO --> CORE[script.module.saile.core]
+  REPO --> EPG[script.module.saile.epg]
   REPO --> STV[plugin.video.stv]
   STV --> CORE
+  STV --> EPG
   STV --> ART
 
   STV --> X[Xtream API]
   STV --> T[TMDB API]
   STV --> DB1[(SQLite sTv)]
+  EPG --> DB2[(SQLite EPG UTC)]
+  EPG --> XTV[XMLTV autorizado]
 ```
 
 ## Navegação sTv
@@ -43,6 +47,7 @@ sTv
 5. `Buscar` e `Favoritos` aparecem sempre antes do conteúdo de cada seção.
 6. URL de reprodução direta é construída no último momento pelo player.
 7. TMDB enriquece metadados (plot, pôster e fanart HD) sob demanda.
+8. O módulo EPG sincroniza XMLTV somente por ação manual e o sTv consulta Agora/Próximo localmente.
 
 ## Artwork
 
@@ -57,5 +62,6 @@ O item `Sincronizar Dados` na home é sempre explícito e sob demanda do usuári
 1. Módulos compartilhados, contratos de navegação e build.
 2. MVP sTv: autenticação, catálogo e reprodução.
 3. Favoritos, busca local, TMDB e persistência do sTv.
-4. Sincronização LAN manual.
-5. Recursos futuros: serviço contínuo, canal beta e PVR avançado.
+4. EPG modular com XMLTV, UTC e cache independente.
+5. Sincronização LAN manual.
+6. Recursos futuros: serviço contínuo, canal beta e PVR avançado.

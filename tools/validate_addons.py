@@ -10,6 +10,7 @@ EXPECTED = {
     "repository.srepo",
     "resource.images.saile",
     "script.module.saile.core",
+    "script.module.saile.epg",
     "plugin.video.stv",
 }
 LOCAL_DEPENDENCIES = EXPECTED - {"repository.srepo"}

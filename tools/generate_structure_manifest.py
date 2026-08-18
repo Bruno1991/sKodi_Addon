@@ -9,7 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "STRUCTURE_MANIFEST.json"
 ARTWORK_MANIFEST = ROOT / "artwork" / "artwork-manifest.json"
-EXCLUDED_PATHS = {"STRUCTURE_MANIFEST.json"}
+EXCLUDED_PATHS = {
+    "STRUCTURE_MANIFEST.json",
+    ".vscode/settings.json",
+}
+EXCLUDED_PREFIXES = ("Biblioteca_Universal_Corporativa/",)
 
 
 def sha256(path: Path) -> str:
@@ -37,7 +41,13 @@ def git_paths(*args: str) -> set[str]:
 def package_paths() -> list[str]:
     paths = git_paths("ls-files", "-z")
     paths.update(git_paths("ls-files", "--others", "--exclude-standard", "-z"))
-    return sorted(path for path in paths if path not in EXCLUDED_PATHS and (ROOT / path).is_file())
+    return sorted(
+        path
+        for path in paths
+        if path not in EXCLUDED_PATHS
+        and not path.startswith(EXCLUDED_PREFIXES)
+        and (ROOT / path).is_file()
+    )
 
 
 def addon_ids() -> list[str]:

@@ -57,6 +57,13 @@ class XtreamClient:
         data = self.request("get_series_info", series_id=series_id)
         return data if isinstance(data, dict) else {}
 
+    def xmltv_url(self) -> str:
+        """Gera a URL XMLTV autorizada do provedor sem realizar a requisição."""
+        if not self.is_configured:
+            raise ValueError("Servidor Xtream não configurado")
+        query = urlencode({"username": self.username, "password": self.password})
+        return f"{self.host}/xmltv.php?{query}"
+
     def stream_url(self, media_type: str, stream_id: str, extension: str = "") -> str:
         """Gera a URL de streaming final no momento da reprodução."""
         if not self.is_configured:

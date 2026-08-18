@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS media_items (
     title TEXT NOT NULL,
     plot TEXT,
     icon_url TEXT,
+    epg_id TEXT,
     container_extension TEXT,
     release_year INTEGER,
     tmdb_id INTEGER,

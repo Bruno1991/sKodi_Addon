@@ -41,8 +41,13 @@ def zip_addon(addon_dir: Path, version: str, zips_dir: Path) -> Path:
     zip_path = destination_dir / f"{addon_dir.name}-{version}.zip"
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         for source in sorted(addon_dir.rglob("*")):
-            if source.is_file() and should_include(source.relative_to(addon_dir)):
-                archive.write(source, Path(addon_dir.name) / source.relative_to(addon_dir))
+            relative = source.relative_to(addon_dir)
+            is_historical_changelog = (
+                source.name.startswith("changelog-")
+                and source.name != f"changelog-{version}.txt"
+            )
+            if source.is_file() and not is_historical_changelog and should_include(relative):
+                archive.write(source, Path(addon_dir.name) / relative)
     for asset_name in ("icon.png", "fanart.jpg", f"changelog-{version}.txt"):
         source = addon_dir / asset_name
         if source.is_file():

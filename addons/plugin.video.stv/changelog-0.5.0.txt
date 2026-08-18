@@ -1,0 +1,6 @@
+0.5.0
+- EPG extraído para o módulo independente script.module.saile.epg.
+- XMLTV do Xtream sincronizado manualmente e consultado por cache local UTC.
+- InfoWall 54 centralizado para todos os diretórios do add-on.
+- Frames de episódios priorizados em icon, thumb, poster e landscape.
+- Sincronização vazia preserva o catálogo existente e favoritos não são apagados.

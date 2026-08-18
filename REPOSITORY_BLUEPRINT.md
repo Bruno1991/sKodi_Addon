@@ -12,6 +12,8 @@ s_kodi_addon/
 │   │       └── stv/
 │   ├── script.module.saile.core/
 │   │   └── lib/saile_core/
+│   ├── script.module.saile.epg/
+│   │   └── lib/saile_epg/
 │   └── plugin.video.stv/
 │       └── resources/lib/stv/
 ├── artwork/                             # fontes e assets visuais canônicos
@@ -31,10 +33,13 @@ flowchart TD
   REPO[repository.srepo]
   ART[resource.images.saile]
   CORE[script.module.saile.core]
+  EPG[script.module.saile.epg]
   STV[plugin.video.stv]
 
   CORE --> ART
   STV --> CORE
+  EPG --> CORE
+  STV --> EPG
   STV --> ART
   REPO -. distribui .-> ART
   REPO -. distribui .-> CORE
@@ -56,6 +61,14 @@ flowchart TD
 - matching TMDB;
 - categorias e persistência de TV, filmes ou séries;
 - rotas específicas do plugin de vídeo.
+
+## Conteúdo do módulo EPG (`script.module.saile.epg`)
+
+- contrato público de canais, programas e snapshots;
+- parsing XMLTV com limites de segurança;
+- normalização e matching determinístico de canais;
+- timestamps UTC e cache SQLite próprio;
+- providers sem dependência do `plugin.video.stv` ou da UI Kodi.
 
 ## Add-ons futuros condicionais
 

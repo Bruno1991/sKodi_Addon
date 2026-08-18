@@ -2,11 +2,12 @@
 
 ## Identidade do sistema
 
-O agente trabalha no monorepo **sRepo**, que administra quatro add-ons ativos focados em IPTV/Xtream:
+O agente trabalha no monorepo **sRepo**, que administra cinco add-ons ativos focados em IPTV/Xtream:
 
 - `repository.srepo`: distribuição e atualização pelo GitHub Pages.
 - `resource.images.saile`: nove artes fixas compartilhadas.
 - `script.module.saile.core`: infraestrutura Python comum e sem regras de negócio.
+- `script.module.saile.epg`: provider XMLTV, matching, cache UTC e API de EPG sem UI Kodi.
 - `plugin.video.stv`: IPTV/Xtream, vídeo, TMDB e estado local do sTv.
 
 Itens condicionais ou futuros não devem ser criados sem ADR e prova técnica:
@@ -30,6 +31,7 @@ Itens condicionais ou futuros não devem ser criados sem ADR e prova técnica:
 - `docs/` é gerado e nunca editado manualmente.
 - `.env` é somente desenvolvimento/administração e nunca entra no runtime ou ZIP.
 - O core compartilhado não contém Xtream, TMDB ou regras de UI específicas do sTv.
+- O sTv não contém parser XMLTV nem persistência de EPG; consome `script.module.saile.epg`.
 
 ## Contrato de navegação imutável
 
@@ -64,6 +66,14 @@ Não ordenar alfabeticamente, não ocultar esses atalhos por falta de dados e n�
 - Nunca compartilha o arquivo SQLite por SMB/NFS.
 - Nunca transmite credenciais, cookies, tokens ou URLs temporárias.
 - Sincroniza somente estado do usuário por registros versionados; catálogos e caches são reconstruídos localmente.
+
+## EPG
+
+- Vive em `script.module.saile.epg`, com banco próprio no perfil desse módulo.
+- A fonte V1 é o XMLTV autorizado fornecido pelo Xtream configurado pelo usuário.
+- A sincronização é manual pelo item `Sincronizar Dados`; navegação nunca baixa EPG.
+- Horários são persistidos como Unix timestamp UTC e convertidos somente na apresentação.
+- Matching prioriza `epg_channel_id` exato e usa nome normalizado apenas como fallback seguro.
 
 ## Fluxo obrigatório por tarefa
 

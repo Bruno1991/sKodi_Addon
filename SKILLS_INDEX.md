@@ -1,5 +1,7 @@
 # Índice das 94 skills (IPTV & Ecossistema SAILE)
 
+> Catálogo operacional opcional. As skills vivem em `.agents/`, são ignoradas pelo Git e não entram no runtime nem nos ZIPs Kodi. Os links só ficam ativos em uma estação de desenvolvimento que tenha a biblioteca local instalada.
+
 | ID | Categoria | Skill | Missão |
 |---|---|---|---|
 | 00.01 | governance | [Proteção de escopo](.agents/skills/00-governance/scope-guard/SKILL.md) | Definir o que pertence ao sRepo e sTv antes de qualquer alteração. |

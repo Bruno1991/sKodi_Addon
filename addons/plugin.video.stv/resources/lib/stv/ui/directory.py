@@ -1,6 +1,7 @@
 """Manipulador de diretórios e itens de interface do Kodi com suporte nativo ao modo InfoWall."""
 from __future__ import annotations
 
+INFOWALL_VIEW_MODE = 54
 
 def add_folder(
     handle: int,
@@ -102,8 +103,12 @@ def init_directory(handle: int, content: str = "movies") -> None:
         pass
 
 
-def finish_directory(handle: int, content: str = "movies", view_mode: int = 54) -> None:
-    """Finaliza o diretório e trava a visualização no modo InfoWall (54)."""
+def finish_directory(
+    handle: int,
+    content: str = "movies",
+    view_mode: int = INFOWALL_VIEW_MODE,
+) -> None:
+    """Finaliza qualquer diretório e reaplica o contrato universal InfoWall 54."""
     import xbmc
     import xbmcplugin
 
@@ -116,6 +121,8 @@ def finish_directory(handle: int, content: str = "movies", view_mode: int = 54) 
     except Exception:
         pass
 
+    if view_mode:
+        xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
     xbmcplugin.endOfDirectory(handle, succeeded=True, cacheToDisc=False)
 
     if view_mode:

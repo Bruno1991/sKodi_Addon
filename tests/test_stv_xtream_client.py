@@ -40,6 +40,13 @@ class XtreamClientTests(unittest.TestCase):
         series_url = client.stream_url("series", "303")
         self.assertEqual(series_url, "http://iptv.example:8080/series/alice/secretpassword/303.mp4")
 
+    def test_xmltv_url_generation(self) -> None:
+        client = XtreamClient("https://example.com", "user name", "p@ss")
+        self.assertEqual(
+            client.xmltv_url(),
+            "https://example.com/xmltv.php?username=user+name&password=p%40ss",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

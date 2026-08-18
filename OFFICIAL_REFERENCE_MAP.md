@@ -11,5 +11,6 @@ O agente deve preferir documentação oficial e código-fonte primário para:
 - API TMDB v3;
 - SQLite e índices;
 - API Xtream Codes (player_api.php).
+- formato XMLTV e offsets de fuso horário.
 
 Ao implementar comportamento dependente de versão, verificar a documentação atual antes de codificar e registrar a versão alvo no plano de mudança.

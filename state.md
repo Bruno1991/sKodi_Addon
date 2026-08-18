@@ -1,8 +1,8 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
-**Data de Atualização:** 18 de Agosto de 2026  
-**Status do Projeto:** Estável / Operacional (v0.4.6)  
-**Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)  
+**Data de Atualização:** 18 de Agosto de 2026
+**Status do Projeto:** Implementado e validado no host (sTv v0.5.0)
+**Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
 ---
@@ -11,10 +11,11 @@
 
 | Add-on ID | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- |
-| **`plugin.video.stv`** | `0.4.6` | Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB, Controle Parental, InfoWall 54 universal). |
-| **`repository.srepo`** | `1.0.0` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
+| **`plugin.video.stv`** | `0.5.0` | Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB, Controle Parental, InfoWall 54 universal). |
+| **`repository.srepo`** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | `1.0.0` | Módulo base Python (artwork, notificações, erros, capabilities). |
+| **`script.module.saile.epg`** | `1.0.0` | XMLTV autorizado, matching de canais, horários UTC e cache EPG próprio. |
 
 ---
 
@@ -27,6 +28,8 @@
 - **VOD e Séries**: Cartazes 2:3 de cinema com metadados TMDB e fanarts.
 - **Roteamento Estrutural**: Correção no roteamento de séries e temporadas (`series_info` e `series_episodes`).
 - **Controle Parental**: Proteção com PIN de até 6 dígitos e teclado mascarado para conteúdos adultos e configurações.
+- **EPG modular**: sincronização manual pelo sTv, processamento no módulo independente e leitura local Agora/Próximo.
+- **Episódios**: frame do próprio episódio priorizado nos slots de capa, thumb e landscape.
 
 ---
 
@@ -41,8 +44,8 @@ python tools/build_repo.py
 python tools/generate_structure_manifest.py
 ```
 
-- **Testes Unitários:** 37/37 testes aprovados.
+- **Testes Unitários:** 42/42 testes aprovados no host.
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
-- **Repositório Kodi (`docs/`):** Atualizado e gerado com os 4 add-ons na versão `0.4.6`.
+- **Repositório Kodi (`docs/`):** gerado com os 5 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 
 

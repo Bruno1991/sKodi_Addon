@@ -5,10 +5,6 @@ s_Kodi_Addon/
 │   ├── workflows/
 │   │   └── ci.yml
 │   └── pull_request_template.md
-├── .vscode/
-│   ├── extensions.json
-│   ├── settings.json
-│   └── tasks.json
 ├── addons/
 │   ├── plugin.video.stv/
 │   │   ├── resources/
@@ -36,9 +32,6 @@ s_Kodi_Addon/
 │   │   │   │       │   └── repository.py
 │   │   │   │       ├── providers/
 │   │   │   │       │   ├── epg/
-│   │   │   │       │   │   ├── __init__.py
-│   │   │   │       │   │   ├── claro.py
-│   │   │   │       │   │   └── normalizer.py
 │   │   │   │       │   ├── tmdb/
 │   │   │   │       │   │   ├── __init__.py
 │   │   │   │       │   │   └── client.py
@@ -78,6 +71,7 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.4.2.txt
 │   │   ├── changelog-0.4.3.txt
 │   │   ├── changelog-0.4.6.txt
+│   │   ├── changelog-0.5.0.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -108,15 +102,32 @@ s_Kodi_Addon/
 │   │   ├── changelog-1.0.3.txt
 │   │   ├── fanart.jpg
 │   │   └── icon.png
-│   └── script.module.saile.core/
+│   ├── script.module.saile.core/
+│   │   ├── lib/
+│   │   │   └── saile_core/
+│   │   │       ├── __init__.py
+│   │   │       ├── artwork.py
+│   │   │       ├── capabilities.py
+│   │   │       ├── errors.py
+│   │   │       ├── notifications.py
+│   │   │       └── paths.py
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   └── script.module.saile.epg/
 │       ├── lib/
-│       │   └── saile_core/
+│       │   └── saile_epg/
+│       │       ├── providers/
+│       │       │   ├── __init__.py
+│       │       │   ├── base.py
+│       │       │   └── xmltv.py
 │       │       ├── __init__.py
-│       │       ├── artwork.py
-│       │       ├── capabilities.py
-│       │       ├── errors.py
-│       │       ├── notifications.py
-│       │       └── paths.py
+│       │       ├── database.py
+│       │       ├── models.py
+│       │       ├── normalizer.py
+│       │       ├── repository.py
+│       │       └── service.py
 │       ├── addon.xml
 │       ├── changelog-1.0.0.txt
 │       ├── fanart.jpg
@@ -131,7 +142,9 @@ s_Kodi_Addon/
 │   │   │       │   └── fanart.jpg
 │   │   │       ├── resource.images.saile/
 │   │   │       │   └── fanart.jpg
-│   │   │       └── script.module.saile.core/
+│   │   │       ├── script.module.saile.core/
+│   │   │       │   └── fanart.jpg
+│   │   │       └── script.module.saile.epg/
 │   │   │           └── fanart.jpg
 │   │   └── icons/
 │   │       └── Detailed-Flat-Circular/
@@ -141,7 +154,9 @@ s_Kodi_Addon/
 │   │           │   └── icon.png
 │   │           ├── resource.images.saile/
 │   │           │   └── icon.png
-│   │           └── script.module.saile.core/
+│   │           ├── script.module.saile.core/
+│   │           │   └── icon.png
+│   │           └── script.module.saile.epg/
 │   │               └── icon.png
 │   ├── common/
 │   │   ├── html/
@@ -176,208 +191,16 @@ s_Kodi_Addon/
 │   │       └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   ├── artwork-manifest.json
 │   └── README.md
-├── Biblioteca_Universal_Corporativa/
-│   ├── .github/
-│   │   └── workflows/
-│   │       └── ci.yml
-│   ├── .vscode/
-│   │   ├── extensions.json
-│   │   ├── settings.json
-│   │   └── tasks.json
-│   ├── contracts/
-│   │   ├── crypto-envelope.schema.json
-│   │   ├── error-envelope.schema.json
-│   │   └── log-event.schema.json
-│   ├── docs/
-│   │   ├── ARCHITECTURE.md
-│   │   ├── ERROR_AND_LOGGING_CONTRACT.md
-│   │   ├── PROJECT_TREE.md
-│   │   ├── SECURITY_RESILIENCE_CONTRACT.md
-│   │   ├── TEST_STRATEGY.md
-│   │   ├── TOOLCHAIN_MATRIX.md
-│   │   └── VALIDATION_STATUS.md
-│   ├── infrastructure/
-│   │   ├── scripts/
-│   │   │   ├── build-all.bash
-│   │   │   ├── build-all.ps1
-│   │   │   ├── build-all.sh
-│   │   │   └── verify-package.py
-│   │   └── sql/
-│   │       ├── ansi/
-│   │       │   └── 001_core_schema.sql
-│   │       ├── mysql/
-│   │       │   └── 001_core_schema.sql
-│   │       ├── postgresql/
-│   │       │   └── 001_core_schema.sql
-│   │       └── sqlite/
-│   │           └── 001_core_schema.sql
-│   ├── managed/
-│   │   ├── dotnet/
-│   │   │   ├── Corporate.Security/
-│   │   │   │   ├── AesGcmEncryptionService.cs
-│   │   │   │   ├── Corporate.Security.csproj
-│   │   │   │   ├── CryptoContractException.cs
-│   │   │   │   ├── EnvironmentKeyProvider.cs
-│   │   │   │   ├── IEncryptionService.cs
-│   │   │   │   ├── IKeyProvider.cs
-│   │   │   │   ├── LoggingExtensions.cs
-│   │   │   │   └── ServiceCollectionExtensions.cs
-│   │   │   └── Corporate.Security.Tests/
-│   │   │       ├── AesGcmEncryptionServiceTests.cs
-│   │   │       └── Corporate.Security.Tests.csproj
-│   │   ├── java/
-│   │   │   ├── src/
-│   │   │   │   ├── main/
-│   │   │   │   │   └── java/
-│   │   │   │   │       └── com/
-│   │   │   │   │           └── example/
-│   │   │   │   │               └── corporate/
-│   │   │   │   │                   └── security/
-│   │   │   │   │                       ├── AesGcmCipher.java
-│   │   │   │   │                       ├── CryptoException.java
-│   │   │   │   │                       ├── EnvironmentKeyProvider.java
-│   │   │   │   │                       ├── KeyProvider.java
-│   │   │   │   │                       └── StructuredLogger.java
-│   │   │   │   └── test/
-│   │   │   │       └── java/
-│   │   │   │           └── com/
-│   │   │   │               └── example/
-│   │   │   │                   └── corporate/
-│   │   │   │                       └── security/
-│   │   │   │                           └── AesGcmCipherTest.java
-│   │   │   └── pom.xml
-│   │   └── kotlin/
-│   │       ├── src/
-│   │       │   ├── main/
-│   │       │   │   └── kotlin/
-│   │       │   │       └── com/
-│   │       │   │           └── example/
-│   │       │   │               └── corporate/
-│   │       │   │                   └── security/
-│   │       │   │                       ├── AesGcmCipher.kt
-│   │       │   │                       └── StructuredLogger.kt
-│   │       │   └── test/
-│   │       │       └── kotlin/
-│   │       │           └── com/
-│   │       │               └── example/
-│   │       │                   └── corporate/
-│   │       │                       └── security/
-│   │       │                           └── AesGcmCipherTest.kt
-│   │       ├── ANDROID_INTEGRATION.md
-│   │       └── pom.xml
-│   ├── manifest/
-│   │   ├── MANIFEST.json
-│   │   └── SHA256SUMS.txt
-│   ├── native/
-│   │   ├── arduino/
-│   │   │   ├── src/
-│   │   │   │   ├── CorporateAesGcm.cpp
-│   │   │   │   ├── CorporateAesGcm.h
-│   │   │   │   ├── ResilientHttpClient.cpp
-│   │   │   │   └── ResilientHttpClient.h
-│   │   │   ├── library.json
-│   │   │   ├── platformio.ini
-│   │   │   └── SECURITY.md
-│   │   ├── assembly-x86_64/
-│   │   │   ├── include/
-│   │   │   │   └── mbuc_secure_copy.h
-│   │   │   ├── CMakeLists.txt
-│   │   │   ├── secure_copy.S
-│   │   │   └── test_secure_copy.c
-│   │   └── cpp/
-│   │       ├── include/
-│   │       │   └── mbuc/
-│   │       │       └── security/
-│   │       │           └── aes_gcm.hpp
-│   │       ├── src/
-│   │       │   └── aes_gcm.cpp
-│   │       ├── tests/
-│   │       │   └── aes_gcm_test.cpp
-│   │       └── CMakeLists.txt
-│   ├── services/
-│   │   └── reference-api/
-│   │       ├── src/
-│   │       │   └── reference_api/
-│   │       │       ├── __init__.py
-│   │       │       └── main.py
-│   │       ├── tests/
-│   │       │   └── test_api.py
-│   │       └── pyproject.toml
-│   ├── systems/
-│   │   └── rust/
-│   │       ├── src/
-│   │       │   └── lib.rs
-│   │       └── Cargo.toml
-│   ├── web-scripting/
-│   │   ├── php/
-│   │   │   ├── src/
-│   │   │   │   ├── AesGcmService.php
-│   │   │   │   ├── CryptoException.php
-│   │   │   │   ├── EnvironmentKeyProvider.php
-│   │   │   │   ├── JsonLogger.php
-│   │   │   │   └── KeyProvider.php
-│   │   │   ├── tests/
-│   │   │   │   └── AesGcmServiceTest.php
-│   │   │   ├── composer.json
-│   │   │   └── phpunit.xml
-│   │   ├── python/
-│   │   │   ├── src/
-│   │   │   │   └── corporate_security/
-│   │   │   │       ├── __init__.py
-│   │   │   │       ├── aes_gcm.py
-│   │   │   │       ├── errors.py
-│   │   │   │       ├── resilient_http.py
-│   │   │   │       └── structured_logging.py
-│   │   │   ├── tests/
-│   │   │   │   ├── test_aes_gcm.py
-│   │   │   │   └── test_circuit_breaker.py
-│   │   │   └── pyproject.toml
-│   │   ├── python-kodi/
-│   │   │   ├── resources/
-│   │   │   │   └── lib/
-│   │   │   │       └── mbuc_kodi_security/
-│   │   │   │           ├── __init__.py
-│   │   │   │           ├── aes_gcm.py
-│   │   │   │           └── errors.py
-│   │   │   ├── addon.xml
-│   │   │   ├── build_addon.py
-│   │   │   └── README.md
-│   │   ├── typescript/
-│   │   │   ├── src/
-│   │   │   │   ├── aes-gcm.ts
-│   │   │   │   ├── errors.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── resilient-http.ts
-│   │   │   │   └── structured-logger.ts
-│   │   │   ├── test/
-│   │   │   │   └── aes-gcm.test.ts
-│   │   │   ├── package.json
-│   │   │   ├── pnpm-lock.yaml
-│   │   │   ├── pnpm-workspace.yaml
-│   │   │   └── tsconfig.json
-│   │   └── web-vanilla/
-│   │       ├── aes-gcm.js
-│   │       ├── app.js
-│   │       ├── index.html
-│   │       └── styles.css
-│   ├── .dockerignore
-│   ├── .editorconfig
-│   ├── .gitattributes
-│   ├── .gitignore
-│   ├── AGENTS.md
-│   ├── BASE.md
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── SECURITY.md
-│   └── VERSION
+├── decisions/
+│   └── ADR-0001-modulo-epg-local.md
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.4.6.txt
+│   │   │   ├── changelog-0.5.0.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.4.6.zip
-│   │   │   └── plugin.video.stv-0.4.6.zip.sha256
+│   │   │   ├── plugin.video.stv-0.5.0.zip
+│   │   │   └── plugin.video.stv-0.5.0.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -390,12 +213,18 @@ s_Kodi_Addon/
 │   │   │   ├── icon.png
 │   │   │   ├── resource.images.saile-1.0.3.zip
 │   │   │   └── resource.images.saile-1.0.3.zip.sha256
-│   │   └── script.module.saile.core/
+│   │   ├── script.module.saile.core/
+│   │   │   ├── changelog-1.0.0.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── script.module.saile.core-1.0.0.zip
+│   │   │   └── script.module.saile.core-1.0.0.zip.sha256
+│   │   └── script.module.saile.epg/
 │   │       ├── changelog-1.0.0.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.core-1.0.0.zip
-│   │       └── script.module.saile.core-1.0.0.zip.sha256
+│   │       ├── script.module.saile.epg-1.0.0.zip
+│   │       └── script.module.saile.epg-1.0.0.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz
@@ -413,6 +242,7 @@ s_Kodi_Addon/
 │   ├── sqlite_transaction_pattern.py
 │   └── xtream_url_pattern.py
 ├── schemas/
+│   ├── epg_reference.sql
 │   ├── LAN_SYNC_CONTRACT.md
 │   └── stv_reference.sql
 ├── templates/
@@ -428,9 +258,9 @@ s_Kodi_Addon/
 │   ├── test_navigation_contract.py
 │   ├── test_routing.py
 │   ├── test_saile_core.py
-│   ├── test_stv_epg_client.py
-│   ├── test_stv_epg_normalizer.py
-│   ├── test_stv_epg_persistence.py
+│   ├── test_saile_epg_normalizer.py
+│   ├── test_saile_epg_persistence.py
+│   ├── test_saile_epg_xmltv.py
 │   ├── test_stv_http_client.py
 │   ├── test_stv_parental.py
 │   ├── test_stv_persistence.py
@@ -451,7 +281,6 @@ s_Kodi_Addon/
 │   ├── secret_scan.py
 │   ├── select_artwork.py
 │   └── validate_addons.py
-├── .env
 ├── .gitignore
 ├── AGENTS.md
 ├── COMPATIBILITY_MATRIX.md

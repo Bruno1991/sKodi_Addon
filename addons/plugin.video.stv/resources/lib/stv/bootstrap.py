@@ -29,29 +29,58 @@ def _item_icon(section: str, icon_str: str) -> str:
     return _icon("stv" if section in section_map else "common", filename)
 
 
-def _format_live_channel_metadata(app: AppContainer, channel_raw_name: str, default_plot: str = "") -> tuple[str, str]:
+def _episode_thumbnail(episode: dict[str, object], series_cover: str = "") -> str:
+    """Prioriza um frame real do episódio e usa a capa da série apenas como fallback."""
+    raw_info = episode.get("info")
+    info = raw_info if isinstance(raw_info, dict) else {}
+    raw_thumb = str(
+        info.get("movie_image")
+        or info.get("cover_big")
+        or info.get("still_path")
+        or info.get("image")
+        or episode.get("movie_image")
+        or episode.get("cover_big")
+        or episode.get("thumbnail")
+        or series_cover
+        or ""
+    )
+    return _item_icon("series", raw_thumb)
+
+
+def _format_live_channel_metadata(
+    app: AppContainer,
+    channel_raw_name: str,
+    default_plot: str = "",
+    epg_id: str = "",
+) -> tuple[str, str]:
     """Retorna (label_limpo, plot_formatado_com_epg) para o canal de TV ao vivo."""
-    from stv.providers.epg.normalizer import clean_channel_title
+    from datetime import datetime
+
+    from saile_epg.normalizer import clean_channel_title
 
     clean_title = clean_channel_title(channel_raw_name)
 
-    now_prog, next_prog = app.get_channel_epg(channel_raw_name)
+    now_prog, next_prog = app.get_channel_epg(channel_raw_name, epg_id=epg_id)
     if not now_prog and not next_prog:
         return clean_title, default_plot or clean_title
 
     plot_parts: list[str] = []
     if now_prog:
-        time_info = f" ({now_prog.start_time[-5:]} - {now_prog.end_time[-5:]})" if (now_prog.start_time and now_prog.end_time) else ""
-        plot_parts.append(f"🔴 NO AR: {now_prog.title}{time_info}")
-        if now_prog.synopsis:
-            plot_parts.append(f"\n{now_prog.synopsis}")
+        start_label = datetime.fromtimestamp(now_prog.start_utc).strftime("%H:%M")
+        end_label = datetime.fromtimestamp(now_prog.end_utc).strftime("%H:%M")
+        plot_parts.append(f"[B]NO AR[/B] ({start_label} - {end_label}): {now_prog.title}")
+        if now_prog.description:
+            plot_parts.append(f"\n{now_prog.description}")
 
     if next_prog:
-        next_time_info = f" ({next_prog.start_time[-5:]} - {next_prog.end_time[-5:]})" if (next_prog.start_time and next_prog.end_time) else ""
+        next_start = datetime.fromtimestamp(next_prog.start_utc).strftime("%H:%M")
+        next_end = datetime.fromtimestamp(next_prog.end_utc).strftime("%H:%M")
         prefix = "\n\n" if plot_parts else ""
-        plot_parts.append(f"{prefix}⏭️ A SEGUIR: {next_prog.title}{next_time_info}")
-        if next_prog.synopsis and not now_prog:
-            plot_parts.append(f"\n{next_prog.synopsis}")
+        plot_parts.append(
+            f"{prefix}[B]A SEGUIR[/B] ({next_start} - {next_end}): {next_prog.title}"
+        )
+        if next_prog.description and not now_prog:
+            plot_parts.append(f"\n{next_prog.description}")
 
     full_plot = "".join(plot_parts).strip()
     return clean_title, full_plot or default_plot or clean_title
@@ -184,7 +213,12 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             )
         else:
             # Canais Live TV: apresentação limpa no InfoWall 54 com metadados EPG da Claro
-            display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
+            display_title, live_plot = _format_live_channel_metadata(
+                app,
+                item.name,
+                default_plot=item.plot,
+                epg_id=item.epg_id,
+            )
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
@@ -295,8 +329,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
             ep_title = str(ep.get("title") or f"Episódio {ep_num}").strip()
             ep_ext = str(ep.get("container_extension", "mp4"))
             ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
-            raw_thumb = str(ep.get("info", {}).get("movie_image") or series_cover or "")
-            ep_thumb = _item_icon("series", raw_thumb)
+            ep_thumb = _episode_thumbnail(ep, series_cover)
             label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
             url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
@@ -305,7 +338,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 label,
                 url,
                 icon=ep_thumb,
-                poster=series_cover,
+                poster=ep_thumb,
                 fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 landscape=ep_thumb,
                 is_folder=False,
@@ -355,7 +388,12 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 poster_val = icon_url
             else:
                 # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
-                display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
+                display_title, live_plot = _format_live_channel_metadata(
+                    app,
+                    item.name,
+                    default_plot=item.plot,
+                    epg_id=item.epg_id,
+                )
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
@@ -413,7 +451,12 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             poster_val = icon_url
         else:
             # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
-            display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
+            display_title, live_plot = _format_live_channel_metadata(
+                app,
+                item.name,
+                default_plot=item.plot,
+                epg_id=item.epg_id,
+            )
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
@@ -457,10 +500,12 @@ def _play_item(request: Request, app: AppContainer, section: str, stream_id: str
 def run(argv: list[str]) -> None:
     """Entrypoint estrutural com o contrato oficial de navegação do sTv."""
     import xbmcaddon
+    import xbmcvfs
 
     request = Request.from_argv(argv)
     addon = xbmcaddon.Addon()
     fanart = addon.getAddonInfo("fanart")
+    epg_addon = xbmcaddon.Addon("script.module.saile.epg")
 
     settings = {
         "xtream_url": addon.getSetting("xtream_url"),
@@ -468,8 +513,9 @@ def run(argv: list[str]) -> None:
         "xtream_password": addon.getSetting("xtream_password"),
         "tmdb_language": addon.getSetting("tmdb_language"),
         "epg_enabled": addon.getSetting("epg_enabled") or "true",
-        "epg_cache_hours": addon.getSetting("epg_cache_hours") or "4",
+        "cache_ttl_hours": addon.getSetting("cache_ttl_hours") or "12",
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
+        "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
     app = AppContainer(settings)
 

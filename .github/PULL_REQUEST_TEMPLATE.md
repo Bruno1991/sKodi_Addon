@@ -4,7 +4,9 @@
 
 - [ ] repository.srepo
 - [ ] plugin.video.stv
-- [ ] plugin.audio.sfy
+- [ ] resource.images.saile
+- [ ] script.module.saile.core
+- [ ] script.module.saile.epg
 - [ ] documentação/ferramentas
 
 ## Verificação
