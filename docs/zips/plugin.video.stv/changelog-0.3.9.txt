@@ -1,0 +1,3 @@
+0.3.9
+- Ajuste fino de enquadramento proporcional das logos de canais de TV ao Vivo no padrao do 1º e 2º nivel.
+- Remocao do slot de poster forcado em canais de TV ao Vivo para eliminar 100% do corte/zoom lateral das logos.

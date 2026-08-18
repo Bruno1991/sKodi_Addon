@@ -135,21 +135,19 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV no mesmo padrão de VOD
+            # Canais Live TV: mesmo estilo e enquadramento limpo do 1º e 2º nível (sem forçar poster 2:3)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
                 item.name,
                 url,
                 icon=icon_url,
-                poster=icon_url,
-                clearlogo=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
                 plot=item.plot,
-                media_type="movie",
+                media_type="video",
             )
 
     content_type = "tvshows" if section == "series" else "movies"
@@ -301,11 +299,12 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type = "movie"
                 poster_val = icon_url
             else:
+                # Live TV: sem forçar poster para manter a proporção natural da logo
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
-                media_type = "movie"
-                poster_val = icon_url
+                media_type = "video"
+                poster_val = ""
 
             add_folder(
                 request.handle,
@@ -353,11 +352,12 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type = "movie"
             poster_val = icon_url
         else:
+            # Live TV: sem forçar poster para manter a proporção natural da logo
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
-            media_type = "movie"
-            poster_val = icon_url
+            media_type = "video"
+            poster_val = ""
 
         add_folder(
             request.handle,
