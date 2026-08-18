@@ -1,0 +1,4 @@
+0.4.6
+- Rollback para a versao 0.4.3 comprovadamente estavel.
+- Restaura carregamento instantaneo de listas e categorias no InfoWall 54.
+- Normalizacao de canais de TV ao vivo e artes de alta definicao.
