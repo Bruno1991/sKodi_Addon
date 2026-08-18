@@ -26,8 +26,9 @@ class DatabaseTests(unittest.TestCase):
             StvDatabase(path).initialize()
             names = table_names(path)
             self.assertTrue(
-                {"schema_version", "categories", "media_items", "favorites", "playback_progress"} <= names
+                {"schema_version", "categories", "media_items", "favorites", "playback_progress", "epg_programs"} <= names
             )
+
 
 
 if __name__ == "__main__":

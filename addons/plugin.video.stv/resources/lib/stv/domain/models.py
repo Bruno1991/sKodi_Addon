@@ -28,3 +28,16 @@ class MediaItem:
     plot: str = ""
     extension: str = ""
     generation_id: int = 0
+
+
+@dataclass(frozen=True)
+class EpgProgram:
+    """Representa um programa do Guia de Programação Eletrônico (EPG)."""
+
+    channel_key: str
+    title: str
+    start_time: str
+    end_time: str
+    synopsis: str = ""
+    duration_minutes: int = 0
+

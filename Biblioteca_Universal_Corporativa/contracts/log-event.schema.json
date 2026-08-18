@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/mbuc/log-event-v1.json",
+  "title": "Corporate Structured Log Event v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["timestamp", "level", "event", "message", "service", "correlation_id", "outcome"],
+  "properties": {
+    "timestamp": {"type": "string", "format": "date-time"},
+    "level": {"enum": ["DEBUG", "INFO", "WARN", "ERROR"]},
+    "event": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$"},
+    "message": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "service": {"type": "string", "minLength": 1, "maxLength": 128},
+    "correlation_id": {"type": "string", "minLength": 8, "maxLength": 128},
+    "outcome": {"enum": ["success", "failure", "cancelled", "rejected"]},
+    "duration_ms": {"type": "number", "minimum": 0},
+    "attempt": {"type": "integer", "minimum": 1}
+  }
+}

@@ -29,6 +29,34 @@ def _item_icon(section: str, icon_str: str) -> str:
     return _icon("stv" if section in section_map else "common", filename)
 
 
+def _format_live_channel_metadata(app: AppContainer, channel_raw_name: str, default_plot: str = "") -> tuple[str, str]:
+    """Retorna (label_limpo, plot_formatado_com_epg) para o canal de TV ao vivo."""
+    from stv.providers.epg.normalizer import clean_channel_title
+
+    clean_title = clean_channel_title(channel_raw_name)
+
+    now_prog, next_prog = app.get_channel_epg(channel_raw_name)
+    if not now_prog and not next_prog:
+        return clean_title, default_plot or clean_title
+
+    plot_parts: list[str] = []
+    if now_prog:
+        time_info = f" ({now_prog.start_time[-5:]} - {now_prog.end_time[-5:]})" if (now_prog.start_time and now_prog.end_time) else ""
+        plot_parts.append(f"🔴 NO AR: {now_prog.title}{time_info}")
+        if now_prog.synopsis:
+            plot_parts.append(f"\n{now_prog.synopsis}")
+
+    if next_prog:
+        next_time_info = f" ({next_prog.start_time[-5:]} - {next_prog.end_time[-5:]})" if (next_prog.start_time and next_prog.end_time) else ""
+        prefix = "\n\n" if plot_parts else ""
+        plot_parts.append(f"{prefix}⏭️ A SEGUIR: {next_prog.title}{next_time_info}")
+        if next_prog.synopsis and not now_prog:
+            plot_parts.append(f"\n{next_prog.synopsis}")
+
+    full_plot = "".join(plot_parts).strip()
+    return clean_title, full_plot or default_plot or clean_title
+
+
 def _show_home(request: Request, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
@@ -155,18 +183,19 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # Canais Live TV: mesmo estilo e enquadramento limpo do 1º e 2º nível (sem forçar poster 2:3)
+            # Canais Live TV: apresentação limpa no InfoWall 54 com metadados EPG da Claro
+            display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
-                item.name,
+                display_title,
                 url,
                 icon=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
-                plot=item.plot,
+                plot=live_plot,
                 media_type="video",
             )
 
@@ -325,16 +354,19 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type = "movie"
                 poster_val = icon_url
             else:
-                # Live TV: sem forçar poster para manter a proporção natural da logo
+                # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
+                display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "video"
                 poster_val = ""
+                item_label = display_title
+                item_plot = live_plot
 
             add_folder(
                 request.handle,
-                item.name,
+                item_label if section == "live" else item.name,
                 url,
                 icon=icon_url,
                 poster=poster_val,
@@ -343,7 +375,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_folder=is_folder,
                 is_playable=is_playable,
                 context_menu=context_menu,
-                plot=item.plot,
+                plot=item_plot if section == "live" else item.plot,
                 media_type=media_type,
             )
             
@@ -380,16 +412,19 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type = "movie"
             poster_val = icon_url
         else:
-            # Live TV: sem forçar poster para manter a proporção natural da logo
+            # Live TV: sem forçar poster para manter a proporção natural da logo + EPG Claro
+            display_title, live_plot = _format_live_channel_metadata(app, item.name, default_plot=item.plot)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "video"
             poster_val = ""
+            item_label = display_title
+            item_plot = live_plot
 
         add_folder(
             request.handle,
-            item.name,
+            item_label if section == "live" else item.name,
             url,
             icon=icon_url,
             poster=poster_val,
@@ -398,7 +433,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_folder=is_folder,
             is_playable=is_playable,
             context_menu=context_menu,
-            plot=item.plot,
+            plot=item_plot if section == "live" else item.plot,
             media_type=media_type,
         )
         
@@ -432,6 +467,8 @@ def run(argv: list[str]) -> None:
         "xtream_username": addon.getSetting("xtream_username"),
         "xtream_password": addon.getSetting("xtream_password"),
         "tmdb_language": addon.getSetting("tmdb_language"),
+        "epg_enabled": addon.getSetting("epg_enabled") or "true",
+        "epg_cache_hours": addon.getSetting("epg_cache_hours") or "4",
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
     }
     app = AppContainer(settings)

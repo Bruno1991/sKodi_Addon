@@ -1,11 +1,12 @@
-"""Repositório de persistência SQLite para catálogo, favoritos e progresso de reprodução."""
 from __future__ import annotations
 
 import sqlite3
+from datetime import datetime, timedelta
 from typing import Sequence
 
-from stv.domain.models import Category, MediaItem
+from stv.domain.models import Category, EpgProgram, MediaItem
 from stv.persistence.database import Database
+
 
 
 class CatalogRepository:
@@ -311,3 +312,118 @@ class CatalogRepository:
             if diff_row and diff_row["diff_hours"] is not None and diff_row["diff_hours"] <= ttl_hours:
                 return True
             return False
+
+    def upsert_epg_programs(self, programs: Sequence[EpgProgram]) -> None:
+        """Insere ou atualiza programas de EPG no SQLite."""
+        if not programs:
+            return
+        sql = """
+        INSERT INTO epg_programs (
+            channel_key, title, start_time, end_time, synopsis, duration, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT (channel_key, start_time) DO UPDATE SET
+            title = excluded.title,
+            end_time = excluded.end_time,
+            synopsis = excluded.synopsis,
+            duration = excluded.duration,
+            updated_at = CURRENT_TIMESTAMP
+        """
+        data = [
+            (p.channel_key, p.title, p.start_time, p.end_time, p.synopsis, p.duration_minutes)
+            for p in programs
+        ]
+        with self.db.connect() as connection:
+            connection.executemany(sql, data)
+
+    def get_current_and_next_program(
+        self,
+        channel_key: str,
+        ref_time: datetime | None = None,
+    ) -> tuple[EpgProgram | None, EpgProgram | None]:
+        """Recupera o programa atualmente no ar e o próximo programa para um canal."""
+        now = ref_time or datetime.now()
+        now_str = now.strftime("%Y-%m-%d %H:%M")
+
+        # 1. Programa NO AR: start_time <= now_str e (end_time > now_str ou start_time mais recente <= now)
+        current_sql = """
+        SELECT * FROM epg_programs
+        WHERE channel_key = ? AND start_time <= ? AND end_time > ?
+        ORDER BY start_time DESC
+        LIMIT 1
+        """
+        
+        current_sql_fallback = """
+        SELECT * FROM epg_programs
+        WHERE channel_key = ? AND start_time <= ?
+        ORDER BY start_time DESC
+        LIMIT 1
+        """
+
+        # 2. Próximo Programa: start_time > agora
+        next_sql = """
+        SELECT * FROM epg_programs
+        WHERE channel_key = ? AND start_time > ?
+        ORDER BY start_time ASC
+        LIMIT 1
+        """
+
+        with self.db.connect() as connection:
+            row_current = connection.execute(current_sql, (channel_key, now_str, now_str)).fetchone()
+            if not row_current:
+                row_current = connection.execute(current_sql_fallback, (channel_key, now_str)).fetchone()
+
+            current_prog = None
+            if row_current:
+                current_prog = EpgProgram(
+                    channel_key=row_current["channel_key"],
+                    title=row_current["title"],
+                    start_time=row_current["start_time"],
+                    end_time=row_current["end_time"],
+                    synopsis=row_current["synopsis"],
+                    duration_minutes=int(row_current["duration"]),
+                )
+
+            next_ref = current_prog.end_time if (current_prog and current_prog.end_time) else now_str
+            row_next = connection.execute(next_sql, (channel_key, next_ref)).fetchone()
+            if not row_next and current_prog and current_prog.start_time:
+                row_next = connection.execute(next_sql, (channel_key, current_prog.start_time)).fetchone()
+
+            next_prog = None
+            if row_next:
+                next_prog = EpgProgram(
+                    channel_key=row_next["channel_key"],
+                    title=row_next["title"],
+                    start_time=row_next["start_time"],
+                    end_time=row_next["end_time"],
+                    synopsis=row_next["synopsis"],
+                    duration_minutes=int(row_next["duration"]),
+                )
+
+        return (current_prog, next_prog)
+
+    def is_epg_cache_valid(self, channel_key: str, ttl_hours: int = 4) -> bool:
+        """Verifica se o cache de EPG para o canal está dentro do TTL configurado (padrão 4h)."""
+        sql = "SELECT max(updated_at) as last_update FROM epg_programs WHERE channel_key = ?"
+        with self.db.connect() as connection:
+            row = connection.execute(sql, (channel_key,)).fetchone()
+            if not row or not row["last_update"]:
+                return False
+
+            check_sql = "SELECT (julianday('now') - julianday(?)) * 24 as diff_hours"
+            diff_row = connection.execute(check_sql, (row["last_update"],)).fetchone()
+            if diff_row and diff_row["diff_hours"] is not None and diff_row["diff_hours"] <= ttl_hours:
+                return True
+            return False
+
+    def clean_expired_epg(self, before_iso: str | None = None) -> int:
+        """Remove registros antigos de EPG cuja exibição já encerrou há mais de 12h."""
+        if before_iso:
+            cutoff = before_iso
+        else:
+            cutoff = (datetime.now() - timedelta(hours=12)).strftime("%Y-%m-%d %H:%M")
+
+        sql = "DELETE FROM epg_programs WHERE end_time != '' AND end_time < ?"
+        with self.db.connect() as connection:
+            cursor = connection.execute(sql, (cutoff,))
+            return cursor.rowcount
+

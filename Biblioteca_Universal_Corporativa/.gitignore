@@ -1,0 +1,14 @@
+.build/
+manifest/
+node_modules/
+dist/
+target/
+bin/
+obj/
+vendor/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.idea/
+.vscode/

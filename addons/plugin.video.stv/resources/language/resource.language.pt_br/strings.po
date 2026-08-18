@@ -122,3 +122,36 @@ msgstr "Senha Parental (PIN até 6 dígitos)"
 msgctxt "#30043"
 msgid "Bloqueia conteúdos adultos/18+ e protege o acesso às configurações"
 msgstr "Bloqueia conteúdos adultos/18+ e protege o acesso às configurações"
+
+msgctxt "#30050"
+msgid "EPG (Guia de Programação)"
+msgstr "EPG (Guia de Programação)"
+
+msgctxt "#30051"
+msgid "Configurações da Grade"
+msgstr "Configurações da Grade"
+
+msgctxt "#30052"
+msgid "Ativar EPG nos Canais ao Vivo"
+msgstr "Ativar EPG nos Canais ao Vivo"
+
+msgctxt "#30053"
+msgid "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
+msgstr "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
+
+msgctxt "#30054"
+msgid "Validade do Cache do EPG"
+msgstr "Validade do Cache do EPG"
+
+msgctxt "#30055"
+msgid "Tempo em horas para revalidação dos dados de programação"
+msgstr "Tempo em horas para revalidação dos dados de programação"
+
+msgctxt "#30056"
+msgid "2 Horas"
+msgstr "2 Horas"
+
+msgctxt "#30057"
+msgid "4 Horas (Padrão)"
+msgstr "4 Horas (Padrão)"
+

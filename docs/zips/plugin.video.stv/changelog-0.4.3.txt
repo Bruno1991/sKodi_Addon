@@ -1,0 +1,6 @@
+0.4.3
+- Integracao do Guia de Programacao Eletronico (EPG) baseado na API da Claro TV.
+- Normalizacao inteligente de nomes de canais para matching e apresentacao de titulos limpos.
+- Apresentacao dinamica de programas 'NO AR' e 'A SEGUIR' com sinopse no painel lateral do InfoWall 54.
+- Cache SQLite local de 4 horas para dados de EPG com expurgo automatico de exibicoes passadas.
+- Novas configuracoes no settings.xml para ativacao e controle de validade do EPG.

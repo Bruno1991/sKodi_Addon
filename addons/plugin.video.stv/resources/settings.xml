@@ -50,6 +50,30 @@
         </setting>
       </group>
     </category>
+    <category id="epg" label="30050" help="">
+      <group id="epg_config" label="30051">
+        <setting id="epg_enabled" type="boolean" label="30052" help="30053">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="epg_cache_hours" type="integer" label="30054" help="30055">
+          <level>0</level>
+          <default>4</default>
+          <constraints>
+            <options>
+              <option label="30056">2</option>
+              <option label="30057">4</option>
+              <option label="30034">6</option>
+              <option label="30035">12</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string">
+            <heading>30054</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
     <category id="parental" label="30040" help="">
       <group id="security" label="30041">
         <setting id="parental_pin" type="string" label="30042" help="30043">

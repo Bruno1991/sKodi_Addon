@@ -50,3 +50,31 @@ class AppContainer:
         from stv.providers.tmdb.client import TmdbClient
         lang = self.settings.get("tmdb_language", "pt-BR")
         return TmdbClient(language=lang)
+
+    @property
+    def epg(self) -> 'ClaroEpgClient':
+        from stv.providers.epg.claro import ClaroEpgClient
+        return ClaroEpgClient()
+
+    def get_channel_epg(self, channel_name: str) -> tuple['EpgProgram' | None, 'EpgProgram' | None]:
+        """Obtém os programas 'No Ar' e 'A Seguir' de um canal com cache local de 4h."""
+        if self.settings.get("epg_enabled", "true").lower() == "false":
+            return (None, None)
+
+        from stv.providers.epg.normalizer import normalize_channel_name
+        channel_key = normalize_channel_name(channel_name)
+        if not channel_key:
+            return (None, None)
+
+        try:
+            ttl_hours = int(self.settings.get("epg_cache_hours", "4"))
+        except (ValueError, TypeError):
+            ttl_hours = 4
+
+        if not self.catalog.is_epg_cache_valid(channel_key, ttl_hours=ttl_hours):
+            programs = self.epg.fetch_channel_programs(channel_name)
+            if programs:
+                self.catalog.upsert_epg_programs(programs)
+
+        return self.catalog.get_current_and_next_program(channel_key)
+

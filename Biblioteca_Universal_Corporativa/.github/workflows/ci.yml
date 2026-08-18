@@ -1,0 +1,98 @@
+name: corporate-monorepo-ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python infrastructure/scripts/verify-package.py .
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: python -m pip install -e 'web-scripting/python[test]'
+      - run: python -m pytest web-scripting/python/tests
+  dotnet:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: {dotnet-version: '8.0.x'}
+      - run: dotnet test managed/dotnet/Corporate.Security.Tests/Corporate.Security.Tests.csproj -c Release
+  rust:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: {components: rustfmt, clippy}
+      - run: cargo fmt --manifest-path systems/rust/Cargo.toml --check
+      - run: cargo clippy --manifest-path systems/rust/Cargo.toml --all-targets -- -D warnings
+      - run: cargo test --manifest-path systems/rust/Cargo.toml
+  typescript:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: pnpm/action-setup@v4
+        with: {version: 11.19.0, run_install: false}
+      - working-directory: web-scripting/typescript
+        run: pnpm install --frozen-lockfile && pnpm test && pnpm run build
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends cmake ninja-build libssl-dev
+      - run: cmake -S native/cpp -B .build/cpp -G Ninja -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build .build/cpp && ctest --test-dir .build/cpp --output-on-failure
+      - run: cmake -S native/assembly-x86_64 -B .build/asm -G Ninja -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build .build/asm && ctest --test-dir .build/asm --output-on-failure
+  jvm:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21', cache: maven}
+      - run: mvn -q -f managed/java/pom.xml verify
+      - run: mvn -q -f managed/kotlin/pom.xml verify
+  php:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with: {php-version: '8.3', extensions: openssl, tools: composer:v2}
+      - working-directory: web-scripting/php
+        run: composer install --no-interaction --prefer-dist && composer test && composer analyse
+  arduino:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install 'platformio==6.1.18'
+      - run: pio run -d native/arduino
+  sql:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sqlite3 ':memory:' < infrastructure/sql/sqlite/001_core_schema.sql
+  container:
+    runs-on: ubuntu-24.04
+    needs: [validate, python]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with: {context: ., push: false, tags: mbuc-reference-api:${{ github.sha }}}

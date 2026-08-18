@@ -55,6 +55,20 @@ CREATE TABLE IF NOT EXISTS playback_progress (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (media_type, item_id)
 );
+
+CREATE TABLE IF NOT EXISTS epg_programs (
+    channel_key TEXT NOT NULL,
+    title TEXT NOT NULL,
+    start_time TEXT NOT NULL,
+    end_time TEXT NOT NULL,
+    synopsis TEXT NOT NULL DEFAULT '',
+    duration INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (channel_key, start_time)
+);
+
+CREATE INDEX IF NOT EXISTS idx_epg_channel_time
+ON epg_programs(channel_key, start_time, end_time);
 """
 
 FTS5_SCHEMA = """
@@ -121,6 +135,7 @@ class Database:
 
             row = connection.execute("SELECT COUNT(*) AS total FROM schema_version").fetchone()
             if row["total"] == 0:
-                connection.execute("INSERT INTO schema_version(version) VALUES (2)")
+                connection.execute("INSERT INTO schema_version(version) VALUES (3)")
             else:
-                connection.execute("UPDATE schema_version SET version = 2")
+                connection.execute("UPDATE schema_version SET version = 3")
+

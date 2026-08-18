@@ -65,6 +65,51 @@ class UIStandardizationTests(unittest.TestCase):
         other_fallback = _item_icon("other", "")
         self.assertTrue(other_fallback.endswith("folder.png"), other_fallback)
 
+    def test_format_live_channel_metadata_with_epg(self) -> None:
+        import tempfile
+        from stv.app.services import AppContainer
+        from stv.bootstrap import _format_live_channel_metadata
+        from stv.domain.models import EpgProgram
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            settings = {
+                "profile_path": tmp_dir,
+                "epg_enabled": "true",
+                "epg_cache_hours": "4",
+            }
+            app = AppContainer(settings)
+            
+            # 1. Sem EPG: deve retornar título limpo e plot default
+            title, plot = _format_live_channel_metadata(app, "BR | GLOBO SP FHD", default_plot="Canal de TV")
+            self.assertEqual(title, "Globo SP")
+            self.assertEqual(plot, "Canal de TV")
+
+            # 2. Com EPG populado: deve formatar 🔴 NO AR e ⏭️ A SEGUIR
+            programs = [
+                EpgProgram(
+                    channel_key="GLOBO",
+                    title="Jornal Nacional",
+                    start_time="2020-01-01 20:30",
+                    end_time="2099-01-01 21:20",
+                    synopsis="Notícias do dia no Brasil.",
+                ),
+                EpgProgram(
+                    channel_key="GLOBO",
+                    title="Novela das Nove",
+                    start_time="2099-01-01 21:20",
+                    end_time="2099-01-01 22:25",
+                    synopsis="Capítulo de hoje.",
+                ),
+            ]
+            app.catalog.upsert_epg_programs(programs)
+
+            title_epg, plot_epg = _format_live_channel_metadata(app, "BR | GLOBO SP FHD")
+            self.assertEqual(title_epg, "Globo SP")
+            self.assertIn("🔴 NO AR: Jornal Nacional", plot_epg)
+            self.assertIn("Notícias do dia no Brasil.", plot_epg)
+            self.assertIn("⏭️ A SEGUIR: Novela das Nove", plot_epg)
+
 
 if __name__ == "__main__":
     unittest.main()
+

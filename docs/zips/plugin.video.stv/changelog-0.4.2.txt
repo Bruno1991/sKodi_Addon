@@ -1,4 +1,0 @@
-0.4.2
-- Correcao na extracao de category_id durante sincronizacao sob demanda.
-- Consolidacao da trava de visualizacao InfoWall (54) em todas as categorias.
-- Preservacao integral da apresentacao aprovada de logos de canais de TV ao vivo e VOD.

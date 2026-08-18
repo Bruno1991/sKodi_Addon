@@ -122,3 +122,36 @@ msgstr "Parental PIN (up to 6 digits)"
 msgctxt "#30043"
 msgid "Bloqueia conteúdos adultos/18+ e protege o acesso às configurações"
 msgstr "Locks adult/18+ content and protects settings access"
+
+msgctxt "#30050"
+msgid "EPG (Guia de Programação)"
+msgstr "EPG (Electronic Program Guide)"
+
+msgctxt "#30051"
+msgid "Configurações da Grade"
+msgstr "Guide Settings"
+
+msgctxt "#30052"
+msgid "Ativar EPG nos Canais ao Vivo"
+msgstr "Enable EPG for Live Channels"
+
+msgctxt "#30053"
+msgid "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
+msgstr "Displays current and next program in the InfoWall sidepanel"
+
+msgctxt "#30054"
+msgid "Validade do Cache do EPG"
+msgstr "EPG Cache Validity"
+
+msgctxt "#30055"
+msgid "Tempo em horas para revalidação dos dados de programação"
+msgstr "Time in hours before refreshing guide data"
+
+msgctxt "#30056"
+msgid "2 Horas"
+msgstr "2 Hours"
+
+msgctxt "#30057"
+msgid "4 Horas (Padrão)"
+msgstr "4 Hours (Default)"
+
