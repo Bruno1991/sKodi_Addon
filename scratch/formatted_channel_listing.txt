@@ -1,0 +1,646 @@
+=== CATEGORIAS NO XTREAM (Total: 2135 canais em 35 categorias) ===
+  [PASTA] INFANTIL 24H: 380 canais
+  [PASTA] GLOBO: 238 canais
+  [PASTA] 18+  ADULTOS: 209 canais
+  [PASTA] SERIES 24H: 127 canais
+  [PASTA] RADIOS AO VIVO: 112 canais
+  [PASTA] FILMES 24H: 82 canais
+  [PASTA] PAY-PER-VIEW: 71 canais
+  [PASTA] SPORTS: 68 canais
+  [PASTA] FILMES E SERIES: 66 canais
+  [PASTA] ABERTOS: 64 canais
+  [PASTA] VARIEDADE: 59 canais
+  [PASTA] RECORD: 57 canais
+  [PASTA] DOCUMENTARIOS: 56 canais
+  [PASTA] COMEDIA 24H: 50 canais
+  [PASTA] CANAIS LEGENDADOS: 45 canais
+  [PASTA] PREMIERES: 36 canais
+  [PASTA] RELIGIOSOS: 33 canais
+  [PASTA] HBO: 33 canais
+  [PASTA] NOVELAS 24H: 31 canais
+  [PASTA] CINE SKY / SKY PLAY: 30 canais
+  [PASTA] INFANTIL: 29 canais
+  [PASTA] SBT: 27 canais
+  [PASTA] TELECINE: 27 canais
+  [PASTA] ENTRETENIMENTO: 26 canais
+  [PASTA] COPA/CAMPEONATO: 25 canais
+  [PASTA] NOTICIAS: 25 canais
+  [PASTA] CINE PIPOCA / COMEDIA: 20 canais
+  [PASTA] CINEFLIX: 18 canais
+  [PASTA] 24H-SHOWS: 17 canais
+  [PASTA] NETFLIX 24HRS: 16 canais
+  [PASTA] BAND: 15 canais
+  [PASTA] INTERCINE: 15 canais
+  [PASTA] JOGOS DE HOJE: 13 canais
+  [PASTA] PARAMOUNT/CONMEBOL TV: 8 canais
+  [PASTA] Câmeras Ao Vivo: 7 canais
+
+=== AMOSTRA DE CANAIS NO XTREAM POR CATEGORIA ===
+
+--- Categoria: INFANTIL 24H (380 canais) ---
+    - '101 Dálmatas' (Norm: '101 DALMATAS')
+    - '3 Palavrinhas' (Norm: '3 PALAVRINHAS')
+    - '44 Gatos' (Norm: '44 GATOS')
+    - 'A Bruxinha Sabrina' (Norm: 'A BRUXINHA SABRINA')
+    - 'A Escola De Susto Do Gasparzinho' (Norm: 'A ESCOLA DE SUSTO DO GASPARZINHO')
+    - 'A Família Addams' (Norm: 'A FAMILIA ADDAMS')
+    - 'A Formiga Atômica' (Norm: 'A FORMIGA ATOMICA')
+    - 'A Guarda Do Leão' (Norm: 'A GUARDA DO LEAO')
+    - 'A Hora Do Rock' (Norm: 'A HORA DO ROCK')
+    - 'A Lenda De Tarzan' (Norm: 'A LENDA DE TARZAN')
+    ... e mais 370 canais
+
+--- Categoria: GLOBO (238 canais) ---
+    - 'Amazonica Rio Branco' (Norm: 'AMAZONICA RIO BRANCO')
+    - 'Amazonica Rio Branco' (Norm: 'AMAZONICA RIO BRANCO')
+    - 'Amazonica Rio Branco' (Norm: 'AMAZONICA RIO BRANCO')
+    - 'Eptv Campinas' (Norm: 'EPTV CAMPINAS')
+    - 'Eptv Campinas' (Norm: 'EPTV CAMPINAS')
+    - 'Eptv Campinas' (Norm: 'EPTV CAMPINAS')
+    - 'Eptv Ribeirao Preto' (Norm: 'EPTV RIBEIRAO PRETO')
+    - 'Eptv Ribeirao Preto' (Norm: 'EPTV RIBEIRAO PRETO')
+    - 'Eptv Ribeirao Preto' (Norm: 'EPTV RIBEIRAO PRETO')
+    - 'Eptv Ribeirao Preto' (Norm: 'EPTV RIBEIRAO PRETO')
+    ... e mais 228 canais
+
+--- Categoria: 18+  ADULTOS (209 canais) ---
+    - '24h Bisexual' (Norm: '24H BISEXUAL')
+    - '24h Gay' (Norm: '24H GAY')
+    - '24h Gay 2' (Norm: '24H GAY 2')
+    - '24h Gay 3' (Norm: '24H GAY 3')
+    - '24h-xxx Adulto 02' (Norm: '24H XXX ADULTO 02')
+    - '24h-xxx Adulto 05' (Norm: '24H XXX ADULTO 05')
+    - '24h-xxx Adulto 06' (Norm: '24H XXX ADULTO 06')
+    - '24h-xxx Adulto 07' (Norm: '24H XXX ADULTO 07')
+    - '24h-xxx Adulto 08' (Norm: '24H XXX ADULTO 08')
+    - '24h-xxx Adulto 09' (Norm: '24H XXX ADULTO 09')
+    ... e mais 199 canais
+
+--- Categoria: SERIES 24H (127 canais) ---
+    - '24 Horas' (Norm: '24 HORAS')
+    - 'A Casa Do Dragão' (Norm: 'A CASA DO DRAGAO')
+    - 'A Fazenda' (Norm: 'A FAZENDA')
+    - 'A Feiticeira' (Norm: 'A FEITICEIRA')
+    - 'A Hora Do Arrepio' (Norm: 'A HORA DO ARREPIO')
+    - 'A Maldicao De Oak' (Norm: 'A MALDICAO DE OAK')
+    - 'A Super Máquina' (Norm: 'A SUPER MAQUINA')
+    - 'Aeroporto Area Restrita' (Norm: 'AEROPORTO AREA RESTRITA')
+    - 'Alaska The Last Frontier' (Norm: 'ALASKA THE LAST FRONTIER')
+    - 'Alias - Codinome Perigo' (Norm: 'ALIAS CODINOME PERIGO')
+    ... e mais 117 canais
+
+--- Categoria: RADIOS AO VIVO (112 canais) ---
+    - '1.fm Kids Fm' (Norm: '1 FM KIDS FM')
+    - 'Adoro Flashback' (Norm: 'ADORO FLASHBACK')
+    - 'Arapuan' (Norm: 'ARAPUAN')
+    - 'Back-to-the-80s' (Norm: 'BACK TO THE 80S')
+    - 'Bons Tempos Fm' (Norm: 'BONS TEMPOS FM')
+    - 'Bossa Nova Brazil' (Norm: 'BOSSA NOVA BRAZIL')
+    - 'Brega Hits Belo Horizonte / MG - Brasil' (Norm: 'BREGA HITS BELO HORIZONTE MG BRASIL')
+    - 'Cbn Grandes Lagos 90.9 Fm' (Norm: 'CBN GRANDES LAGOS 90 9 FM')
+    - 'Clube-fm' (Norm: 'CLUBE FM')
+    - 'DF - Hunter Fm Pop' (Norm: 'DF HUNTER FM POP')
+    ... e mais 102 canais
+
+--- Categoria: FILMES 24H (82 canais) ---
+    - '007' (Norm: '007')
+    - 'A Era Do Gelo' (Norm: 'A ERA DO GELO')
+    - 'A Hora Do Pesadelo' (Norm: 'A HORA DO PESADELO')
+    - 'Adam Sandler' (Norm: 'ADAM SANDLER')
+    - 'Alien' (Norm: 'ALIEN')
+    - 'American Pie' (Norm: 'AMERICAN PIE')
+    - 'Animes' (Norm: 'ANIMES')
+    - 'Anjos Da Noite' (Norm: 'ANJOS DA NOITE')
+    - 'Arnold Schwarzenegger' (Norm: 'ARNOLD SCHWARZENEGGER')
+    - 'Batman' (Norm: 'BATMAN')
+    ... e mais 72 canais
+
+--- Categoria: PAY-PER-VIEW (71 canais) ---
+    - 'Appletv+ 01' (Norm: 'APPLETV 01')
+    - 'Appletv+ 02' (Norm: 'APPLETV 02')
+    - 'Barretos 2024' (Norm: 'BARRETOS 2024')
+    - 'Brasileirao Serie C 1' (Norm: 'BRASILEIRAO SERIE C 1')
+    - 'Brasileirao Serie C 1' (Norm: 'BRASILEIRAO SERIE C 1')
+    - 'Brasileirao Serie C 2' (Norm: 'BRASILEIRAO SERIE C 2')
+    - 'Brasileirao Serie C 2' (Norm: 'BRASILEIRAO SERIE C 2')
+    - 'Brasileirao Serie C 3' (Norm: 'BRASILEIRAO SERIE C 3')
+    - 'Brasileirao Serie C 3' (Norm: 'BRASILEIRAO SERIE C 3')
+    - 'Canal Uol' (Norm: 'CANAL UOL')
+    ... e mais 61 canais
+
+--- Categoria: SPORTS (68 canais) ---
+    - 'Band Sports' (Norm: 'BAND SPORTS')
+    - 'Band Sports' (Norm: 'BAND SPORTS')
+    - 'Band Sports' (Norm: 'BAND SPORTS')
+    - 'Band Sports' (Norm: 'BAND SPORTS')
+    - 'Canal Goat' (Norm: 'CANAL GOAT')
+    - 'Canal Goat 02' (Norm: 'CANAL GOAT 02')
+    - 'Canal Goat 03' (Norm: 'CANAL GOAT 03')
+    - 'Combate' (Norm: 'COMBATE')
+    - 'Combate' (Norm: 'COMBATE')
+    - 'Combate' (Norm: 'COMBATE')
+    ... e mais 58 canais
+
+--- Categoria: FILMES E SERIES (66 canais) ---
+    - 'A&e' (Norm: 'A E')
+    - 'A&e' (Norm: 'A E')
+    - 'A&e' (Norm: 'A E')
+    - 'A&e' (Norm: 'A E')
+    - 'AMC' (Norm: 'AMC')
+    - 'AMC' (Norm: 'AMC')
+    - 'AMC' (Norm: 'AMC')
+    - 'AMC' (Norm: 'AMC')
+    - 'AXN' (Norm: 'AXN')
+    - 'AXN' (Norm: 'AXN')
+    ... e mais 56 canais
+
+--- Categoria: ABERTOS (64 canais) ---
+    - 'Agro Canal' (Norm: 'AGRO CANAL')
+    - 'Agromais' (Norm: 'AGROMAIS')
+    - 'Canal Brasil' (Norm: 'CANAL BRASIL')
+    - 'Canal Brasil' (Norm: 'CANAL BRASIL')
+    - 'Canal Brasil' (Norm: 'CANAL BRASIL')
+    - 'Canal Brasil' (Norm: 'CANAL BRASIL')
+    - 'Canal Do Boi' (Norm: 'CANAL DO BOI')
+    - 'Canal Rural' (Norm: 'CANAL RURAL')
+    - 'Futura' (Norm: 'FUTURA')
+    - 'Futura' (Norm: 'FUTURA')
+    ... e mais 54 canais
+
+--- Categoria: VARIEDADE (59 canais) ---
+    - 'Arte 1' (Norm: 'ARTE 1')
+    - 'Arte 1' (Norm: 'ARTE 1')
+    - 'Arte 1' (Norm: 'ARTE 1')
+    - 'Arte 1' (Norm: 'ARTE 1')
+    - 'Cultura' (Norm: 'CULTURA')
+    - 'Curta!' (Norm: 'CURTA')
+    - 'Curta!' (Norm: 'CURTA')
+    - 'Curta!' (Norm: 'CURTA')
+    - 'Curta!' (Norm: 'CURTA')
+    - 'E!' (Norm: 'E')
+    ... e mais 49 canais
+
+--- Categoria: RECORD (57 canais) ---
+    - 'Rd Bahia' (Norm: 'RD BAHIA')
+    - 'Rd Bahia' (Norm: 'RD BAHIA')
+    - 'Rd Bahia' (Norm: 'RD BAHIA')
+    - 'Rd Bahia Hd¹' (Norm: 'RD BAHIA HD1')
+    - 'Rd Blumenau' (Norm: 'RD BLUMENAU')
+    - 'Rd Brasilia' (Norm: 'RD BRASILIA')
+    - 'Rd Brasilia' (Norm: 'RD BRASILIA')
+    - 'Rd Brasilia' (Norm: 'RD BRASILIA')
+    - 'Rd Campinas' (Norm: 'RD CAMPINAS')
+    - 'Rd Criciuma' (Norm: 'RD CRICIUMA')
+    ... e mais 47 canais
+
+--- Categoria: DOCUMENTARIOS (56 canais) ---
+    - 'Animal Planet' (Norm: 'ANIMAL PLANET')
+    - 'Animal Planet' (Norm: 'ANIMAL PLANET')
+    - 'Animal Planet' (Norm: 'ANIMAL PLANET')
+    - 'Animal Planet' (Norm: 'ANIMAL PLANET')
+    - 'Animal Planet' (Norm: 'ANIMAL PLANET')
+    - 'Disc Channel' (Norm: 'DISC CHANNEL')
+    - 'Disc Channel' (Norm: 'DISC CHANNEL')
+    - 'Disc Channel' (Norm: 'DISC CHANNEL')
+    - 'Disc Channel' (Norm: 'DISC CHANNEL')
+    - 'Disc Channel' (Norm: 'DISC CHANNEL')
+    ... e mais 46 canais
+
+--- Categoria: COMEDIA 24H (50 canais) ---
+    - 'A Casa Da Raven' (Norm: 'A CASA DA RAVEN')
+    - 'A Diarista' (Norm: 'A DIARISTA')
+    - 'A Feiticeira' (Norm: 'A FEITICEIRA')
+    - 'A Grande Família' (Norm: 'A GRANDE FAMILIA')
+    - 'A Praça E Nossa' (Norm: 'A PRACA E NOSSA')
+    - 'A Turma Do Didi' (Norm: 'A TURMA DO DIDI')
+    - 'A Vila' (Norm: 'A VILA')
+    - 'Alf O Eteimoso' (Norm: 'ALF O ETEIMOSO')
+    - 'Arnold' (Norm: 'ARNOLD')
+    - 'As Visões Da Raven' (Norm: 'AS VISOES DA RAVEN')
+    ... e mais 40 canais
+
+--- Categoria: CANAIS LEGENDADOS (45 canais) ---
+    - 'AXN' (Norm: 'AXN')
+    - 'AXN' (Norm: 'AXN')
+    - 'AXN' (Norm: 'AXN')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO Mundi' (Norm: 'HBO MUNDI')
+    - 'HBO Mundi' (Norm: 'HBO MUNDI')
+    - 'HBO Mundi' (Norm: 'HBO MUNDI')
+    - 'HBO Pop' (Norm: 'HBO POP')
+    ... e mais 35 canais
+
+--- Categoria: PREMIERES (36 canais) ---
+    - 'Pfc 2' (Norm: 'PFC 2')
+    - 'Pfc 2' (Norm: 'PFC 2')
+    - 'Pfc 2' (Norm: 'PFC 2')
+    - 'Pfc 2' (Norm: 'PFC 2')
+    - 'Pfc 3' (Norm: 'PFC 3')
+    - 'Pfc 3' (Norm: 'PFC 3')
+    - 'Pfc 3' (Norm: 'PFC 3')
+    - 'Pfc 3' (Norm: 'PFC 3')
+    - 'Pfc 4' (Norm: 'PFC 4')
+    - 'Pfc 4' (Norm: 'PFC 4')
+    ... e mais 26 canais
+
+--- Categoria: RELIGIOSOS (33 canais) ---
+    - 'Cancao Nova' (Norm: 'CANCAO NOVA')
+    - 'Cancao Nova ES' (Norm: 'CANCAO NOVA ES')
+    - 'Cancao Nova ES' (Norm: 'CANCAO NOVA ES')
+    - 'Gospel Cartoon' (Norm: 'GOSPEL CARTOON')
+    - 'Gospel Movie Tv' (Norm: 'GOSPEL MOVIE TV')
+    - 'Impd Tv' (Norm: 'IMPD TV')
+    - 'Impd Tv' (Norm: 'IMPD TV')
+    - 'Novo Tempo' (Norm: 'NOVO TEMPO')
+    - 'Novo Tempo' (Norm: 'NOVO TEMPO')
+    - 'Novo Tempo' (Norm: 'NOVO TEMPO')
+    ... e mais 23 canais
+
+--- Categoria: HBO (33 canais) ---
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO' (Norm: 'HBO')
+    - 'HBO 2' (Norm: 'HBO 2')
+    - 'HBO 2' (Norm: 'HBO 2')
+    - 'HBO 2' (Norm: 'HBO 2')
+    - 'HBO 2' (Norm: 'HBO 2')
+    - 'HBO Family' (Norm: 'HBO FAMILY')
+    - 'HBO Family' (Norm: 'HBO FAMILY')
+    ... e mais 23 canais
+
+--- Categoria: NOVELAS 24H (31 canais) ---
+    - 'A Bandida' (Norm: 'A BANDIDA')
+    - 'A Lua Me Disse' (Norm: 'A LUA ME DISSE')
+    - 'A Muralha' (Norm: 'A MURALHA')
+    - 'Anjo Mau 1997' (Norm: 'ANJO MAU 1997')
+    - 'Bambolê' (Norm: 'BAMBOLE')
+    - 'Barriga De Aluguel' (Norm: 'BARRIGA DE ALUGUEL')
+    - 'Beleza Fatal' (Norm: 'BELEZA FATAL')
+    - 'Beleza Pura' (Norm: 'BELEZA PURA')
+    - 'Cabocla 2004' (Norm: 'CABOCLA 2004')
+    - 'Café Com Aroma De Mulher' (Norm: 'CAFE COM AROMA DE MULHER')
+    ... e mais 21 canais
+
+--- Categoria: CINE SKY / SKY PLAY (30 canais) ---
+    - 'Cine Sky 01' (Norm: 'CINE SKY 01')
+    - 'Cine Sky 02' (Norm: 'CINE SKY 02')
+    - 'Cine Sky 03' (Norm: 'CINE SKY 03')
+    - 'Cine Sky 04' (Norm: 'CINE SKY 04')
+    - 'Cine Sky 05' (Norm: 'CINE SKY 05')
+    - 'Cine Sky 06' (Norm: 'CINE SKY 06')
+    - 'Cine Sky 07' (Norm: 'CINE SKY 07')
+    - 'Cine Sky 08' (Norm: 'CINE SKY 08')
+    - 'Cine Sky 09' (Norm: 'CINE SKY 09')
+    - 'Cine Sky 10' (Norm: 'CINE SKY 10')
+    ... e mais 20 canais
+
+--- Categoria: INFANTIL (29 canais) ---
+    - 'Box Kids' (Norm: 'BOX KIDS')
+    - 'Cartoon' (Norm: 'CARTOON')
+    - 'Cartoon' (Norm: 'CARTOON')
+    - 'Cartoon' (Norm: 'CARTOON')
+    - 'Cartoon' (Norm: 'CARTOON')
+    - 'Cartoon' (Norm: 'CARTOON')
+    - 'Cartoonito' (Norm: 'CARTOONITO')
+    - 'Cartoonito' (Norm: 'CARTOONITO')
+    - 'Cartoonito' (Norm: 'CARTOONITO')
+    - 'Cartoonito' (Norm: 'CARTOONITO')
+    ... e mais 19 canais
+
+--- Categoria: SBT (27 canais) ---
+    - '+sbt Novelas' (Norm: 'SBT NOVELAS')
+    - '+sbt Silvio Santos' (Norm: 'SBT SILVIO SANTOS')
+    - '+sbt Tv Zyn' (Norm: 'SBT TV ZYN')
+    - 'SBT' (Norm: 'SBT')
+    - 'SBT' (Norm: 'SBT')
+    - 'SBT' (Norm: 'SBT')
+    - 'SBT' (Norm: 'SBT')
+    - 'SBT Fullhd' (Norm: 'SBT FULLHD')
+    - 'SBT MG Tv Alterosa' (Norm: 'SBT MG TV ALTEROSA')
+    - 'SBT Para' (Norm: 'SBT PARA')
+    ... e mais 17 canais
+
+--- Categoria: TELECINE (27 canais) ---
+    - 'Tc Action' (Norm: 'TC ACTION')
+    - 'Tc Action' (Norm: 'TC ACTION')
+    - 'Tc Action' (Norm: 'TC ACTION')
+    - 'Tc Action' (Norm: 'TC ACTION')
+    - 'Tc Action' (Norm: 'TC ACTION')
+    - 'Tc Cult' (Norm: 'TC CULT')
+    - 'Tc Cult' (Norm: 'TC CULT')
+    - 'Tc Cult' (Norm: 'TC CULT')
+    - 'Tc Cult' (Norm: 'TC CULT')
+    - 'Tc Fun' (Norm: 'TC FUN')
+    ... e mais 17 canais
+
+--- Categoria: ENTRETENIMENTO (26 canais) ---
+    - 'BIS' (Norm: 'BIS')
+    - 'BIS' (Norm: 'BIS')
+    - 'BIS' (Norm: 'BIS')
+    - 'BIS' (Norm: 'BIS')
+    - 'MTV Live' (Norm: 'MTV LIVE')
+    - 'Multishow' (Norm: 'MULTISHOW')
+    - 'Multishow' (Norm: 'MULTISHOW')
+    - 'Multishow' (Norm: 'MULTISHOW')
+    - 'Multishow' (Norm: 'MULTISHOW')
+    - 'Multishow' (Norm: 'MULTISHOW')
+    ... e mais 16 canais
+
+--- Categoria: COPA/CAMPEONATO (25 canais) ---
+    - 'Alagoano 01' (Norm: 'ALAGOANO 01')
+    - 'Alagoano 02' (Norm: 'ALAGOANO 02')
+    - 'Campeonato Cearense' (Norm: 'CAMPEONATO CEARENSE')
+    - 'Carioca 01' (Norm: 'CARIOCA 01')
+    - 'Carioca 01¹' (Norm: 'CARIOCA 011')
+    - 'Carioca 02' (Norm: 'CARIOCA 02')
+    - 'Carioca 02²' (Norm: 'CARIOCA 022')
+    - 'Caze Tv 1' (Norm: 'CAZE TV 1')
+    - 'Caze Tv 2' (Norm: 'CAZE TV 2')
+    - 'Caze Tv 3' (Norm: 'CAZE TV 3')
+    ... e mais 15 canais
+
+--- Categoria: NOTICIAS (25 canais) ---
+    - 'Band News' (Norm: 'BAND NEWS')
+    - 'Band News' (Norm: 'BAND NEWS')
+    - 'Band News' (Norm: 'BAND NEWS')
+    - 'Band News' (Norm: 'BAND NEWS')
+    - 'Bm&c News' (Norm: 'BM C NEWS')
+    - 'CNN Brasil' (Norm: 'CNN BRASIL')
+    - 'CNN Brasil' (Norm: 'CNN BRASIL')
+    - 'CNN Brasil' (Norm: 'CNN BRASIL')
+    - 'CNN Brasil' (Norm: 'CNN BRASIL')
+    - 'CNN Brasil' (Norm: 'CNN BRASIL')
+    ... e mais 15 canais
+
+--- Categoria: CINE PIPOCA / COMEDIA (20 canais) ---
+    - 'Cine 01' (Norm: 'CINE 01')
+    - 'Cine 02' (Norm: 'CINE 02')
+    - 'Cine 03' (Norm: 'CINE 03')
+    - 'Cine 04' (Norm: 'CINE 04')
+    - 'Cine 05' (Norm: 'CINE 05')
+    - 'Cine 06' (Norm: 'CINE 06')
+    - 'Cine 07' (Norm: 'CINE 07')
+    - 'Cine 08' (Norm: 'CINE 08')
+    - 'Cine 09' (Norm: 'CINE 09')
+    - 'Cine 10' (Norm: 'CINE 10')
+    ... e mais 10 canais
+
+--- Categoria: CINEFLIX (18 canais) ---
+    - 'Cineflix 01' (Norm: 'CINEFLIX 01')
+    - 'Cineflix 02' (Norm: 'CINEFLIX 02')
+    - 'Cineflix 03' (Norm: 'CINEFLIX 03')
+    - 'Cineflix 04' (Norm: 'CINEFLIX 04')
+    - 'Cineflix 05' (Norm: 'CINEFLIX 05')
+    - 'Cineflix 06' (Norm: 'CINEFLIX 06')
+    - 'Cineflix 07' (Norm: 'CINEFLIX 07')
+    - 'Cineflix 08' (Norm: 'CINEFLIX 08')
+    - 'Cineflix 09' (Norm: 'CINEFLIX 09')
+    - 'Cineflix 10' (Norm: 'CINEFLIX 10')
+    ... e mais 8 canais
+
+--- Categoria: 24H-SHOWS (17 canais) ---
+    - 'Clipes Gospel' (Norm: 'CLIPES GOSPEL')
+    - 'Deluxe Music Tv' (Norm: 'DELUXE MUSIC TV')
+    - 'Flashback 70 80 90' (Norm: 'FLASHBACK 70 80 90')
+    - 'Gospel Music Television' (Norm: 'GOSPEL MUSIC TELEVISION')
+    - 'Live Marília Mendonça' (Norm: 'LIVE MARILIA MENDONCA')
+    - 'Live Show Com Juliana E Bond Do Forró' (Norm: 'LIVE SHOW COM JULIANA E BOND DO FORRO')
+    - 'Naiara Azevedo' (Norm: 'NAIARA AZEVEDO')
+    - 'Nashville Country Music' (Norm: 'NASHVILLE COUNTRY MUSIC')
+    - 'Now 70's' (Norm: 'NOW 70 S')
+    - 'Now 80's' (Norm: 'NOW 80 S')
+    ... e mais 7 canais
+
+--- Categoria: NETFLIX 24HRS (16 canais) ---
+    - 'Netflix' (Norm: 'NETFLIX')
+    - 'Netflix 10' (Norm: 'NETFLIX 10')
+    - 'Netflix 11' (Norm: 'NETFLIX 11')
+    - 'Netflix 12' (Norm: 'NETFLIX 12')
+    - 'Netflix 13' (Norm: 'NETFLIX 13')
+    - 'Netflix 14' (Norm: 'NETFLIX 14')
+    - 'Netflix 15' (Norm: 'NETFLIX 15')
+    - 'Netflix 16' (Norm: 'NETFLIX 16')
+    - 'Netflix 2' (Norm: 'NETFLIX 2')
+    - 'Netflix 3' (Norm: 'NETFLIX 3')
+    ... e mais 6 canais
+
+--- Categoria: BAND (15 canais) ---
+    - 'Band' (Norm: 'BAND')
+    - 'Band' (Norm: 'BAND')
+    - 'Bd Bahia' (Norm: 'BD BAHIA')
+    - 'Bd Campinas' (Norm: 'BD CAMPINAS')
+    - 'Bd RJ' (Norm: 'BD RJ')
+    - 'Bd RJ' (Norm: 'BD RJ')
+    - 'Bd RS' (Norm: 'BD RS')
+    - 'Bd Recife Tv Tribuna' (Norm: 'BD RECIFE TV TRIBUNA')
+    - 'Bd Rn' (Norm: 'BD RN')
+    - 'Bd SP' (Norm: 'BD SP')
+    ... e mais 5 canais
+
+--- Categoria: INTERCINE (15 canais) ---
+    - 'Intercine 01' (Norm: 'INTERCINE 01')
+    - 'Intercine 02' (Norm: 'INTERCINE 02')
+    - 'Intercine 03' (Norm: 'INTERCINE 03')
+    - 'Intercine 04' (Norm: 'INTERCINE 04')
+    - 'Intercine 05' (Norm: 'INTERCINE 05')
+    - 'Intercine 06' (Norm: 'INTERCINE 06')
+    - 'Intercine 07' (Norm: 'INTERCINE 07')
+    - 'Intercine 08' (Norm: 'INTERCINE 08')
+    - 'Intercine 09' (Norm: 'INTERCINE 09')
+    - 'Intercine 10' (Norm: 'INTERCINE 10')
+    ... e mais 5 canais
+
+--- Categoria: JOGOS DE HOJE (13 canais) ---
+    - 'Athletic X Novorizontino' (Norm: 'ATHLETIC X NOVORIZONTINO')
+    - 'Botafogo X Athletico-pr' (Norm: 'BOTAFOGO X ATHLETICO PR')
+    - 'Jogo 01' (Norm: 'JOGO 01')
+    - 'Jogo 02' (Norm: 'JOGO 02')
+    - 'Jogo 03' (Norm: 'JOGO 03')
+    - 'Jogo 04' (Norm: 'JOGO 04')
+    - 'Jogo 05' (Norm: 'JOGO 05')
+    - 'Jogo 06' (Norm: 'JOGO 06')
+    - 'Jogo 07' (Norm: 'JOGO 07')
+    - 'Jogo 08' (Norm: 'JOGO 08')
+    ... e mais 3 canais
+
+--- Categoria: PARAMOUNT/CONMEBOL TV (8 canais) ---
+    - 'Paramount / Conmebol 1' (Norm: 'PARAMOUNT CONMEBOL 1')
+    - 'Paramount / Conmebol 1¹' (Norm: 'PARAMOUNT CONMEBOL 11')
+    - 'Paramount / Conmebol 2' (Norm: 'PARAMOUNT CONMEBOL 2')
+    - 'Paramount / Conmebol 2²' (Norm: 'PARAMOUNT CONMEBOL 22')
+    - 'Paramount / Conmebol 3' (Norm: 'PARAMOUNT CONMEBOL 3')
+    - 'Paramount / Conmebol 4' (Norm: 'PARAMOUNT CONMEBOL 4')
+    - 'Paramount/conmebol 3³' (Norm: 'PARAMOUNT CONMEBOL 33')
+    - 'Paramount/conmebol 4¹' (Norm: 'PARAMOUNT CONMEBOL 41')
+
+--- Categoria: Câmeras Ao Vivo (7 canais) ---
+    - 'Aquapark Tatralandia I' (Norm: 'AQUAPARK TATRALANDIA I')
+    - 'Cascavel Panorâmica' (Norm: 'CASCAVEL PANORAMICA')
+    - 'Elephants - San Diego Zoo' (Norm: 'ELEPHANTS SAN DIEGO ZOO')
+    - 'Muro Das Lamentações' (Norm: 'MURO DAS LAMENTACOES')
+    - 'Paris - Eiffel Tower' (Norm: 'PARIS EIFFEL TOWER')
+    - 'Paris - River Seine' (Norm: 'PARIS RIVER SEINE')
+    - 'Ponte Da Amizade - Sentido Brasil' (Norm: 'PONTE DA AMIZADE SENTIDO BRASIL')
+
+=== TODOS OS 158 CANAIS DO GUIA EPG CLARO TV+ ===
+  ID   86 | Nome: A&e                                 | Chave de Busca: 'A E'
+  ID   33 | Nome: AMC                                 | Chave de Busca: 'AMC'
+  ID   79 | Nome: AXN                                 | Chave de Busca: 'AXN'
+  ID  322 | Nome: Adult Swim                          | Chave de Busca: 'ADULT SWIM'
+  ID   80 | Nome: Agromais                            | Chave de Busca: 'AGROMAIS'
+  ID   15 | Nome: Animal Planet                       | Chave de Busca: 'ANIMAL PLANET'
+  ID   34 | Nome: Arte 1                              | Chave de Busca: 'ARTE 1'
+  ID   67 | Nome: BBC World News                      | Chave de Busca: 'BBC WORLD NEWS'
+  ID  101 | Nome: BIS                                 | Chave de Busca: 'BIS'
+  ID  174 | Nome: Band                                | Chave de Busca: 'BAND'
+  ID    6 | Nome: Band News                           | Chave de Busca: 'BAND NEWS'
+  ID    5 | Nome: Band Sports                         | Chave de Busca: 'BAND SPORTS'
+  ID   35 | Nome: Bloomberg Tv                        | Chave de Busca: 'BLOOMBERG TV'
+  ID  321 | Nome: Bm&c                                | Chave de Busca: 'BM C'
+  ID  314 | Nome: C3-tv                               | Chave de Busca: 'C3 TV'
+  ID   77 | Nome: CNN Brasil                          | Chave de Busca: 'CNN BRASIL'
+  ID  349 | Nome: CNN Brasil Money                    | Chave de Busca: 'CNN BRASIL MONEY'
+  ID  177 | Nome: CNN International                   | Chave de Busca: 'CNN INTERNATIONAL'
+  ID  104 | Nome: Canal Brasil                        | Chave de Busca: 'CANAL BRASIL'
+  ID  328 | Nome: Canal Do Boi                        | Chave de Busca: 'CANAL DO BOI'
+  ID  338 | Nome: Canal Rural                         | Chave de Busca: 'CANAL RURAL'
+  ID  352 | Nome: Canal Uol                           | Chave de Busca: 'CANAL UOL'
+  ID  300 | Nome: Canção Nova                         | Chave de Busca: 'CANCAO NOVA'
+  ID    2 | Nome: Cartoon                             | Chave de Busca: 'CARTOON'
+  ID   11 | Nome: Cartoonito                          | Chave de Busca: 'CARTOONITO'
+  ID   54 | Nome: Cbi                                 | Chave de Busca: 'CBI'
+  ID  316 | Nome: Cgtn                                | Chave de Busca: 'CGTN'
+  ID  178 | Nome: Cinemax                             | Chave de Busca: 'CINEMAX'
+  ID  114 | Nome: Combate                             | Chave de Busca: 'COMBATE'
+  ID   21 | Nome: Comedy Central                      | Chave de Busca: 'COMEDY CENTRAL'
+  ID  175 | Nome: Cultura                             | Chave de Busca: 'CULTURA'
+  ID   19 | Nome: Curta                               | Chave de Busca: 'CURTA'
+  ID    7 | Nome: Discovery                           | Chave de Busca: 'DISCOVERY'
+  ID    8 | Nome: Discovery Home&health               | Chave de Busca: 'DISCOVERY HOME HEALTH'
+  ID    1 | Nome: Discovery Kids                      | Chave de Busca: 'DISCOVERY KIDS'
+  ID  116 | Nome: Discovery Science                   | Chave de Busca: 'DISCOVERY SCIENCE'
+  ID  117 | Nome: Discovery Theater                   | Chave de Busca: 'DISCOVERY THEATER'
+  ID   18 | Nome: Discovery Turbo                     | Chave de Busca: 'DISCOVERY TURBO'
+  ID  118 | Nome: Discovery World                     | Chave de Busca: 'DISCOVERY WORLD'
+  ID  268 | Nome: Dog Tv                              | Chave de Busca: 'DOG TV'
+  ID   49 | Nome: Dumdum                              | Chave de Busca: 'DUMDUM'
+  ID   66 | Nome: Dw-tv                               | Chave de Busca: 'DW TV'
+  ID   87 | Nome: E!                                  | Chave de Busca: 'E'
+  ID   29 | Nome: ESPN                                | Chave de Busca: 'ESPN'
+  ID   28 | Nome: ESPN 2                              | Chave de Busca: 'ESPN 2'
+  ID   39 | Nome: ESPN 3                              | Chave de Busca: 'ESPN 3'
+  ID   26 | Nome: ESPN 4                              | Chave de Busca: 'ESPN 4'
+  ID   27 | Nome: ESPN 5                              | Chave de Busca: 'ESPN 5'
+  ID   50 | Nome: ESPN 6                              | Chave de Busca: 'ESPN 6'
+  ID  119 | Nome: Eurochannel                         | Chave de Busca: 'EUROCHANNEL'
+  ID   76 | Nome: Fashion Tv                          | Chave de Busca: 'FASHION TV'
+  ID   51 | Nome: Film & Arts                         | Chave de Busca: 'FILM ARTS'
+  ID   40 | Nome: Fish Tv                             | Chave de Busca: 'FISH TV'
+  ID   52 | Nome: Food Network                        | Chave de Busca: 'FOOD NETWORK'
+  ID  129 | Nome: France 24                           | Chave de Busca: 'FRANCE 24'
+  ID   95 | Nome: Futura                              | Chave de Busca: 'FUTURA'
+  ID   97 | Nome: GNT                                 | Chave de Busca: 'GNT'
+  ID   53 | Nome: Gazeta                              | Chave de Busca: 'GAZETA'
+  ID  466 | Nome: Ge Tv                               | Chave de Busca: 'GE TV'
+  ID  124 | Nome: Globo São Paulo                     | Chave de Busca: 'GLOBO SAO PAULO'
+  ID   78 | Nome: Globonews                           | Chave de Busca: 'GLOBONEWS'
+  ID   99 | Nome: Globoplay Novelas                   | Chave de Busca: 'GLOBOPLAY NOVELAS'
+  ID   93 | Nome: Gloob                               | Chave de Busca: 'GLOOB'
+  ID   94 | Nome: Gloobinho                           | Chave de Busca: 'GLOOBINHO'
+  ID  260 | Nome: HBO                                 | Chave de Busca: 'HBO'
+  ID  263 | Nome: HBO Family                          | Chave de Busca: 'HBO FAMILY'
+  ID  266 | Nome: HBO Mundi                           | Chave de Busca: 'HBO MUNDI'
+  ID  265 | Nome: HBO Pop                             | Chave de Busca: 'HBO POP'
+  ID  264 | Nome: HBO Signature                       | Chave de Busca: 'HBO SIGNATURE'
+  ID  267 | Nome: HBO Xtreme                          | Chave de Busca: 'HBO XTREME'
+  ID  262 | Nome: Hbo+                                | Chave de Busca: 'HBO'
+  ID  261 | Nome: Hbo2                                | Chave de Busca: 'HBO2'
+  ID  115 | Nome: Hgtv                                | Chave de Busca: 'HGTV'
+  ID   84 | Nome: History                             | Chave de Busca: 'HISTORY'
+  ID   85 | Nome: History 2                           | Chave de Busca: 'HISTORY 2'
+  ID   13 | Nome: ID                                  | Chave de Busca: 'ID'
+  ID  187 | Nome: Jovem Pan News                      | Chave de Busca: 'JOVEM PAN NEWS'
+  ID  337 | Nome: Lbv                                 | Chave de Busca: 'LBV'
+  ID   88 | Nome: Lifetime                            | Chave de Busca: 'LIFETIME'
+  ID  183 | Nome: Like                                | Chave de Busca: 'LIKE'
+  ID   46 | Nome: Like + Claro Tv+                    | Chave de Busca: 'LIKE CLARO TV'
+  ID  319 | Nome: Lmc+                                | Chave de Busca: 'LMC'
+  ID   22 | Nome: MTV                                 | Chave de Busca: 'MTV'
+  ID   64 | Nome: MTV 00's                            | Chave de Busca: 'MTV 00 S'
+  ID  179 | Nome: MTV Live                            | Chave de Busca: 'MTV LIVE'
+  ID  467 | Nome: Markket                             | Chave de Busca: 'MARKKET'
+  ID  105 | Nome: Megapix                             | Chave de Busca: 'MEGAPIX'
+  ID  188 | Nome: Mezzo                               | Chave de Busca: 'MEZZO'
+  ID  100 | Nome: Modo Viagem                         | Chave de Busca: 'MODO VIAGEM'
+  ID   98 | Nome: Multishow                           | Chave de Busca: 'MULTISHOW'
+  ID   55 | Nome: Music Box Brazil                    | Chave de Busca: 'MUSIC BOX BRAZIL'
+  ID   17 | Nome: Nick Jr                             | Chave de Busca: 'NICK JR'
+  ID    3 | Nome: Nickelodeon                         | Chave de Busca: 'NICKELODEON'
+  ID  329 | Nome: Nsports                             | Chave de Busca: 'NSPORTS'
+  ID   96 | Nome: OFF                                 | Chave de Busca: 'OFF'
+  ID   16 | Nome: Paramount Network                   | Chave de Busca: 'PARAMOUNT NETWORK'
+  ID   89 | Nome: Paramount+ 1                        | Chave de Busca: 'PARAMOUNT 1'
+  ID   90 | Nome: Paramount+ 2                        | Chave de Busca: 'PARAMOUNT 2'
+  ID   91 | Nome: Paramount+ 3                        | Chave de Busca: 'PARAMOUNT 3'
+  ID   92 | Nome: Paramount+ 4                        | Chave de Busca: 'PARAMOUNT 4'
+  ID   56 | Nome: Play Tv                             | Chave de Busca: 'PLAY TV'
+  ID  108 | Nome: Premiere 2                          | Chave de Busca: 'PREMIERE 2'
+  ID  109 | Nome: Premiere 3                          | Chave de Busca: 'PREMIERE 3'
+  ID  110 | Nome: Premiere 4                          | Chave de Busca: 'PREMIERE 4'
+  ID  111 | Nome: Premiere 5                          | Chave de Busca: 'PREMIERE 5'
+  ID  112 | Nome: Premiere 6                          | Chave de Busca: 'PREMIERE 6'
+  ID  113 | Nome: Premiere 7                          | Chave de Busca: 'PREMIERE 7'
+  ID  351 | Nome: Premiere 8                          | Chave de Busca: 'PREMIERE 8'
+  ID  107 | Nome: Premiere Clubes                     | Chave de Busca: 'PREMIERE CLUBES'
+  ID   57 | Nome: Prime Box Brazil                    | Chave de Busca: 'PRIME BOX BRAZIL'
+  ID   58 | Nome: Rai International                   | Chave de Busca: 'RAI INTERNATIONAL'
+  ID  317 | Nome: Record                              | Chave de Busca: 'RECORD'
+  ID  182 | Nome: Record News                         | Chave de Busca: 'RECORD NEWS'
+  ID   59 | Nome: Rede Gospel                         | Chave de Busca: 'REDE GOSPEL'
+  ID  185 | Nome: Rede Tv!                            | Chave de Busca: 'REDE TV'
+  ID   60 | Nome: Rede Vida                           | Chave de Busca: 'REDE VIDA'
+  ID  184 | Nome: SBT                                 | Chave de Busca: 'SBT'
+  ID  288 | Nome: Sabor & Arte                        | Chave de Busca: 'SABOR ARTE'
+  ID  348 | Nome: Sic Internacional                   | Chave de Busca: 'SIC INTERNACIONAL'
+  ID   82 | Nome: Sony Channel                        | Chave de Busca: 'SONY CHANNEL'
+  ID   10 | Nome: Space                               | Chave de Busca: 'SPACE'
+  ID   30 | Nome: SporTV                              | Chave de Busca: 'SPORTV'
+  ID   31 | Nome: SporTV 2                            | Chave de Busca: 'SPORTV 2'
+  ID   32 | Nome: SporTV 3                            | Chave de Busca: 'SPORTV 3'
+  ID  315 | Nome: Sportynet                           | Chave de Busca: 'SPORTYNET'
+  ID  296 | Nome: Sportynet + 1                       | Chave de Busca: 'SPORTYNET 1'
+  ID  297 | Nome: Sportynet + 2                       | Chave de Busca: 'SPORTYNET 2'
+  ID  298 | Nome: Sportynet + 3                       | Chave de Busca: 'SPORTYNET 3'
+  ID  106 | Nome: Studio Universal                    | Chave de Busca: 'STUDIO UNIVERSAL'
+  ID   12 | Nome: TLC                                 | Chave de Busca: 'TLC'
+  ID    9 | Nome: TNT                                 | Chave de Busca: 'TNT'
+  ID  299 | Nome: TNT Novelas                         | Chave de Busca: 'TNT NOVELAS'
+  ID   20 | Nome: TNT Series                          | Chave de Busca: 'TNT SERIES'
+  ID   47 | Nome: Tcm Br                              | Chave de Busca: 'TCM BR'
+  ID   69 | Nome: Telecine Action                     | Chave de Busca: 'TELECINE ACTION'
+  ID   73 | Nome: Telecine Cult                       | Chave de Busca: 'TELECINE CULT'
+  ID   71 | Nome: Telecine Fun                        | Chave de Busca: 'TELECINE FUN'
+  ID   72 | Nome: Telecine Pipoca                     | Chave de Busca: 'TELECINE PIPOCA'
+  ID   68 | Nome: Telecine Premium                    | Chave de Busca: 'TELECINE PREMIUM'
+  ID   70 | Nome: Telecine Touch                      | Chave de Busca: 'TELECINE TOUCH'
+  ID  339 | Nome: Times Exclusivo Cnbc                | Chave de Busca: 'TIMES EXCLUSIVO CNBC'
+  ID   81 | Nome: Trace Brasil                        | Chave de Busca: 'TRACE BRASIL'
+  ID  353 | Nome: Travel & Food And Drinks            | Chave de Busca: 'TRAVEL FOOD AND DRINKS'
+  ID   75 | Nome: Travel Box                          | Chave de Busca: 'TRAVEL BOX'
+  ID  335 | Nome: Trip Brasil Channel                 | Chave de Busca: 'TRIP BRASIL CHANNEL'
+  ID  320 | Nome: Tv Aparecida                        | Chave de Busca: 'TV APARECIDA'
+  ID   61 | Nome: Tv Brasil                           | Chave de Busca: 'TV BRASIL'
+  ID  373 | Nome: Tv Pai Eterno                       | Chave de Busca: 'TV PAI ETERNO'
+  ID   62 | Nome: Tv Ra Tim Bum                       | Chave de Busca: 'TV RA TIM BUM'
+  ID   63 | Nome: Tv5 Monde                           | Chave de Busca: 'TV5 MONDE'
+  ID  176 | Nome: Tve International                   | Chave de Busca: 'TVE INTERNATIONAL'
+  ID  103 | Nome: USA                                 | Chave de Busca: 'USA'
+  ID  323 | Nome: Universal Premiere                  | Chave de Busca: 'UNIVERSAL PREMIERE'
+  ID  324 | Nome: Universal Reality                   | Chave de Busca: 'UNIVERSAL REALITY'
+  ID  102 | Nome: Universal Tv                        | Chave de Busca: 'UNIVERSAL TV'
+  ID   83 | Nome: Warner Channel                      | Chave de Busca: 'WARNER CHANNEL'
+  ID   48 | Nome: Woohoo                              | Chave de Busca: 'WOOHOO'
+  ID  439 | Nome: Xsports                             | Chave de Busca: 'XSPORTS'
