@@ -34,8 +34,8 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 4347,
-      "sha256": "9f4ea2eff55e2ad66b0fdcf760f5a1d7bfdbbabe727b8ad6cf6368d0eebb8d71"
+      "bytes": 4453,
+      "sha256": "ecc3e09adf30331a84bec656d2936f2a89d5c2305bdc94e1de26438fac946501"
     },
     {
       "path": "LICENSE",
@@ -49,8 +49,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4245,
-      "sha256": "4e931f31f459c8ac007466cccbba76395d4d2f0e8e2739d481d41b1e89ce86c0"
+      "bytes": 4331,
+      "sha256": "6ac6298f14f9ac684af32dda9c27c0679902bcc279e7d05c029b123e4f631c3e"
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
@@ -544,8 +544,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/icon.png",
-      "bytes": 212629,
-      "sha256": "56293a22a68735f4c8d0ca3049da1ca93b73297d232b0d626e14d5f391076006"
+      "bytes": 16337,
+      "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/__init__.py",
@@ -820,7 +820,7 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 620,
-      "sha256": "616c59ab225344915719ed2c5c439649d9aa0536978cfb13b325ca9e7bb92f14"
+      "sha256": "d1aa2c869ce5d08bf34c66507a1b6b3409e3d7e29d5591a73f02629cb198e41f"
     },
     {
       "path": "docs/addons.xml",
@@ -984,18 +984,18 @@
     },
     {
       "path": "docs/zips/script.module.saile.epg/icon.png",
-      "bytes": 212629,
-      "sha256": "56293a22a68735f4c8d0ca3049da1ca93b73297d232b0d626e14d5f391076006"
+      "bytes": 16337,
+      "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip",
-      "bytes": 365710,
-      "sha256": "191e0bd3874b0b111155746c93a765868e35ef5017c7b5769be24b5859e359c3"
+      "bytes": 168840,
+      "sha256": "0231b4c09fa9ac5ddd8d4d152265cad9bf07d24eca741a3b4655e94687e96aac"
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip.sha256",
       "bytes": 66,
-      "sha256": "d6c72053e5a5e3feb28db6952aa94e03af371885899783c5540c1caaa01c8b26"
+      "sha256": "2c974f6b5e7398b15578c9f4348bc7534ca9ca8def8c5a34de937bbf3f62a520"
     },
     {
       "path": "documentation/README.md",
@@ -1024,13 +1024,13 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 46652,
-      "sha256": "a0a60c19590e4a050a8c56a61cfb0ad52b394688c50b46b80205b21395117f53"
+      "bytes": 46858,
+      "sha256": "eac2745dc402b46a1b95fd17071f451be1712c9dfb27d1d14a5afecb78dfc004"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 14299,
-      "sha256": "fd67efd44844a6b83dc423deac7e0cd72ddcf4b12d0ae78aa588abb3fa99938a"
+      "bytes": 14305,
+      "sha256": "3aa8dd00b3081b16d117aa0992f66a7e249cd05c508fc26b10c13de6ff094bfa"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1229,13 +1229,13 @@
     },
     {
       "path": "tools/generate_structure_manifest.py",
-      "bytes": 2924,
-      "sha256": "742d69b36997de7b33073c3411828965e1322a09d70d1644bae74299fb770e19"
+      "bytes": 3031,
+      "sha256": "afed5bfa525aa89d41948225398716e6a8f005fb61bffd1cd5d14eb3370af326"
     },
     {
       "path": "tools/print_tree.py",
-      "bytes": 1289,
-      "sha256": "c9144cacfea42e9961788f5df3c9ebccfb80d2d386efb9fb3cfbad6d9d4f8f93"
+      "bytes": 1335,
+      "sha256": "7dc3a540716c31985a4cdac5ac22f137f319291a2c6acd3290fe8b4104f61292"
     },
     {
       "path": "tools/secret_scan.py",
