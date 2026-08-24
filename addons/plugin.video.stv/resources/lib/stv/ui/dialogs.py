@@ -148,7 +148,7 @@ def show_sync_dialog(app: "AppContainer") -> None:
         local_ip = _get_local_ip()
         msg = (
             f"Endereço IP Local: {local_ip}\n\n"
-            "A sincronização LAN do ecossistema SAILE é estritamente manual e local-first.\n\n"
+            "A sincronização LAN do ecossistema sKodi é estritamente manual e local-first.\n\n"
             "Para sincronizar com outro dispositivo na mesma rede:\n"
             "1. Exporte o backup neste dispositivo.\n"
             "2. Copie o arquivo stv_backup.json para o segundo dispositivo.\n"

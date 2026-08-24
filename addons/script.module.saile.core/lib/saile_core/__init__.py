@@ -1,3 +1,3 @@
-"""Infraestrutura compartilhada e utilitários comuns do ecossistema SAILE."""
+"""Infraestrutura compartilhada e utilitários comuns do ecossistema sKodi (sCore)."""
 
 __version__ = "1.0.0"

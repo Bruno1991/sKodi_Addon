@@ -10,17 +10,17 @@
 
 ## Add-ons Ativos
 
-- `plugin.video.stv`: Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB).
-- `repository.srepo`: Repositório oficial para Kodi (distribuição via GitHub Pages).
-- `resource.images.saile`: Recurso com 9 ícones de interface compartilhados.
-- `script.module.saile.core`: Infraestrutura Python comum estável.
-- `script.module.saile.epg`: Provider XMLTV, matching e cache SQLite UTC independente.
+- `plugin.video.stv` (**sTv**): Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB).
+- `repository.srepo` (**sRepo**): Repositório oficial para Kodi (distribuição via GitHub Pages).
+- `resource.images.saile` (**sArtwork**): Recurso com 9 ícones de interface compartilhados.
+- `script.module.saile.core` (**sCore**): Infraestrutura Python comum estável.
+- `script.module.saile.epg` (**sEPG**): Provider XMLTV, matching e cache SQLite UTC independente.
 
 ## Decisões Incorporadas
 
-- `resource.images.saile` centraliza exatamente 9 artes fixas em PNG.
-- `script.module.saile.core` provê apenas caminhos portáveis, artwork, notificações, erros e capabilities.
-- `script.module.saile.epg` concentra toda a regra e persistência de EPG fora do sTv e do core.
+- `resource.images.saile` (**sArtwork**) centraliza exatamente 9 artes fixas em PNG.
+- `script.module.saile.core` (**sCore**) provê apenas caminhos portáveis, artwork, notificações, erros e capabilities.
+- `script.module.saile.epg` (**sEPG**) concentra toda a regra e persistência de EPG fora do sTv e do core.
 - Contrato imutável de navegação do sTv:
   - Home: `TV ao Vivo` → `VOD` → `Séries` → `Sincronizar Dados`.
   - Seções: `Buscar` → `Favoritos` → conteúdo dinâmico.

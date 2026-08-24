@@ -1,4 +1,4 @@
-# sRepo — Ecossistema SAILE para Kodi (IPTV / sTv)
+# sRepo — Ecossistema sKodi (sTv / sEPG / sArtwork / sCore)
 
 Monorepo local-first que desenvolve e distribui o add-on **sTv** (IPTV / Xtream) e seus módulos compartilhados por um repositório Kodi hospedado estaticamente no GitHub Pages.
 
@@ -15,18 +15,18 @@ A documentação técnica de Python/Kodi está centralizada em
 
 ```text
 addons/
-├── repository.srepo/
-├── resource.images.saile/
-├── script.module.saile.core/
-├── script.module.saile.epg/
-└── plugin.video.stv/
+├── repository.srepo/          (sRepo - Instalador e atualizações)
+├── resource.images.saile/     (sArtwork - Recursos de imagem e ícones)
+├── script.module.saile.core/  (sCore - Infraestrutura Python compartilhada)
+├── script.module.saile.epg/   (sEPG - Guia de programação e normalização)
+└── plugin.video.stv/          (sTv - Cliente IPTV, VOD, Séries e Player)
 ```
 
-- `repository.srepo`: instala e atualiza os add-ons do ecossistema no Kodi.
-- `resource.images.saile`: 9 ícones fixos compartilhados em alta definição.
-- `script.module.saile.core`: caminhos portáveis, artwork, notificações, erros padronizados e detecção de capacidades.
-- `script.module.saile.epg`: XMLTV autorizado, matching de canais, horários UTC e cache SQLite independente.
-- `plugin.video.stv`: cliente de TV ao vivo, VOD e séries com integração Xtream Codes, persistência SQLite, EPG modular e metadados TMDB.
+- `repository.srepo` (**sRepo**): instala e atualiza os add-ons do ecossistema no Kodi.
+- `resource.images.saile` (**sArtwork**): 9 ícones fixos compartilhados em alta definição.
+- `script.module.saile.core` (**sCore**): caminhos portáveis, artwork, notificações, erros padronizados e detecção de capacidades.
+- `script.module.saile.epg` (**sEPG**): XMLTV autorizado, matching de canais, horários UTC e cache SQLite independente.
+- `plugin.video.stv` (**sTv**): cliente de TV ao vivo, VOD e séries com integração Xtream Codes, persistência SQLite, EPG modular e metadados TMDB.
 
 ## Navegação Oficial (Contrato Imutável)
 

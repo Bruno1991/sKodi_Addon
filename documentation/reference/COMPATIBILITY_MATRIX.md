@@ -13,6 +13,6 @@
 ## Requisitos comuns
 
 - Python 3 fornecido pelo Kodi (`xbmc.python` >= 3.0.0).
-- `resource.images.saile`, `script.module.saile.core` e `script.module.saile.epg` instalados como dependências automáticas.
+- `resource.images.saile` (sArtwork), `script.module.saile.core` (sCore) e `script.module.saile.epg` (sEPG) instalados como dependências automáticas.
 - Dados locais gravados exclusivamente em `special://profile/addon_data/`.
 - Nenhum executável ou binário externo obrigatório na V1.

@@ -39,7 +39,7 @@
       </dir>
     </extension>
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Repositório oficial do ecossistema SAILE.</summary>
+      <summary lang="pt_BR">Repositório oficial do ecossistema sKodi.</summary>
       <description lang="pt_BR">Instala e atualiza o sTv e seus módulos compartilhados pelo GitHub Pages.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
@@ -51,10 +51,10 @@
       </assets>
     </extension>
   </addon>
-  <addon id="resource.images.saile" name="SAILE Artwork Resources" version="1.0.3" provider-name="Saile">
+  <addon id="resource.images.saile" name="sArtwork" version="1.0.3" provider-name="Saile">
     <extension point="kodi.resource.images" compile="false" />
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Artes compartilhadas do ecossistema SAILE.</summary>
+      <summary lang="pt_BR">Artes compartilhadas do ecossistema sKodi.</summary>
       <description lang="pt_BR">Ícones fixos e recursos visuais compartilhados utilizados pelo sTv.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
@@ -66,14 +66,14 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.core" name="SAILE Core" version="1.0.0" provider-name="Saile">
+  <addon id="script.module.saile.core" name="sCore" version="1.0.0" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.0" />
     </requires>
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Infraestrutura Python compartilhada do ecossistema SAILE.</summary>
+      <summary lang="pt_BR">Infraestrutura Python compartilhada do ecossistema sKodi.</summary>
       <description lang="pt_BR">Caminhos portáveis, artwork compartilhado, notificações, erros e diagnóstico de capacidades.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
@@ -85,14 +85,14 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="SAILE EPG" version="1.2.0" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.2.0" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.0" />
     </requires>
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Provedor local de guia de programação do ecossistema SAILE.</summary>
+      <summary lang="pt_BR">Provedor local de guia de programação do ecossistema sKodi.</summary>
       <description lang="pt_BR">Mantém o catálogo completo de identidades EPG, sincroniza XMLTV com fallback Xtream e fornece Agora/Próximo por cache SQLite local.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>

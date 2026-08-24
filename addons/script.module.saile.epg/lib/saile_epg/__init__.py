@@ -1,4 +1,4 @@
-"""API pública do módulo EPG local do ecossistema SAILE."""
+"""API pública do módulo sEPG local do ecossistema sKodi."""
 
 from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot

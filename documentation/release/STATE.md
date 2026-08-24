@@ -9,13 +9,13 @@
 
 ## 1. Inventário de Add-ons Ativos
 
-| Add-on ID | Versão Atual | Descrição / Responsabilidade |
-| :--- | :--- | :--- |
-| **`plugin.video.stv`** | `0.7.0` | Add-on IPTV/Xtream com grade EPG profissional, variantes automáticas, favoritos, TMDB, controle parental e InfoWall 54. |
-| **`repository.srepo`** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
-| **`resource.images.saile`** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
-| **`script.module.saile.core`** | `1.0.0` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | `1.2.0` | Catálogo completo de identidades, XMLTV autorizado, fallback Xtream, matching público, UTC e cache independente. |
+| Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
+| :--- | :--- | :--- | :--- |
+| **`plugin.video.stv`** | **sTv** | `0.7.0` | Add-on IPTV/Xtream com grade EPG profissional, variantes automáticas, favoritos, TMDB, controle parental e InfoWall 54. |
+| **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
+| **`resource.images.saile`** | **sArtwork** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
+| **`script.module.saile.core`** | **sCore** | `1.0.0` | Módulo base Python (artwork, notificações, erros, capabilities). |
+| **`script.module.saile.epg`** | **sEPG** | `1.2.0` | Catálogo completo de identidades, XMLTV autorizado, fallback Xtream, matching público, UTC e cache independente. |
 
 ---
 

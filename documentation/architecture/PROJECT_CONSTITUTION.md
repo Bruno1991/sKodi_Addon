@@ -1,16 +1,16 @@
-# Constituição de engenharia do ecossistema SAILE
+# Constituição de engenharia do ecossistema sKodi
 
 ## Artigo 1 — Local-first
 
-sTv executa no dispositivo do usuário dentro do Kodi. Serviços externos são provedores de dados ou mídia; não existe backend próprio obrigatório, banco remoto central, fila remota ou autenticação SAILE.
+sTv executa no dispositivo do usuário dentro do Kodi. Serviços externos são provedores de dados ou mídia; não existe backend próprio obrigatório, banco remoto central, fila remota ou autenticação externa.
 
 ## Artigo 2 — Responsabilidades dos add-ons ativos
 
-- `repository.srepo`: descoberta, instalação e atualização pelo GitHub Pages.
-- `resource.images.saile`: artes fixas compartilhadas e somente elas (9 ícones).
-- `script.module.saile.core`: infraestrutura comum estável, sem regras de domínio.
-- `script.module.saile.epg`: ingestão XMLTV, matching de canais, cache UTC e consultas de programação.
-- `plugin.video.stv`: Xtream, TV ao vivo, VOD, séries, favoritos, busca, TMDB e reprodução de vídeo.
+- `repository.srepo` (**sRepo**): descoberta, instalação e atualização pelo GitHub Pages.
+- `resource.images.saile` (**sArtwork**): artes fixas compartilhadas e somente elas (9 ícones).
+- `script.module.saile.core` (**sCore**): infraestrutura comum estável, sem regras de domínio.
+- `script.module.saile.epg` (**sEPG**): ingestão XMLTV, matching de canais, cache UTC e consultas de programação.
+- `plugin.video.stv` (**sTv**): Xtream, TV ao vivo, VOD, séries, favoritos, busca, TMDB e reprodução de vídeo.
 
 Dependências comuns são explícitas e versionadas.
 

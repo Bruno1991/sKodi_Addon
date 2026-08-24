@@ -13,7 +13,7 @@
     </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary lang="pt_BR">Repositório oficial do ecossistema SAILE.</summary>
+    <summary lang="pt_BR">Repositório oficial do ecossistema sKodi.</summary>
     <description lang="pt_BR">Instala e atualiza o sTv e seus módulos compartilhados pelo GitHub Pages.</description>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>

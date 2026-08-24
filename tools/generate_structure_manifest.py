@@ -78,7 +78,7 @@ def build_manifest() -> dict[str, object]:
             }
         )
     return {
-        "package": "SAILE sRepo architecture V2",
+        "package": "sKodi sRepo architecture V2",
         "version": "2.0.0",
         "canonical_addon_ids": addon_ids(),
         "skill_count": skill_count(),

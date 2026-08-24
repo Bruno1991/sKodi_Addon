@@ -68,23 +68,24 @@ def build_addons_xml(addon_roots: list[ET.Element]) -> bytes:
     return (header + xml_str).encode("utf-8")
 
 
-def build_index(packages: list[tuple[str, str, Path]], site_dir: Path) -> str:
+def build_index(packages: list[tuple[str, str, str, Path]], site_dir: Path) -> str:
     repo_zip = None
     repo_version = None
     other_addons = []
-    for addon_id, version, zip_path in packages:
+    for addon_id, name, version, zip_path in packages:
         href = (zip_path.name if addon_id == "repository.srepo" else zip_path.relative_to(site_dir).as_posix())
         if addon_id == "repository.srepo":
             repo_zip = href
             repo_version = version
         else:
-            other_addons.append((addon_id, version, href))
+            other_addons.append((addon_id, name, version, href))
             
     cards_html = ""
-    for addon_id, version, href in other_addons:
+    for addon_id, name, version, href in other_addons:
         cards_html += f'''
         <a href="{html.escape(href)}" class="card">
-            <h3>{html.escape(addon_id)}</h3>
+            <h3>{html.escape(name)}</h3>
+            <span class="addon-id">{html.escape(addon_id)}</span>
             <span class="version">v{html.escape(version)}</span>
         </a>'''
 
@@ -94,7 +95,7 @@ def build_index(packages: list[tuple[str, str, Path]], site_dir: Path) -> str:
     kodi_links = []
     if repo_zip:
         kodi_links.append(f'<a href="{html.escape(str(repo_zip))}">{html.escape(str(repo_zip))}</a><br>')
-    for _, _, href in other_addons:
+    for _, _, _, href in other_addons:
         kodi_links.append(f'<a href="{html.escape(href)}">{html.escape(href.split("/")[-1])}</a><br>')
     kodi_links_html = "\n        ".join(kodi_links)
 
@@ -134,7 +135,7 @@ def publish_site(stage_dir: Path) -> None:
         shutil.move(str(child), str(SITE_DIR / child.name))
 
 
-def build_site(site_dir: Path) -> list[tuple[str, str, Path]]:
+def build_site(site_dir: Path) -> list[tuple[str, str, str, Path]]:
     zips_dir = site_dir / "zips"
     zips_dir.mkdir(parents=True)
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
@@ -145,14 +146,15 @@ def build_site(site_dir: Path) -> list[tuple[str, str, Path]]:
         shutil.copytree(TEMPLATE_DIR, site_dir, dirs_exist_ok=True)
 
     roots: list[ET.Element] = []
-    packages: list[tuple[str, str, Path]] = []
+    packages: list[tuple[str, str, str, Path]] = []
     for addon_dir in sorted(path for path in ADDONS_DIR.iterdir() if path.is_dir()):
         root = ET.parse(addon_dir / "addon.xml").getroot()
         addon_id = root.attrib["id"]
+        name = root.attrib.get("name", addon_id)
         version = root.attrib["version"]
         zip_path = zip_addon(addon_dir, version, zips_dir)
         roots.append(root)
-        packages.append((addon_id, version, zip_path))
+        packages.append((addon_id, name, version, zip_path))
         if addon_id == "repository.srepo":
             shutil.copy2(zip_path, site_dir / zip_path.name)
 
@@ -175,7 +177,7 @@ def build_site(site_dir: Path) -> list[tuple[str, str, Path]]:
         hashlib.sha256(addons_gz).hexdigest() + "\n", encoding="utf-8"
     )
 
-    sums = [f"{sha256(path)}  {path.relative_to(site_dir).as_posix()}" for _, _, path in packages]
+    sums = [f"{sha256(path)}  {path.relative_to(site_dir).as_posix()}" for _, _, _, path in packages]
     (site_dir / "SHA256SUMS").write_text("\n".join(sums) + "\n", encoding="utf-8")
     (site_dir / "index.html").write_text(build_index(packages, site_dir), encoding="utf-8")
     return packages
