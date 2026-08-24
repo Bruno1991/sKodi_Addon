@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.stv" name="sTv" version="0.7.0" provider-name="Saile">
+<addon id="plugin.video.stv" name="sTv" version="0.7.1" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="resource.images.saile" version="1.0.3" />
@@ -17,7 +17,7 @@
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>0.7.0 - Promove todo canal com identidade EPG, profissionaliza a grade e centraliza qualidade nas configurações.</news>
+    <news>0.7.1 - Garante 100% de preenchimento de pôsteres e travamento definitivo do modo InfoWall na navegação e retorno de diretórios.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

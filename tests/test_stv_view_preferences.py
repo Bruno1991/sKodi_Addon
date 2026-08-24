@@ -71,7 +71,25 @@ class ViewPreferencesTests(unittest.TestCase):
         self.assertIn(view_cmd, calls)
         self.assertEqual(calls.count(view_cmd), 3)  # 1 in init, 2 in finish
 
-    def test_add_folder_sets_poster_fallback_for_infowall(self) -> None:
+    def test_finish_directory_preserves_navigation_cache_with_cache_to_disc_true(self) -> None:
+        end_kwargs: dict[str, object] = {}
+        fake_xbmc = SimpleNamespace(executebuiltin=lambda _cmd: None)
+        fake_xbmcplugin = SimpleNamespace(
+            SORT_METHOD_UNSORTED=0,
+            SORT_METHOD_LABEL_IGNORE_THE=1,
+            SORT_METHOD_VIDEO_TITLE=2,
+            SORT_METHOD_GENRE=3,
+            setContent=lambda *_args: None,
+            addSortMethod=lambda *_args: None,
+            endOfDirectory=lambda _handle, **kwargs: end_kwargs.update(kwargs),
+        )
+        with patch.dict(sys.modules, {"xbmc": fake_xbmc, "xbmcplugin": fake_xbmcplugin}):
+            finish_directory(15, content="tvshows", view_mode=54)
+
+        self.assertTrue(end_kwargs.get("succeeded"))
+        self.assertTrue(end_kwargs.get("cacheToDisc"))
+
+    def test_add_folder_sets_complete_art_dictionary_and_preserves_mediatype(self) -> None:
         created_items: list[object] = []
 
         class FakeListItem:
@@ -99,13 +117,27 @@ class ViewPreferencesTests(unittest.TestCase):
             addDirectoryItem=lambda handle, url, listitem, isFolder: None
         )
         with patch.dict(sys.modules, {"xbmcgui": fake_xbmcgui, "xbmcplugin": fake_xbmcplugin}):
-            add_folder(5, "TV ao Vivo", "plugin://plugin.video.stv/?action=section&section=live", icon="live.png", is_folder=True)
+            add_folder(
+                5,
+                "Breaking Bad",
+                "plugin://plugin.video.stv/?action=series_info&series_id=100",
+                icon="http://example.com/poster.jpg",
+                fanart="http://example.com/fanart.jpg",
+                is_folder=True,
+                media_type="tvshow",
+            )
 
         self.assertEqual(len(created_items), 1)
         item = created_items[0]
-        self.assertEqual(item.art.get("poster"), "live.png")
-        self.assertEqual(item.art.get("icon"), "live.png")
-        self.assertEqual(item.art.get("thumb"), "live.png")
+        self.assertEqual(item.art.get("poster"), "http://example.com/poster.jpg")
+        self.assertEqual(item.art.get("thumb"), "http://example.com/poster.jpg")
+        self.assertEqual(item.art.get("tvshow.poster"), "http://example.com/poster.jpg")
+        self.assertEqual(item.art.get("season.poster"), "http://example.com/poster.jpg")
+        self.assertEqual(item.art.get("fanart"), "http://example.com/fanart.jpg")
+        self.assertEqual(item.art.get("keyart"), "http://example.com/poster.jpg")
+        self.assertEqual(item.info.get("mediatype"), "tvshow")
+        self.assertEqual(item.props.get("skin.infowall"), "true")
+        self.assertEqual(item.props.get("widget"), "true")
 
 
 if __name__ == "__main__":

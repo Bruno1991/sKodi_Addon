@@ -4,7 +4,7 @@
 
 - Add-ons ativos: **5**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **67**
+- Testes unitários: **78**
 - ZIPs Kodi gerados em `docs/zips/`: **5**
 - Manifesto estrutural de referência: `../generated/STRUCTURE_MANIFEST.json`
 

@@ -75,7 +75,7 @@ def _add_promoted_live_channel(
         is_playable=True,
         context_menu=context_menu,
         plot=live_plot,
-        media_type="video",
+        media_type="movie",
         label2=label2,
         properties=epg_properties,
     )
@@ -106,13 +106,14 @@ def _add_unmatched_live_item(
             title=item.name,
         ),
         icon=icon_url,
+        poster=icon_url,
         clearlogo=icon_url,
         fanart=item.fanart or fanart,
         is_folder=False,
         is_playable=True,
         context_menu=[("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})")],
         plot=item.plot,
-        media_type="video",
+        media_type="movie",
     )
 
 
@@ -334,7 +335,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             poster=_item_icon(section, ""),
             fanart=fanart,
             is_folder=False,
-            media_type="video",
+            media_type="tvshow" if section == "series" else "movie",
         )
 
     for item in items:
@@ -395,7 +396,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 is_playable=True,
                 context_menu=context_menu,
                 plot=live_plot,
-                media_type="video",
+                media_type="movie",
             )
 
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -577,7 +578,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
-                media_type = "video"
+                media_type = "movie"
                 poster_val = icon_url
                 item_label = display_title
                 item_plot = live_plot
@@ -657,7 +658,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
-            media_type = "video"
+            media_type = "movie"
             poster_val = icon_url
             item_label = display_title
             item_plot = live_plot
