@@ -228,6 +228,7 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
     for label, action, section, scope, filename in HOME_ENTRIES:
         url = request.url(action=action, section=section) if section else request.url(action=action)
         icon_path = _icon(scope, filename)
+        is_folder = action == "section"
         add_folder(
             request.handle,
             label,
@@ -235,7 +236,7 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
             icon=icon_path,
             poster=icon_path,
             fanart=fanart,
-            is_folder=True,
+            is_folder=is_folder,
             media_type="movie",
         )
     finish_directory(request.handle, content="movies", view_mode=view_mode)
@@ -798,11 +799,17 @@ def run(argv: list[str]) -> None:
             return
 
     if request.action in {"settings", "open_settings"}:
+        if request.handle >= 0:
+            import xbmcplugin
+            xbmcplugin.endOfDirectory(request.handle, succeeded=False, updateListing=False, cacheToDisc=False)
         if verify_settings_access(addon):
             addon.openSettings()
         return
 
     if request.action == "sync":
+        if request.handle >= 0:
+            import xbmcplugin
+            xbmcplugin.endOfDirectory(request.handle, succeeded=False, updateListing=False, cacheToDisc=False)
         show_sync_dialog(app)
         return
 

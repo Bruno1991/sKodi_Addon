@@ -4,10 +4,10 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.1`** | Preenchimento 100% de artes (poster, thumb, icon, tvshow.poster, season.poster), fixação do modo InfoWall (54) com preservação de cache de navegação (`cacheToDisc=True`), mediatypes padronizados, busca sem acentos e integração completa com EPG/TMDB. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.2.0`** | Preservação de todos os canais declarados mesmo sem programação atual, mescla de identidades Xtream ausentes do XMLTV, normalizador de títulos e busca fonética/sem acentos, timestamps UTC e cache SQLite independente. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.2`** | Preenchimento 100% de artes (poster, thumb, icon, tvshow.poster, season.poster), fixação do modo InfoWall (54) com preservação de cache de navegação (`cacheToDisc=True`), mediatypes padronizados, busca sem acentos, encerramento limpo de diretórios e integração completa com sEPG 1.2.1/TMDB. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.2.1`** | Preservação de todos os canais declarados mesmo sem programação atual, mescla de identidades Xtream ausentes do XMLTV, normalizador de termos de busca e exportações completas para sTv, timestamps UTC e cache SQLite independente. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
-| **`script.module.saile.core`** | **sCore** | **`1.0.0`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities). |
+| **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |
 
 ---

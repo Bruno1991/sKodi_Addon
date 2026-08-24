@@ -1,0 +1,2 @@
+1.0.1
+- Atualização dos metadados e compatibilidade do ecossistema sKodi.

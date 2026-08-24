@@ -1,5 +1,0 @@
-0.7.1
-- Garante preenchimento 100% completo do dicionário de artes (poster, thumb, icon, tvshow.poster, season.poster, keyart).
-- Preserva o mediatype correto por tipo de item (movie, tvshow, season, episode) sem sobrescrever para video genérico.
-- Ativa cacheToDisc=True na finalização de diretórios para manter o estado do InfoWall na navegação e retorno (Back).
-- Aplica propriedades de skin para forçar InfoWall 54 de forma estável.
