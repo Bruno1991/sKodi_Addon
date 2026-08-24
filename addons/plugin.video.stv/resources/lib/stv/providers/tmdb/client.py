@@ -24,7 +24,7 @@ class TmdbClient:
     ) -> None:
         self.api_key = api_key.strip() if api_key else self.DEFAULT_API_KEY
         self.language = language or "pt-BR"
-        self.http = http or HttpClient(timeout=8.0, user_agent="sTv-TMDB/1.0")
+        self.http = http or HttpClient(timeout=3.0, user_agent="sTv-TMDB/1.0")
 
     def _request(self, endpoint: str, params: dict[str, str] | None = None) -> dict[str, Any]:
         if not self.api_key:

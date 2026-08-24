@@ -861,7 +861,7 @@ def run(argv: list[str]) -> None:
     if request.action == "sync":
         if request.handle >= 0:
             import xbmcplugin
-            xbmcplugin.endOfDirectory(request.handle, succeeded=False, updateListing=False, cacheToDisc=False)
+            xbmcplugin.endOfDirectory(request.handle, succeeded=True, updateListing=False, cacheToDisc=False)
         show_sync_dialog(app)
         return
 

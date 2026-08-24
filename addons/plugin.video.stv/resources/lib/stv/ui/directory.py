@@ -125,8 +125,7 @@ def add_folder(
 
 
 def init_directory(handle: int, content: str = "movies", view_mode: int = INFOWALL_VIEW_MODE) -> None:
-    """Inicializa o diretório definindo o tipo de conteúdo e o modo de visualização antes de adicionar itens."""
-    import xbmc
+    """Inicializa o diretório definindo o tipo de conteúdo antes de adicionar itens."""
     import xbmcplugin
 
     try:
@@ -134,19 +133,13 @@ def init_directory(handle: int, content: str = "movies", view_mode: int = INFOWA
     except Exception:
         pass
 
-    if view_mode:
-        try:
-            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
-        except Exception:
-            pass
-
 
 def finish_directory(
     handle: int,
     content: str = "movies",
     view_mode: int = INFOWALL_VIEW_MODE,
 ) -> None:
-    """Finaliza qualquer diretório e reaplica o contrato universal InfoWall 54 com preservação de cache de navegação."""
+    """Finaliza qualquer diretório e aplica o contrato universal InfoWall 54 com preservação de cache de navegação."""
     import xbmc
     import xbmcplugin
 
@@ -159,12 +152,6 @@ def finish_directory(
     except Exception:
         pass
 
-    if view_mode:
-        try:
-            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
-        except Exception:
-            pass
-
     # Usar cacheToDisc=True permite que o Kodi guarde a pilha de diretórios navegados sem reconstruir para o modo List no retorno (Back button)
     xbmcplugin.endOfDirectory(handle, succeeded=True, cacheToDisc=True)
 
@@ -175,8 +162,16 @@ def finish_directory(
             pass
 
 
+_INFOWALL_DB_ENSURED = False
+
+
 def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%") -> None:
-    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54)."""
+    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54) uma única vez por sessão."""
+    global _INFOWALL_DB_ENSURED
+    if _INFOWALL_DB_ENSURED:
+        return
+    _INFOWALL_DB_ENSURED = True
+
     import os
     import sqlite3
     from pathlib import Path
@@ -204,7 +199,7 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
 
         for db_path in candidates:
             if db_path.exists():
-                conn = sqlite3.connect(db_path, timeout=1.0)
+                conn = sqlite3.connect(db_path, timeout=0.5)
                 conn.execute(
                     "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
                     (path_pattern,),
@@ -213,4 +208,5 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
                 conn.close()
     except Exception:
         pass
+
 

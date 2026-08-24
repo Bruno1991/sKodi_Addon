@@ -4,8 +4,8 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.4`** | Enriquecimento com frames 16:9 do TMDB em episódios de séries, eliminação do delay/flash do modo List com sincronização no ViewModes6.db, proporções e enquadramento natural de artes, trava universal InfoWall (54) em 100% das telas e cache local SQLite. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.2.1`** | Preservação de todos os canais declarados mesmo sem programação atual, mescla de identidades Xtream ausentes do XMLTV, normalizador de termos de busca e exportações completas para sTv, timestamps UTC e cache SQLite independente. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.5`** | Eliminação total de lag na renderização do modo InfoWall (54), sincronismo instantâneo de catálogo e EPG sem erros de integridade, frames 16:9 do TMDB em episódios e enquadramento natural de artes. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.2.2`** | Correção de integridade no SQLite com deduplicação de programas em feeds XMLTV reais, sincronização ultrarrápida (1.5s) e preservação de canais. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |

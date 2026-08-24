@@ -1,3 +1,0 @@
-1.2.1
-- Exporta funções de normalização de busca acento-insensível e remoção de acentos.
-- Suporte completo às consultas normalizadas no sTv e bancos SQLite.

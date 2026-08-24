@@ -69,7 +69,7 @@ class ViewPreferencesTests(unittest.TestCase):
 
         view_cmd = f"Container.SetViewMode({INFOWALL_VIEW_MODE})"
         self.assertIn(view_cmd, calls)
-        self.assertEqual(calls.count(view_cmd), 3)  # 1 in init, 2 in finish
+        self.assertEqual(calls.count(view_cmd), 1)
 
     def test_finish_directory_preserves_navigation_cache_with_cache_to_disc_true(self) -> None:
         end_kwargs: dict[str, object] = {}

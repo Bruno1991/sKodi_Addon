@@ -22,7 +22,7 @@ class EpgRepository:
             )
             connection.executemany(
                 """
-                INSERT INTO epg_channels (
+                INSERT OR REPLACE INTO epg_channels (
                     provider_id, channel_key, epg_id, display_name,
                     normalized_name, icon_url, updated_at_utc
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -42,7 +42,7 @@ class EpgRepository:
             )
             connection.executemany(
                 """
-                INSERT INTO epg_programs (
+                INSERT OR REPLACE INTO epg_programs (
                     provider_id, channel_key, start_utc, end_utc, title,
                     description, category, icon_url, fetched_at_utc
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)

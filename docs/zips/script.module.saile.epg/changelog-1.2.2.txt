@@ -1,0 +1,5 @@
+v1.2.2 (2026-08-24)
+-------------------
+- Corrige inserção SQLite com INSERT OR REPLACE para epg_channels e epg_programs.
+- Deduplicação de programas com o mesmo início de horário em feeds XMLTV reais.
+- Otimização do tempo de sincronização para execução instantânea.

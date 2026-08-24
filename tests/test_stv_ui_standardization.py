@@ -261,9 +261,9 @@ class UIStandardizationTests(unittest.TestCase):
 
         view_call = f"Container.SetViewMode({INFOWALL_VIEW_MODE})"
         self.assertEqual(INFOWALL_VIEW_MODE, 54)
-        self.assertEqual(calls.count(view_call), 2)
-        self.assertLess(calls.index(view_call), calls.index("endOfDirectory"))
+        self.assertEqual(calls.count(view_call), 1)
         self.assertEqual(calls[-1], view_call)
+
 
 
 if __name__ == "__main__":

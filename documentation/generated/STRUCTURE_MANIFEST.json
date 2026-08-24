@@ -10,7 +10,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 259,
+  "file_count_excluding_manifest": 261,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -54,8 +54,8 @@
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
-      "bytes": 1332,
-      "sha256": "aec883f1714e4799b1fa94aa669f8e3ace155864f78f477f75268651f31f9ef1"
+      "bytes": 1305,
+      "sha256": "8545a2475cec33cf4da5d004f8997e55184af2a69e44cbee4bdd062122ca5f9b"
     },
     {
       "path": "addons/plugin.video.stv/changelog-0.2.1.txt",
@@ -208,6 +208,11 @@
       "sha256": "a639bbc1f6350d609569575b1d88b83ee70f5ac56af8a218035bd47e3ce7ee93"
     },
     {
+      "path": "addons/plugin.video.stv/changelog-0.7.5.txt",
+      "bytes": 330,
+      "sha256": "a3ea81a0d30ee63bf5236460e094503faef5fea761d96298eae85f4c25883317"
+    },
+    {
       "path": "addons/plugin.video.stv/default.py",
       "bytes": 280,
       "sha256": "59606db17a256619364a833bf8a4609719829d540a4e107e5bd0a0794ce2c57d"
@@ -254,8 +259,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/bootstrap.py",
-      "bytes": 35692,
-      "sha256": "5dad34c01e0f6d78e2df712d26da4c879ab2517d43600e87b6ee3aa5fe4c193e"
+      "bytes": 35691,
+      "sha256": "201fc394fcdbf1503a24031a5dc01bf1e3733197694ccc78b7efdc88bf626688"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/__init__.py",
@@ -325,7 +330,7 @@
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py",
       "bytes": 4421,
-      "sha256": "9a2ffe1c13a0b4aec28675f65f754e095434eb6ecc243f126a7317438f9b2267"
+      "sha256": "a38f12c25ec8d2a34b37875bdcae0f59b7920e91f950eedee277146c3537f62a"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/__init__.py",
@@ -354,8 +359,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/directory.py",
-      "bytes": 6392,
-      "sha256": "c1da2ecdc181d25a2997035eb78fcbb5e3158ce1e1a648b746ac81421d9832ff"
+      "bytes": 6223,
+      "sha256": "d684a6a80a71e878a92cde6985b3c3b7e8e9a000ffb6bc72260552da6fabf96c"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/player.py",
@@ -529,8 +534,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/addon.xml",
-      "bytes": 1009,
-      "sha256": "6fe67c380b8fa24558cb4a084ec1e6aba2e9620a2b048a36ea1923b690060a94"
+      "bytes": 1019,
+      "sha256": "d4869682c1f3b8e56224587cdc2dbe98805a80c7495d4fa721b0e560569c0219"
     },
     {
       "path": "addons/script.module.saile.epg/changelog-1.0.0.txt",
@@ -566,6 +571,11 @@
       "path": "addons/script.module.saile.epg/changelog-1.2.1.txt",
       "bytes": 166,
       "sha256": "eb5ba3b49961e727499c1432816999ea5791fa47b63cadc496c0a7e9e76ad25d"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.2.2.txt",
+      "bytes": 281,
+      "sha256": "5c30f268326c62c0ce7c7a0095a6ada2233f7996125c26a7927fdb5132977da7"
     },
     {
       "path": "addons/script.module.saile.epg/fanart.jpg",
@@ -614,8 +624,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xmltv.py",
-      "bytes": 11302,
-      "sha256": "e218713a9afedeeaf3c918feff7278bb042757edd618ba85a7e22ca46b1ee0a5"
+      "bytes": 11465,
+      "sha256": "f25c568ebe9dc295d4854de9c60cdbf448ce4439bf26603640524e73734eb937"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xtream.py",
@@ -624,8 +634,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/repository.py",
-      "bytes": 10172,
-      "sha256": "f3a8be1bf5be99e45367a649324bb1eaa13c21d7364ec28f15ee3bb2ecf6ea55"
+      "bytes": 10194,
+      "sha256": "2728f0188089efc10608d9e83a9898c94ebf375b6f76b3308aa9b51fc8c9f811"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/service.py",
@@ -850,42 +860,42 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 620,
-      "sha256": "aa1247efae9e54ce7e5d3fbaee917780c29919ef134d9e4890fedd7f1bdd7402"
+      "sha256": "fe1d4c4bcbc2dbca58003022949d36205658cc0df7829e46615d96103380b534"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 5394,
-      "sha256": "ff6532a4de5c5559869354dc16bbe58e157ce4d02316e937f75b15f7e9f83324"
+      "bytes": 5377,
+      "sha256": "fd71884386d949fcc5d3bd359924d8d2ec5df77903a7fa6d8a3e4c90e2be8256"
     },
     {
       "path": "docs/addons.xml.gz",
-      "bytes": 1378,
-      "sha256": "fcd4d826c09e1d6271ebed6af682f85e8396122bb4bfd16504c4059f99a311c4"
+      "bytes": 1360,
+      "sha256": "401866bd8de75a2f7dd34e947819732c95dc305192cf501abe54324eee3c8327"
     },
     {
       "path": "docs/addons.xml.gz.md5",
       "bytes": 34,
-      "sha256": "1a1009ecb8b7279e92ceceeaccd41dca9498639c94bd0798f04d9c4a66c33abc"
+      "sha256": "f602d104ea8c9618c25f5414959593bc7b93dbfd6c946066939d943a0262743d"
     },
     {
       "path": "docs/addons.xml.gz.sha256",
       "bytes": 66,
-      "sha256": "6b47b4b3a6b4c7b72aeb28871238b96605b4aae97d460585e5c374ea28a1e347"
+      "sha256": "f4025bba8473720052e584cd2fd10520d6ec179d262da16f2255621f7cd90e60"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "1bf735c3a4dad3f9e2b492825d2be0d641f75760842e69ef6dd01e98525e7fd1"
+      "sha256": "8d40a2c7173a7127ef85fa9d02d4b12a40bf170e67336c07b90523fa2539c262"
     },
     {
       "path": "docs/addons.xml.sha256",
       "bytes": 66,
-      "sha256": "2b66c8f9d649a5086df776a6a409a570f1f3b3c2fdbbc054ef1c77d457914927"
+      "sha256": "1e5f1f13264df3d21706519592fedf30fc256a82e1690320014bcafc5aba6b28"
     },
     {
       "path": "docs/index.html",
       "bytes": 2540,
-      "sha256": "79f1fa34317e9ca7dfd4b8c65bf3e52a0285e75c7f6d6dc81ca271874a5f9c03"
+      "sha256": "127bdce59e769e9ab6a0dbf029871bf5327bfa4787bd4336895dbf9bf0e68993"
     },
     {
       "path": "docs/repository.srepo-1.1.1.zip",
@@ -903,9 +913,9 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
-      "path": "docs/zips/plugin.video.stv/changelog-0.7.4.txt",
-      "bytes": 473,
-      "sha256": "a639bbc1f6350d609569575b1d88b83ee70f5ac56af8a218035bd47e3ce7ee93"
+      "path": "docs/zips/plugin.video.stv/changelog-0.7.5.txt",
+      "bytes": 330,
+      "sha256": "a3ea81a0d30ee63bf5236460e094503faef5fea761d96298eae85f4c25883317"
     },
     {
       "path": "docs/zips/plugin.video.stv/fanart.jpg",
@@ -918,14 +928,14 @@
       "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.4.zip",
-      "bytes": 320082,
-      "sha256": "62642148eefbdfdeac38a712c72b6fd2104748b73ec95e4e45efb371be12104b"
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.5.zip",
+      "bytes": 320041,
+      "sha256": "ca722c72f137464d5c9291dfc3ee861d29f2cf1474c949338bf8cf5520d284d9"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.4.zip.sha256",
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.5.zip.sha256",
       "bytes": 66,
-      "sha256": "365c69b56c9a8a5ad5be7a4e7efd8374a5748d2bc7a4a62164f4ecb1b888449e"
+      "sha256": "efc5419ab7abaf9b4c57ea608e1b7bc731305e2ffe15ccf2a2973942aca67078"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
@@ -1003,9 +1013,9 @@
       "sha256": "8b185d50c13d2e2f641c535516d30b618bfa5ca311443aa1277d72e490834671"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/changelog-1.2.1.txt",
-      "bytes": 166,
-      "sha256": "eb5ba3b49961e727499c1432816999ea5791fa47b63cadc496c0a7e9e76ad25d"
+      "path": "docs/zips/script.module.saile.epg/changelog-1.2.2.txt",
+      "bytes": 281,
+      "sha256": "5c30f268326c62c0ce7c7a0095a6ada2233f7996125c26a7927fdb5132977da7"
     },
     {
       "path": "docs/zips/script.module.saile.epg/fanart.jpg",
@@ -1018,14 +1028,14 @@
       "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.1.zip",
-      "bytes": 140636,
-      "sha256": "ca6ef512c4502394144ad7bb7f6571cb590a09aa008d9d980a93d4bfbca4d603"
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.2.zip",
+      "bytes": 140762,
+      "sha256": "b8c0560a5863b1edadf39985eb34415411249cd44ad10ec057653e70056a3dff"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.1.zip.sha256",
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.2.zip.sha256",
       "bytes": 66,
-      "sha256": "7976487f7b5662f09c436de45c58c8216bb95202d11052629ad40006e78f5e64"
+      "sha256": "762bdb6f4e2da00d4a13da0eae4a42454be776b74e134503802ac587e275e1a4"
     },
     {
       "path": "documentation/README.md",
@@ -1054,13 +1064,13 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 48135,
-      "sha256": "77d9dad2717991bd2f4416d585e8589da8d9f511dffbedae73eeeb26c826fb4f"
+      "bytes": 48317,
+      "sha256": "8d88a8d393b14b739fb1b0bbf843d31f22d702f6160f2995d19a8a5e218fb215"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 14603,
-      "sha256": "bfaf1685f1ca582018c078695d6cfa5c2a4161dc57102879776e058f2dba079d"
+      "bytes": 14646,
+      "sha256": "c481afc49ae0d1c3ba9909fa9124b66fcda55eccbc54bf7bfd9258103914f152"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1089,13 +1099,13 @@
     },
     {
       "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",
-      "bytes": 3480,
-      "sha256": "b748be17a6185cab02cab26a9cc5026c3352082154a9c7c882aba1d8591be932"
+      "bytes": 3343,
+      "sha256": "8203a71d1987bda28026937eb44cf14f7e45aea7cd225c6644aebc7c3b1a1c3e"
     },
     {
       "path": "documentation/release/STATE.md",
-      "bytes": 3650,
-      "sha256": "67eec38b6bc2fd6859820aa0bfb431b611671533d9ad0946c1a12f360ee008fd"
+      "bytes": 3605,
+      "sha256": "52e15f05b3adb20963fb9dbd8c2f2b899726bdd7f85cc2dcef49aa90b3b0989e"
     },
     {
       "path": "examples/kodi_router_pattern.py",
@@ -1234,13 +1244,13 @@
     },
     {
       "path": "tests/test_stv_ui_standardization.py",
-      "bytes": 11565,
-      "sha256": "336e4f46df0155600140e88d892b4ba084f8d207d68c50a79319a8196a25ccc2"
+      "bytes": 11487,
+      "sha256": "1a0c93a168c01ab58ad4d5ea02cbad1937c7c114b7dd8545f2fab8f50278597e"
     },
     {
       "path": "tests/test_stv_view_preferences.py",
-      "bytes": 9263,
-      "sha256": "17c0523f6d8afae18fe817e71068a79f77b90a60eb0a4a7af9e234d302883fd4"
+      "bytes": 9237,
+      "sha256": "eca2dee9f8d57a825caa7c3c5dcc1c3b1b6fbd97ecb5992e5c4dac3cd2a329b0"
     },
     {
       "path": "tests/test_stv_xtream_client.py",

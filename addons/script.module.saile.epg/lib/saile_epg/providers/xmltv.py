@@ -280,9 +280,11 @@ class XmltvProvider:
         # atual. Isso permite ao consumidor projetar todos os canais declarados
         # pelo guia e degradar somente o texto para "sem programação".
         filtered_channels = tuple(channel for _key, channel in sorted(channels.items()))
-        filtered_programs = tuple(
-            program for program in programs if program.channel_key in channels
-        )
+        dedup_programs: dict[tuple[str, int], EpgProgram] = {}
+        for program in programs:
+            if program.channel_key in channels:
+                dedup_programs[(program.channel_key, program.start_utc)] = program
+        filtered_programs = tuple(dedup_programs.values())
         if not root_seen:
             raise XmltvFormatError("XMLTV sem elemento raiz")
         if not filtered_channels:
@@ -295,3 +297,4 @@ class XmltvProvider:
             programs=filtered_programs,
             fetched_at_utc=fetched_at,
         )
+
