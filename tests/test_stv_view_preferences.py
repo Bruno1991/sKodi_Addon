@@ -139,6 +139,77 @@ class ViewPreferencesTests(unittest.TestCase):
         self.assertEqual(item.props.get("skin.infowall"), "true")
         self.assertEqual(item.props.get("widget"), "true")
 
+    def test_add_folder_preserves_natural_aspect_ratio_for_live_channels_and_folders(self) -> None:
+        created_items: list[object] = []
+
+        class FakeListItem:
+            def __init__(self, label: str, label2: str = "", offscreen: bool = True):
+                self.label = label
+                self.art: dict[str, str] = {}
+                self.info: dict[str, object] = {}
+                self.props: dict[str, str] = {}
+                created_items.append(self)
+
+            def setArt(self, art: dict[str, str]) -> None:
+                self.art = art
+
+            def setInfo(self, tag: str, info: dict[str, object]) -> None:
+                self.info = info
+
+            def setProperty(self, k: str, v: str) -> None:
+                self.props[k] = v
+
+            def addContextMenuItems(self, items: list[tuple[str, str]]) -> None:
+                pass
+
+        fake_xbmcgui = SimpleNamespace(ListItem=FakeListItem)
+        fake_xbmcplugin = SimpleNamespace(
+            addDirectoryItem=lambda handle, url, listitem, isFolder: None
+        )
+        with patch.dict(sys.modules, {"xbmcgui": fake_xbmcgui, "xbmcplugin": fake_xbmcplugin}):
+            # Live TV channel item
+            add_folder(
+                5,
+                "Globo HD",
+                "plugin://plugin.video.stv/?action=play_channel&channel_key=globo",
+                icon="http://example.com/globo.png",
+                clearlogo="http://example.com/globo.png",
+                landscape="http://example.com/globo.png",
+                fanart="http://example.com/fanart.jpg",
+                is_folder=False,
+                is_playable=True,
+                media_type="video",
+            )
+            # Folder item
+            add_folder(
+                5,
+                "Filmes",
+                "plugin://plugin.video.stv/?action=section&section=vod",
+                icon="common/folder.png",
+                fanart="http://example.com/fanart.jpg",
+                is_folder=True,
+                media_type="video",
+            )
+
+        self.assertEqual(len(created_items), 2)
+        live_item = created_items[0]
+        self.assertNotIn("poster", live_item.art)
+        self.assertEqual(live_item.art.get("icon"), "http://example.com/globo.png")
+        self.assertEqual(live_item.art.get("clearlogo"), "http://example.com/globo.png")
+        self.assertEqual(live_item.art.get("landscape"), "http://example.com/globo.png")
+
+        folder_item = created_items[1]
+        self.assertNotIn("poster", folder_item.art)
+        self.assertEqual(folder_item.art.get("icon"), "common/folder.png")
+
+    def test_app_container_prioritizes_database_preference_when_setting_is_empty(self) -> None:
+        self.repo.set_preference("view_mode", "54")
+        app_empty_setting = AppContainer({"profile_path": self.temp_dir.name, "preferred_view_mode": ""})
+        self.assertEqual(app_empty_setting.preferred_view_mode, 54)
+
+        self.repo.set_preference("view_mode", "500")
+        self.assertEqual(app_empty_setting.preferred_view_mode, 500)
+
 
 if __name__ == "__main__":
     unittest.main()

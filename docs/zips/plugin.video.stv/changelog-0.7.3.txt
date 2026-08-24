@@ -1,0 +1,5 @@
+v0.7.3 (2026-08-24)
+-------------------
+- Corrige proporções e enquadramento natural de artes (ícones e logos sem corte ou zoom).
+- Mantém o padrão InfoWall 54 universal em 100% das telas sem recair para o modo List.
+- Prioriza a preferência persistida de view mode do banco de dados local.

@@ -14,11 +14,12 @@ def add_folder(
     banner: str = "",
     clearlogo: str = "",
     landscape: str = "",
+    thumb: str = "",
     is_folder: bool = True,
     context_menu: list[tuple[str, str]] | None = None,
     plot: str = "",
     is_playable: bool = False,
-    media_type: str = "movie",
+    media_type: str = "video",
     year: int | str | None = None,
     rating: float | None = None,
     duration: int | None = None,
@@ -43,23 +44,41 @@ def add_folder(
             except Exception:
                 pass
 
-    primary_poster = poster or icon or fanart
-    primary_icon = icon or poster or fanart
-    primary_fanart = fanart or landscape or primary_poster
-    primary_landscape = landscape or fanart or primary_poster
+    art: dict[str, str] = {}
+    if icon:
+        art["icon"] = icon
 
-    art: dict[str, str] = {
-        "icon": primary_icon,
-        "thumb": primary_poster or primary_icon,
-        "poster": primary_poster or primary_icon,
-        "tvshow.poster": primary_poster or primary_icon,
-        "season.poster": primary_poster or primary_icon,
-        "fanart": primary_fanart,
-        "landscape": primary_landscape,
-        "clearlogo": clearlogo or primary_icon,
-        "banner": banner or primary_landscape or primary_poster,
-        "keyart": primary_poster or primary_icon,
-    }
+    effective_thumb = thumb or icon or poster
+    if effective_thumb:
+        art["thumb"] = effective_thumb
+
+    if poster:
+        art["poster"] = poster
+        art["keyart"] = poster
+        if media_type in {"tvshow", "season", "episode"}:
+            art["tvshow.poster"] = poster
+            art["season.poster"] = poster
+    elif media_type in {"movie", "tvshow", "season"} and icon:
+        art["poster"] = icon
+        art["keyart"] = icon
+        if media_type in {"tvshow", "season"}:
+            art["tvshow.poster"] = icon
+            art["season.poster"] = icon
+
+    if fanart:
+        art["fanart"] = fanart
+    if landscape:
+        art["landscape"] = landscape
+    elif fanart:
+        art["landscape"] = fanart
+
+    if clearlogo:
+        art["clearlogo"] = clearlogo
+    elif icon and not poster and media_type == "video":
+        art["clearlogo"] = icon
+
+    if banner:
+        art["banner"] = banner
 
     item.setArt(art)
 

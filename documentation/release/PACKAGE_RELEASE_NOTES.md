@@ -4,7 +4,7 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.2`** | Preenchimento 100% de artes (poster, thumb, icon, tvshow.poster, season.poster), fixação do modo InfoWall (54) com preservação de cache de navegação (`cacheToDisc=True`), mediatypes padronizados, busca sem acentos, encerramento limpo de diretórios e integração completa com sEPG 1.2.1/TMDB. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.3`** | Proporções e enquadramento natural de artes (ícones e logos sem zoom/corte), trava universal InfoWall (54) em 100% das telas, prioridade de preferências do banco SQLite, mediatypes padronizados, busca sem acentos e integração completa com sEPG 1.2.1/TMDB. |
 | **`script.module.saile.epg`** | **sEPG** | **`1.2.1`** | Preservação de todos os canais declarados mesmo sem programação atual, mescla de identidades Xtream ausentes do XMLTV, normalizador de termos de busca e exportações completas para sTv, timestamps UTC e cache SQLite independente. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
@@ -25,9 +25,9 @@
 - Indexação e normalização de `normalized_name` para todos os tipos de mídia (Live TV, VOD, Séries e Episódios).
 - Motor híbrido com **FTS5 Unicode61** (`remove_diacritics 2`) e fallback dinâmico indexado.
 
-### 3. 🖼️ Interface Visual InfoWall (View 54) e Pôsteres
-- Enquadramento profissional em modo InfoWall em todas as telas (`Home`, `Seções`, `Categorias`, `Séries`, `Temporadas`, `Episódios`, `Busca` e `Favoritos`).
-- Dicionário de artes completo com fallbacks automáticos em cascata para evitar cards vazios.
+### 3. 🖼️ Interface Visual InfoWall (View 54) e Proporções Naturais
+- Enquadramento profissional em modo InfoWall 54 em 100% das telas (`Home`, `Seções`, `Categorias`, `Séries`, `Temporadas`, `Episódios`, `Busca` e `Favoritos`).
+- Dicionário de artes preciso: ícones e logos de canais preservam proporções nativas sem corte/zoom, e pôsteres reais são aplicados a Filmes, Séries e Temporadas.
 - Preservação da pilha de navegação (`cacheToDisc=True`), impedindo que o Kodi reverta a visualização para Lista ao retornar (`Back`).
 
 ### 4. 🏷️ Identidade de Marca Padronizada
@@ -38,6 +38,6 @@
 
 ## Validação e Qualidade
 
-- **Testes Unitários:** 78/78 testes automatizados aprovados (100% de sucesso).
+- **Testes Unitários:** 80/80 testes automatizados aprovados (100% de sucesso).
 - **Auditoria de Segurança:** 0 credenciais ou segredos em arquivos versionáveis.
 - **Deploy:** Repositório estático atualizado com checksums SHA256/MD5 e XMLs gzip em `docs/`.

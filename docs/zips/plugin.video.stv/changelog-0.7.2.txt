@@ -1,4 +1,0 @@
-0.7.2
-- Requer sEPG 1.2.1 com suporte completo a normalização de busca acento-insensível.
-- Requer sCore 1.0.1 com infraestrutura e rotas unificadas do ecossistema sKodi.
-- Proteção e encerramento seguro de diretório em ações de sincronização e configurações.

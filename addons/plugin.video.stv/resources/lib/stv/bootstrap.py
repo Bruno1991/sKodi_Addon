@@ -70,12 +70,13 @@ def _add_promoted_live_channel(
         url,
         icon=icon_url,
         clearlogo=icon_url,
+        landscape=icon_url,
         fanart=variant.fanart or fanart,
         is_folder=False,
         is_playable=True,
         context_menu=context_menu,
         plot=live_plot,
-        media_type="movie",
+        media_type="video",
         label2=label2,
         properties=epg_properties,
     )
@@ -106,14 +107,14 @@ def _add_unmatched_live_item(
             title=item.name,
         ),
         icon=icon_url,
-        poster=icon_url,
         clearlogo=icon_url,
+        landscape=icon_url,
         fanart=item.fanart or fanart,
         is_folder=False,
         is_playable=True,
         context_menu=[("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})")],
         plot=item.plot,
-        media_type="movie",
+        media_type="video",
     )
 
 
@@ -234,10 +235,9 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
             label,
             url,
             icon=icon_path,
-            poster=icon_path,
             fanart=fanart,
             is_folder=is_folder,
-            media_type="movie",
+            media_type="video",
         )
     finish_directory(request.handle, content="movies", view_mode=view_mode)
 
@@ -257,10 +257,9 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             label,
             request.url(action=action, section=section),
             icon=icon_path,
-            poster=icon_path,
             fanart=fanart,
             is_folder=True,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="video",
         )
         
     # 2. Dynamic categories from database / Xtream
@@ -296,10 +295,9 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             cat.name,
             request.url(action="category", section=section, category_id=cat.category_id, title=cat.name),
             icon=folder_icon,
-            poster=folder_icon,
             fanart=fanart,
             is_folder=True,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="video",
         )
 
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -333,10 +331,9 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             empty_msg,
             "",
             icon=_item_icon(section, ""),
-            poster=_item_icon(section, ""),
             fanart=fanart,
             is_folder=False,
-            media_type="tvshow" if section == "series" else "movie",
+            media_type="video",
         )
 
     for item in items:
@@ -391,13 +388,14 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 display_title,
                 url,
                 icon=icon_url,
-                poster=icon_url,
+                clearlogo=icon_url,
+                landscape=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
                 plot=live_plot,
-                media_type="movie",
+                media_type="video",
             )
 
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -408,14 +406,14 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
     from saile_core.notifications import notify_error
 
     view_mode = getattr(app, "preferred_view_mode", 54)
-    init_directory(request.handle, "tvshows", view_mode=view_mode)
+    init_directory(request.handle, "seasons", view_mode=view_mode)
 
     # Verificação de Controle Parental para Séries Adultas
     if is_restricted(name=series_title):
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=series_title):
-            finish_directory(request.handle, content="tvshows", view_mode=view_mode)
+            finish_directory(request.handle, content="seasons", view_mode=view_mode)
             return
 
     try:
@@ -459,12 +457,12 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
                 fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 is_folder=True,
                 plot=season_plot,
-                media_type="tvshow",
+                media_type="season",
             )
     except Exception as exc:
         notify_error("sTv", f"Erro ao obter temporadas: {exc}")
 
-    finish_directory(request.handle, content="tvshows", view_mode=view_mode)
+    finish_directory(request.handle, content="seasons", view_mode=view_mode)
 
 
 def _show_series_episodes(request: Request, app: AppContainer, series_id: str, season_num: str, series_title: str, fanart: str) -> None:
@@ -507,9 +505,10 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 label,
                 url,
                 icon=ep_thumb,
-                poster=ep_thumb,
-                fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
+                thumb=ep_thumb,
                 landscape=ep_thumb,
+                poster=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else "",
+                fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 is_folder=False,
                 is_playable=True,
                 plot=ep_plot,
@@ -579,8 +578,8 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
-                media_type = "movie"
-                poster_val = icon_url
+                media_type = "video"
+                poster_val = ""
                 item_label = display_title
                 item_plot = live_plot
 
@@ -591,6 +590,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 icon=icon_url,
                 poster=poster_val,
                 clearlogo=icon_url if section == "live" else "",
+                landscape=icon_url if section == "live" else "",
                 fanart=item.fanart or fanart,
                 is_folder=is_folder,
                 is_playable=is_playable,
@@ -659,8 +659,8 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
-            media_type = "movie"
-            poster_val = icon_url
+            media_type = "video"
+            poster_val = ""
             item_label = display_title
             item_plot = live_plot
 
@@ -671,6 +671,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             icon=icon_url,
             poster=poster_val,
             clearlogo=icon_url if section == "live" else "",
+            landscape=icon_url if section == "live" else "",
             fanart=item.fanart or fanart,
             is_folder=is_folder,
             is_playable=is_playable,
@@ -743,7 +744,7 @@ def run(argv: list[str]) -> None:
         "cache_ttl_hours": addon.getSetting("cache_ttl_hours") or "12",
         "live_max_quality": addon.getSetting("live_max_quality") or "auto",
         "live_bandwidth_limit_mbps": addon.getSetting("live_bandwidth_limit_mbps") or "0",
-        "preferred_view_mode": addon.getSetting("preferred_view_mode") or "54",
+        "preferred_view_mode": addon.getSetting("preferred_view_mode"),
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
         "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
