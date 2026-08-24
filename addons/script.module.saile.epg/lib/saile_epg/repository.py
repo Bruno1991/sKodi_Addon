@@ -79,6 +79,7 @@ class EpgRepository:
                     len(snapshot.programs),
                 ),
             )
+        self.database.optimize()
 
     @staticmethod
     def _channel_from_row(row: object) -> EpgChannel:
@@ -258,3 +259,6 @@ class EpgRepository:
         with self.database.connect() as connection:
             connection.execute("DELETE FROM epg_channels WHERE provider_id = ?", (provider_id,))
             connection.execute("DELETE FROM epg_sync_state WHERE provider_id = ?", (provider_id,))
+
+    def optimize(self) -> None:
+        self.database.optimize()

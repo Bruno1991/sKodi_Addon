@@ -87,3 +87,11 @@ class EpgDatabase:
                 connection.execute("INSERT INTO schema_version(version) VALUES (?)", (SCHEMA_VERSION,))
             elif int(row["version"]) != SCHEMA_VERSION:
                 raise RuntimeError(f"Schema EPG não suportado: {row['version']}")
+
+    def optimize(self) -> None:
+        """Executa otimização de estatísticas e query planner no SQLite."""
+        try:
+            with self.connect() as connection:
+                connection.execute("PRAGMA optimize")
+        except Exception:
+            pass

@@ -129,3 +129,6 @@ class EpgService:
 
     def clear(self, provider_id: str = DEFAULT_PROVIDER_ID) -> None:
         self.repository.clear(provider_id)
+
+    def optimize(self) -> None:
+        self.repository.optimize()

@@ -184,12 +184,24 @@ class CatalogRepository:
         ]
 
     def search_media(self, media_type: str, query: str) -> list[MediaItem]:
-        """Pesquisa itens de mídia usando FTS5 com fallback para LIKE."""
+        """Pesquisa itens de mídia usando FTS5 e busca normalizada insensível a acentos."""
         cleaned_query = query.strip()
         if not cleaned_query:
             return []
 
-        # 1. Tentar busca via FTS5
+        import re
+        from saile_epg import normalize_channel_name, normalize_search_term
+
+        normalized_query = (
+            normalize_channel_name(cleaned_query)
+            if media_type == "live"
+            else normalize_search_term(cleaned_query)
+        )
+        unaccented_query = normalize_search_term(cleaned_query)
+
+        results_by_id: dict[tuple[str, str], MediaItem] = {}
+
+        # 1. Tentar busca via FTS5 (com prefix matching e tokens higienizados)
         fts_sql = """
         SELECT m.* FROM media_items m
         JOIN media_items_fts f ON m.rowid = f.rowid
@@ -198,13 +210,13 @@ class CatalogRepository:
         LIMIT 100
         """
         try:
-            # Formata query para FTS5 com prefix matching
-            fts_query = " ".join(f'"{token}"*' for token in cleaned_query.split())
-            with self.db.connect() as connection:
-                rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
-                if rows:
-                    return [
-                        MediaItem(
+            tokens = re.findall(r"\w+", cleaned_query)
+            if tokens:
+                fts_query = " ".join(f'"{token}"*' for token in tokens)
+                with self.db.connect() as connection:
+                    rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
+                    for row in rows:
+                        item = MediaItem(
                             media_type=row["media_type"],
                             item_id=row["item_id"],
                             name=row["name"],
@@ -218,15 +230,11 @@ class CatalogRepository:
                             normalized_name=row["normalized_name"],
                             generation_id=row["generation_id"],
                         )
-                        for row in rows
-                    ]
+                        results_by_id[(item.media_type, item.item_id)] = item
         except Exception:
             pass
 
-        # 2. Fallback resiliente com LIKE
-        from saile_epg import normalize_channel_name
-
-        normalized_query = normalize_channel_name(cleaned_query) if media_type == "live" else ""
+        # 2. Busca e complemento resiliente com LIKE sobre campos originais e normalizados (sem acentos)
         fallback_sql = """
         SELECT * FROM media_items
         WHERE media_type = ?
@@ -234,41 +242,47 @@ class CatalogRepository:
             name LIKE ?
             OR source_name LIKE ?
             OR (? != '' AND normalized_name LIKE ?)
+            OR (? != '' AND normalized_name LIKE ?)
           )
         ORDER BY name COLLATE NOCASE LIMIT 100
         """
-        with self.db.connect() as connection:
-            rows = connection.execute(
-                fallback_sql,
-                (
-                    media_type,
-                    f"%{cleaned_query}%",
-                    f"%{cleaned_query}%",
-                    normalized_query,
-                    f"%{normalized_query}%",
-                ),
-            ).fetchall()
+        try:
+            with self.db.connect() as connection:
+                rows = connection.execute(
+                    fallback_sql,
+                    (
+                        media_type,
+                        f"%{cleaned_query}%",
+                        f"%{cleaned_query}%",
+                        normalized_query,
+                        f"%{normalized_query}%",
+                        unaccented_query,
+                        f"%{unaccented_query}%",
+                    ),
+                ).fetchall()
+                for row in rows:
+                    key = (str(row["media_type"]), str(row["item_id"]))
+                    if key not in results_by_id:
+                        results_by_id[key] = MediaItem(
+                            media_type=row["media_type"],
+                            item_id=row["item_id"],
+                            name=row["name"],
+                            category_id=row["category_id"],
+                            icon=row["icon"],
+                            fanart=row["fanart"],
+                            plot=row["plot"],
+                            extension=row["extension"],
+                            epg_id=row["epg_id"],
+                            source_name=row["source_name"],
+                            normalized_name=row["normalized_name"],
+                            generation_id=row["generation_id"],
+                        )
+        except Exception:
+            pass
 
-        return [
-            MediaItem(
-                media_type=row["media_type"],
-                item_id=row["item_id"],
-                name=row["name"],
-                category_id=row["category_id"],
-                icon=row["icon"],
-                fanart=row["fanart"],
-                plot=row["plot"],
-                extension=row["extension"],
-                epg_id=row["epg_id"],
-                source_name=row["source_name"],
-                normalized_name=row["normalized_name"],
-                generation_id=row["generation_id"],
-            )
-            for row in rows
-        ]
+        return list(results_by_id.values())[:100]
 
     def get_favorites(self, media_type: str) -> list[MediaItem]:
-        """Recupera todos os itens marcados como favoritos em ordem cronológica reversa."""
         sql = """
         SELECT m.* FROM media_items m
         JOIN favorites f ON m.media_type = f.media_type AND m.item_id = f.item_id
@@ -498,3 +512,7 @@ class CatalogRepository:
         """
         with self.db.connect() as connection:
             connection.execute(sql, (key, str(value)))
+
+    def optimize(self) -> None:
+        """Executa otimização de estatísticas e query planner no SQLite."""
+        self.db.optimize()

@@ -149,6 +149,115 @@ class PersistenceTests(unittest.TestCase):
         self.repo.begin_catalog_sync(("live",))
         self.assertFalse(self.repo.is_catalog_complete("live"))
 
+    def test_search_accent_insensitivity_pokemon_and_capitao(self) -> None:
+        items = [
+            MediaItem(
+                media_type="vod",
+                item_id="301",
+                name="Pokémon: Detetive Pikachu",
+                source_name="Pokemon: Detetive Pikachu",
+                normalized_name="POKEMON DETETIVE PIKACHU",
+                plot="Um filme com Pokémons",
+            ),
+            MediaItem(
+                media_type="vod",
+                item_id="302",
+                name="Pokemon 2000",
+                source_name="Pokemon 2000",
+                normalized_name="POKEMON 2000",
+                plot="Lugia e os pássaros lendários",
+            ),
+            MediaItem(
+                media_type="vod",
+                item_id="303",
+                name="Capitão América: Guerra Civil",
+                source_name="Capitão América: Guerra Civil",
+                normalized_name="CAPITAO AMERICA GUERRA CIVIL",
+                plot="Guerra entre heróis",
+            ),
+            MediaItem(
+                media_type="vod",
+                item_id="304",
+                name="Capitao Fantastico",
+                source_name="Capitao Fantastico",
+                normalized_name="CAPITAO FANTASTICO",
+                plot="Família na floresta",
+            ),
+            MediaItem(
+                media_type="series",
+                item_id="305",
+                name="Pokémon: A Série",
+                source_name="Pokemon: A Serie",
+                normalized_name="POKEMON A SERIE",
+                plot="Ash e Pikachu",
+            ),
+        ]
+        self.repo.upsert_media_items(items)
+
+        # 1. Busca sem acento "pokemon" retorna ambos os itens VOD
+        res_pokemon = self.repo.search_media("vod", "pokemon")
+        self.assertEqual({i.item_id for i in res_pokemon}, {"301", "302"})
+
+        # 2. Busca com acento "pokémon" retorna ambos os itens VOD
+        res_pokemon_accent = self.repo.search_media("vod", "pokémon")
+        self.assertEqual({i.item_id for i in res_pokemon_accent}, {"301", "302"})
+
+        # 3. Busca em maiúsculas com acento "POKÉMON"
+        res_pokemon_caps = self.repo.search_media("vod", "POKÉMON")
+        self.assertEqual({i.item_id for i in res_pokemon_caps}, {"301", "302"})
+
+        # 4. Busca com pontuação "pokemon: detetive"
+        res_pokemon_punct = self.repo.search_media("vod", "pokemon: detetive")
+        self.assertEqual([i.item_id for i in res_pokemon_punct], ["301"])
+
+        # 5. Busca "capitao" vs "capitão"
+        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "capitao")}, {"303", "304"})
+        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "capitão")}, {"303", "304"})
+        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "america")}, {"303"})
+        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "américa")}, {"303"})
+
+        # 6. Busca em séries
+        self.assertEqual([i.item_id for i in self.repo.search_media("series", "pokemon")], ["305"])
+        self.assertEqual([i.item_id for i in self.repo.search_media("series", "pokémon")], ["305"])
+
+    def test_search_fallback_when_fts_is_disabled(self) -> None:
+        items = [
+            MediaItem(
+                media_type="vod",
+                item_id="401",
+                name="Pokémon: O Filme",
+                source_name="Pokemon: O Filme",
+                normalized_name="POKEMON O FILME",
+            ),
+            MediaItem(
+                media_type="vod",
+                item_id="402",
+                name="Pokemon Heroes",
+                source_name="Pokemon Heroes",
+                normalized_name="POKEMON HEROES",
+            ),
+        ]
+        self.repo.upsert_media_items(items)
+
+        # Força desativação temporária do FTS no repo
+        with tempfile.TemporaryDirectory() as tmp:
+            custom_db = Database(Path(tmp) / "no_fts.db")
+            custom_db.initialize()
+            custom_db.fts_available = False
+            custom_repo = CatalogRepository(custom_db)
+            custom_repo.upsert_media_items(items)
+
+            # Mesmo sem FTS5 (fallback LIKE puro com normalização), a busca insensível a acentos funciona 100%
+            res_without_accent = custom_repo.search_media("vod", "pokemon")
+            self.assertEqual({i.item_id for i in res_without_accent}, {"401", "402"})
+
+            res_with_accent = custom_repo.search_media("vod", "pokémon")
+            self.assertEqual({i.item_id for i in res_with_accent}, {"401", "402"})
+
+    def test_database_optimize(self) -> None:
+        self.repo.optimize()
+        self.db.optimize()
+
 
 if __name__ == "__main__":
     unittest.main()

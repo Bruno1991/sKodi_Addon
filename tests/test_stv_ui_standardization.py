@@ -134,7 +134,7 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(vod_parsed[0].icon, "http://img.com/c1.jpg")
         self.assertEqual(vod_parsed[0].fanart, "http://img.com/b1.jpg")
         self.assertEqual(vod_parsed[0].name, "Filme 1")
-        self.assertEqual(vod_parsed[0].normalized_name, "")
+        self.assertEqual(vod_parsed[0].normalized_name, "FILME 1")
 
         series_data = [
             {
@@ -147,6 +147,7 @@ class UIStandardizationTests(unittest.TestCase):
         series_parsed = _parse_streams("series", 100, series_data)
         self.assertEqual(series_parsed[0].icon, "http://img.com/s1.jpg")
         self.assertEqual(series_parsed[0].fanart, "http://img.com/sb1.jpg")
+        self.assertEqual(series_parsed[0].normalized_name, "SERIE 1")
 
     def test_item_icon_fallback_by_section(self) -> None:
         self.assertEqual(_item_icon("live", "http://example.com/logo.png"), "http://example.com/logo.png")

@@ -4,7 +4,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from saile_epg import clean_channel_title, normalize_channel_name
+from saile_epg import clean_channel_title, normalize_channel_name, normalize_search_term
 from stv.domain.models import Category, MediaItem
 
 if TYPE_CHECKING:
@@ -48,7 +48,11 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
         item_id = str(item.get("stream_id") or item.get("series_id") or "").strip()
         source_name = str(item.get("name") or item.get("title") or "").strip()
         name = clean_channel_title(source_name) if media_type == "live" else source_name
-        normalized_name = normalize_channel_name(source_name) if media_type == "live" else ""
+        normalized_name = (
+            normalize_channel_name(source_name)
+            if media_type == "live"
+            else normalize_search_term(source_name)
+        )
         raw_cat = str(item.get("category_id") or "").strip()
         category_id = raw_cat if (raw_cat and raw_cat != "0") else (default_category_id or raw_cat or "0")
 
@@ -184,6 +188,8 @@ def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) ->
     app.catalog.clean_obsolete_categories("live", generation_id)
     app.catalog.clean_obsolete_items("live", generation_id)
     app.catalog.mark_catalog_synced("live", generation_id)
+    if hasattr(app.catalog, "optimize"):
+        app.catalog.optimize()
     return {"category_count": len(categories), "stream_count": len(streams)}
 
 
@@ -237,6 +243,8 @@ def sync_full_catalog(app: "AppContainer") -> bool:
             app.catalog.clean_obsolete_items(section, generation_id)
             app.catalog.mark_catalog_synced(section, generation_id)
 
+        if hasattr(app.catalog, "optimize"):
+            app.catalog.optimize()
         dialog.update(100, "Catálogo sincronizado com sucesso!")
         time.sleep(0.5)
         return True

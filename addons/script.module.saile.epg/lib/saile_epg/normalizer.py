@@ -22,9 +22,24 @@ _REDUNDANCY_TAGS = re.compile(
 _EXTRA_PUNCTUATION = re.compile(r"[\[\](){}_\|#*~]")
 
 
-def _strip_accents(text: str) -> str:
+def strip_accents(text: str) -> str:
+    if not text:
+        return ""
     normalized = unicodedata.normalize("NFKD", text)
     return "".join(character for character in normalized if not unicodedata.combining(character))
+
+
+def _strip_accents(text: str) -> str:
+    return strip_accents(text)
+
+
+def normalize_search_term(text: str) -> str:
+    """Normaliza texto para busca insensível a acentos, maiúsculas e pontuação."""
+    if not text:
+        return ""
+    cleaned = strip_accents(text).upper()
+    cleaned = re.sub(r"[^A-Z0-9\s]", " ", cleaned)
+    return re.sub(r"\s+", " ", cleaned).strip()
 
 
 def clean_channel_title(raw_name: str) -> str:
