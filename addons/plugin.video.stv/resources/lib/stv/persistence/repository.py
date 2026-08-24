@@ -513,6 +513,64 @@ class CatalogRepository:
         with self.db.connect() as connection:
             connection.execute(sql, (key, str(value)))
 
+    def get_tmdb_season_cache(
+        self,
+        series_name: str,
+        season_num: int | str,
+        ttl_hours: int = 168,
+    ) -> dict[int, dict[str, object]] | None:
+        """Recupera metadados enriquecidos de episódios do cache local SQLite se válido."""
+        import json
+
+        sql = """
+        SELECT payload_json, updated_at,
+               (julianday('now') - julianday(updated_at)) * 24 as diff_hours
+        FROM tmdb_season_cache
+        WHERE series_name = ? AND season_num = ?
+        """
+        with self.db.connect() as connection:
+            row = connection.execute(
+                sql, (str(series_name).strip(), int(season_num))
+            ).fetchone()
+            if (
+                row
+                and row["diff_hours"] is not None
+                and row["diff_hours"] <= ttl_hours
+            ):
+                try:
+                    data = json.loads(row["payload_json"])
+                    return {int(k): v for k, v in data.items()}
+                except Exception:
+                    return None
+            return None
+
+    def set_tmdb_season_cache(
+        self,
+        series_name: str,
+        season_num: int | str,
+        episodes_map: dict[int, dict[str, object]],
+    ) -> None:
+        """Salva metadados enriquecidos de episódios de uma temporada no cache local SQLite."""
+        import json
+
+        sql = """
+        INSERT INTO tmdb_season_cache (series_name, season_num, payload_json, updated_at)
+        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT (series_name, season_num) DO UPDATE SET
+            payload_json = excluded.payload_json,
+            updated_at = CURRENT_TIMESTAMP
+        """
+        with self.db.connect() as connection:
+            connection.execute(
+                sql,
+                (
+                    str(series_name).strip(),
+                    int(season_num),
+                    json.dumps(episodes_map, ensure_ascii=False),
+                ),
+            )
+
     def optimize(self) -> None:
         """Executa otimização de estatísticas e query planner no SQLite."""
         self.db.optimize()
+

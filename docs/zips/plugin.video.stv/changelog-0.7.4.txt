@@ -1,0 +1,6 @@
+v0.7.4 (2026-08-24)
+-------------------
+- Enriquecimento inteligente de episódios com frames 16:9 autênticos e sinopses via TMDB.
+- Normalização de URLs TMDB /w600_and_h900_bestv2/ para /w500/ eliminando corte vertical em thumbnails de episódios.
+- Cache SQLite local de metadados e still frames de temporadas para carregamento instantâneo.
+- Otimização do banco de navegação do Kodi (ViewModes6.db) para eliminar o delay/flash do modo List ao abrir diretórios.

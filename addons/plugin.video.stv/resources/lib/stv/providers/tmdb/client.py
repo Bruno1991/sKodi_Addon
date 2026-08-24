@@ -13,6 +13,7 @@ class TmdbClient:
     API_BASE = "https://api.themoviedb.org/3"
     IMAGE_BASE_BACKDROP = "https://image.tmdb.org/t/p/w1280"
     IMAGE_BASE_POSTER = "https://image.tmdb.org/t/p/w500"
+    IMAGE_BASE_STILL = "https://image.tmdb.org/t/p/w500"
     DEFAULT_API_KEY = "e5df95f7e157b9709d093c1a6be7e1c5"
 
     def __init__(
@@ -76,6 +77,39 @@ class TmdbClient:
             return results[0]
         return None
 
+    def get_season_episodes(
+        self,
+        tv_id: str | int,
+        season_number: str | int,
+    ) -> dict[int, dict[str, Any]]:
+        """Recupera metadados e still_path dos episódios de uma temporada pelo ID do TMDB."""
+        if not tv_id:
+            return {}
+        data = self._request(f"tv/{tv_id}/season/{season_number}")
+        episodes = data.get("episodes", [])
+        result: dict[int, dict[str, Any]] = {}
+        if isinstance(episodes, list):
+            for ep in episodes:
+                if isinstance(ep, dict) and "episode_number" in ep:
+                    try:
+                        ep_num = int(ep["episode_number"])
+                    except (ValueError, TypeError):
+                        continue
+                    still_path = ep.get("still_path")
+                    still_url = (
+                        f"{self.IMAGE_BASE_STILL}{still_path}"
+                        if still_path
+                        else ""
+                    )
+                    result[ep_num] = {
+                        "name": ep.get("name", ""),
+                        "overview": ep.get("overview", ""),
+                        "still_url": still_url,
+                        "still_path": still_path or "",
+                        "vote_average": ep.get("vote_average", 0.0),
+                    }
+        return result
+
     @classmethod
     def format_fanart_url(cls, backdrop_path: str | None, poster_path: str | None) -> str:
         """Retorna uma URL absoluta de imagem em alta definição."""
@@ -84,3 +118,4 @@ class TmdbClient:
         if poster_path:
             return f"{cls.IMAGE_BASE_POSTER}{poster_path}"
         return ""
+

@@ -159,6 +159,14 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertTrue(_item_icon("other", "").endswith("folder.png"))
 
     def test_episode_frame_has_priority_over_series_cover(self) -> None:
+        from stv.bootstrap import _normalize_tmdb_still_url
+
+        tmdb_vert_url = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uYSkeGzyZMWl7jSFiWuPhN54edb.jpg"
+        self.assertEqual(
+            _normalize_tmdb_still_url(tmdb_vert_url),
+            "https://image.tmdb.org/t/p/w500/uYSkeGzyZMWl7jSFiWuPhN54edb.jpg",
+        )
+
         episode = {"info": {"movie_image": "https://img.example/episode-frame.jpg"}}
         self.assertEqual(
             _episode_thumbnail(episode, "https://img.example/series-cover.jpg"),
@@ -167,6 +175,12 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(
             _episode_thumbnail({}, "https://img.example/series-cover.jpg"),
             "https://img.example/series-cover.jpg",
+        )
+        # Prioriza metadados do TMDB
+        tmdb_meta = {"still_url": "https://image.tmdb.org/t/p/w500/still1.jpg"}
+        self.assertEqual(
+            _episode_thumbnail(episode, "https://img.example/series-cover.jpg", tmdb_ep_meta=tmdb_meta),
+            "https://image.tmdb.org/t/p/w500/still1.jpg",
         )
 
     def test_format_live_channel_metadata_uses_module_cache(self) -> None:

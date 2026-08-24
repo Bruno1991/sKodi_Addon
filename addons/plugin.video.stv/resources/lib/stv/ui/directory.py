@@ -173,3 +173,44 @@ def finish_directory(
             xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
         except Exception:
             pass
+
+
+def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%") -> None:
+    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54)."""
+    import os
+    import sqlite3
+    from pathlib import Path
+
+    try:
+        candidates = []
+        local_app_data = os.environ.get("LOCALAPPDATA", "")
+        if local_app_data:
+            candidates.append(
+                Path(local_app_data)
+                / "Packages"
+                / "XBMCFoundation.Kodi_4n2hpmxwrvr6p"
+                / "LocalCache"
+                / "Roaming"
+                / "Kodi"
+                / "userdata"
+                / "Database"
+                / "ViewModes6.db"
+            )
+        app_data = os.environ.get("APPDATA", "")
+        if app_data:
+            candidates.append(
+                Path(app_data) / "Kodi" / "userdata" / "Database" / "ViewModes6.db"
+            )
+
+        for db_path in candidates:
+            if db_path.exists():
+                conn = sqlite3.connect(db_path, timeout=1.0)
+                conn.execute(
+                    "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
+                    (path_pattern,),
+                )
+                conn.commit()
+                conn.close()
+    except Exception:
+        pass
+

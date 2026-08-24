@@ -150,3 +150,37 @@ class AppContainer:
             probe=lambda item: self.xtream.probe_stream("live", item.item_id, item.extension),
         )
 
+    def get_season_episodes_metadata(
+        self,
+        series_name: str,
+        season_num: int | str,
+        tmdb_id: str | int | None = None,
+    ) -> dict[int, dict[str, object]]:
+        """Busca metadados enriquecidos e frames 16:9 dos episódios com cache SQLite."""
+        try:
+            season_int = int(season_num)
+        except (ValueError, TypeError):
+            season_int = 1
+
+        cached = self.catalog.get_tmdb_season_cache(series_name, season_int)
+        if cached:
+            return cached
+
+        episodes_meta: dict[int, dict[str, object]] = {}
+        try:
+            target_id = tmdb_id
+            if not target_id:
+                show = self.tmdb.search_tv(series_name)
+                if show:
+                    target_id = show.get("id")
+
+            if target_id:
+                episodes_meta = self.tmdb.get_season_episodes(target_id, season_int)
+                if episodes_meta:
+                    self.catalog.set_tmdb_season_cache(series_name, season_int, episodes_meta)
+        except Exception:
+            episodes_meta = {}
+
+        return episodes_meta
+
+

@@ -4,7 +4,7 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.3`** | Proporções e enquadramento natural de artes (ícones e logos sem zoom/corte), trava universal InfoWall (54) em 100% das telas, prioridade de preferências do banco SQLite, mediatypes padronizados, busca sem acentos e integração completa com sEPG 1.2.1/TMDB. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.4`** | Enriquecimento com frames 16:9 do TMDB em episódios de séries, eliminação do delay/flash do modo List com sincronização no ViewModes6.db, proporções e enquadramento natural de artes, trava universal InfoWall (54) em 100% das telas e cache local SQLite. |
 | **`script.module.saile.epg`** | **sEPG** | **`1.2.1`** | Preservação de todos os canais declarados mesmo sem programação atual, mescla de identidades Xtream ausentes do XMLTV, normalizador de termos de busca e exportações completas para sTv, timestamps UTC e cache SQLite independente. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |

@@ -118,22 +118,46 @@ def _add_unmatched_live_item(
     )
 
 
-def _episode_thumbnail(episode: dict[str, object], series_cover: str = "") -> str:
-    """Prioriza um frame real do episódio e usa a capa da série apenas como fallback."""
+def _normalize_tmdb_still_url(url: str) -> str:
+    """Converte URLs cortadas de pôster vertical do TMDB em frames 16:9 autênticos."""
+    if not url:
+        return ""
+    if "image.tmdb.org/t/p/w600_and_h900" in url:
+        return url.replace("w600_and_h900_bestv2", "w500").replace("w600_and_h900", "w500")
+    if "image.tmdb.org/t/p/w185" in url or "image.tmdb.org/t/p/w300" in url:
+        return url.replace("/w185/", "/w500/").replace("/w300/", "/w500/")
+    return url
+
+
+def _episode_thumbnail(
+    episode: dict[str, object],
+    series_cover: str = "",
+    tmdb_ep_meta: dict[str, object] | None = None,
+) -> str:
+    """Prioriza um frame real 16:9 do episódio (TMDB / Xtream) e usa a capa da série apenas como fallback."""
+    if tmdb_ep_meta and tmdb_ep_meta.get("still_url"):
+        return str(tmdb_ep_meta["still_url"])
+
     raw_info = episode.get("info")
     info = raw_info if isinstance(raw_info, dict) else {}
     raw_thumb = str(
-        info.get("movie_image")
-        or info.get("cover_big")
-        or info.get("still_path")
+        info.get("still_path")
+        or info.get("movie_image")
         or info.get("image")
+        or info.get("cover_big")
+        or episode.get("still_path")
         or episode.get("movie_image")
-        or episode.get("cover_big")
         or episode.get("thumbnail")
-        or series_cover
+        or episode.get("cover_big")
         or ""
-    )
-    return _item_icon("series", raw_thumb)
+    ).strip()
+
+    if raw_thumb:
+        normalized = _normalize_tmdb_still_url(raw_thumb)
+        return _item_icon("series", normalized)
+
+    return _item_icon("series", series_cover or "")
+
 
 
 def _format_live_channel_metadata(
@@ -488,15 +512,39 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
         series_plot = info.get("plot", "")
         episodes = episodes_by_season.get(str(season_num), [])
 
+        # Enriquecimento com TMDB para frames 16:9 reais e sinopses dos episódios
+        tmdb_id = info.get("tmdb_id")
+        clean_series_name = info.get("name") or series_title
+        tmdb_episodes = app.get_season_episodes_metadata(
+            clean_series_name,
+            season_num,
+            tmdb_id=tmdb_id,
+        )
+
         for ep in episodes:
             if not isinstance(ep, dict):
                 continue
             ep_id = str(ep.get("id", ""))
-            ep_num = str(ep.get("episode_num", "1"))
-            ep_title = str(ep.get("title") or f"Episódio {ep_num}").strip()
+            raw_ep_num = ep.get("episode_num", "1")
+            ep_num = str(raw_ep_num)
+            try:
+                ep_int = int(ep_num)
+            except (ValueError, TypeError):
+                ep_int = 1
+
+            tmdb_meta = tmdb_episodes.get(ep_int)
+            ep_title = str(
+                (tmdb_meta.get("name") if tmdb_meta else "")
+                or ep.get("title")
+                or f"Episódio {ep_num}"
+            ).strip()
             ep_ext = str(ep.get("container_extension", "mp4"))
-            ep_plot = str(ep.get("info", {}).get("plot") or series_plot)
-            ep_thumb = _episode_thumbnail(ep, series_cover)
+            ep_plot = str(
+                (tmdb_meta.get("overview") if tmdb_meta else "")
+                or ep.get("info", {}).get("plot")
+                or series_plot
+            )
+            ep_thumb = _episode_thumbnail(ep, series_cover, tmdb_ep_meta=tmdb_meta)
             label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
             url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
@@ -507,7 +555,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 icon=ep_thumb,
                 thumb=ep_thumb,
                 landscape=ep_thumb,
-                poster=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else "",
+                poster="",
                 fanart=series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else fanart,
                 is_folder=False,
                 is_playable=True,
@@ -749,6 +797,9 @@ def run(argv: list[str]) -> None:
         "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
     app = AppContainer(settings)
+
+    from stv.ui.directory import ensure_infowall_in_kodi_db
+    ensure_infowall_in_kodi_db()
 
     if request.action in {"", "home"}:
         _show_home(request, app, fanart)
