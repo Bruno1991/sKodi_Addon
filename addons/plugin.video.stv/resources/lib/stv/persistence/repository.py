@@ -478,3 +478,23 @@ class CatalogRepository:
                 return True
             return False
 
+    def get_preference(self, key: str, default: str = "") -> str:
+        """Recupera uma preferência persistida no banco local."""
+        sql = "SELECT value FROM user_preferences WHERE key = ?"
+        with self.db.connect() as connection:
+            row = connection.execute(sql, (key,)).fetchone()
+            if row:
+                return str(row["value"])
+            return default
+
+    def set_preference(self, key: str, value: str) -> None:
+        """Salva ou atualiza uma preferência no banco local."""
+        sql = """
+        INSERT INTO user_preferences (key, value, updated_at)
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT (key) DO UPDATE SET
+            value = excluded.value,
+            updated_at = CURRENT_TIMESTAMP
+        """
+        with self.db.connect() as connection:
+            connection.execute(sql, (key, str(value)))

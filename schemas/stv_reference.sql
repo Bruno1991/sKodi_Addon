@@ -67,3 +67,10 @@ CREATE TABLE IF NOT EXISTS metadata_cache (
     expires_at TEXT NOT NULL,
     PRIMARY KEY (media_type, provider_item_id)
 );
+
+CREATE TABLE IF NOT EXISTS user_preferences (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+

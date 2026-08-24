@@ -72,6 +72,14 @@ CREATE TABLE IF NOT EXISTS playback_progress (
     PRIMARY KEY (media_type, item_id)
 );
 
+CREATE TABLE IF NOT EXISTS user_preferences (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT OR IGNORE INTO user_preferences (key, value) VALUES ('view_mode', '54');
+
 """
 
 FTS5_SCHEMA = """

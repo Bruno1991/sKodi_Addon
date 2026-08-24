@@ -48,6 +48,20 @@ class AppContainer:
         return self._catalog_repo
 
     @property
+    def preferred_view_mode(self) -> int:
+        """Retorna o modo de visualização configurado (padrão: 54 - InfoWall)."""
+        mode_str = self.settings.get("preferred_view_mode")
+        if not mode_str:
+            try:
+                mode_str = self.catalog.get_preference("view_mode", "54")
+            except Exception:
+                mode_str = "54"
+        try:
+            return int(mode_str)
+        except Exception:
+            return 54
+
+    @property
     def tmdb(self) -> 'TmdbClient':
         from stv.providers.tmdb.client import TmdbClient
         if self._tmdb_client is None:

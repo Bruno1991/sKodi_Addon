@@ -218,10 +218,11 @@ def _format_epg_card(
     return full_plot or default_plot or channel_title, label2, properties
 
 
-def _show_home(request: Request, fanart: str) -> None:
+def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
-    init_directory(request.handle, "movies")
+    view_mode = getattr(app, "preferred_view_mode", 54)
+    init_directory(request.handle, "movies", view_mode=view_mode)
 
     for label, action, section, scope, filename in HOME_ENTRIES:
         url = request.url(action=action, section=section) if section else request.url(action=action)
@@ -231,18 +232,20 @@ def _show_home(request: Request, fanart: str) -> None:
             label,
             url,
             icon=icon_path,
+            poster=icon_path,
             fanart=fanart,
             is_folder=True,
             media_type="movie",
         )
-    finish_directory(request.handle, content="movies", view_mode=54)
+    finish_directory(request.handle, content="movies", view_mode=view_mode)
 
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
+    view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type)
+    init_directory(request.handle, content_type, view_mode=view_mode)
 
     # 1. Fixed navigation items (Buscar e Favoritos)
     for label, action, scope, filename in SECTION_FIXED_ENTRIES:
@@ -252,6 +255,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             label,
             request.url(action=action, section=section),
             icon=icon_path,
+            poster=icon_path,
             fanart=fanart,
             is_folder=True,
             media_type="tvshow" if section == "series" else "movie",
@@ -290,26 +294,28 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             cat.name,
             request.url(action="category", section=section, category_id=cat.category_id, title=cat.name),
             icon=folder_icon,
+            poster=folder_icon,
             fanart=fanart,
             is_folder=True,
             media_type="tvshow" if section == "series" else "movie",
         )
 
-    finish_directory(request.handle, content=content_type, view_mode=54)
+    finish_directory(request.handle, content=content_type, view_mode=view_mode)
 
 
 def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
+    view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type)
+    init_directory(request.handle, content_type, view_mode=view_mode)
 
     # Verificação de Controle Parental para a Categoria
     if is_restricted(category_name=category_name):
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=category_name or "Categoria Adulta"):
-            finish_directory(request.handle, content=content_type, view_mode=54)
+            finish_directory(request.handle, content=content_type, view_mode=view_mode)
             return
 
     ensure_streams_loaded(app, section, category_id)
@@ -325,6 +331,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             empty_msg,
             "",
             icon=_item_icon(section, ""),
+            poster=_item_icon(section, ""),
             fanart=fanart,
             is_folder=False,
             media_type="video",
@@ -369,7 +376,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # TV ao vivo: apresentação limpa no InfoWall 54 com EPG local do provedor.
+            # TV ao vivo: apresentação limpa no InfoWall com EPG local do provedor.
             display_title, live_plot = _format_live_channel_metadata(
                 app,
                 item.name,
@@ -382,6 +389,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 display_title,
                 url,
                 icon=icon_url,
+                poster=icon_url,
                 fanart=item.fanart or fanart,
                 is_folder=False,
                 is_playable=True,
@@ -390,21 +398,22 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="video",
             )
 
-    finish_directory(request.handle, content=content_type, view_mode=54)
+    finish_directory(request.handle, content=content_type, view_mode=view_mode)
 
 
 def _show_series_seasons(request: Request, app: AppContainer, series_id: str, series_title: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
     from saile_core.notifications import notify_error
 
-    init_directory(request.handle, "tvshows")
+    view_mode = getattr(app, "preferred_view_mode", 54)
+    init_directory(request.handle, "tvshows", view_mode=view_mode)
 
     # Verificação de Controle Parental para Séries Adultas
     if is_restricted(name=series_title):
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=series_title):
-            finish_directory(request.handle, content="tvshows", view_mode=54)
+            finish_directory(request.handle, content="tvshows", view_mode=view_mode)
             return
 
     try:
@@ -453,21 +462,22 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
     except Exception as exc:
         notify_error("sTv", f"Erro ao obter temporadas: {exc}")
 
-    finish_directory(request.handle, content="tvshows", view_mode=54)
+    finish_directory(request.handle, content="tvshows", view_mode=view_mode)
 
 
 def _show_series_episodes(request: Request, app: AppContainer, series_id: str, season_num: str, series_title: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
     from saile_core.notifications import notify_error
 
-    init_directory(request.handle, "episodes")
+    view_mode = getattr(app, "preferred_view_mode", 54)
+    init_directory(request.handle, "episodes", view_mode=view_mode)
 
     # Verificação de Controle Parental para Séries Adultas
     if is_restricted(name=series_title):
         import xbmcaddon
         addon = xbmcaddon.Addon()
         if not verify_parental_pin(addon, reason=series_title):
-            finish_directory(request.handle, content="episodes", view_mode=54)
+            finish_directory(request.handle, content="episodes", view_mode=view_mode)
             return
 
     try:
@@ -506,15 +516,16 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
     except Exception as exc:
         notify_error("sTv", f"Erro ao obter episódios: {exc}")
 
-    finish_directory(request.handle, content="episodes", view_mode=54)
+    finish_directory(request.handle, content="episodes", view_mode=view_mode)
 
 
 def _show_search(request: Request, app: AppContainer, section: str, fanart: str) -> None:
     import xbmc
     from stv.ui.directory import add_folder, finish_directory, init_directory
     
+    view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type)
+    init_directory(request.handle, content_type, view_mode=view_mode)
 
     keyboard = xbmc.Keyboard("", "Buscar...")
     keyboard.doModal()
@@ -531,7 +542,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
             for item in live_catalog.unmatched_items:
                 if item.item_id in result_ids:
                     _add_unmatched_live_item(request, app, item, fanart)
-            finish_directory(request.handle, content=content_type, view_mode=54)
+            finish_directory(request.handle, content=content_type, view_mode=view_mode)
             return
 
         for item in items:
@@ -567,7 +578,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_folder = False
                 is_playable = True
                 media_type = "video"
-                poster_val = ""
+                poster_val = icon_url
                 item_label = display_title
                 item_plot = live_plot
 
@@ -586,14 +597,15 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 media_type=media_type,
             )
             
-    finish_directory(request.handle, content=content_type, view_mode=54)
+    finish_directory(request.handle, content=content_type, view_mode=view_mode)
 
 
 def _show_favorites(request: Request, app: AppContainer, section: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
     
+    view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type)
+    init_directory(request.handle, content_type, view_mode=view_mode)
 
     items = app.catalog.get_favorites(section)
 
@@ -610,7 +622,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
         for item in live_catalog.unmatched_items:
             if item.item_id in favorite_variant_ids:
                 _add_unmatched_live_item(request, app, item, fanart)
-        finish_directory(request.handle, content=content_type, view_mode=54)
+        finish_directory(request.handle, content=content_type, view_mode=view_mode)
         return
 
     for item in items:
@@ -646,7 +658,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_folder = False
             is_playable = True
             media_type = "video"
-            poster_val = ""
+            poster_val = icon_url
             item_label = display_title
             item_plot = live_plot
 
@@ -665,7 +677,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             media_type=media_type,
         )
         
-    finish_directory(request.handle, content=content_type, view_mode=54)
+    finish_directory(request.handle, content=content_type, view_mode=view_mode)
 
 
 def _play_item(request: Request, app: AppContainer, section: str, stream_id: str, extension: str, title: str = "") -> None:
@@ -729,13 +741,14 @@ def run(argv: list[str]) -> None:
         "cache_ttl_hours": addon.getSetting("cache_ttl_hours") or "12",
         "live_max_quality": addon.getSetting("live_max_quality") or "auto",
         "live_bandwidth_limit_mbps": addon.getSetting("live_bandwidth_limit_mbps") or "0",
+        "preferred_view_mode": addon.getSetting("preferred_view_mode") or "54",
         "profile_path": __import__("xbmcvfs").translatePath(addon.getAddonInfo("profile")),
         "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
     app = AppContainer(settings)
 
     if request.action in {"", "home"}:
-        _show_home(request, fanart)
+        _show_home(request, app, fanart)
         return
 
     if request.action == "section":
@@ -851,4 +864,4 @@ def run(argv: list[str]) -> None:
                 notify_error("TMDB", "Nenhum metadado encontrado")
             return
 
-    _show_home(request, fanart)
+    _show_home(request, app, fanart)

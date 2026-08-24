@@ -302,6 +302,7 @@ s_Kodi_Addon/
 │   ├── test_stv_persistence.py
 │   ├── test_stv_tmdb_client.py
 │   ├── test_stv_ui_standardization.py
+│   ├── test_stv_view_preferences.py
 │   └── test_stv_xtream_client.py
 ├── tools/
 │   ├── site_template/

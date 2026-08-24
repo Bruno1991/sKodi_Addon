@@ -206,3 +206,43 @@ msgstr "50 Mbps"
 msgctxt "#30076"
 msgid "Qualidade e conexão"
 msgstr "Quality and connection"
+
+msgctxt "#30080"
+msgid "Aparência e Visualização"
+msgstr "Appearance & Views"
+
+msgctxt "#30081"
+msgid "Modo de Exibição"
+msgstr "View Mode"
+
+msgctxt "#30082"
+msgid "Modo de Visualização Padrão"
+msgstr "Default View Mode"
+
+msgctxt "#30083"
+msgid "Define o modo de visualização forçado ao abrir qualquer tela (54 = InfoWall)"
+msgstr "Forces view mode when opening directories (54 = InfoWall)"
+
+msgctxt "#30084"
+msgid "InfoWall (54) [Padrão]"
+msgstr "InfoWall (54) [Default]"
+
+msgctxt "#30085"
+msgid "Pôster (51)"
+msgstr "Poster (51)"
+
+msgctxt "#30086"
+msgid "Icon Wall (52)"
+msgstr "Icon Wall (52)"
+
+msgctxt "#30087"
+msgid "WideList (55)"
+msgstr "WideList (55)"
+
+msgctxt "#30088"
+msgid "Lista (50)"
+msgstr "List (50)"
+
+msgctxt "#30089"
+msgid "Wall (500)"
+msgstr "Wall (500)"

@@ -55,7 +55,7 @@ def add_folder(
 
     if poster:
         art["poster"] = poster
-    elif not is_folder and media_type in {"movie", "tvshow", "season"} and icon:
+    elif icon:
         art["poster"] = icon
 
     if clearlogo:
@@ -106,14 +106,21 @@ def add_folder(
     xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=item, isFolder=is_folder)
 
 
-def init_directory(handle: int, content: str = "movies") -> None:
-    """Inicializa o diretório definindo o tipo de conteúdo antes de adicionar itens."""
+def init_directory(handle: int, content: str = "movies", view_mode: int = INFOWALL_VIEW_MODE) -> None:
+    """Inicializa o diretório definindo o tipo de conteúdo e o modo de visualização antes de adicionar itens."""
+    import xbmc
     import xbmcplugin
 
     try:
         xbmcplugin.setContent(handle, content)
     except Exception:
         pass
+
+    if view_mode:
+        try:
+            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+        except Exception:
+            pass
 
 
 def finish_directory(
@@ -135,8 +142,15 @@ def finish_directory(
         pass
 
     if view_mode:
-        xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+        try:
+            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+        except Exception:
+            pass
+
     xbmcplugin.endOfDirectory(handle, succeeded=True, cacheToDisc=False)
 
     if view_mode:
-        xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+        try:
+            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+        except Exception:
+            pass
