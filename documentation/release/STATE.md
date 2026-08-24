@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
 **Data de Atualização:** 24 de Agosto de 2026
-**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.7.8, sEPG v1.3.0)
+**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.7.9, sEPG v1.3.1)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,11 +11,11 @@
 
 | Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | `0.7.8` | Add-on IPTV/Xtream com promoção de canais da grade EPG oficial no 1º nível, logos HD da Claro TV+, canais fora da grade preservados em pastas originais, sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
+| **`plugin.video.stv`** | **sTv** | `0.7.9` | Add-on IPTV/Xtream com promoção de canais oficiais no 1º nível, restauração das logos originais Xtream, canais fora da grade preservados em pastas originais, Agora/Próximo em tempo real, sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
 | **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | **sArtwork** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | **sCore** | `1.0.1` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | **sEPG** | `1.3.0` | Integração com a API Oficial da Claro TV+ (AVSClient v1.2) como fonte da verdade, logos oficiais em alta resolução, limpeza automática do banco de dados legado e cache SQLite independente. |
+| **`script.module.saile.epg`** | **sEPG** | `1.3.1` | Integração com a API Oficial da Claro TV+ (AVSClient v1.2) em paralelo (3s), extração segura de metadados, mais de 5.500 programas e cache SQLite independente. |
 
 ---
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import concurrent.futures
 import json
 import ssl
 import time
@@ -177,18 +178,39 @@ CLARO_OFFICIAL_CHANNELS: tuple[dict[str, str], ...] = (
 API_BASE_URL = "https://www.clarotvmais.com.br/avsclient/1.2/epg/livechannels"
 
 
+def _fetch_claro_chunk(
+    chunk_ids: list[str],
+    start_time: int,
+    end_time: int,
+    headers: dict[str, str],
+    timeout: float = 12.0,
+) -> list[dict[str, object]]:
+    param_ids = ",".join(chunk_ids)
+    url = f"{API_BASE_URL}?types=&channelIds={param_ids}&startTime={start_time}&endTime={end_time}&location=SAO%20PAULO,AMAZONAS&channel=PCTV"
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, context=ctx, timeout=timeout) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+    return data.get("response", {}).get("liveChannels", [])
+
+
 class ClaroEpgProvider:
-    """Provedor oficial de guia de programação (EPG) e logos da Claro TV+."""
+    """Provedor oficial de guia de programação (EPG) da Claro TV+."""
 
     def __init__(
         self,
         provider_id: str = "claro",
         timeout: float = 12.0,
-        chunk_size: int = 40,
+        chunk_size: int = 20,
+        max_workers: int = 6,
     ) -> None:
         self.provider_id = provider_id
         self.timeout = timeout
         self.chunk_size = chunk_size
+        self.max_workers = max_workers
 
     def _create_ssl_context(self) -> ssl.SSLContext:
         ctx = ssl.create_default_context()
@@ -198,8 +220,8 @@ class ClaroEpgProvider:
 
     def fetch(self, window_hours: int = 24) -> EpgSnapshot:
         now = int(time.time())
-        start_time = now - 3600
-        end_time = now + max(3600 * 6, window_hours * 3600)
+        start_time = now - 3600  # 1h atrás para cobrir com precisão o programa em exibição
+        end_time = now + max(3600 * 12, window_hours * 3600)
         fetched_at_utc = now
 
         headers = {
@@ -211,18 +233,13 @@ class ClaroEpgProvider:
         }
 
         channel_map: dict[str, EpgChannel] = {}
-        programs: list[EpgProgram] = []
-        dedup_programs: set[tuple[str, int]] = set()
-
-        # 1. Pré-registra canais conhecidos com logos oficiais em alta resolução
         for ch_info in CLARO_OFFICIAL_CHANNELS:
-            site_id = ch_info["id"]
+            site_id = str(ch_info["id"])
             raw_name = ch_info["name"]
             norm = normalize_channel_name(raw_name)
             disp_name = clean_channel_title(raw_name)
             logo = ch_info.get("logo", "")
-            
-            epg_ch = EpgChannel(
+            channel_map[site_id] = EpgChannel(
                 provider_id=self.provider_id,
                 channel_key=f"claro_{site_id}",
                 epg_id=site_id,
@@ -230,106 +247,86 @@ class ClaroEpgProvider:
                 normalized_name=norm,
                 icon_url=logo,
             )
-            channel_map[site_id] = epg_ch
 
-        # 2. Faz as requisições em lotes
-        all_ids = [ch_info["id"] for ch_info in CLARO_OFFICIAL_CHANNELS]
-        ssl_ctx = self._create_ssl_context()
+        all_ids = [str(ch_info["id"]) for ch_info in CLARO_OFFICIAL_CHANNELS]
+        chunks = [all_ids[i:i + self.chunk_size] for i in range(0, len(all_ids), self.chunk_size)]
 
-        for i in range(0, len(all_ids), self.chunk_size):
-            chunk = all_ids[i:i + self.chunk_size]
-            param_ids = ",".join(chunk)
-            url = f"{API_BASE_URL}?types=&channelIds={param_ids}&startTime={start_time}&endTime={end_time}&location=SAO%20PAULO,AMAZONAS&channel=PCTV"
+        programs: list[EpgProgram] = []
+        dedup_programs: set[tuple[str, int]] = set()
 
-            try:
-                req = urllib.request.Request(url, headers=headers)
-                with urllib.request.urlopen(req, context=ssl_ctx, timeout=self.timeout) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            future_to_chunk = {
+                executor.submit(
+                    _fetch_claro_chunk,
+                    chunk,
+                    start_time,
+                    end_time,
+                    headers,
+                    self.timeout,
+                ): chunk
+                for chunk in chunks
+            }
+            for future in concurrent.futures.as_completed(future_to_chunk):
+                try:
+                    live_channels = future.result()
+                    for ch in live_channels:
+                        cid = str(ch.get("id", ""))
+                        if not cid:
+                            continue
 
-                live_channels = data.get("response", {}).get("liveChannels", [])
-                for ch in live_channels:
-                    cid = str(ch.get("id", ""))
-                    if not cid:
-                        continue
+                        schedules = ch.get("schedules", [])
+                        for prog in schedules:
+                            p_title = str(prog.get("title") or "").strip()
+                            if not p_title:
+                                continue
 
-                    # Atualiza logo ou dados adicionais do canal se retornados na API
-                    ch_name_api = ch.get("name", "")
-                    ch_logo_api = ch.get("logo", "")
-                    
-                    if cid in channel_map:
-                        cur_ch = channel_map[cid]
-                        if ch_logo_api:
-                            channel_map[cid] = EpgChannel(
-                                provider_id=cur_ch.provider_id,
-                                channel_key=cur_ch.channel_key,
-                                epg_id=cur_ch.epg_id,
-                                display_name=cur_ch.display_name,
-                                normalized_name=cur_ch.normalized_name,
-                                icon_url=ch_logo_api,
+                            st_raw = prog.get("startTime") or 0
+                            et_raw = prog.get("endTime") or 0
+                            if not isinstance(st_raw, (int, float)) or not isinstance(et_raw, (int, float)):
+                                continue
+                            if st_raw <= 0 or et_raw <= st_raw:
+                                continue
+
+                            st_utc = int(st_raw)
+                            et_utc = int(et_raw)
+
+                            dedup_key = (f"claro_{cid}", st_utc)
+                            if dedup_key in dedup_programs:
+                                continue
+                            dedup_programs.add(dedup_key)
+
+                            ep_name = str(prog.get("episodeName") or "").strip()
+                            desc = str(prog.get("description") or "").strip()
+                            season = prog.get("seasonNumber")
+                            episode = prog.get("episodeNumber")
+                            cat = str(ch.get("type") or "").strip()
+
+                            # Monta descrição rica
+                            full_desc_parts = []
+                            if ep_name and ep_name != p_title:
+                                full_desc_parts.append(f"Episódio: {ep_name}")
+                            if season and episode:
+                                full_desc_parts.append(f"Temporada {season}, Episódio {episode}")
+                            if desc:
+                                full_desc_parts.append(desc)
+                            final_desc = "\n".join(full_desc_parts)
+
+                            programs.append(
+                                EpgProgram(
+                                    provider_id=self.provider_id,
+                                    channel_key=f"claro_{cid}",
+                                    title=p_title,
+                                    start_utc=st_utc,
+                                    end_utc=et_utc,
+                                    description=final_desc,
+                                    category=cat,
+                                    icon_url="",
+                                )
                             )
-                    else:
-                        norm = normalize_channel_name(ch_name_api)
-                        disp_name = clean_channel_title(ch_name_api)
-                        channel_map[cid] = EpgChannel(
-                            provider_id=self.provider_id,
-                            channel_key=f"claro_{cid}",
-                            epg_id=cid,
-                            display_name=disp_name,
-                            normalized_name=norm,
-                            icon_url=ch_logo_api,
-                        )
-
-                    # Extrai os programas do canal
-                    schedules = ch.get("schedules", [])
-                    for prog in schedules:
-                        p_title = prog.get("title", "").strip()
-                        if not p_title:
-                            continue
-
-                        st_raw = prog.get("startTime", 0)
-                        et_raw = prog.get("endTime", 0)
-                        if st_raw <= 0 or et_raw <= st_raw:
-                            continue
-
-                        st_utc = int(st_raw)
-                        et_utc = int(et_raw)
-
-                        dedup_key = (f"claro_{cid}", st_utc)
-                        if dedup_key in dedup_programs:
-                            continue
-                        dedup_programs.add(dedup_key)
-
-                        ep_name = prog.get("episodeName", "").strip()
-                        desc = prog.get("description", "").strip()
-                        season = prog.get("seasonNumber")
-                        episode = prog.get("episodeNumber")
-                        cat = str(ch.get("type", "")).strip()
-
-                        # Monta descrição rica
-                        full_desc_parts = []
-                        if ep_name and ep_name != p_title:
-                            full_desc_parts.append(f"Episódio: {ep_name}")
-                        if season and episode:
-                            full_desc_parts.append(f"Temporada {season}, Episódio {episode}")
-                        if desc:
-                            full_desc_parts.append(desc)
-                        final_desc = "\n".join(full_desc_parts)
-
-                        programs.append(
-                            EpgProgram(
-                                provider_id=self.provider_id,
-                                channel_key=f"claro_{cid}",
-                                title=p_title,
-                                start_utc=st_utc,
-                                end_utc=et_utc,
-                                description=final_desc,
-                                category=cat,
-                                icon_url="",
-                            )
-                        )
-            except Exception:
-                # Se falhar uma página específica, prossegue com os outros lotes para resiliência
-                continue
+                except Exception as exc:
+                    import logging
+                    logging.getLogger("saile_epg.claro").warning(f"Error processing Claro EPG chunk: {exc}")
+                    continue
 
         if not channel_map:
             raise EpgSyncError("EPG-CLARO-EMPTY", "Nenhum canal foi retornado pela API da Claro TV+")

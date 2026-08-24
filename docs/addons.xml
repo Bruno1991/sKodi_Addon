@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.7.8" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.7.9" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
       <import addon="script.module.saile.core" version="1.0.1" />
-      <import addon="script.module.saile.epg" version="1.3.0" />
+      <import addon="script.module.saile.epg" version="1.3.1" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Cliente IPTV local para provedores Xtream com EPG Oficial.</summary>
-      <description lang="pt_BR">Exibição de canais da grade EPG oficial no primeiro nível com logos HD, canais fora da grade preservados em diretórios originais, Agora/Próximo e TMDB.</description>
+      <description lang="pt_BR">Exibição de canais da grade oficial no 1º nível com logos originais do servidor Xtream, canais fora da grade preservados em pastas originais e Agora/Próximo em tempo real.</description>
       <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.7.8 - Integração do EPG Oficial Claro TV+, promoção de canais da grade com logos HD no 1º nível e preservação de canais não catalogados em suas pastas originais.</news>
+      <news>0.7.9 - Restauração das logos originais do Xtream e correção na exibição em tempo real do EPG Claro TV+.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -85,19 +85,19 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.3.0" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.3.1" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
     </requires>
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Provedor oficial de guia de programação (EPG) e logos HD do ecossistema sKodi.</summary>
-      <description lang="pt_BR">Integração com a API oficial da Claro TV+ como fonte da verdade, logos em alta resolução, limpeza automática de legado e Agora/Próximo em cache local SQLite.</description>
+      <summary lang="pt_BR">Provedor oficial de guia de programação (EPG) do ecossistema sKodi.</summary>
+      <description lang="pt_BR">Integração com a API oficial da Claro TV+ em paralelo, extração segura de metadados nulos e Agora/Próximo em cache local SQLite.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.3.0 - Provedor oficial Claro TV+ com logos em alta resolução e limpeza automática do banco legado.</news>
+      <news>1.3.1 - Download paralelo ultrarrápido (3s) de todos os canais e tratamento de campos nulos na API Claro TV+.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

@@ -4,8 +4,8 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.8`** | Promoção exclusiva no 1º nível dos canais presentes na grade oficial EPG com logos HD transparentes, preservação dos canais fora da grade em suas pastas de categorias originais, e Agora/Próximo em tempo real. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.3.0`** | Integração completa com a API Oficial da Claro TV+ (AVSClient v1.2) como fonte da verdade, logos em alta resolução, limpeza automática do banco de dados legado e matching avançado de aliases de canais. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.9`** | Restauração das logos originais fornecidas pela API Xtream, promoção dos canais oficiais no 1º nível, Agora/Próximo em tempo real via EPG Claro TV+ e preservação de canais não catalogados em pastas. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.3.1`** | Download paralelo em ThreadPool da API oficial Claro TV+ (3s), extração segura de metadados nulos e cache local SQLite com mais de 5.500 programas. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |

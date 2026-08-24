@@ -1,0 +1,4 @@
+v1.3.1
+- Download paralelo em ThreadPool da API oficial Claro TV+ reduzindo tempo de sincronização para ~3s.
+- Tratamento resiliente de valores nulos nos campos de episódios e descrições da API Claro.
+- Extração de mais de 5.500 programas atualizados por sincronização.

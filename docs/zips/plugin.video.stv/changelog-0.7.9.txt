@@ -1,0 +1,4 @@
+v0.7.9
+- Restauração das logos originais do servidor IPTV Xtream para todos os canais de TV ao vivo.
+- Integração com o sEPG v1.3.1 para exibição instantânea da programação Agora / A Seguir.
+- Canais da grade oficial promovidos no 1º nível e canais fora da grade preservados em suas pastas.
