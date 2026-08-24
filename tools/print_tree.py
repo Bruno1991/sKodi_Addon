@@ -4,18 +4,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-KODI_DOCS = (
-    ROOT
-    / "Biblioteca_Universal_Corporativa"
-    / "web-scripting"
-    / "python-kodi"
-    / "docs"
-)
+KODI_DOCS = ROOT / "documentation"
 EXCLUDE = {
     ".git",
     ".env",
     ".vscode",
-    "Biblioteca_Universal_Corporativa",
     "site",
     "__pycache__",
     ".pytest_cache",

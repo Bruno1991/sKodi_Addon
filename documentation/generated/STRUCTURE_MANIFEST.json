@@ -1,0 +1,1271 @@
+{
+  "package": "SAILE sRepo architecture V2",
+  "version": "2.0.0",
+  "canonical_addon_ids": [
+    "plugin.video.stv",
+    "repository.srepo",
+    "resource.images.saile",
+    "script.module.saile.core",
+    "script.module.saile.epg"
+  ],
+  "skill_count": 0,
+  "fixed_shared_artwork_count": 9,
+  "file_count_excluding_manifest": 251,
+  "files": [
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "bytes": 560,
+      "sha256": "0edd8f8e172922c4c0b3ed1619af73d2460b0d3505d530710e32890bbfd226d8"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 455,
+      "sha256": "e7683e81f8eed4d6dd19174711e3ac6baa52a599bcbbf0c8d8f957d137386681"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 770,
+      "sha256": "80fc8878f93b11f8d7362182608874d451be8101279a09bf83e2972bd9af3ba6"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 512,
+      "sha256": "78a6c8118bf75b177ee1427e09fd09a01b408e43e877bc97f55256dad2de576d"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 4347,
+      "sha256": "9f4ea2eff55e2ad66b0fdcf760f5a1d7bfdbbabe727b8ad6cf6368d0eebb8d71"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 518,
+      "sha256": "d3c8f486d447a64dcc95e40cf8c6ed1a355b5d52e71ce0f02c41e6519dc533b1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4245,
+      "sha256": "4e931f31f459c8ac007466cccbba76395d4d2f0e8e2739d481d41b1e89ce86c0"
+    },
+    {
+      "path": "addons/plugin.video.stv/addon.xml",
+      "bytes": 1353,
+      "sha256": "466bd5ce43b214bc632f0a4a1de12f1ae92ddd78d5f4f301b6ec01fab6e5fb6f"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.1.txt",
+      "bytes": 478,
+      "sha256": "19fd6a0435bb8d246821d444f8c99fbf1395edfae2f540d7179a8fd6f8623074"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.2.txt",
+      "bytes": 344,
+      "sha256": "46a10d6217642b8037fcf7a064eed761388e89ba627d810324733f4240e356d6"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.3.txt",
+      "bytes": 221,
+      "sha256": "15d2413ec6d3dc2a6ea5ba4c3f1e6b8aad5ba5e5b8f9c9a36f31537b566f0f66"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.4.txt",
+      "bytes": 142,
+      "sha256": "f168c65b4312e8c556b79ab12945e7183f9a4550df3d9880ac7022581bc704c8"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.5.txt",
+      "bytes": 392,
+      "sha256": "f81df61dab2b0699027f483df8875a6c7d4fca8ae298174cca9eeac075b3edff"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.6.txt",
+      "bytes": 319,
+      "sha256": "bb4da90e1b3f2b2c423fb97d79a1fcd118addac5b78be3a59ecc02d0c58bcb64"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.2.9.txt",
+      "bytes": 258,
+      "sha256": "6642b1576aea02e49bc6a4e713fcb49984c37daa3ce22a75787d98c7e1d71a58"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.0.txt",
+      "bytes": 227,
+      "sha256": "6d1fd8a693581269293d7c79b598f8285d26882788dd07b9cda268659abd9f07"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.1.txt",
+      "bytes": 161,
+      "sha256": "e9ae86fba87ce3e3cbf6bc7a1f21c8ba7e0e2fc834fe87ce749a044d4f1ed7e7"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.4.txt",
+      "bytes": 132,
+      "sha256": "46ea5693c54a3260acf24b92549b363a9df85602519357b417f8a2696e7684ac"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.5.txt",
+      "bytes": 387,
+      "sha256": "8f9e0bfc3bab419cded372d6a77ab8bb5fb02013de40baca1696b4a4905e236f"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.6.txt",
+      "bytes": 387,
+      "sha256": "0cbecb45ad3e419b6f32f48e8642c278b92b90ee11d1663ea9871e69b2e56c8f"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.7.txt",
+      "bytes": 246,
+      "sha256": "7353ff1c52b77bf573f9558209803c130d507338fe035c3ae2d679395d701110"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.8.txt",
+      "bytes": 218,
+      "sha256": "57a540ce46c05979900f0b8adf600d75abfabdebf506f6850f787f4d8197f8d4"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.3.9.txt",
+      "bytes": 226,
+      "sha256": "4807ac44e7a7ba1ef584728fe5c58c5b98c51d28aa10ef8786db7e87dddbbeaa"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.4.0.txt",
+      "bytes": 292,
+      "sha256": "8106f0e1ca47da2e36add34d4ba9d88e85808de202c1b16f23166dd11d7f875b"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.4.1.txt",
+      "bytes": 260,
+      "sha256": "ad60aaeffdfe0db9c50da6862ae640f9636b72e78b99a8de6efc8f3fbd79f301"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.4.2.txt",
+      "bytes": 245,
+      "sha256": "ce4e999c7c7d537fdf56364f02df58ddf71b1f931ec2f9b23a4dfe0cb369491a"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.4.3.txt",
+      "bytes": 464,
+      "sha256": "2519b2d47f68e7afc78847a2cbbbd5c4751599050b490459af2fcef969e6bdba"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.4.6.txt",
+      "bytes": 203,
+      "sha256": "ed08e5e4e529547acc602d709924ef16d46b5b663de3f89602e2efb60a0072f4"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.5.0.txt",
+      "bytes": 374,
+      "sha256": "2df2963b7b0250ff1efe1d45c1dd57ac16bb39f9f89ce4f9c8e6bc7086db691c"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.5.1.txt",
+      "bytes": 168,
+      "sha256": "941098e644e93d200dff6da65ff8f918bf5da290e7df1d591e559d7080f2c6a7"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.5.2.txt",
+      "bytes": 177,
+      "sha256": "8978bfd3fa2103478f1cefac59922df616945f75237821343c198748c4ed86f6"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.5.3.txt",
+      "bytes": 250,
+      "sha256": "925fbf2e2bd8373ffe6451b7a20908c5cac8f2dc8686e586dac8dbe90247c915"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.6.0.txt",
+      "bytes": 552,
+      "sha256": "db8374994101aff47df2f8a0de9d1682fc0d6bc5b6a578397997a9ceb7d88304"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.7.0.txt",
+      "bytes": 508,
+      "sha256": "e300aed3dd144f06ed3bcf0550736e5ddb09310efaeb0102a1964bd51be553b6"
+    },
+    {
+      "path": "addons/plugin.video.stv/default.py",
+      "bytes": 280,
+      "sha256": "59606db17a256619364a833bf8a4609719829d540a4e107e5bd0a0794ce2c57d"
+    },
+    {
+      "path": "addons/plugin.video.stv/fanart.jpg",
+      "bytes": 248046,
+      "sha256": "0d0a98488c0410eb750ae1df9810172bc2b990b52bc723c32f53a62c1f033172"
+    },
+    {
+      "path": "addons/plugin.video.stv/icon.png",
+      "bytes": 30749,
+      "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/language/resource.language.en_gb/strings.po",
+      "bytes": 3937,
+      "sha256": "d22c462b436e205167b9b36c77bde4874c486387bae9c81d4294810af839488d"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/language/resource.language.pt_br/strings.po",
+      "bytes": 4075,
+      "sha256": "48f731b19b1cc1e0a12da6db6beff34b6318d11ed405eefe5ca4f3c61eac80d3"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/__init__.py",
+      "bytes": 22,
+      "sha256": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/app/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/app/services.py",
+      "bytes": 5417,
+      "sha256": "02befa7a0ffdfe0dc43fc60cd30afd22f2acdf0a828f0bc0141b986c64ebc768"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/app/sync.py",
+      "bytes": 9777,
+      "sha256": "81ce655d531136c5b295497dd27d12278e32ca43dea9d2ec0f60cac3b57b21d8"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/bootstrap.py",
+      "bytes": 33131,
+      "sha256": "ceec9294a469146dfb0dba332560e3df8dfba258ef0800be4d260fc8618a2cfa"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/domain/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/domain/catalog.py",
+      "bytes": 863,
+      "sha256": "32b5ab86bc62cc9a66e05642c3f801ff415d0e586c960ee78d1d0ac77d1a7865"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/domain/live_channels.py",
+      "bytes": 5350,
+      "sha256": "9f40b66340f6387f80f11c21580a8b0a0d90c8b39d29f966f02b8705fcc65b14"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/domain/models.py",
+      "bytes": 733,
+      "sha256": "cb82a248b0dd7b60ba3e4f4d1ba8a25dfaf26030d0f9281f09b2aeb63464cb67"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/infrastructure/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/infrastructure/http.py",
+      "bytes": 4383,
+      "sha256": "c2f10ac85101e51bc2a8da31b61438daa32499b2a1f3fb7282eaf8254327eca8"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/navigation_contract.py",
+      "bytes": 553,
+      "sha256": "c55395a07b8a4330ad1039f0db2b743653db528e38da4d99c6c2d8f8110db26c"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/parental.py",
+      "bytes": 4117,
+      "sha256": "24d8d5027ded160744448da44e7d78983b666259b4145ab94adf86574232ee2a"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/persistence/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/persistence/database.py",
+      "bytes": 8912,
+      "sha256": "c387be0e7cac41adb572a9b7fe7a7c17268925a9f4411066ce26daf70b11658c"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/persistence/repository.py",
+      "bytes": 19736,
+      "sha256": "a05f2d1304b629b012de5b907b55fb6cba7d597021b8db7a2b3dd17a8b261fb7"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/providers/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/providers/tmdb/__init__.py",
+      "bytes": 15,
+      "sha256": "0bbde58a0ac219b3e11984d46cdf9a68c6d9dbb03e9305513c55f70e981a72ab"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py",
+      "bytes": 3007,
+      "sha256": "236b98685817f6d7d6371541e6ff32666012156a593d4cb2018757ba46f6161f"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/client.py",
+      "bytes": 3528,
+      "sha256": "d86b6bd6515c6ce7e920f74e4ab5508dbc0f0c93e716d73787ec67ada4ba6ce3"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/routing.py",
+      "bytes": 870,
+      "sha256": "e4d4a9594a1dbd79a9025f0ae13bdf379813f9a99c0942cd1f7964b71d0f3dfa"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/ui/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/ui/dialogs.py",
+      "bytes": 6852,
+      "sha256": "fe0d2183b14482b12bd860fc62e41e6479ba03a52047166f40617c92986acd8d"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/ui/directory.py",
+      "bytes": 4003,
+      "sha256": "30d99899a25bd22180b6a099a11e48394eefdd15f5ce89901a7713574aa703e8"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/lib/stv/ui/player.py",
+      "bytes": 2974,
+      "sha256": "fa6aa840dbf09b5749b25564f468d9e4568c457afe295417b5ded1aa26d4b233"
+    },
+    {
+      "path": "addons/plugin.video.stv/resources/settings.xml",
+      "bytes": 4704,
+      "sha256": "c8f7d3ee51f5c2f4fb3d064c0e36ad034aba24435ff8f4485683571e666ccd7d"
+    },
+    {
+      "path": "addons/repository.srepo/addon.xml",
+      "bytes": 1347,
+      "sha256": "729dbaae3aa97bc2f400b8e3f683949f7d1c4e2e11b8f328466c596026691e59"
+    },
+    {
+      "path": "addons/repository.srepo/changelog-1.0.0.txt",
+      "bytes": 49,
+      "sha256": "ca005e92babf12da9cd5c5fb956312497a4efecbc96652ab3c3bfa2b2b0b0d0c"
+    },
+    {
+      "path": "addons/repository.srepo/changelog-1.1.0.txt",
+      "bytes": 141,
+      "sha256": "983da5ed914e717805085dafd1dc550172a01625656ba71c6f53baf7422d99d9"
+    },
+    {
+      "path": "addons/repository.srepo/changelog-1.1.1.txt",
+      "bytes": 126,
+      "sha256": "06efe44c27f40a0bda8664fe2c0d07f1bb255df4a72b762fcd8734bd03e8a005"
+    },
+    {
+      "path": "addons/repository.srepo/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "addons/repository.srepo/icon.png",
+      "bytes": 37372,
+      "sha256": "bc14dd9e82a324b81c616136ec08b9367d6861c3a423b1b194a1b88a3e60d49c"
+    },
+    {
+      "path": "addons/resource.images.saile/addon.xml",
+      "bytes": 797,
+      "sha256": "389fbb441c995611e80ca4c9f8c2a20ba5216a7b2f0f3ab608e0def16dd655f7"
+    },
+    {
+      "path": "addons/resource.images.saile/changelog-1.0.0.txt",
+      "bytes": 132,
+      "sha256": "d989b31c09b34cdb90aad6a8f4100c945f6281acddc352a7fdf855173b77a576"
+    },
+    {
+      "path": "addons/resource.images.saile/changelog-1.0.2.txt",
+      "bytes": 131,
+      "sha256": "81469478d8ec1c4067eedbd757fc850976bf54b60bf1433e7484a62abcf9bf2d"
+    },
+    {
+      "path": "addons/resource.images.saile/changelog-1.0.3.txt",
+      "bytes": 60,
+      "sha256": "81bcac88bb0332edc1003ac410a34e473363cdf2561076375f9691642d636072"
+    },
+    {
+      "path": "addons/resource.images.saile/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "addons/resource.images.saile/icon.png",
+      "bytes": 23801,
+      "sha256": "1340cc42967a441ef44538f7b4b3d7ab959b923bd9b143304c5fed00891f66c3"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/check.png",
+      "bytes": 36662,
+      "sha256": "1886062ad745d52cb733607e1a99c137d31fcd08122b6728dfd0b299c955662f"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/erro.png",
+      "bytes": 34351,
+      "sha256": "2ae8827a97e10f80c2103914b8432f16fbf99a4ebd516c05b443df44caefdd8e"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/folder.png",
+      "bytes": 5240,
+      "sha256": "d6d74f3f9aec630da1b11ca66d2a7e63786a586447a07e92ab0801e0cd555340"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/search.png",
+      "bytes": 21615,
+      "sha256": "99197cc0be8fa9cde1a1aa918274767a5e7fd0445fa16a035ac3cb4fda37b799"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/sync.png",
+      "bytes": 26632,
+      "sha256": "781c3a4f8edda7e66ce1a0b1862a2c683815c159f5b3bc1f33fecf4273eabc31"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/stv/favoritos.png",
+      "bytes": 32085,
+      "sha256": "edc0050b1a1af4d4164add9b16c7bb33bea02a8f9c712cc68f9019cd514f999c"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/stv/live.png",
+      "bytes": 29944,
+      "sha256": "efaaed3abea2fe2a519a23a2e3ec0427eff6edd6566a315c3dd9a8586d2b107f"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/stv/series.png",
+      "bytes": 37915,
+      "sha256": "d388ff3d9b2d7ac69fb48affa3cd29e632d92886851e01cc0af055c62bdbb100"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/stv/vod.png",
+      "bytes": 28250,
+      "sha256": "f7e0cc3d135d11705c8207c6072ec86b54e1b03a3bcf1c6346c1876e528948c4"
+    },
+    {
+      "path": "addons/script.module.saile.core/addon.xml",
+      "bytes": 943,
+      "sha256": "33cd3710fc804d8787ac9417e6ed01bfb3c4e6b39853a4c5c5841c8e7cadf1c5"
+    },
+    {
+      "path": "addons/script.module.saile.core/changelog-1.0.0.txt",
+      "bytes": 186,
+      "sha256": "9e2dfc61efb2340748d8f0553351f0215a19006eea05a0007e8249c7a26291a1"
+    },
+    {
+      "path": "addons/script.module.saile.core/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "addons/script.module.saile.core/icon.png",
+      "bytes": 35575,
+      "sha256": "cab50b34c15f4efc36f13077a066ecf24dd67170dc7710e1d76897f54e3ad9d5"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/__init__.py",
+      "bytes": 102,
+      "sha256": "0abfe6ff4d026c23b5bd0dfe75af8649c90033cc89c5fea9e7959057999fb821"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/artwork.py",
+      "bytes": 1405,
+      "sha256": "63b101b526283f7c583d34a011fc56bee5c8606b9a0fa2da193b137a75e8e570"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/capabilities.py",
+      "bytes": 1380,
+      "sha256": "32b2d722d47092e515111e08055b5a15d93a2a5aafd14d7b40a2281b922db181"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/errors.py",
+      "bytes": 384,
+      "sha256": "da0353a6d5e07a29f262086520e1248ca4b4d24964670be46d78b4282198013f"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/notifications.py",
+      "bytes": 658,
+      "sha256": "a0419177268f23ba80f7b029f8914aca035c07058e8e1b2bf18766c410bb7862"
+    },
+    {
+      "path": "addons/script.module.saile.core/lib/saile_core/paths.py",
+      "bytes": 437,
+      "sha256": "4fb7c93e10d524f0573439d0098c729a2afe4dbc643535789c095fb13f682940"
+    },
+    {
+      "path": "addons/script.module.saile.epg/addon.xml",
+      "bytes": 1042,
+      "sha256": "fd67af4a2e680da1cc4f33dffb87b55f859db70dd0fa031660b0419fd78d8c58"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.0.0.txt",
+      "bytes": 215,
+      "sha256": "11f4c9a70e07c6a676fadd4e4572a3cdc0dce5ed76f3858ecd8951941ba91ce4"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.0.1.txt",
+      "bytes": 265,
+      "sha256": "c5c0de15947deb6cbe6f13307a92a8378985d69d49675840ebf8977b2f6b47cd"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.0.2.txt",
+      "bytes": 236,
+      "sha256": "55f8afa0663f88392405d6eec9da02e3ca469fb6e40a9b36662a0af0787738fc"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.0.3.txt",
+      "bytes": 177,
+      "sha256": "83c7e5bfdeb8a68ee34ebef487d80819dddd820fa5a6706a103a8eec1d4aeb71"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.1.0.txt",
+      "bytes": 280,
+      "sha256": "5d40fc809eb963ce6d13027ed83b943c01184a9e83dfdb16596bab5dc56e53cf"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.2.0.txt",
+      "bytes": 337,
+      "sha256": "57eb34ba778514ddc2a07eb753f7efb95b840f8b11d863959dbcb0482143d7ff"
+    },
+    {
+      "path": "addons/script.module.saile.epg/fanart.jpg",
+      "bytes": 138768,
+      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+    },
+    {
+      "path": "addons/script.module.saile.epg/icon.png",
+      "bytes": 212629,
+      "sha256": "56293a22a68735f4c8d0ca3049da1ca93b73297d232b0d626e14d5f391076006"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/__init__.py",
+      "bytes": 475,
+      "sha256": "c075116cfece0c4fce0aaf3820ea19de2a6b2c244997c4b711f5b2ba4cdc64b3"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/database.py",
+      "bytes": 2835,
+      "sha256": "8acb0089ce1a611bfaa94a944f1ec43215e4c821e4eca42bc9ace50c3a9ed950"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/errors.py",
+      "bytes": 360,
+      "sha256": "3c1a02891303fc905d713c41344ab220a0851fe9a60f6c307efed8a1856cb54c"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/models.py",
+      "bytes": 615,
+      "sha256": "dc8c4e78daa9f7c85f6d2fbe26e56e4d3908b80ad6a5e2b931d3ca33afcef215"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/normalizer.py",
+      "bytes": 2394,
+      "sha256": "1b33b49866cd95deed258e058996b6c05868c707cce94a35327f6dfd963d0016"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/providers/__init__.py",
+      "bytes": 129,
+      "sha256": "9219264344a17fc116825372f78742870a70d59f0d1b01106a7061e2ed16f219"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/providers/base.py",
+      "bytes": 199,
+      "sha256": "d1f30002919f18b5fa0fcc3525804476f0c09f758fa76edf7aab5c96e8f1cf9a"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xmltv.py",
+      "bytes": 11302,
+      "sha256": "e218713a9afedeeaf3c918feff7278bb042757edd618ba85a7e22ca46b1ee0a5"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xtream.py",
+      "bytes": 7562,
+      "sha256": "89962c9b4e1dda4130f72d02ac4ff57d4f6aa509cc1bf5931b42a72b5a8a37b8"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/repository.py",
+      "bytes": 10073,
+      "sha256": "baeccf6e31f25fe76e1462d4bea40287737bb0f3c3b087af1dcb1f13aea66b73"
+    },
+    {
+      "path": "addons/script.module.saile.epg/lib/saile_epg/service.py",
+      "bytes": 4619,
+      "sha256": "42c60667a6b8afe82a0e04e3d519a378bba4387d845e76558f400fad672e8966"
+    },
+    {
+      "path": "artwork/README.md",
+      "bytes": 580,
+      "sha256": "dd959ce0b7e26dd616cbad4ba2b769d77011f0f2742fb51abd058c7304901493"
+    },
+    {
+      "path": "artwork/addons/fanarts/Style-1/plugin.video.stv/fanart.jpg",
+      "bytes": 248046,
+      "sha256": "0d0a98488c0410eb750ae1df9810172bc2b990b52bc723c32f53a62c1f033172"
+    },
+    {
+      "path": "artwork/addons/fanarts/Style-1/repository.srepo/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "artwork/addons/fanarts/Style-1/resource.images.saile/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "artwork/addons/fanarts/Style-1/script.module.saile.core/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "artwork/addons/fanarts/Style-1/script.module.saile.epg/fanart.jpg",
+      "bytes": 138768,
+      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+    },
+    {
+      "path": "artwork/addons/icons/Detailed-Flat-Circular/plugin.video.stv/icon.png",
+      "bytes": 30749,
+      "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
+    },
+    {
+      "path": "artwork/addons/icons/Detailed-Flat-Circular/repository.srepo/icon.png",
+      "bytes": 37372,
+      "sha256": "bc14dd9e82a324b81c616136ec08b9367d6861c3a423b1b194a1b88a3e60d49c"
+    },
+    {
+      "path": "artwork/addons/icons/Detailed-Flat-Circular/resource.images.saile/icon.png",
+      "bytes": 23801,
+      "sha256": "1340cc42967a441ef44538f7b4b3d7ab959b923bd9b143304c5fed00891f66c3"
+    },
+    {
+      "path": "artwork/addons/icons/Detailed-Flat-Circular/script.module.saile.core/icon.png",
+      "bytes": 35575,
+      "sha256": "cab50b34c15f4efc36f13077a066ecf24dd67170dc7710e1d76897f54e3ad9d5"
+    },
+    {
+      "path": "artwork/addons/icons/Detailed-Flat-Circular/script.module.saile.epg/icon.png",
+      "bytes": 16337,
+      "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
+    },
+    {
+      "path": "artwork/artwork-manifest.json",
+      "bytes": 5349,
+      "sha256": "52ec60f245d494f7ccfbebdc93aeef5e8e60f743e3f89f19f0955b08d0023f09"
+    },
+    {
+      "path": "artwork/common/html/check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 818,
+      "sha256": "f725e54462cd5146f06cd5bf30506f12c0f58eea83bbc8c422e7f6a74860d4d6"
+    },
+    {
+      "path": "artwork/common/html/cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 788,
+      "sha256": "ab25a20153dddb3d604940d2449e2511599cade7db57900a739de14861322d15"
+    },
+    {
+      "path": "artwork/common/html/error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 799,
+      "sha256": "7247257dce1c1584bfe72baa6306dc3139c1a10ad4fdae82973528107d9df30e"
+    },
+    {
+      "path": "artwork/common/html/favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 797,
+      "sha256": "6e0e6b2e6b031b67b8c7d52f9f206cb143d9a6f0ed8fe57bb9319e1fa9b2349d"
+    },
+    {
+      "path": "artwork/common/html/folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 864,
+      "sha256": "6f5643d84ad6acb1fbd63b373b91c511219aadd8f9c474f30c337fef97ff8457"
+    },
+    {
+      "path": "artwork/common/html/live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 769,
+      "sha256": "1bb3d84103ec274485f4b7ead2598c4eeb47ffe3e2cb2ac011dcaffeae4fc16d"
+    },
+    {
+      "path": "artwork/common/html/movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 755,
+      "sha256": "27e12935ee3f464adeb043719eece9b3eb9abf4f3ba2870a7f73b4db14d98272"
+    },
+    {
+      "path": "artwork/common/html/search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 785,
+      "sha256": "411691af4b988d05ecec520fbdcfb3d32129b304a53e1731d6ed94fc55441e07"
+    },
+    {
+      "path": "artwork/common/html/sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 800,
+      "sha256": "d9c557813efef4ce739d0b8a00b96dc07f247c6fb243475f4119f18c4f7c2b3e"
+    },
+    {
+      "path": "artwork/common/png/check.png",
+      "bytes": 36662,
+      "sha256": "1886062ad745d52cb733607e1a99c137d31fcd08122b6728dfd0b299c955662f"
+    },
+    {
+      "path": "artwork/common/png/erro.png",
+      "bytes": 34351,
+      "sha256": "2ae8827a97e10f80c2103914b8432f16fbf99a4ebd516c05b443df44caefdd8e"
+    },
+    {
+      "path": "artwork/common/png/favoritos.png",
+      "bytes": 32085,
+      "sha256": "edc0050b1a1af4d4164add9b16c7bb33bea02a8f9c712cc68f9019cd514f999c"
+    },
+    {
+      "path": "artwork/common/png/folder.png",
+      "bytes": 5240,
+      "sha256": "d6d74f3f9aec630da1b11ca66d2a7e63786a586447a07e92ab0801e0cd555340"
+    },
+    {
+      "path": "artwork/common/png/live.png",
+      "bytes": 29944,
+      "sha256": "efaaed3abea2fe2a519a23a2e3ec0427eff6edd6566a315c3dd9a8586d2b107f"
+    },
+    {
+      "path": "artwork/common/png/search.png",
+      "bytes": 21615,
+      "sha256": "99197cc0be8fa9cde1a1aa918274767a5e7fd0445fa16a035ac3cb4fda37b799"
+    },
+    {
+      "path": "artwork/common/png/series.png",
+      "bytes": 37915,
+      "sha256": "d388ff3d9b2d7ac69fb48affa3cd29e632d92886851e01cc0af055c62bdbb100"
+    },
+    {
+      "path": "artwork/common/png/sync.png",
+      "bytes": 26632,
+      "sha256": "781c3a4f8edda7e66ce1a0b1862a2c683815c159f5b3bc1f33fecf4273eabc31"
+    },
+    {
+      "path": "artwork/common/png/vod.png",
+      "bytes": 28250,
+      "sha256": "f7e0cc3d135d11705c8207c6072ec86b54e1b03a3bcf1c6346c1876e528948c4"
+    },
+    {
+      "path": "artwork/common/svg/check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 481,
+      "sha256": "1e086f3e4cc8055a90aada3baa756c3cc0a03ec419fed2eea7ac65762bb9ad0c"
+    },
+    {
+      "path": "artwork/common/svg/cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 505,
+      "sha256": "2f88cef6387306eab02472b6073e45a0dee8c6afca6f5ce919d722a218597dff"
+    },
+    {
+      "path": "artwork/common/svg/error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 678,
+      "sha256": "51b5455405746703bc5691a352d6b05e29109dae15fda3398b15040d20690af6"
+    },
+    {
+      "path": "artwork/common/svg/favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 665,
+      "sha256": "b57b1e5b684ce14fab45d0b04d1683ce6c999a35b259d95db57e43b405e0fe1f"
+    },
+    {
+      "path": "artwork/common/svg/folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 297,
+      "sha256": "4d8d58aae0c7492ee88b6586dcfdf20153feefd43dd256208b42699b4e78bd08"
+    },
+    {
+      "path": "artwork/common/svg/live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 306,
+      "sha256": "11b0d87935b5be359708c881e71a3231619295ed9d90d5094d6308a4a5180278"
+    },
+    {
+      "path": "artwork/common/svg/movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 322,
+      "sha256": "969ac3637e9c29c44e89b63b4d89472611d799dd040dc021317dacd84b9beeb8"
+    },
+    {
+      "path": "artwork/common/svg/search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 364,
+      "sha256": "cc206c4fa67f48927fff5ab5e1260a87803d846dbcd739ad601674d2ec2672d1"
+    },
+    {
+      "path": "artwork/common/svg/sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 405,
+      "sha256": "d51eccaa69c29356b3835788361a211fd295a7b975fe91c0bf027d5d1738d79e"
+    },
+    {
+      "path": "decisions/ADR-0001-modulo-epg-local.md",
+      "bytes": 1269,
+      "sha256": "b57cb9b83629a971a65c68144dda26cc2a605b9373703ba0c49e13f93da36d6e"
+    },
+    {
+      "path": "decisions/ADR-0002-canais-epg-e-variantes.md",
+      "bytes": 2141,
+      "sha256": "d52751c7a1e10386ca1abc9edcee08bca13da3bb571cd56ce40e101d192f6320"
+    },
+    {
+      "path": "decisions/ADR-0003-grade-profissional-e-qualidade-no-player.md",
+      "bytes": 1807,
+      "sha256": "9bd920927cebcae640f35c61f6fe2d97f1b131fddf7ccd578144d21168b62852"
+    },
+    {
+      "path": "docs/.nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/SHA256SUMS",
+      "bytes": 620,
+      "sha256": "616c59ab225344915719ed2c5c439649d9aa0536978cfb13b325ca9e7bb92f14"
+    },
+    {
+      "path": "docs/addons.xml",
+      "bytes": 5410,
+      "sha256": "e1cfd5fc9e5452470e2f41891cd8f6e75c605a9c7c78a96713a9e9fefc3d62bc"
+    },
+    {
+      "path": "docs/addons.xml.gz",
+      "bytes": 1379,
+      "sha256": "7f812670183a765d5067f367b3e1b120b38d40bdab796668c382a0a2226d55e5"
+    },
+    {
+      "path": "docs/addons.xml.gz.md5",
+      "bytes": 34,
+      "sha256": "f90b77d2fa731810c9ed3511216b139c167ee9659d9bc9b480400e09118c05d6"
+    },
+    {
+      "path": "docs/addons.xml.gz.sha256",
+      "bytes": 66,
+      "sha256": "6491a4006f72fcaab8da7a18b016a57fcb3dbf0525d8b187c363765a68c60fc1"
+    },
+    {
+      "path": "docs/addons.xml.md5",
+      "bytes": 34,
+      "sha256": "dff1e3df3758650277c52def79fa8bf892431eb9a0dc6c6db50fa0d9da5a005b"
+    },
+    {
+      "path": "docs/addons.xml.sha256",
+      "bytes": 66,
+      "sha256": "fa37360b9bd26a87f9e2922a573191471061795315451f0385920360817749b0"
+    },
+    {
+      "path": "docs/index.html",
+      "bytes": 2344,
+      "sha256": "879f6a38def7b02c691832343bb688f894a02f1939a591070b050cd42c57c91e"
+    },
+    {
+      "path": "docs/repository.srepo-1.1.1.zip",
+      "bytes": 148296,
+      "sha256": "f995bc70c3516397c9726854eb0b8d3b10861bf09fffdf514f528cb08e1df56c"
+    },
+    {
+      "path": "docs/script.js",
+      "bytes": 1969,
+      "sha256": "b43367abc021a84c1f84675a859cf46c802316dcb76ebaf390f3e380a49d71d2"
+    },
+    {
+      "path": "docs/style.css",
+      "bytes": 3538,
+      "sha256": "162f063f9dca3418c9a6f91ac199cfba6c8660b570ab134bdbb2f71fdd4dfa12"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/changelog-0.7.0.txt",
+      "bytes": 508,
+      "sha256": "e300aed3dd144f06ed3bcf0550736e5ddb09310efaeb0102a1964bd51be553b6"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/fanart.jpg",
+      "bytes": 248046,
+      "sha256": "0d0a98488c0410eb750ae1df9810172bc2b990b52bc723c32f53a62c1f033172"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/icon.png",
+      "bytes": 30749,
+      "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.0.zip",
+      "bytes": 316372,
+      "sha256": "383e772ee4643341fb85a67e2d5a73eaab651756ab2496ae8f659bbdf98d269e"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.0.zip.sha256",
+      "bytes": 66,
+      "sha256": "35b12b1a8c58000a99da61bc4dd0ba37eb370aab74a39e7544bb792030a01728"
+    },
+    {
+      "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
+      "bytes": 126,
+      "sha256": "06efe44c27f40a0bda8664fe2c0d07f1bb255df4a72b762fcd8734bd03e8a005"
+    },
+    {
+      "path": "docs/zips/repository.srepo/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "docs/zips/repository.srepo/icon.png",
+      "bytes": 37372,
+      "sha256": "bc14dd9e82a324b81c616136ec08b9367d6861c3a423b1b194a1b88a3e60d49c"
+    },
+    {
+      "path": "docs/zips/repository.srepo/repository.srepo-1.1.1.zip",
+      "bytes": 148296,
+      "sha256": "f995bc70c3516397c9726854eb0b8d3b10861bf09fffdf514f528cb08e1df56c"
+    },
+    {
+      "path": "docs/zips/repository.srepo/repository.srepo-1.1.1.zip.sha256",
+      "bytes": 66,
+      "sha256": "6a22885fc1ef361d1fc35cb363e84259c9a53ec23cb2fbff29c074d9e39c3caa"
+    },
+    {
+      "path": "docs/zips/resource.images.saile/changelog-1.0.3.txt",
+      "bytes": 60,
+      "sha256": "81bcac88bb0332edc1003ac410a34e473363cdf2561076375f9691642d636072"
+    },
+    {
+      "path": "docs/zips/resource.images.saile/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "docs/zips/resource.images.saile/icon.png",
+      "bytes": 23801,
+      "sha256": "1340cc42967a441ef44538f7b4b3d7ab959b923bd9b143304c5fed00891f66c3"
+    },
+    {
+      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.3.zip",
+      "bytes": 373286,
+      "sha256": "a2beb29bc10c43daaff99c59584b516ba860022aacdf8dba975276efa9faeac9"
+    },
+    {
+      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.3.zip.sha256",
+      "bytes": 66,
+      "sha256": "8b6db08c14d4995735214649f9269591e3d810d3f4036915328a80d12e201d2f"
+    },
+    {
+      "path": "docs/zips/script.module.saile.core/changelog-1.0.0.txt",
+      "bytes": 186,
+      "sha256": "9e2dfc61efb2340748d8f0553351f0215a19006eea05a0007e8249c7a26291a1"
+    },
+    {
+      "path": "docs/zips/script.module.saile.core/fanart.jpg",
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
+    },
+    {
+      "path": "docs/zips/script.module.saile.core/icon.png",
+      "bytes": 35575,
+      "sha256": "cab50b34c15f4efc36f13077a066ecf24dd67170dc7710e1d76897f54e3ad9d5"
+    },
+    {
+      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.0.zip",
+      "bytes": 149556,
+      "sha256": "31dfd78326b56ec9cfef7b6c549130af3ec0b497f80c458979146a8a7fd840de"
+    },
+    {
+      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.0.zip.sha256",
+      "bytes": 66,
+      "sha256": "8b4ebc0327bd52ddd64f7079862f1945111e090d363ba05308c1ece479a816a0"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/changelog-1.2.0.txt",
+      "bytes": 337,
+      "sha256": "57eb34ba778514ddc2a07eb753f7efb95b840f8b11d863959dbcb0482143d7ff"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/fanart.jpg",
+      "bytes": 138768,
+      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/icon.png",
+      "bytes": 212629,
+      "sha256": "56293a22a68735f4c8d0ca3049da1ca93b73297d232b0d626e14d5f391076006"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip",
+      "bytes": 365710,
+      "sha256": "191e0bd3874b0b111155746c93a765868e35ef5017c7b5769be24b5859e359c3"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip.sha256",
+      "bytes": 66,
+      "sha256": "d6c72053e5a5e3feb28db6952aa94e03af371885899783c5540c1caaa01c8b26"
+    },
+    {
+      "path": "documentation/README.md",
+      "bytes": 1925,
+      "sha256": "ea9afb0bd651eb668bc19ec173b3b2b121e6796b16875f6960add3beee912061"
+    },
+    {
+      "path": "documentation/architecture/PROJECT_CONSTITUTION.md",
+      "bytes": 3219,
+      "sha256": "f513aaea78be3ed783d83e5abbf4428ccd3f1eeb5fe8857fe7b5a6881fc1eb2d"
+    },
+    {
+      "path": "documentation/architecture/REPOSITORY_BLUEPRINT.md",
+      "bytes": 3364,
+      "sha256": "067c542b2023845293c62bfcf32a193ca78fd94956f736d1cf153f74a7965977"
+    },
+    {
+      "path": "documentation/architecture/ROADMAP_ARCHITECTURE.md",
+      "bytes": 3202,
+      "sha256": "b95d2401aa25d019fe75b4c6410fb86d8535b7ea7f0d8334fff52c790107a561"
+    },
+    {
+      "path": "documentation/architecture/ROADMAP_TRACEABILITY_MATRIX.md",
+      "bytes": 1543,
+      "sha256": "5f464f48f2e14f4f0dacdd848219aa50646ad37e64b02861bc8b1c5a74428a41"
+    },
+    {
+      "path": "documentation/generated/STRUCTURE_MANIFEST.json",
+      "bytes": 46652,
+      "sha256": "a0a60c19590e4a050a8c56a61cfb0ad52b394688c50b46b80205b21395117f53"
+    },
+    {
+      "path": "documentation/generated/TREE_FINAL.txt",
+      "bytes": 14299,
+      "sha256": "fd67efd44844a6b83dc423deac7e0cd72ddcf4b12d0ae78aa588abb3fa99938a"
+    },
+    {
+      "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
+      "bytes": 1351,
+      "sha256": "cfeb03b09fdae8386bf81356b54dd2dfd64f9b5765eca9fb8d7a988899bbc3c5"
+    },
+    {
+      "path": "documentation/reference/COMPATIBILITY_MATRIX.md",
+      "bytes": 886,
+      "sha256": "88c236469954a831b4dbcae416a5c6ae917f563d06f5dcb58cc30a9610272e5e"
+    },
+    {
+      "path": "documentation/reference/OFFICIAL_REFERENCE_MAP.md",
+      "bytes": 712,
+      "sha256": "2976d360e8ca0300fa472149fb16004a86e7a05eacd63c2b55a02640033a4ca3"
+    },
+    {
+      "path": "documentation/release/PACKAGE_INVENTORY.md",
+      "bytes": 2169,
+      "sha256": "0dc1662722e5042cb3f1157c3b275b7e963145a7a6c3c3135c66332cf0c1355f"
+    },
+    {
+      "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",
+      "bytes": 1091,
+      "sha256": "e5e3127c917676d3a1e7cb9e0da49c8a741672d89543e58a6795e7407d81b83d"
+    },
+    {
+      "path": "documentation/release/STATE.md",
+      "bytes": 3255,
+      "sha256": "52aa9e6a53aaa352a982dd7fd0351500c05d85b7a1ab420f828777cd40f61c34"
+    },
+    {
+      "path": "examples/kodi_router_pattern.py",
+      "bytes": 547,
+      "sha256": "e82987415151406c0a2930309288dea21bbe9417f9778d6751462a5fcb6ad37a"
+    },
+    {
+      "path": "examples/sqlite_transaction_pattern.py",
+      "bytes": 628,
+      "sha256": "1b2bb615e4bbac7b740c1446c2a01463177e8f88ee7f6e944d8c53e52bc9a837"
+    },
+    {
+      "path": "examples/xtream_url_pattern.py",
+      "bytes": 436,
+      "sha256": "65a753412a0e64190c06e89579916237fc4225e25757d5332943a4ac8434d78b"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 246,
+      "sha256": "361908bf02a06d0b9e179419093ecc5f8f5359e8847ab36072dfffa24b5534e7"
+    },
+    {
+      "path": "schemas/LAN_SYNC_CONTRACT.md",
+      "bytes": 720,
+      "sha256": "c9a363b559f030944477b38c081952e4b34c42f5ec6e88b2208898c1bdda4c21"
+    },
+    {
+      "path": "schemas/epg_reference.sql",
+      "bytes": 1002,
+      "sha256": "88d6bef801b878ecc995bde8b12fa986619f859f3e58994e66215dd34be95758"
+    },
+    {
+      "path": "schemas/stv_reference.sql",
+      "bytes": 2138,
+      "sha256": "780b76af0d9ed90f61d1e279344b1e4c5d05e6354e000fe6c781aa873b082da3"
+    },
+    {
+      "path": "templates/ADR_TEMPLATE.md",
+      "bytes": 221,
+      "sha256": "9859f4906999aa683ead35c9bd6e5482315961ec7fccd2e052a305e7edc5ab61"
+    },
+    {
+      "path": "templates/BUG_REPORT_TEMPLATE.md",
+      "bytes": 211,
+      "sha256": "3d57865dfd6cbccd8257f3b6442ef0393ce04822c163a232c16c09c7789f5964"
+    },
+    {
+      "path": "templates/CHANGE_PLAN_TEMPLATE.md",
+      "bytes": 212,
+      "sha256": "65c6c6c22217406bc6c6ea12486301e2dc241f07d40bda6bf2e12e93b28b74c3"
+    },
+    {
+      "path": "templates/RELEASE_CHECKLIST.md",
+      "bytes": 426,
+      "sha256": "8d73a2365ed9391565f72a9d857fcb6955d8a63e29f998e168ca248d69b98434"
+    },
+    {
+      "path": "templates/RFC_TEMPLATE.md",
+      "bytes": 246,
+      "sha256": "db610e64dceca39b70ded5ea9b364f48348592c144d4d2fc93a5fbcfa0165d02"
+    },
+    {
+      "path": "tests/test_artwork_manifest.py",
+      "bytes": 714,
+      "sha256": "bfb38ca728517571ed42e724f147e4c33f74cfd92804a78bb41a80891f25a146"
+    },
+    {
+      "path": "tests/test_databases.py",
+      "bytes": 4771,
+      "sha256": "b4b2d9899af8423dd33196c571333e0f7eea96df307ed6465257e4e8ca4f49bc"
+    },
+    {
+      "path": "tests/test_dependency_graph.py",
+      "bytes": 1215,
+      "sha256": "7f024636f511bbdd5c7b77260201a80b56d3e41849f6cccbb10dc5abd2884d6a"
+    },
+    {
+      "path": "tests/test_navigation_contract.py",
+      "bytes": 848,
+      "sha256": "57cad276a813e28384615744c67dbd76a680292a0b037f48394efdec2adc3d92"
+    },
+    {
+      "path": "tests/test_routing.py",
+      "bytes": 2120,
+      "sha256": "a965d829159c35fbf558db58457a81061c793ea2c65279a9825284b0a8eda865"
+    },
+    {
+      "path": "tests/test_saile_core.py",
+      "bytes": 1111,
+      "sha256": "72105b16feb4e553039ec3b7b32a5a4599c65633b352a9732f3c47c6e4d85b16"
+    },
+    {
+      "path": "tests/test_saile_epg_normalizer.py",
+      "bytes": 1698,
+      "sha256": "1e78ed123da191f4ec51e04bdecda22e9fe7e8dbf5e2b3f76876a1b7600a2aea"
+    },
+    {
+      "path": "tests/test_saile_epg_persistence.py",
+      "bytes": 4800,
+      "sha256": "7cd4f2a2e1c9b69c6a908aeaea31dba99260ce9dcc9c85b003f9929dfef50098"
+    },
+    {
+      "path": "tests/test_saile_epg_xmltv.py",
+      "bytes": 7079,
+      "sha256": "aa2dc9f524447c9b154328a47702341f4581588d6926043c8459dd0d52002ffb"
+    },
+    {
+      "path": "tests/test_saile_epg_xtream.py",
+      "bytes": 3814,
+      "sha256": "6a5e4f25ed5f1be390561c04bdf28eddc2cca9b163ccd0b2385d9e4dd1c16eef"
+    },
+    {
+      "path": "tests/test_stv_http_client.py",
+      "bytes": 654,
+      "sha256": "8d782bf60ec0b4dd8465f8012edd6bbe180f815a68f4411620322dda900df731"
+    },
+    {
+      "path": "tests/test_stv_live_channels.py",
+      "bytes": 7818,
+      "sha256": "cb8bd31a1130dc7213f2540751961a79891b7f469f4b6fc673fa4d4ec85f4d6a"
+    },
+    {
+      "path": "tests/test_stv_parental.py",
+      "bytes": 1820,
+      "sha256": "b8ecc0fdfd4a9a8f7bab2ddc47a6a00ab4778d9381a9aa22c975deb24187549b"
+    },
+    {
+      "path": "tests/test_stv_persistence.py",
+      "bytes": 6325,
+      "sha256": "6f0e31f000e6f577d6db547cb3ff81e3d069d022f00ca3c9575458e8d679a39d"
+    },
+    {
+      "path": "tests/test_stv_tmdb_client.py",
+      "bytes": 1081,
+      "sha256": "9538f3de46a765607e3f05478cd93f614a5b9b989d236223a71ba79d2e909c10"
+    },
+    {
+      "path": "tests/test_stv_ui_standardization.py",
+      "bytes": 10835,
+      "sha256": "92af8a2ab39e9a90049e0f74c451928bb84b6e8c87d63092184239645a2111c1"
+    },
+    {
+      "path": "tests/test_stv_xtream_client.py",
+      "bytes": 2066,
+      "sha256": "acc8070a74c5f1aaaf2822824378e4a0e0104e4a06fc11f1548a8c5d05d7bc18"
+    },
+    {
+      "path": "tools/bootstrap_artwork.py",
+      "bytes": 747,
+      "sha256": "324db823c450e18440410f22df156a1bb32adb386a127b0568d074811d8aad75"
+    },
+    {
+      "path": "tools/build_repo.py",
+      "bytes": 7633,
+      "sha256": "15e2f7ebfb982110702c03a81904d71562658c38808264b2cd82b001f095b188"
+    },
+    {
+      "path": "tools/clean_build.py",
+      "bytes": 1168,
+      "sha256": "69ca05fa413aa945f46d7b63bb3f3d0b8813e6e222a30ed3f3e3399954c135a5"
+    },
+    {
+      "path": "tools/colorize_common_svgs.py",
+      "bytes": 3131,
+      "sha256": "59f8bb82635d03c90e4f4e93cbd82a88818e9e08af6a3b994d3f5a353b0a78de"
+    },
+    {
+      "path": "tools/generate_structure_manifest.py",
+      "bytes": 2924,
+      "sha256": "742d69b36997de7b33073c3411828965e1322a09d70d1644bae74299fb770e19"
+    },
+    {
+      "path": "tools/print_tree.py",
+      "bytes": 1289,
+      "sha256": "c9144cacfea42e9961788f5df3c9ebccfb80d2d386efb9fb3cfbad6d9d4f8f93"
+    },
+    {
+      "path": "tools/secret_scan.py",
+      "bytes": 1456,
+      "sha256": "747e9aa1e3264a7012d4b6c366ea9467d3384bc53bc4d22f15f7c1613c0d2c54"
+    },
+    {
+      "path": "tools/select_artwork.py",
+      "bytes": 4927,
+      "sha256": "796fc10f2552d8607391f67c245e8fe1254c521f90870047a0d92c4151c997c0"
+    },
+    {
+      "path": "tools/site_template/index.html",
+      "bytes": 932,
+      "sha256": "ccd86dbc1d0ea239220ea84590aafb42939f46596f30f69b671a51baaa13d3d5"
+    },
+    {
+      "path": "tools/site_template/script.js",
+      "bytes": 1969,
+      "sha256": "b43367abc021a84c1f84675a859cf46c802316dcb76ebaf390f3e380a49d71d2"
+    },
+    {
+      "path": "tools/site_template/style.css",
+      "bytes": 3538,
+      "sha256": "162f063f9dca3418c9a6f91ac199cfba6c8660b570ab134bdbb2f71fdd4dfa12"
+    },
+    {
+      "path": "tools/validate_addons.py",
+      "bytes": 3700,
+      "sha256": "74494243fcd36b0c0dd1457c67be998c3f5f34349cd58ad112319c4e68fa2c6b"
+    }
+  ]
+}

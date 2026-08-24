@@ -3,7 +3,7 @@
 Monorepo local-first que desenvolve e distribui o add-on **sTv** (IPTV / Xtream) e seus módulos compartilhados por um repositório Kodi hospedado estaticamente no GitHub Pages.
 
 A documentação técnica de Python/Kodi está centralizada em
-[`Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/`](Biblioteca_Universal_Corporativa/web-scripting/python-kodi/docs/README.md).
+[`documentation/`](documentation/README.md). Diretrizes gerais de engenharia de software e padrões de arquitetura encontram-se na [Mega Biblioteca de Engenharia](../engineering-library/README.md).
 
 ## Add-ons Ativos
 

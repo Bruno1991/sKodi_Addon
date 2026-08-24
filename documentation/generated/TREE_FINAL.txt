@@ -1,0 +1,325 @@
+s_Kodi_Addon/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   └── bug_report.yml
+│   ├── workflows/
+│   │   └── ci.yml
+│   └── pull_request_template.md
+├── addons/
+│   ├── plugin.video.stv/
+│   │   ├── resources/
+│   │   │   ├── language/
+│   │   │   │   ├── resource.language.en_gb/
+│   │   │   │   │   └── strings.po
+│   │   │   │   └── resource.language.pt_br/
+│   │   │   │       └── strings.po
+│   │   │   ├── lib/
+│   │   │   │   └── stv/
+│   │   │   │       ├── app/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── services.py
+│   │   │   │       │   └── sync.py
+│   │   │   │       ├── domain/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── catalog.py
+│   │   │   │       │   ├── live_channels.py
+│   │   │   │       │   └── models.py
+│   │   │   │       ├── infrastructure/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   └── http.py
+│   │   │   │       ├── persistence/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── database.py
+│   │   │   │       │   └── repository.py
+│   │   │   │       ├── providers/
+│   │   │   │       │   ├── epg/
+│   │   │   │       │   ├── tmdb/
+│   │   │   │       │   │   ├── __init__.py
+│   │   │   │       │   │   └── client.py
+│   │   │   │       │   ├── xtream/
+│   │   │   │       │   │   ├── __init__.py
+│   │   │   │       │   │   └── client.py
+│   │   │   │       │   └── __init__.py
+│   │   │   │       ├── ui/
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── dialogs.py
+│   │   │   │       │   ├── directory.py
+│   │   │   │       │   └── player.py
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── bootstrap.py
+│   │   │   │       ├── navigation_contract.py
+│   │   │   │       ├── parental.py
+│   │   │   │       └── routing.py
+│   │   │   └── settings.xml
+│   │   ├── addon.xml
+│   │   ├── changelog-0.2.1.txt
+│   │   ├── changelog-0.2.2.txt
+│   │   ├── changelog-0.2.3.txt
+│   │   ├── changelog-0.2.4.txt
+│   │   ├── changelog-0.2.5.txt
+│   │   ├── changelog-0.2.6.txt
+│   │   ├── changelog-0.2.9.txt
+│   │   ├── changelog-0.3.0.txt
+│   │   ├── changelog-0.3.1.txt
+│   │   ├── changelog-0.3.4.txt
+│   │   ├── changelog-0.3.5.txt
+│   │   ├── changelog-0.3.6.txt
+│   │   ├── changelog-0.3.7.txt
+│   │   ├── changelog-0.3.8.txt
+│   │   ├── changelog-0.3.9.txt
+│   │   ├── changelog-0.4.0.txt
+│   │   ├── changelog-0.4.1.txt
+│   │   ├── changelog-0.4.2.txt
+│   │   ├── changelog-0.4.3.txt
+│   │   ├── changelog-0.4.6.txt
+│   │   ├── changelog-0.5.0.txt
+│   │   ├── changelog-0.5.1.txt
+│   │   ├── changelog-0.5.2.txt
+│   │   ├── changelog-0.5.3.txt
+│   │   ├── changelog-0.6.0.txt
+│   │   ├── changelog-0.7.0.txt
+│   │   ├── default.py
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   ├── repository.srepo/
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── changelog-1.1.0.txt
+│   │   ├── changelog-1.1.1.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   ├── resource.images.saile/
+│   │   ├── resources/
+│   │   │   └── media/
+│   │   │       ├── common/
+│   │   │       │   ├── check.png
+│   │   │       │   ├── erro.png
+│   │   │       │   ├── folder.png
+│   │   │       │   ├── search.png
+│   │   │       │   └── sync.png
+│   │   │       └── stv/
+│   │   │           ├── favoritos.png
+│   │   │           ├── live.png
+│   │   │           ├── series.png
+│   │   │           └── vod.png
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── changelog-1.0.2.txt
+│   │   ├── changelog-1.0.3.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   ├── script.module.saile.core/
+│   │   ├── lib/
+│   │   │   └── saile_core/
+│   │   │       ├── __init__.py
+│   │   │       ├── artwork.py
+│   │   │       ├── capabilities.py
+│   │   │       ├── errors.py
+│   │   │       ├── notifications.py
+│   │   │       └── paths.py
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── fanart.jpg
+│   │   └── icon.png
+│   └── script.module.saile.epg/
+│       ├── lib/
+│       │   └── saile_epg/
+│       │       ├── providers/
+│       │       │   ├── __init__.py
+│       │       │   ├── base.py
+│       │       │   ├── xmltv.py
+│       │       │   └── xtream.py
+│       │       ├── __init__.py
+│       │       ├── database.py
+│       │       ├── errors.py
+│       │       ├── models.py
+│       │       ├── normalizer.py
+│       │       ├── repository.py
+│       │       └── service.py
+│       ├── addon.xml
+│       ├── changelog-1.0.0.txt
+│       ├── changelog-1.0.1.txt
+│       ├── changelog-1.0.2.txt
+│       ├── changelog-1.0.3.txt
+│       ├── changelog-1.1.0.txt
+│       ├── changelog-1.2.0.txt
+│       ├── fanart.jpg
+│       └── icon.png
+├── artwork/
+│   ├── addons/
+│   │   ├── fanarts/
+│   │   │   └── Style-1/
+│   │   │       ├── plugin.video.stv/
+│   │   │       │   └── fanart.jpg
+│   │   │       ├── repository.srepo/
+│   │   │       │   └── fanart.jpg
+│   │   │       ├── resource.images.saile/
+│   │   │       │   └── fanart.jpg
+│   │   │       ├── script.module.saile.core/
+│   │   │       │   └── fanart.jpg
+│   │   │       └── script.module.saile.epg/
+│   │   │           └── fanart.jpg
+│   │   └── icons/
+│   │       └── Detailed-Flat-Circular/
+│   │           ├── plugin.video.stv/
+│   │           │   └── icon.png
+│   │           ├── repository.srepo/
+│   │           │   └── icon.png
+│   │           ├── resource.images.saile/
+│   │           │   └── icon.png
+│   │           ├── script.module.saile.core/
+│   │           │   └── icon.png
+│   │           └── script.module.saile.epg/
+│   │               └── icon.png
+│   ├── common/
+│   │   ├── html/
+│   │   │   ├── check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   ├── png/
+│   │   │   ├── check.png
+│   │   │   ├── erro.png
+│   │   │   ├── favoritos.png
+│   │   │   ├── folder.png
+│   │   │   ├── live.png
+│   │   │   ├── search.png
+│   │   │   ├── series.png
+│   │   │   ├── sync.png
+│   │   │   └── vod.png
+│   │   └── svg/
+│   │       ├── check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   ├── artwork-manifest.json
+│   └── README.md
+├── decisions/
+│   ├── ADR-0001-modulo-epg-local.md
+│   ├── ADR-0002-canais-epg-e-variantes.md
+│   └── ADR-0003-grade-profissional-e-qualidade-no-player.md
+├── docs/
+│   ├── zips/
+│   │   ├── plugin.video.stv/
+│   │   │   ├── changelog-0.7.0.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── plugin.video.stv-0.7.0.zip
+│   │   │   └── plugin.video.stv-0.7.0.zip.sha256
+│   │   ├── repository.srepo/
+│   │   │   ├── changelog-1.1.1.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── repository.srepo-1.1.1.zip
+│   │   │   └── repository.srepo-1.1.1.zip.sha256
+│   │   ├── resource.images.saile/
+│   │   │   ├── changelog-1.0.3.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── resource.images.saile-1.0.3.zip
+│   │   │   └── resource.images.saile-1.0.3.zip.sha256
+│   │   ├── script.module.saile.core/
+│   │   │   ├── changelog-1.0.0.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── script.module.saile.core-1.0.0.zip
+│   │   │   └── script.module.saile.core-1.0.0.zip.sha256
+│   │   └── script.module.saile.epg/
+│   │       ├── changelog-1.2.0.txt
+│   │       ├── fanart.jpg
+│   │       ├── icon.png
+│   │       ├── script.module.saile.epg-1.2.0.zip
+│   │       └── script.module.saile.epg-1.2.0.zip.sha256
+│   ├── .nojekyll
+│   ├── addons.xml
+│   ├── addons.xml.gz
+│   ├── addons.xml.gz.md5
+│   ├── addons.xml.gz.sha256
+│   ├── addons.xml.md5
+│   ├── addons.xml.sha256
+│   ├── index.html
+│   ├── repository.srepo-1.1.1.zip
+│   ├── script.js
+│   ├── SHA256SUMS
+│   └── style.css
+├── documentation/
+│   ├── architecture/
+│   │   ├── PROJECT_CONSTITUTION.md
+│   │   ├── REPOSITORY_BLUEPRINT.md
+│   │   ├── ROADMAP_ARCHITECTURE.md
+│   │   └── ROADMAP_TRACEABILITY_MATRIX.md
+│   ├── generated/
+│   │   ├── STRUCTURE_MANIFEST.json
+│   │   └── TREE_FINAL.txt
+│   ├── governance/
+│   │   └── SECURITY_AND_ENV_POLICY.md
+│   ├── reference/
+│   │   ├── COMPATIBILITY_MATRIX.md
+│   │   └── OFFICIAL_REFERENCE_MAP.md
+│   ├── release/
+│   │   ├── PACKAGE_INVENTORY.md
+│   │   ├── PACKAGE_RELEASE_NOTES.md
+│   │   └── STATE.md
+│   └── README.md
+├── examples/
+│   ├── kodi_router_pattern.py
+│   ├── sqlite_transaction_pattern.py
+│   └── xtream_url_pattern.py
+├── schemas/
+│   ├── epg_reference.sql
+│   ├── LAN_SYNC_CONTRACT.md
+│   └── stv_reference.sql
+├── templates/
+│   ├── ADR_TEMPLATE.md
+│   ├── BUG_REPORT_TEMPLATE.md
+│   ├── CHANGE_PLAN_TEMPLATE.md
+│   ├── RELEASE_CHECKLIST.md
+│   └── RFC_TEMPLATE.md
+├── tests/
+│   ├── test_artwork_manifest.py
+│   ├── test_databases.py
+│   ├── test_dependency_graph.py
+│   ├── test_navigation_contract.py
+│   ├── test_routing.py
+│   ├── test_saile_core.py
+│   ├── test_saile_epg_normalizer.py
+│   ├── test_saile_epg_persistence.py
+│   ├── test_saile_epg_xmltv.py
+│   ├── test_saile_epg_xtream.py
+│   ├── test_stv_http_client.py
+│   ├── test_stv_live_channels.py
+│   ├── test_stv_parental.py
+│   ├── test_stv_persistence.py
+│   ├── test_stv_tmdb_client.py
+│   ├── test_stv_ui_standardization.py
+│   └── test_stv_xtream_client.py
+├── tools/
+│   ├── site_template/
+│   │   ├── index.html
+│   │   ├── script.js
+│   │   └── style.css
+│   ├── bootstrap_artwork.py
+│   ├── build_repo.py
+│   ├── clean_build.py
+│   ├── colorize_common_svgs.py
+│   ├── generate_structure_manifest.py
+│   ├── print_tree.py
+│   ├── secret_scan.py
+│   ├── select_artwork.py
+│   └── validate_addons.py
+├── .gitignore
+├── AGENTS.md
+├── LICENSE
+├── Makefile
+├── pyproject.toml
+└── README.md

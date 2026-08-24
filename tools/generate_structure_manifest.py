@@ -7,19 +7,13 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-KODI_DOCS = (
-    ROOT
-    / "Biblioteca_Universal_Corporativa"
-    / "web-scripting"
-    / "python-kodi"
-    / "docs"
-)
+KODI_DOCS = ROOT / "documentation"
 MANIFEST_PATH = KODI_DOCS / "generated" / "STRUCTURE_MANIFEST.json"
 ARTWORK_MANIFEST = ROOT / "artwork" / "artwork-manifest.json"
 EXCLUDED_PATHS = {
     ".vscode/settings.json",
 }
-EXCLUDED_PREFIXES = ("Biblioteca_Universal_Corporativa/",)
+EXCLUDED_PREFIXES = ()
 
 
 def sha256(path: Path) -> str:
