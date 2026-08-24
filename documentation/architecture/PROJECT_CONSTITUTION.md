@@ -20,7 +20,7 @@ A ordem dos atalhos da home (`TV ao Vivo` → `VOD` → `Séries` → `Sincroniz
 
 ## Artigo 4 — Persistência
 
-O sTv usa SQLite próprio em `special://profile/addon_data/plugin.video.stv/stv.db`. Catálogo, cache e estado do usuário são separados. Migrações são versionadas, transacionais e testadas. Atualizações do add-on não apagam dados.
+O sTv usa SQLite próprio em `special://profile/addon_data/plugin.video.stv/stv.db` (Schema v8). Catálogo, cache e estado do usuário são rigorosamente separados. Todas as consultas críticas contam com Covering Indexes (`idx_favorites_order`, `idx_categories_order`, `idx_media_items_normalized`), busca insensível a acentos via motor híbrido FTS5 (`unicode61 remove_diacritics 2`) e otimização automática (`PRAGMA optimize`). Migrações são versionadas, transacionais e testadas. Atualizações do add-on nunca apagam dados do usuário.
 
 O módulo EPG usa banco independente em `special://profile/addon_data/script.module.saile.epg/epg.db`. EPG é cache reconstruível e nunca é misturado ao estado do usuário do sTv.
 

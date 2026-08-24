@@ -10,7 +10,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 253,
+  "file_count_excluding_manifest": 254,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -1009,8 +1009,8 @@
     },
     {
       "path": "documentation/architecture/PROJECT_CONSTITUTION.md",
-      "bytes": 3281,
-      "sha256": "4c6d33df2a9824e2e6ae644c32002af70f463e5f8a6c061c69162dc9b4289743"
+      "bytes": 3590,
+      "sha256": "f09ec95ac0775286b7dd46d5552338e8c903338f171e11ee7a5ac91002f489b0"
     },
     {
       "path": "documentation/architecture/REPOSITORY_BLUEPRINT.md",
@@ -1029,18 +1029,23 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 47032,
-      "sha256": "371b15d93df317a9bf40b48e3aef3e98732b8a245079d7a82d405ee6decbd9e2"
+      "bytes": 47214,
+      "sha256": "886d774b1de54041e1ee8b7191e9fb9414576af9f71a29a2d985f97833eb765d"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 14351,
-      "sha256": "56aabeca2153e170b43cc58db17d0334a8a0e1a9cdd0175f093df97baebee4ef"
+      "bytes": 14394,
+      "sha256": "81071bbf3a307aa8b3fe0156478223fe64ece42e6abeba1d9dbba9ac297ce2c1"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
       "bytes": 1351,
       "sha256": "cfeb03b09fdae8386bf81356b54dd2dfd64f9b5765eca9fb8d7a988899bbc3c5"
+    },
+    {
+      "path": "documentation/governance/SKILLS_INDEX.md",
+      "bytes": 2977,
+      "sha256": "0dda97d62f37d55603b0254a9ad7ee462c5e314b2dd6d94429cbcda0e88bd6d6"
     },
     {
       "path": "documentation/reference/COMPATIBILITY_MATRIX.md",
@@ -1055,12 +1060,12 @@
     {
       "path": "documentation/release/PACKAGE_INVENTORY.md",
       "bytes": 2267,
-      "sha256": "3b7402659e0be201bb7c9408d814c98f4548e4a6eb68bafb3d1a54464e6d8473"
+      "sha256": "cda559afaacaa5d5825c163775cf17557843f4f4b1d8ab3dee74b036e0827515"
     },
     {
       "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",
-      "bytes": 1129,
-      "sha256": "1e24194f944b05e46cd6e5af3ed1740d5df4c153435f4f59f0ec8627dd3d3117"
+      "bytes": 3352,
+      "sha256": "f8cffc54ba9477f2a859505c2223fcf9706c1764c757b1c93d8061e7a01fb76b"
     },
     {
       "path": "documentation/release/STATE.md",

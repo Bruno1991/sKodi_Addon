@@ -263,7 +263,8 @@ s_Kodi_Addon/
 │   │   ├── STRUCTURE_MANIFEST.json
 │   │   └── TREE_FINAL.txt
 │   ├── governance/
-│   │   └── SECURITY_AND_ENV_POLICY.md
+│   │   ├── SECURITY_AND_ENV_POLICY.md
+│   │   └── SKILLS_INDEX.md
 │   ├── reference/
 │   │   ├── COMPATIBILITY_MATRIX.md
 │   │   └── OFFICIAL_REFERENCE_MAP.md

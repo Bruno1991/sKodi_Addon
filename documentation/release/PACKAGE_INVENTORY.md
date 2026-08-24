@@ -31,7 +31,7 @@
 ```text
 5 add-ons válidos
 9 artes compartilhadas válidas
-67 testes unitários aprovados
+78 testes unitários aprovados
 0 segredos conhecidos encontrados
 5 ZIPs Kodi gerados
 ```
