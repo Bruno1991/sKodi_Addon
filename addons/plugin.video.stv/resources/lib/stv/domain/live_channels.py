@@ -76,20 +76,44 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "SPORTV 1": "SPORTV",
     "HBO 1": "HBO",
     "HBO 2": "HBO2",
+    "DISC CHANNEL": "DISCOVERY",
+    "DISCOVERY": "DISCOVERY",
     "DISCOVERY CHANNEL": "DISCOVERY",
+    "DISC H HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC H AND HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC HOME HEALTH": "DISCOVERY HOME HEALTH",
+    "DISCOVERY HOME HEALTH": "DISCOVERY HOME HEALTH",
     "DISC KIDS": "DISCOVERY KIDS",
     "DISCOVERY KIDS": "DISCOVERY KIDS",
     "DISC TURBO": "DISCOVERY TURBO",
     "DISC THEATER": "DISCOVERY THEATER",
     "DISC SCIENCE": "DISCOVERY SCIENCE",
     "DISC WORLD": "DISCOVERY WORLD",
-    "DISC HOME HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC ID": "ID",
+    "INVESTIGATION DISCOVERY": "ID",
+    "INVESTIGACAO DISCOVERY": "ID",
     "TC PREMIUM": "TELECINE PREMIUM",
     "TC ACTION": "TELECINE ACTION",
     "TC PIPOCA": "TELECINE PIPOCA",
     "TC FUN": "TELECINE FUN",
     "TC TOUCH": "TELECINE TOUCH",
     "TC CULT": "TELECINE CULT",
+    "PFC CLUBES": "PREMIERE CLUBES",
+    "PREMIERE CLUBES": "PREMIERE CLUBES",
+    "PFC 2": "PREMIERE 2",
+    "PFC 3": "PREMIERE 3",
+    "PFC 4": "PREMIERE 4",
+    "PFC 5": "PREMIERE 5",
+    "PFC 6": "PREMIERE 6",
+    "PFC 7": "PREMIERE 7",
+    "PFC 8": "PREMIERE 8",
+    "PREMIERE 2": "PREMIERE 2",
+    "PREMIERE 3": "PREMIERE 3",
+    "PREMIERE 4": "PREMIERE 4",
+    "PREMIERE 5": "PREMIERE 5",
+    "PREMIERE 6": "PREMIERE 6",
+    "PREMIERE 7": "PREMIERE 7",
+    "PREMIERE 8": "PREMIERE 8",
     "CARTOON NETWORK": "CARTOON",
     "NICK": "NICKELODEON",
     "UNIVERSAL": "UNIVERSAL TV",
@@ -104,6 +128,12 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "TV CULTURA": "CULTURA",
     "TV BRASIL": "TV BRASIL",
     "FOX SPORTS 2": "ESPN 5",
+    "SABOR E ARTE": "SABOR ARTE",
+    "TRAVEL BOX BRASIL": "TRAVEL BOX",
+    "TCM": "TCM BR",
+    "RECORD SP": "RECORD",
+    "RECORD RIO": "RECORD",
+    "RECORD": "RECORD",
 }
 
 
@@ -119,8 +149,14 @@ def build_live_catalog(
     by_name_candidates: dict[str, list[EpgChannel]] = {}
     for channel in epg_channels:
         if channel.normalized_name:
-            by_name_candidates.setdefault(channel.normalized_name, []).append(channel)
-            by_name_candidates.setdefault(channel.normalized_name.replace(" ", ""), []).append(channel)
+            cand = by_name_candidates.setdefault(channel.normalized_name, [])
+            if channel not in cand:
+                cand.append(channel)
+            no_space = channel.normalized_name.replace(" ", "")
+            if no_space != channel.normalized_name:
+                cand_ns = by_name_candidates.setdefault(no_space, [])
+                if channel not in cand_ns:
+                    cand_ns.append(channel)
     by_unique_name = {
         name: candidates[0]
         for name, candidates in by_name_candidates.items()

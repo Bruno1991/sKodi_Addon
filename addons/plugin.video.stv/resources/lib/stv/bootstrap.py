@@ -47,7 +47,7 @@ def _add_promoted_live_channel(
 
     channel = group.channel
     variant = group.variants[0]
-    icon_url = _item_icon("live", channel.icon_url or variant.icon)
+    icon_url = _item_icon("live", variant.icon)
     if now_next is None:
         now_next = app.get_channel_epg(channel.display_name, epg_id=channel.epg_id)
     live_plot, label2, epg_properties = _format_epg_card(
