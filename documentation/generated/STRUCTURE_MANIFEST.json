@@ -539,8 +539,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/fanart.jpg",
-      "bytes": 138768,
-      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
     },
     {
       "path": "addons/script.module.saile.epg/icon.png",
@@ -629,8 +629,8 @@
     },
     {
       "path": "artwork/addons/fanarts/Style-1/script.module.saile.epg/fanart.jpg",
-      "bytes": 138768,
-      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
     },
     {
       "path": "artwork/addons/icons/Detailed-Flat-Circular/plugin.video.stv/icon.png",
@@ -820,7 +820,7 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 620,
-      "sha256": "d1aa2c869ce5d08bf34c66507a1b6b3409e3d7e29d5591a73f02629cb198e41f"
+      "sha256": "a82a56aa2295f7574ac84cf9697897575a1c07922cf713e5c4242d0f8e617c8b"
     },
     {
       "path": "docs/addons.xml",
@@ -979,8 +979,8 @@
     },
     {
       "path": "docs/zips/script.module.saile.epg/fanart.jpg",
-      "bytes": 138768,
-      "sha256": "cfa5e5a7c3d40d61700042d31c556281f5356896f86eca019c26f88c0f6d4e8b"
+      "bytes": 117484,
+      "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
     },
     {
       "path": "docs/zips/script.module.saile.epg/icon.png",
@@ -989,13 +989,13 @@
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip",
-      "bytes": 168840,
-      "sha256": "0231b4c09fa9ac5ddd8d4d152265cad9bf07d24eca741a3b4655e94687e96aac"
+      "bytes": 140490,
+      "sha256": "76b01da2432cbe7b4003cc1f88550926589b3e5faadcf6344c0c06a33eda1136"
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.2.0.zip.sha256",
       "bytes": 66,
-      "sha256": "2c974f6b5e7398b15578c9f4348bc7534ca9ca8def8c5a34de937bbf3f62a520"
+      "sha256": "7fccdac5d0f855a7aafbc36d9c769cc18ba94547d85a43f39d595d0ae54a4b29"
     },
     {
       "path": "documentation/README.md",
@@ -1024,8 +1024,8 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 46858,
-      "sha256": "eac2745dc402b46a1b95fd17071f451be1712c9dfb27d1d14a5afecb78dfc004"
+      "bytes": 46856,
+      "sha256": "c18023b9d1e5f5733dbc358c14917398afeeda6570d71e56fe49d164497533ce"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
