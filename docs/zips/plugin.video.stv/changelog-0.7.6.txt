@@ -1,5 +1,0 @@
-v0.7.6 (2026-08-24)
--------------------
-- Todos os canais de TV ao vivo unificados e apresentados diretamente no 1º nível em ordem alfabética (A-Z).
-- Eliminação de pastas e subdiretórios de categorias na seção TV ao Vivo para acesso direto aos canais.
-- Preservação da busca, favoritos e guia de programação EPG integrado.

@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 LIB_DIR = ROOT / "addons" / "plugin.video.stv" / "resources" / "lib"
@@ -254,6 +255,21 @@ class PersistenceTests(unittest.TestCase):
             res_with_accent = custom_repo.search_media("vod", "pokémon")
             self.assertEqual({i.item_id for i in res_with_accent}, {"401", "402"})
 
+    def test_database_initializes_and_upserts_when_fts5_is_completely_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            custom_db = Database(Path(tmp) / "no_fts_simulated.db")
+            with patch("stv.persistence.database._setup_fts", return_value=False):
+                custom_db.initialize()
+                self.assertFalse(custom_db.fts_available)
+                custom_repo = CatalogRepository(custom_db)
+                items = [
+                    MediaItem("live", "99", "Canal Teste", "10", normalized_name="CANAL TESTE")
+                ]
+                custom_repo.upsert_media_items(items)
+                found = custom_repo.get_all_media_items("live")
+                self.assertEqual(len(found), 1)
+                self.assertEqual(found[0].name, "Canal Teste")
+
     def test_database_optimize(self) -> None:
         self.repo.optimize()
         self.db.optimize()
@@ -261,3 +277,4 @@ class PersistenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

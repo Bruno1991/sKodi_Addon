@@ -201,38 +201,39 @@ class CatalogRepository:
 
         results_by_id: dict[tuple[str, str], MediaItem] = {}
 
-        # 1. Tentar busca via FTS5 (com prefix matching e tokens higienizados)
-        fts_sql = """
-        SELECT m.* FROM media_items m
-        JOIN media_items_fts f ON m.rowid = f.rowid
-        WHERE f.media_type = ? AND media_items_fts MATCH ?
-        ORDER BY rank
-        LIMIT 100
-        """
-        try:
-            tokens = re.findall(r"\w+", cleaned_query)
-            if tokens:
-                fts_query = " ".join(f'"{token}"*' for token in tokens)
-                with self.db.connect() as connection:
-                    rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
-                    for row in rows:
-                        item = MediaItem(
-                            media_type=row["media_type"],
-                            item_id=row["item_id"],
-                            name=row["name"],
-                            category_id=row["category_id"],
-                            icon=row["icon"],
-                            fanart=row["fanart"],
-                            plot=row["plot"],
-                            extension=row["extension"],
-                            epg_id=row["epg_id"],
-                            source_name=row["source_name"],
-                            normalized_name=row["normalized_name"],
-                            generation_id=row["generation_id"],
-                        )
-                        results_by_id[(item.media_type, item.item_id)] = item
-        except Exception:
-            pass
+        # 1. Tentar busca via FTS5 (se disponível no SQLite)
+        if getattr(self.db, "fts_available", False):
+            fts_sql = """
+            SELECT m.* FROM media_items m
+            JOIN media_items_fts f ON m.rowid = f.rowid
+            WHERE f.media_type = ? AND media_items_fts MATCH ?
+            ORDER BY rank
+            LIMIT 100
+            """
+            try:
+                tokens = re.findall(r"\w+", cleaned_query)
+                if tokens:
+                    fts_query = " ".join(f'"{token}"*' for token in tokens)
+                    with self.db.connect() as connection:
+                        rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
+                        for row in rows:
+                            item = MediaItem(
+                                media_type=row["media_type"],
+                                item_id=row["item_id"],
+                                name=row["name"],
+                                category_id=row["category_id"],
+                                icon=row["icon"],
+                                fanart=row["fanart"],
+                                plot=row["plot"],
+                                extension=row["extension"],
+                                epg_id=row["epg_id"],
+                                source_name=row["source_name"],
+                                normalized_name=row["normalized_name"],
+                                generation_id=row["generation_id"],
+                            )
+                            results_by_id[(item.media_type, item.item_id)] = item
+            except Exception:
+                pass
 
         # 2. Busca e complemento resiliente com LIKE sobre campos originais e normalizados (sem acentos)
         fallback_sql = """

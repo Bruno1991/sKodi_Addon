@@ -150,6 +150,45 @@ END;
 """
 
 
+def _setup_fts(connection: sqlite3.Connection) -> bool:
+    """Configura o mecanismo FTS5 ou remove triggers de forma segura caso o FTS5 não esteja disponível no SQLite."""
+    fts_flavor: str | None = None
+    try:
+        connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS temp._probe_fts5 USING fts5(x, tokenize='unicode61 remove_diacritics 2')")
+        connection.execute("DROP TABLE IF EXISTS temp._probe_fts5")
+        fts_flavor = "unicode61"
+    except Exception:
+        try:
+            connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS temp._probe_fts5 USING fts5(x)")
+            connection.execute("DROP TABLE IF EXISTS temp._probe_fts5")
+            fts_flavor = "basic"
+        except Exception:
+            fts_flavor = None
+
+    if fts_flavor is not None:
+        try:
+            if fts_flavor == "unicode61":
+                connection.executescript(FTS5_SCHEMA)
+            else:
+                connection.executescript(FTS5_FALLBACK_SCHEMA)
+            return True
+        except Exception:
+            pass
+
+    # Se FTS5 não estiver compilado/disponível, remove triggers do media_items para evitar 'no such module: fts5'
+    for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):
+        try:
+            connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
+        except Exception:
+            pass
+    try:
+        connection.execute("DROP TABLE IF EXISTS media_items_fts")
+    except Exception:
+        pass
+
+    return False
+
+
 class Database:
     def __init__(self, path: str | Path) -> None:
         self.path = Path(path)
@@ -183,19 +222,10 @@ class Database:
         with self.connect() as connection:
             connection.executescript(SCHEMA)
 
+            self.fts_available = _setup_fts(connection)
+
             row = connection.execute("SELECT version FROM schema_version LIMIT 1").fetchone()
             if row is None:
-                # Tenta inicializar a tabela de busca FTS5 com unicode61 remove_diacritics e fallback seguro
-                try:
-                    connection.executescript(FTS5_SCHEMA)
-                    self.fts_available = True
-                except sqlite3.OperationalError:
-                    try:
-                        connection.executescript(FTS5_FALLBACK_SCHEMA)
-                        self.fts_available = True
-                    except sqlite3.OperationalError:
-                        self.fts_available = False
-
                 connection.execute(
                     "INSERT INTO schema_version(version) VALUES (?)",
                     (CURRENT_SCHEMA_VERSION,),
@@ -213,17 +243,6 @@ class Database:
                     "ON categories(media_type, name COLLATE NOCASE)"
                 )
                 return
-
-            # Se já existe banco, checa disponibilidade FTS5
-            try:
-                connection.executescript(FTS5_SCHEMA)
-                self.fts_available = True
-            except sqlite3.OperationalError:
-                try:
-                    connection.executescript(FTS5_FALLBACK_SCHEMA)
-                    self.fts_available = True
-                except sqlite3.OperationalError:
-                    self.fts_available = False
 
             version = int(row["version"])
             if version > CURRENT_SCHEMA_VERSION:
@@ -296,13 +315,16 @@ class Database:
                     (5,),
                 )
                 if self.fts_available:
-                    connection.execute(
-                        "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
-                    )
                     try:
+                        connection.execute(
+                            "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
+                        )
                         connection.executescript(FTS5_SCHEMA)
-                    except sqlite3.OperationalError:
-                        connection.executescript(FTS5_FALLBACK_SCHEMA)
+                    except Exception:
+                        try:
+                            connection.executescript(FTS5_FALLBACK_SCHEMA)
+                        except Exception:
+                            pass
             if version < 8:
                 if self.fts_available:
                     for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):

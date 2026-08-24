@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
 **Data de Atualização:** 24 de Agosto de 2026
-**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.7.6, sEPG v1.2.2)
+**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.7.7, sEPG v1.2.2)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,7 +11,7 @@
 
 | Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | `0.7.6` | Add-on IPTV/Xtream com todos os canais de TV ao vivo no 1º nível em ordem alfabética (A-Z) sem subpastas, grade EPG profissional, carregamento sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
+| **`plugin.video.stv`** | **sTv** | `0.7.7` | Add-on IPTV/Xtream com resiliência total contra ausência de FTS5 no SQLite, canais no 1º nível em ordem alfabética (A-Z), grade EPG, sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
 | **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | **sArtwork** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | **sCore** | `1.0.1` | Módulo base Python (artwork, notificações, erros, capabilities). |
