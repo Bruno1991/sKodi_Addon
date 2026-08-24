@@ -51,17 +51,17 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(kwargs["label2"], "Programação indisponível")
         self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
 
-    def test_live_root_promotes_epg_groups_and_hides_absorbed_category(self) -> None:
+    def test_live_root_renders_all_channels_alphabetically_without_folders(self) -> None:
         from saile_epg.models import EpgChannel
 
         matched = MediaItem(
-            "live", "1", "Globo", "10", epg_id="globo", normalized_name="GLOBO"
+            "live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT"
         )
         unmatched = MediaItem(
-            "live", "2", "Canal Local", "20", normalized_name="CANAL LOCAL"
+            "live", "2", "Animal Planet", "20", normalized_name="ANIMAL PLANET"
         )
         live_catalog = build_live_catalog(
-            (EpgChannel("xtream", "globo", "globo", "Globo", "GLOBO"),),
+            (EpgChannel("xtream", "sbt", "sbt", "SBT HD", "SBT"),),
             (matched, unmatched),
         )
         app = SimpleNamespace(
@@ -70,19 +70,14 @@ class UIStandardizationTests(unittest.TestCase):
                 key: (None, None) for key in channel_keys
             },
             catalog=SimpleNamespace(
-                is_catalog_complete=lambda _section: True,
-                get_categories=lambda _section: [
-                    Category("10", "Abertos", media_type="live"),
-                    Category("20", "Locais", media_type="live"),
-                    Category("30", "Ainda não carregada", media_type="live"),
-                ]
+                get_all_media_items=lambda _section: [matched, unmatched],
+                is_cache_valid=lambda _section, _ttl: True,
             ),
         )
         added_labels: list[str] = []
         request = Request("plugin://plugin.video.stv/", 7, {})
         with (
-            patch("stv.bootstrap.ensure_categories_loaded"),
-            patch("stv.bootstrap._add_promoted_live_channel") as promoted,
+            patch("stv.bootstrap.ensure_all_live_streams_loaded"),
             patch("stv.ui.directory.init_directory"),
             patch("stv.ui.directory.finish_directory"),
             patch(
@@ -93,10 +88,11 @@ class UIStandardizationTests(unittest.TestCase):
         ):
             _show_section(request, app, "live", "fanart.jpg")
 
-        promoted.assert_called_once()
-        self.assertNotIn("Abertos", added_labels)
-        self.assertIn("Locais", added_labels)
-        self.assertNotIn("Ainda não carregada", added_labels)
+        self.assertIn("Buscar", added_labels)
+        self.assertIn("Favoritos", added_labels)
+        self.assertIn("Animal Planet", added_labels)
+        self.assertIn("SBT HD", added_labels)
+        self.assertLess(added_labels.index("Animal Planet"), added_labels.index("SBT HD"))
 
     def test_parse_streams_live_logos_and_epg_id(self) -> None:
         data = [

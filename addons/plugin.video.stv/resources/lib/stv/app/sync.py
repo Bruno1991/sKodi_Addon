@@ -163,6 +163,33 @@ def ensure_streams_loaded(app: "AppContainer", section: str, category_id: str) -
         notify_error("sTv", f"Erro ao carregar mídias: {exc}")
 
 
+def ensure_all_live_streams_loaded(app: "AppContainer") -> None:
+    """Garante que todos os canais de TV ao vivo estejam carregados no banco local."""
+    existing = app.catalog.get_all_media_items("live")
+    try:
+        ttl_hours = int(app.settings.get("cache_ttl_hours", "12"))
+    except (TypeError, ValueError):
+        ttl_hours = 12
+    if existing and app.catalog.is_cache_valid("live", ttl_hours):
+        return
+
+    if not app.xtream.is_configured:
+        return
+
+    try:
+        raw_streams = app.xtream.request("get_live_streams")
+        generation_id = int(time.time())
+        parsed = _parse_streams("live", generation_id, raw_streams)
+        if parsed:
+            chunk_size = 500
+            for i in range(0, len(parsed), chunk_size):
+                app.catalog.upsert_media_items(parsed[i : i + chunk_size])
+            app.catalog.mark_catalog_synced("live", generation_id)
+    except Exception as exc:
+        from saile_core.notifications import notify_error
+        notify_error("sTv", f"Erro ao carregar canais: {exc}")
+
+
 def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) -> dict[str, int]:
     """Atualiza toda a TV ao vivo durante uma ação manual de sincronização."""
     if not app.xtream.is_configured:

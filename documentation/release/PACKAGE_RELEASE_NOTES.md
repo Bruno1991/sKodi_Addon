@@ -4,7 +4,7 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.7.5`** | Eliminação total de lag na renderização do modo InfoWall (54), sincronismo instantâneo de catálogo e EPG sem erros de integridade, frames 16:9 do TMDB em episódios e enquadramento natural de artes. |
+| **`plugin.video.stv`** | **sTv** | **`0.7.6`** | Todos os canais de TV ao vivo diretamente no primeiro nível (1º nível) em ordem alfabética (A-Z) sem pastas de categorias, com grade EPG, eliminação de lag no InfoWall 54 e frames 16:9 de episódios via TMDB. |
 | **`script.module.saile.epg`** | **sEPG** | **`1.2.2`** | Correção de integridade no SQLite com deduplicação de programas em feeds XMLTV reais, sincronização ultrarrápida (1.5s) e preservação de canais. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |

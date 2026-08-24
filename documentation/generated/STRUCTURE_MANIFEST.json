@@ -10,7 +10,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 261,
+  "file_count_excluding_manifest": 262,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -54,8 +54,8 @@
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
-      "bytes": 1305,
-      "sha256": "8545a2475cec33cf4da5d004f8997e55184af2a69e44cbee4bdd062122ca5f9b"
+      "bytes": 1317,
+      "sha256": "886c5c152e42ad088464a0eee3e0109970b44761ede056e4ed7f679804e2ba94"
     },
     {
       "path": "addons/plugin.video.stv/changelog-0.2.1.txt",
@@ -213,6 +213,11 @@
       "sha256": "a3ea81a0d30ee63bf5236460e094503faef5fea761d96298eae85f4c25883317"
     },
     {
+      "path": "addons/plugin.video.stv/changelog-0.7.6.txt",
+      "bytes": 336,
+      "sha256": "52b2478743e3ba1ae6d40e1c3f4f77e92a1a8bd6678a0f49b5ade5796e4e5a34"
+    },
+    {
       "path": "addons/plugin.video.stv/default.py",
       "bytes": 280,
       "sha256": "59606db17a256619364a833bf8a4609719829d540a4e107e5bd0a0794ce2c57d"
@@ -254,13 +259,13 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/app/sync.py",
-      "bytes": 9907,
-      "sha256": "6c6d66d9c50227d514b8359d4e769dcffc281b77b51a69ebb480d34877459818"
+      "bytes": 10922,
+      "sha256": "f38e23e00fcc486a621fd9a7e2c995f150b7a875aa6ebd9bd4f7ba03ce10de54"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/bootstrap.py",
-      "bytes": 35691,
-      "sha256": "201fc394fcdbf1503a24031a5dc01bf1e3733197694ccc78b7efdc88bf626688"
+      "bytes": 36553,
+      "sha256": "6f9ed54e96151d450a4b117e38ae88fa0da76f04bc91370c5074307b7c275bca"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/__init__.py",
@@ -860,42 +865,42 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 620,
-      "sha256": "fe1d4c4bcbc2dbca58003022949d36205658cc0df7829e46615d96103380b534"
+      "sha256": "a286c3232fc6af077fe77ec09dc18000b1ce70f0f5416839fb94ffff14f68c66"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 5377,
-      "sha256": "fd71884386d949fcc5d3bd359924d8d2ec5df77903a7fa6d8a3e4c90e2be8256"
+      "bytes": 5389,
+      "sha256": "d7d93318e946c64e68e3f4cfee7a26521f2857cae1a06031b698c940be115139"
     },
     {
       "path": "docs/addons.xml.gz",
-      "bytes": 1360,
-      "sha256": "401866bd8de75a2f7dd34e947819732c95dc305192cf501abe54324eee3c8327"
+      "bytes": 1378,
+      "sha256": "ddf2d4c36d5d3502d44147c55a40c62597a1197955b74ac1062387ed3e83d6f5"
     },
     {
       "path": "docs/addons.xml.gz.md5",
       "bytes": 34,
-      "sha256": "f602d104ea8c9618c25f5414959593bc7b93dbfd6c946066939d943a0262743d"
+      "sha256": "14f60af3e3974ae6c83c24e1204814a891fdce1964348cd9144b1ff75acf4d14"
     },
     {
       "path": "docs/addons.xml.gz.sha256",
       "bytes": 66,
-      "sha256": "f4025bba8473720052e584cd2fd10520d6ec179d262da16f2255621f7cd90e60"
+      "sha256": "b874fd1eec3c7ca264932f51d82835527de5fa85d59144f2a6dccff027e910b8"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "8d40a2c7173a7127ef85fa9d02d4b12a40bf170e67336c07b90523fa2539c262"
+      "sha256": "6bfa8a2b44ed928dc62669207800960bb8dd73249bf504d8e9403e396bc039f8"
     },
     {
       "path": "docs/addons.xml.sha256",
       "bytes": 66,
-      "sha256": "1e5f1f13264df3d21706519592fedf30fc256a82e1690320014bcafc5aba6b28"
+      "sha256": "d5e2930ad954f85d9f7d28cd11a45c889908d1284e40afce70a159068f64ba23"
     },
     {
       "path": "docs/index.html",
       "bytes": 2540,
-      "sha256": "127bdce59e769e9ab6a0dbf029871bf5327bfa4787bd4336895dbf9bf0e68993"
+      "sha256": "70cb12daf94ca1f96f285d62035bdb6339a2818df0047120ce4cbdbbb0db4cf0"
     },
     {
       "path": "docs/repository.srepo-1.1.1.zip",
@@ -913,9 +918,9 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
-      "path": "docs/zips/plugin.video.stv/changelog-0.7.5.txt",
-      "bytes": 330,
-      "sha256": "a3ea81a0d30ee63bf5236460e094503faef5fea761d96298eae85f4c25883317"
+      "path": "docs/zips/plugin.video.stv/changelog-0.7.6.txt",
+      "bytes": 336,
+      "sha256": "52b2478743e3ba1ae6d40e1c3f4f77e92a1a8bd6678a0f49b5ade5796e4e5a34"
     },
     {
       "path": "docs/zips/plugin.video.stv/fanart.jpg",
@@ -928,14 +933,14 @@
       "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.5.zip",
-      "bytes": 320041,
-      "sha256": "ca722c72f137464d5c9291dfc3ee861d29f2cf1474c949338bf8cf5520d284d9"
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.6.zip",
+      "bytes": 320327,
+      "sha256": "bff84b270a1e2143693cc4a9aba4b3b7b19a3445b1786a2262b3f36594461666"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.5.zip.sha256",
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.7.6.zip.sha256",
       "bytes": 66,
-      "sha256": "efc5419ab7abaf9b4c57ea608e1b7bc731305e2ffe15ccf2a2973942aca67078"
+      "sha256": "29517897109fa0d09995b89e56e0cd385bbccf304da638063effc3839fd3f6e8"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
@@ -1064,13 +1069,13 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 48317,
-      "sha256": "8d88a8d393b14b739fb1b0bbf843d31f22d702f6160f2995d19a8a5e218fb215"
+      "bytes": 48688,
+      "sha256": "a8a186f2097d14b52c1f19e178cb3525e5054e7c8951c52619c8b2b18dc5ad44"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 14646,
-      "sha256": "c481afc49ae0d1c3ba9909fa9124b66fcda55eccbc54bf7bfd9258103914f152"
+      "bytes": 14730,
+      "sha256": "3019597d30d719e4dd9aa043b8d46ccbd6178dbb0ae1a4fe67a9a611b784aaab"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1099,13 +1104,13 @@
     },
     {
       "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",
-      "bytes": 3343,
-      "sha256": "8203a71d1987bda28026937eb44cf14f7e45aea7cd225c6644aebc7c3b1a1c3e"
+      "bytes": 3353,
+      "sha256": "807e48ec9850e4d0986ed00eb89eae5001ae21e71a7c7d189805965d779b0c3e"
     },
     {
       "path": "documentation/release/STATE.md",
-      "bytes": 3605,
-      "sha256": "52e15f05b3adb20963fb9dbd8c2f2b899726bdd7f85cc2dcef49aa90b3b0989e"
+      "bytes": 3645,
+      "sha256": "694c6486fd42b40eab569ddb0200a1be8fcb0900817c54a825da80aaafe61aa9"
     },
     {
       "path": "examples/kodi_router_pattern.py",
@@ -1244,8 +1249,8 @@
     },
     {
       "path": "tests/test_stv_ui_standardization.py",
-      "bytes": 11487,
-      "sha256": "1a0c93a168c01ab58ad4d5ea02cbad1937c7c114b7dd8545f2fab8f50278597e"
+      "bytes": 11304,
+      "sha256": "6289592137e668416355adeeafbc5c82cf678f45b49c05a391f6791b3c192e2a"
     },
     {
       "path": "tests/test_stv_view_preferences.py",

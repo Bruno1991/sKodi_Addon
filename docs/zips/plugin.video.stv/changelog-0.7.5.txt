@@ -1,5 +1,0 @@
-v0.7.5 (2026-08-24)
--------------------
-- Elimina o lag no carregamento de telas InfoWall 54 otimizando o ciclo de renderização do Kodi.
-- Corrige a sincronização completa do catálogo e EPG com suporte a integridade do SQLite.
-- Otimização do timeout de requisições do TMDB para 3.0s mantendo a navegação ultra-fluida.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import unicodedata
 
 from stv.domain.live_channels import LiveChannelGroup
 from stv.domain.models import MediaItem
@@ -8,7 +9,11 @@ from stv.navigation_contract import HOME_ENTRIES, SECTION_FIXED_ENTRIES, VALID_S
 from stv.parental import is_restricted, verify_parental_pin, verify_settings_access
 from stv.routing import Request
 from stv.app.services import AppContainer
-from stv.app.sync import ensure_categories_loaded, ensure_streams_loaded
+from stv.app.sync import (
+    ensure_all_live_streams_loaded,
+    ensure_categories_loaded,
+    ensure_streams_loaded,
+)
 from stv.ui.dialogs import show_sync_dialog
 
 
@@ -286,32 +291,51 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             media_type="video",
         )
         
-    # 2. Dynamic categories from database / Xtream
-    ensure_categories_loaded(app, section)
-    categories = app.catalog.get_categories(section)
     if section == "live":
+        # TV ao Vivo: coloca TODOS os canais no primeiro nível em ordem alfabética (sem pastas de categorias)
+        ensure_all_live_streams_loaded(app)
         live_catalog = app.get_live_catalog()
         schedule = app.get_live_schedule(
             tuple(group.channel.channel_key for group in live_catalog.groups)
         )
-        for group in live_catalog.groups:
-            _add_promoted_live_channel(
-                request,
-                app,
-                group,
-                fanart,
-                now_next=schedule.get(group.channel.channel_key, (None, None)),
-            )
 
-        visible_category_ids = live_catalog.visible_category_ids(
-            [category.category_id for category in categories],
-            catalog_complete=app.catalog.is_catalog_complete("live"),
-        )
-        categories = [
-            category
-            for category in categories
-            if category.category_id in visible_category_ids
-        ]
+        all_live_entries: list[tuple[str, object, bool]] = []
+        for group in live_catalog.groups:
+            all_live_entries.append((group.channel.display_name, group, True))
+
+        for item in live_catalog.unmatched_items:
+            all_live_entries.append((item.name, item, False))
+
+        def _sort_key(entry: tuple[str, object, bool]) -> str:
+            name = entry[0]
+            normalized = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("utf-8")
+            return normalized.casefold()
+
+        all_live_entries.sort(key=_sort_key)
+
+        for _name, obj, is_group in all_live_entries:
+            if is_group:
+                _add_promoted_live_channel(
+                    request,
+                    app,
+                    obj,  # type: ignore[arg-type]
+                    fanart,
+                    now_next=schedule.get(obj.channel.channel_key, (None, None)),  # type: ignore[union-attr]
+                )
+            else:
+                _add_unmatched_live_item(
+                    request,
+                    app,
+                    obj,  # type: ignore[arg-type]
+                    fanart,
+                )
+
+        finish_directory(request.handle, content=content_type, view_mode=view_mode)
+        return
+
+    # 2. Dynamic categories from database / Xtream for VOD and Series
+    ensure_categories_loaded(app, section)
+    categories = app.catalog.get_categories(section)
     folder_icon = _icon("common", "folder.png")
     for cat in categories:
         add_folder(
