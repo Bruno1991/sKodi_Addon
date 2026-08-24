@@ -49,8 +49,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4331,
-      "sha256": "6ac6298f14f9ac684af32dda9c27c0679902bcc279e7d05c029b123e4f631c3e"
+      "bytes": 4641,
+      "sha256": "f4f2887f1d178cb09abe3453686a275d1071c1c18d30cba03ad0b75ede8a5e7f"
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
@@ -1025,7 +1025,7 @@
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
       "bytes": 46856,
-      "sha256": "c18023b9d1e5f5733dbc358c14917398afeeda6570d71e56fe49d164497533ce"
+      "sha256": "abf6771b87b3ada47dac4da45fc763abc6a6cc084c33aad1a473af10bf5ac8c5"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
