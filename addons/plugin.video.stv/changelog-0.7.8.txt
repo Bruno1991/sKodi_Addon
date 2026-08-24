@@ -1,0 +1,6 @@
+v0.7.8
+- Integração completa com o sEPG v1.3.0 utilizando a API Oficial da Claro TV+.
+- Exibição de canais da grade EPG oficial promovidos no 1º nível de Live TV com logos HD em alta resolução.
+- Substituição automática das logos do Xtream pelas logos oficiais do EPG.
+- Preservação dos canais fora da grade oficial em suas pastas de categorias originais.
+- Agora/Próximo e metadados detalhados de séries/filmes nos canais ao vivo.

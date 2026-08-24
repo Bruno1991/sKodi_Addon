@@ -292,42 +292,42 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
         )
         
     if section == "live":
-        # TV ao Vivo: coloca TODOS os canais no primeiro nível em ordem alfabética (sem pastas de categorias)
+        # TV ao Vivo: exibe no primeiro nível APENAS os canais que estão na grade EPG oficial (com logos e Agora/Próximo)
         ensure_all_live_streams_loaded(app)
+        ensure_categories_loaded(app, "live")
         live_catalog = app.get_live_catalog()
         schedule = app.get_live_schedule(
             tuple(group.channel.channel_key for group in live_catalog.groups)
         )
 
-        all_live_entries: list[tuple[str, object, bool]] = []
+        # 1. Canais oficiais promovidos com EPG e logo de alta definição
         for group in live_catalog.groups:
-            all_live_entries.append((group.channel.display_name, group, True))
+            _add_promoted_live_channel(
+                request,
+                app,
+                group,
+                fanart,
+                now_next=schedule.get(group.channel.channel_key, (None, None)),
+            )
 
-        for item in live_catalog.unmatched_items:
-            all_live_entries.append((item.name, item, False))
-
-        def _sort_key(entry: tuple[str, object, bool]) -> str:
-            name = entry[0]
-            normalized = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("utf-8")
-            return normalized.casefold()
-
-        all_live_entries.sort(key=_sort_key)
-
-        for _name, obj, is_group in all_live_entries:
-            if is_group:
-                _add_promoted_live_channel(
-                    request,
-                    app,
-                    obj,  # type: ignore[arg-type]
-                    fanart,
-                    now_next=schedule.get(obj.channel.channel_key, (None, None)),  # type: ignore[union-attr]
-                )
-            else:
-                _add_unmatched_live_item(
-                    request,
-                    app,
-                    obj,  # type: ignore[arg-type]
-                    fanart,
+        # 2. Pastas de categorias originais para os canais que NÃO estão na grade EPG (24h, rádios, testes, etc.)
+        categories = app.catalog.get_categories("live") if hasattr(app.catalog, "get_categories") else ()
+        catalog_complete = app.catalog.is_catalog_complete("live") if hasattr(app.catalog, "is_catalog_complete") else False
+        visible_category_ids = live_catalog.visible_category_ids(
+            [category.category_id for category in categories],
+            catalog_complete=catalog_complete,
+        )
+        folder_icon = _icon("common", "folder.png")
+        for cat in categories:
+            if cat.category_id in visible_category_ids:
+                add_folder(
+                    request.handle,
+                    cat.name,
+                    request.url(action="category", section="live", category_id=cat.category_id, title=cat.name),
+                    icon=folder_icon,
+                    fanart=fanart,
+                    is_folder=True,
+                    media_type="video",
                 )
 
         finish_directory(request.handle, content=content_type, view_mode=view_mode)

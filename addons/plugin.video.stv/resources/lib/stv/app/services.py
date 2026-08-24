@@ -91,33 +91,53 @@ class AppContainer:
         return self.epg.get_now_next(epg_id=epg_id, channel_name=channel_name)
 
     def sync_epg(self, refresh_live_catalog: bool = False) -> dict[str, object]:
-        """Atualiza TV, tenta XMLTV e usa a API curta Xtream como fallback."""
+        """Sincroniza o guia oficial da Claro TV+ como fonte oficial da verdade."""
         live_streams: object | None = None
         if refresh_live_catalog:
             from stv.app.sync import sync_live_catalog
 
-            live_streams = self.xtream.request("get_live_streams")
+            if hasattr(self.xtream, "request"):
+                live_streams = self.xtream.request("get_live_streams")
             sync_live_catalog(self, raw_streams=live_streams)
-        try:
-            if live_streams is None:
-                return self.epg.sync_xmltv(self.xtream.xmltv_url())
-            return self.epg.sync_xmltv(
-                self.xtream.xmltv_url(),
-                live_streams=live_streams,
-            )
-        except Exception:
-            # O XMLTV de alguns painéis passa por proxies que devolvem formatos
-            # incompatíveis ou provocam erros fora do parser. A sincronização é
-            # manual, portanto ainda tentamos a API curta oficial do Xtream.
+
+        # 1. Fonte Oficial: Claro TV+ (AVSClient v1.2)
+        if hasattr(self.epg, "sync_claro"):
+            try:
+                return self.epg.sync_claro()
+            except Exception:
+                pass
+
+        # 2. Fallback: XMLTV
+        if hasattr(self.epg, "sync_xmltv") and hasattr(self.xtream, "xmltv_url"):
+            try:
+                xmltv_url = self.xtream.xmltv_url()
+                if live_streams is None:
+                    return self.epg.sync_xmltv(xmltv_url)
+                return self.epg.sync_xmltv(xmltv_url, live_streams=live_streams)
+            except Exception:
+                pass
+
+        # 3. Fallback: API curta do Xtream
+        if hasattr(self.epg, "sync_xtream") and hasattr(self.xtream, "request"):
             if live_streams is None:
                 live_streams = self.xtream.request("get_live_streams")
             return self.epg.sync_xtream(self.xtream.request, live_streams)
 
+        return {"channel_count": 0, "program_count": 0, "source": "Indisponível"}
+
     def get_live_catalog(self) -> 'LiveCatalog':
         from stv.domain.live_channels import build_live_catalog
 
+        channels = self.epg.list_channels()
+        if not channels:
+            try:
+                self.epg.sync_claro()
+                channels = self.epg.list_channels()
+            except Exception:
+                pass
+
         return build_live_catalog(
-            self.epg.list_channels(),
+            channels,
             self.catalog.get_all_media_items("live"),
         )
 

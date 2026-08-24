@@ -1,5 +1,0 @@
-v0.7.7 (2026-08-24)
--------------------
-- Adiciona teste de capacidade dinâmico (probe) para o módulo virtual FTS5 do SQLite.
-- Remoção automática de triggers caso o FTS5 não esteja disponível no runtime, eliminando o erro 'no such module: fts5' no sincronismo.
-- Busca unificada e resiliente com cobertura por índice normalizado de alta performance.

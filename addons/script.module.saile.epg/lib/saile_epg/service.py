@@ -5,6 +5,7 @@ from pathlib import Path
 from saile_epg.database import EpgDatabase
 from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
+from saile_epg.providers.claro import ClaroEpgProvider
 from saile_epg.providers.xmltv import XmltvProvider
 from saile_epg.providers.xtream import (
     RequestCallable,
@@ -13,7 +14,7 @@ from saile_epg.providers.xtream import (
 )
 from saile_epg.repository import EpgRepository
 
-DEFAULT_PROVIDER_ID = "xtream"
+DEFAULT_PROVIDER_ID = ""
 
 
 class EpgService:
@@ -47,10 +48,22 @@ class EpgService:
             "source": source,
         }
 
+    def sync_claro(
+        self,
+        provider_id: str = "claro",
+        window_hours: int = 24,
+        wipe_legacy: bool = True,
+    ) -> dict[str, object]:
+        """Sincroniza o guia oficial da Claro TV+ diretamente via API oficial com logos em alta resolução."""
+        if wipe_legacy:
+            self.repository.clear_all()
+        snapshot = ClaroEpgProvider(provider_id=provider_id).fetch(window_hours=window_hours)
+        return self._store_snapshot(snapshot, "Claro TV+ Oficial")
+
     def sync_xmltv(
         self,
         url: str,
-        provider_id: str = DEFAULT_PROVIDER_ID,
+        provider_id: str = "xmltv",
         live_streams: object | None = None,
     ) -> dict[str, object]:
         snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
@@ -84,7 +97,7 @@ class EpgService:
         self,
         request: RequestCallable,
         live_streams: object,
-        provider_id: str = DEFAULT_PROVIDER_ID,
+        provider_id: str = "xtream",
     ) -> dict[str, object]:
         snapshot = XtreamEpgProvider(
             request=request,
@@ -124,10 +137,10 @@ class EpgService:
     ) -> EpgChannel | None:
         return self.repository.resolve_channel(provider_id, epg_id, channel_name)
 
-    def status(self, provider_id: str = DEFAULT_PROVIDER_ID) -> dict[str, int] | None:
+    def status(self, provider_id: str = "claro") -> dict[str, int] | None:
         return self.repository.sync_status(provider_id)
 
-    def clear(self, provider_id: str = DEFAULT_PROVIDER_ID) -> None:
+    def clear(self, provider_id: str = "claro") -> None:
         self.repository.clear(provider_id)
 
     def optimize(self) -> None:

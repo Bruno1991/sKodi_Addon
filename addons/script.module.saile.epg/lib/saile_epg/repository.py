@@ -92,16 +92,27 @@ class EpgRepository:
             icon_url=row["icon_url"],
         )
 
-    def list_channels(self, provider_id: str) -> tuple[EpgChannel, ...]:
+    def list_channels(
+        self,
+        provider_id: str = "",
+    ) -> tuple[EpgChannel, ...]:
         with self.database.connect() as connection:
-            rows = connection.execute(
-                """
-                SELECT * FROM epg_channels
-                WHERE provider_id = ?
-                ORDER BY display_name COLLATE NOCASE, channel_key
-                """,
-                (provider_id,),
-            ).fetchall()
+            if provider_id:
+                rows = connection.execute(
+                    """
+                    SELECT * FROM epg_channels
+                    WHERE provider_id = ?
+                    ORDER BY display_name COLLATE NOCASE, channel_key
+                    """,
+                    (provider_id,),
+                ).fetchall()
+            else:
+                rows = connection.execute(
+                    """
+                    SELECT * FROM epg_channels
+                    ORDER BY display_name COLLATE NOCASE, channel_key
+                    """,
+                ).fetchall()
         return tuple(self._channel_from_row(row) for row in rows)
 
     def resolve_channel(
@@ -112,28 +123,48 @@ class EpgRepository:
     ) -> EpgChannel | None:
         with self.database.connect() as connection:
             if epg_id.strip():
-                row = connection.execute(
-                    """
-                    SELECT * FROM epg_channels
-                    WHERE provider_id = ? AND epg_id = ? COLLATE NOCASE
-                    LIMIT 1
-                    """,
-                    (provider_id, epg_id.strip()),
-                ).fetchone()
+                if provider_id:
+                    row = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE provider_id = ? AND epg_id = ? COLLATE NOCASE
+                        LIMIT 1
+                        """,
+                        (provider_id, epg_id.strip()),
+                    ).fetchone()
+                else:
+                    row = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE epg_id = ? COLLATE NOCASE
+                        ORDER BY provider_id LIMIT 1
+                        """,
+                        (epg_id.strip(),),
+                    ).fetchone()
                 if row:
                     return self._channel_from_row(row)
 
             normalized_name = normalize_channel_name(channel_name)
             if normalized_name:
-                rows = connection.execute(
-                    """
-                    SELECT * FROM epg_channels
-                    WHERE provider_id = ? AND normalized_name = ?
-                    ORDER BY channel_key
-                    """,
-                    (provider_id, normalized_name),
-                ).fetchall()
-                if len(rows) == 1:
+                if provider_id:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE provider_id = ? AND normalized_name = ?
+                        ORDER BY channel_key
+                        """,
+                        (provider_id, normalized_name),
+                    ).fetchall()
+                else:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE normalized_name = ?
+                        ORDER BY provider_id, channel_key
+                        """,
+                        (normalized_name,),
+                    ).fetchall()
+                if len(rows) >= 1:
                     return self._channel_from_row(rows[0])
         return None
 
@@ -154,23 +185,42 @@ class EpgRepository:
         reference = int(time.time()) if at_utc is None else int(at_utc)
 
         with self.database.connect() as connection:
-            current = connection.execute(
-                """
-                SELECT * FROM epg_programs
-                WHERE provider_id = ? AND channel_key = ?
-                  AND start_utc <= ? AND end_utc > ?
-                ORDER BY start_utc DESC LIMIT 1
-                """,
-                (provider_id, channel_key, reference, reference),
-            ).fetchone()
-            next_row = connection.execute(
-                """
-                SELECT * FROM epg_programs
-                WHERE provider_id = ? AND channel_key = ? AND start_utc > ?
-                ORDER BY start_utc LIMIT 1
-                """,
-                (provider_id, channel_key, reference),
-            ).fetchone()
+            if provider_id:
+                current = connection.execute(
+                    """
+                    SELECT * FROM epg_programs
+                    WHERE provider_id = ? AND channel_key = ?
+                      AND start_utc <= ? AND end_utc > ?
+                    ORDER BY start_utc DESC LIMIT 1
+                    """,
+                    (provider_id, channel_key, reference, reference),
+                ).fetchone()
+                next_row = connection.execute(
+                    """
+                    SELECT * FROM epg_programs
+                    WHERE provider_id = ? AND channel_key = ? AND start_utc > ?
+                    ORDER BY start_utc LIMIT 1
+                    """,
+                    (provider_id, channel_key, reference),
+                ).fetchone()
+            else:
+                current = connection.execute(
+                    """
+                    SELECT * FROM epg_programs
+                    WHERE channel_key = ?
+                      AND start_utc <= ? AND end_utc > ?
+                    ORDER BY start_utc DESC LIMIT 1
+                    """,
+                    (channel_key, reference, reference),
+                ).fetchone()
+                next_row = connection.execute(
+                    """
+                    SELECT * FROM epg_programs
+                    WHERE channel_key = ? AND start_utc > ?
+                    ORDER BY start_utc LIMIT 1
+                    """,
+                    (channel_key, reference),
+                ).fetchone()
 
         def convert(row: object) -> EpgProgram | None:
             if row is None:
@@ -204,18 +254,31 @@ class EpgRepository:
             for offset in range(0, len(unique_keys), 400):
                 chunk = unique_keys[offset : offset + 400]
                 placeholders = ",".join("?" for _key in chunk)
-                rows.extend(
-                    connection.execute(
-                        f"""
-                        SELECT * FROM epg_programs
-                        WHERE provider_id = ?
-                          AND channel_key IN ({placeholders})
-                          AND end_utc > ?
-                        ORDER BY channel_key, start_utc
-                        """,
-                        (provider_id, *chunk, reference),
-                    ).fetchall()
-                )
+                if provider_id:
+                    rows.extend(
+                        connection.execute(
+                            f"""
+                            SELECT * FROM epg_programs
+                            WHERE provider_id = ?
+                              AND channel_key IN ({placeholders})
+                              AND end_utc > ?
+                            ORDER BY channel_key, start_utc
+                            """,
+                            (provider_id, *chunk, reference),
+                        ).fetchall()
+                    )
+                else:
+                    rows.extend(
+                        connection.execute(
+                            f"""
+                            SELECT * FROM epg_programs
+                            WHERE channel_key IN ({placeholders})
+                              AND end_utc > ?
+                            ORDER BY channel_key, start_utc
+                            """,
+                            (*chunk, reference),
+                        ).fetchall()
+                    )
 
         result: dict[str, tuple[EpgProgram | None, EpgProgram | None]] = {
             key: (None, None) for key in unique_keys
@@ -255,10 +318,22 @@ class EpgRepository:
             "program_count": int(row["program_count"]),
         }
 
-    def clear(self, provider_id: str) -> None:
+    def clear(self, provider_id: str = "") -> None:
         with self.database.connect() as connection:
-            connection.execute("DELETE FROM epg_channels WHERE provider_id = ?", (provider_id,))
-            connection.execute("DELETE FROM epg_sync_state WHERE provider_id = ?", (provider_id,))
+            if provider_id:
+                connection.execute("DELETE FROM epg_channels WHERE provider_id = ?", (provider_id,))
+                connection.execute("DELETE FROM epg_sync_state WHERE provider_id = ?", (provider_id,))
+            else:
+                connection.execute("DELETE FROM epg_channels")
+                connection.execute("DELETE FROM epg_programs")
+                connection.execute("DELETE FROM epg_sync_state")
+
+    def clear_all(self) -> None:
+        """Limpa completamente todo o banco de dados do EPG."""
+        with self.database.connect() as connection:
+            connection.execute("DELETE FROM epg_channels")
+            connection.execute("DELETE FROM epg_programs")
+            connection.execute("DELETE FROM epg_sync_state")
 
     def optimize(self) -> None:
         self.database.optimize()

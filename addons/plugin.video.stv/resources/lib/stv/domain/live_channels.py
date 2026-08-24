@@ -69,6 +69,24 @@ def variant_quality(item: MediaItem) -> tuple[int, str]:
     return (0, "AUTO")
 
 
+_CHANNEL_ALIASES: dict[str, str] = {
+    "GLOBO": "GLOBO SAO PAULO",
+    "GLOBO SP": "GLOBO SAO PAULO",
+    "GLOBO RJ": "GLOBO RIO DE JANEIRO",
+    "SPORTV 1": "SPORTV",
+    "HBO 1": "HBO",
+    "HBO 2": "HBO2",
+    "DISCOVERY CHANNEL": "DISCOVERY",
+    "CARTOON NETWORK": "CARTOON",
+    "NICK": "NICKELODEON",
+    "UNIVERSAL": "UNIVERSAL TV",
+    "SONY": "SONY CHANNEL",
+    "CANAL OFF": "OFF",
+    "BANDNEWS": "BAND NEWS",
+    "BANDSPORTS": "BAND SPORTS",
+}
+
+
 def build_live_catalog(
     epg_channels: Sequence[EpgChannel],
     items: Sequence[MediaItem],
@@ -82,6 +100,7 @@ def build_live_catalog(
     for channel in epg_channels:
         if channel.normalized_name:
             by_name_candidates.setdefault(channel.normalized_name, []).append(channel)
+            by_name_candidates.setdefault(channel.normalized_name.replace(" ", ""), []).append(channel)
     by_unique_name = {
         name: candidates[0]
         for name, candidates in by_name_candidates.items()
@@ -93,7 +112,11 @@ def build_live_catalog(
     for item in items:
         channel = by_id.get(item.epg_id.strip().casefold()) if item.epg_id.strip() else None
         if channel is None and item.normalized_name:
-            channel = by_unique_name.get(item.normalized_name)
+            norm = item.normalized_name
+            aliased = _CHANNEL_ALIASES.get(norm, norm)
+            channel = by_unique_name.get(aliased) or by_unique_name.get(norm)
+            if channel is None:
+                channel = by_unique_name.get(aliased.replace(" ", "")) or by_unique_name.get(norm.replace(" ", ""))
         if channel is None:
             unmatched.append(item)
             continue

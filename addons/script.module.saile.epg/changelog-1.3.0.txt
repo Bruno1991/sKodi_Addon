@@ -1,0 +1,5 @@
+v1.3.0
+- Integração da API Oficial da Claro TV+ (AVSClient v1.2) como fonte da verdade do EPG.
+- Logos oficiais de alta resolução fornecidas diretamente pelo provedor Claro TV+.
+- Limpeza e substituição automática do banco de dados legado do EPG.
+- Mapeamento avançado com aliases de canais da grade brasileira.
