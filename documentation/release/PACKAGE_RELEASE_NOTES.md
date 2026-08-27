@@ -4,7 +4,7 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.8.1`** | Auto-atualização silenciosa do EPG em segundo plano com TTL configurável, resolução de guia em lote (1 única query SQL por categoria) e navegação por categorias nativas da API Xtream. |
+| **`plugin.video.stv`** | **sTv** | **`0.8.2`** | Auto-sincronização do catálogo Xtream em background (TTL), sincronização automática em LAN (Zero-Config UDP Peer-to-Peer), auto-atualização do EPG Claro TV+ e InfoWall 54. |
 | **`script.module.saile.epg`** | **sEPG** | **`1.3.2`** | Janela de programação estendida para 36h, download paralelo Claro TV+ (3s), consultas em lote otimizadas no SQLite e mais de 5.500 programas em UTC. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
@@ -20,10 +20,11 @@
 - **Manutenção Automática:** Execução de `PRAGMA optimize` ao término de sincronizações de catálogo e EPG.
 - **Isolamento de Bancos:** `stv.db` para catálogo e estado do usuário; `epg.db` para guia de programação e cache transitório.
 
-### 2. 🔍 Mecanismo de Busca Universal sem Acentos
-- Busca inteligente com e sem acentos (ex: `pokemon` encontra `Pokémon`, `capitao` encontra `Capitão`, `america` encontra `América`).
-- Indexação e normalização de `normalized_name` para todos os tipos de mídia (Live TV, VOD, Séries e Episódios).
-- Motor híbrido com **FTS5 Unicode61** (`remove_diacritics 2`) e fallback dinâmico indexado.
+### 2. 🔄 Sincronização Inteligente em Background (Catálogo, EPG e LAN)
+- **Catálogo com TTL:** Verificação não-bloqueante na Home e seções com atualização em background thread (Live, VOD e Séries).
+- **EPG com TTL:** Guia de programação atualizado silenciosamente em background thread com janela de 36 horas.
+- **Sincronização em LAN Zero-Config:** Descoberta UDP peer-to-peer (porta 54242) com troca e mesclagem de favoritos entre dispositivos Kodi na mesma rede local.
+- **Menu 'Sincronizar Dados' Completo:** Opções manuais para Sincronizar Tudo, Catálogo, EPG, LAN, Exportar Backup, Importar Backup e Limpar Cache.
 
 ### 3. 🖼️ Interface Visual InfoWall (View 54) e Proporções Naturais
 - Enquadramento profissional em modo InfoWall 54 em 100% das telas (`Home`, `Seções`, `Categorias`, `Séries`, `Temporadas`, `Episódios`, `Busca` e `Favoritos`).
@@ -38,6 +39,6 @@
 
 ## Validação e Qualidade
 
-- **Testes Unitários:** 83/83 testes automatizados aprovados (100% de sucesso).
+- **Testes Unitários:** 95/95 testes automatizados aprovados (100% de sucesso).
 - **Auditoria de Segurança:** 0 credenciais ou segredos em arquivos versionáveis.
 - **Deploy:** Repositório estático atualizado com checksums SHA256/MD5 e XMLs gzip em `docs/`.

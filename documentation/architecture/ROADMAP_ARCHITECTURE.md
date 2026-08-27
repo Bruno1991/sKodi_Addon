@@ -58,13 +58,13 @@ sTv
 
 ## Sincronização LAN
 
-O item `Sincronizar Dados` na home é sempre explícito e sob demanda do usuário. A implementação troca registros versionados e sanitizados entre dispositivos na mesma rede; não compartilha `.db` e não sincroniza catálogo, cache ou segredos.
+A sincronização LAN do sTv opera com protocolo Zero-Configuração via UDP Broadcast (porta 54242) em segundo plano e também sob demanda no menu `Sincronizar Dados`. A implementação troca registros versionados e sanitizados (apenas favoritos) entre dispositivos na mesma rede local conforme `LAN_SYNC_CONTRACT.md`; não compartilha `.db` e nunca transmite credenciais, senhas ou URLs de mídia.
 
 ## Fases do Projeto
 
 1. Módulos compartilhados, contratos de navegação e build.
 2. MVP sTv: autenticação, catálogo e reprodução.
 3. Favoritos, busca local, TMDB e persistência do sTv.
-4. EPG modular com XMLTV, UTC e cache independente.
-5. Sincronização LAN manual.
-6. Recursos futuros: serviço contínuo, canal beta e PVR avançado.
+4. EPG modular com Claro TV+, UTC, janela de 36h e cache independente.
+5. Sincronização LAN (Zero-Config UDP e export/import manual).
+6. Auto-sincronização resiliente em background (Catálogo, EPG e LAN).

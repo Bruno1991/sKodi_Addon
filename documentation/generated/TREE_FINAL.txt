@@ -17,6 +17,7 @@ s_Kodi_Addon/
 │   │   │   │   └── stv/
 │   │   │   │       ├── app/
 │   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── lan_sync.py
 │   │   │   │       │   ├── services.py
 │   │   │   │       │   └── sync.py
 │   │   │   │       ├── domain/
@@ -89,6 +90,7 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.7.9.txt
 │   │   ├── changelog-0.8.0.txt
 │   │   ├── changelog-0.8.1.txt
+│   │   ├── changelog-0.8.2.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -229,11 +231,11 @@ s_Kodi_Addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.8.1.txt
+│   │   │   ├── changelog-0.8.2.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.8.1.zip
-│   │   │   └── plugin.video.stv-0.8.1.zip.sha256
+│   │   │   ├── plugin.video.stv-0.8.2.zip
+│   │   │   └── plugin.video.stv-0.8.2.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -321,8 +323,10 @@ s_Kodi_Addon/
 │   ├── test_saile_epg_persistence.py
 │   ├── test_saile_epg_xmltv.py
 │   ├── test_saile_epg_xtream.py
+│   ├── test_stv_catalog_auto_sync.py
 │   ├── test_stv_epg_resilience.py
 │   ├── test_stv_http_client.py
+│   ├── test_stv_lan_sync.py
 │   ├── test_stv_live_channels.py
 │   ├── test_stv_parental.py
 │   ├── test_stv_persistence.py

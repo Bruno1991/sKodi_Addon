@@ -220,6 +220,37 @@ def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) ->
     return {"category_count": len(categories), "stream_count": len(streams)}
 
 
+def sync_section_catalog(app: "AppContainer", section: str) -> dict[str, int]:
+    """Sincroniza uma seção específica (live, vod ou series) silenciosamente no SQLite."""
+    if not app.xtream.is_configured:
+        return {"category_count": 0, "stream_count": 0}
+
+    generation_id = int(time.time())
+    app.catalog.begin_catalog_sync((section,))
+
+    cat_action = _get_category_action(section)
+    raw_cats = app.xtream.request(cat_action)
+    parsed_cats = _parse_categories(section, generation_id, raw_cats)
+    if parsed_cats:
+        app.catalog.upsert_categories(parsed_cats)
+
+    stream_action = _get_stream_action(section)
+    raw_streams = app.xtream.request(stream_action)
+    parsed_streams = _parse_streams(section, generation_id, raw_streams)
+    if parsed_streams:
+        chunk_size = 500
+        for i in range(0, len(parsed_streams), chunk_size):
+            app.catalog.upsert_media_items(parsed_streams[i : i + chunk_size])
+
+    app.catalog.clean_obsolete_categories(section, generation_id)
+    app.catalog.clean_obsolete_items(section, generation_id)
+    app.catalog.mark_catalog_synced(section, generation_id)
+    if hasattr(app.catalog, "optimize"):
+        app.catalog.optimize()
+
+    return {"category_count": len(parsed_cats), "stream_count": len(parsed_streams)}
+
+
 def sync_full_catalog(app: "AppContainer") -> bool:
     """Executa a sincronização completa de todas as categorias e canais/filmes/séries com barra de progresso."""
     if not app.xtream.is_configured:

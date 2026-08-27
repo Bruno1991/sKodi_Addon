@@ -270,3 +270,27 @@ msgstr "Lista (50)"
 msgctxt "#30089"
 msgid "Wall (500)"
 msgstr "Wall (500)"
+
+msgctxt "#30090"
+msgid "Sincronização LAN"
+msgstr "Sincronização LAN"
+
+msgctxt "#30091"
+msgid "Configurações de Rede Local"
+msgstr "Configurações de Rede Local"
+
+msgctxt "#30092"
+msgid "Ativar Sincronização em LAN"
+msgstr "Ativar Sincronização em LAN"
+
+msgctxt "#30093"
+msgid "Permite descobrir e sincronizar favoritos entre aparelhos Kodi na mesma casa"
+msgstr "Permite descobrir e sincronizar favoritos entre aparelhos Kodi na mesma casa"
+
+msgctxt "#30094"
+msgid "Auto-Sincronização LAN na Inicialização"
+msgstr "Auto-Sincronização LAN na Inicialização"
+
+msgctxt "#30095"
+msgid "Busca automaticamente outros dispositivos na rede ao abrir o add-on"
+msgstr "Busca automaticamente outros dispositivos na rede ao abrir o add-on"

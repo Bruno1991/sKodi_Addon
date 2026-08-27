@@ -23,6 +23,8 @@ class AppContainer:
 
     _epg_sync_lock: threading.Lock = threading.Lock()
     _epg_syncing: bool = False
+    _catalog_sync_lock: threading.Lock = threading.Lock()
+    _catalog_syncing: set[str] = set()
 
     def __init__(self, settings: dict[str, str]) -> None:
         self.settings = settings
@@ -127,6 +129,53 @@ class AppContainer:
         thread = threading.Thread(target=_bg_worker, daemon=True, name="sTv-EpgSync")
         thread.start()
         return True
+
+    def trigger_background_catalog_sync_if_expired(self, section: str | None = None) -> bool:
+        """Dispara sincronização de catálogo em segundo plano se expirado de acordo com o TTL."""
+        if not self.xtream.is_configured:
+            return False
+
+        try:
+            ttl_hours = int(self.settings.get("cache_ttl_hours", "12") or 12)
+        except (ValueError, TypeError):
+            ttl_hours = 12
+
+        target_sections = [section] if section else ["live", "vod", "series"]
+        triggered = False
+
+        for sec in target_sections:
+            if not sec:
+                continue
+            # Se o cache está válido e já tem categorias gravadas, não precisa sincronizar
+            has_categories = bool(self.catalog.get_categories(sec))
+            if has_categories and self.catalog.is_cache_valid(sec, ttl_hours):
+                continue
+
+            with AppContainer._catalog_sync_lock:
+                if sec in AppContainer._catalog_syncing:
+                    continue
+                AppContainer._catalog_syncing.add(sec)
+
+            def _catalog_worker(target_sec: str = sec) -> None:
+                try:
+                    from stv.app.sync import sync_section_catalog
+                    sync_section_catalog(self, target_sec)
+                except Exception:
+                    pass
+                finally:
+                    with AppContainer._catalog_sync_lock:
+                        AppContainer._catalog_syncing.discard(target_sec)
+
+            thread = threading.Thread(target=_catalog_worker, daemon=True, name=f"sTv-CatalogSync-{sec}")
+            thread.start()
+            triggered = True
+
+        return triggered
+
+    def trigger_background_lan_sync(self) -> bool:
+        """Dispara descoberta e sincronização de favoritos na rede local (LAN)."""
+        from stv.app.lan_sync import trigger_background_lan_sync
+        return trigger_background_lan_sync(self)
 
     def get_items_epg_schedule(
         self,

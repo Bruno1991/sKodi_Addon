@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.1" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.2" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
@@ -12,13 +12,13 @@
     </extension>
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Cliente IPTV local para provedores Xtream com EPG Oficial.</summary>
-      <description lang="pt_BR">Navegação de canais ao vivo por categorias nativas do provedor Xtream com auto-atualização silenciosa em background (TTL), resolução EPG em lote e InfoWall 54.</description>
+      <description lang="pt_BR">Navegação de canais ao vivo por categorias nativas, auto-atualização silenciosa do catálogo (TTL) e EPG, sincronização automática em LAN (UDP) e InfoWall 54.</description>
       <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.1 - Auto-atualização silenciosa em background do EPG com TTL configurável e resolução de guia em lote (1 única query por categoria).</news>
+      <news>0.8.2 - Auto-sincronização do catálogo Xtream em background (TTL) e sincronização automática em LAN (Zero-Config UDP Peer-to-Peer).</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

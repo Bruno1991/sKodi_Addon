@@ -1,0 +1,5 @@
+0.8.2
+- Auto-sincronização do catálogo Xtream em background (daemon thread) com verificação de TTL (padrão 12h) sem congelamento da interface.
+- Sincronização automática em LAN (Zero-Config UDP Peer-to-Peer, porta 54242) compatível com o contrato LAN_SYNC_CONTRACT.md.
+- Menu modal 'Sincronizar Dados' completo e interativo com 7 ações: Sincronizar Tudo, Catálogo, EPG, LAN, Exportar Backup, Importar Backup e Limpar Cache.
+- Configurações de sincronização LAN integradas na UI do Kodi.

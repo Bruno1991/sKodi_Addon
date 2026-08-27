@@ -37,13 +37,15 @@ def show_sync_dialog(app: "AppContainer") -> None:
     import xbmcgui
     from saile_core.notifications import notify_error, notify_info, notify_success
     from stv.app.sync import sync_full_catalog
+    from stv.app.lan_sync import broadcast_lan_sync, build_export_payload, apply_import_payload
 
     options = [
+        "Sincronizar Tudo (Catálogo + EPG)",
         "Sincronizar Catálogo Completo (Xtream)",
         "Sincronizar Guia de Programação (EPG)",
-        "Exportar Favoritos (Backup)",
-        "Importar Favoritos (Restaurar)",
-        "Sincronização LAN (Status da Rede)",
+        "Sincronização LAN (Buscar Dispositivos na Rede)",
+        "Exportar Backup (Salvar Arquivo)",
+        "Importar Backup (Restaurar Arquivo)",
         "Limpar Catálogo e Cache Local",
     ]
 
@@ -51,25 +53,45 @@ def show_sync_dialog(app: "AppContainer") -> None:
     choice = dialog.select("sTv — Sincronizar Dados", options)
 
     if choice == 0:
+        # Sincronizar Tudo (Catálogo + EPG)
+        if not app.xtream.is_configured:
+            notify_error("sTv", "Configure os dados do Xtream nas configurações")
+            return
+        progress = xbmcgui.DialogProgress()
+        progress.create("sTv", "Sincronizando Catálogo e EPG...")
+        try:
+            progress.update(20, "Baixando catálogo Xtream...")
+            sync_full_catalog(app)
+            progress.update(70, "Baixando guia de programação (EPG)...")
+            result = app.sync_epg(refresh_live_catalog=True)
+            progress.update(100, "Sincronização concluída!")
+            notify_success("sTv", f"Tudo atualizado! {result.get('program_count', 0)} programas no guia.")
+            xbmc.executebuiltin("Container.Refresh")
+        except Exception as exc:
+            notify_error("sTv", f"Falha na sincronização: {exc}")
+        finally:
+            progress.close()
+
+    elif choice == 1:
         # Sincronizar Catálogo
         if sync_full_catalog(app):
             xbmc.executebuiltin("Container.Refresh")
 
-    elif choice == 1:
+    elif choice == 2:
         if not app.xtream.is_configured:
             notify_error("sTv", "Configure os dados do Xtream antes de sincronizar o EPG")
             return
         progress = xbmcgui.DialogProgress()
-        progress.create("sTv", "Sincronizando guia XMLTV autorizado...")
+        progress.create("sTv", "Sincronizando guia oficial Claro TV+...")
         try:
-            progress.update(10, "Atualizando canais de TV ao vivo...")
+            progress.update(10, "Atualizando grade e horários...")
             result = app.sync_epg(refresh_live_catalog=True)
             progress.update(100, "EPG atualizado")
             message = (
                 f"EPG ({result.get('source', 'local')}): "
                 f"{result['channel_count']} canais e {result['program_count']} programas"
             )
-            if result["program_count"]:
+            if result.get("program_count"):
                 notify_success("sTv", message)
             else:
                 notify_info("sTv", f"{message}. O provedor não enviou horários.")
@@ -91,22 +113,40 @@ def show_sync_dialog(app: "AppContainer") -> None:
         finally:
             progress.close()
 
-    elif choice == 2:
-        # Exportar favoritos
+    elif choice == 3:
+        # Sincronização em LAN
+        progress = xbmcgui.DialogProgress()
+        progress.create("sTv", "Buscando outros aparelhos Kodi na rede local...")
+        try:
+            progress.update(30, "Enviando broadcast UDP na LAN...")
+            res = broadcast_lan_sync(app, timeout=2.0)
+            progress.update(100, "Sincronização LAN concluída!")
+            peers = res.get("peers_found", 0)
+            favs = res.get("favorites_synced", 0)
+            if peers > 0:
+                notify_success("sTv", f"LAN: {peers} dispositivo(s) encontrado(s), {favs} favoritos mesclados!")
+                xbmc.executebuiltin("Container.Refresh")
+            else:
+                local_ip = _get_local_ip()
+                dialog.ok(
+                    "sTv — Sincronização LAN",
+                    f"Nenhum outro aparelho sTv foi detectado nesta busca.\n\n"
+                    f"Seu IP Local: {local_ip}\n"
+                    f"Certifique-se de que o outro dispositivo Kodi esteja ligado na mesma rede Wi-Fi/LAN com o sTv aberto."
+                )
+        except Exception as exc:
+            notify_error("sTv", f"Erro na sincronização LAN: {exc}")
+        finally:
+            progress.close()
+
+    elif choice == 4:
+        # Exportar backup
         profile_path = app.settings.get("profile_path", "")
         if not profile_path:
             notify_error("sTv", "Caminho do perfil não localizado")
             return
 
-        export_data = {
-            "version": 1,
-            "addon": "plugin.video.stv",
-            "favorites": {
-                "live": app.catalog.get_favorite_ids("live"),
-                "vod": app.catalog.get_favorite_ids("vod"),
-                "series": app.catalog.get_favorite_ids("series"),
-            },
-        }
+        export_data = build_export_payload(app)
         export_file = os.path.join(profile_path, "stv_backup.json")
         try:
             with open(export_file, "w", encoding="utf-8") as f:
@@ -115,8 +155,8 @@ def show_sync_dialog(app: "AppContainer") -> None:
         except Exception as exc:
             notify_error("sTv", f"Erro ao exportar: {exc}")
 
-    elif choice == 3:
-        # Importar favoritos
+    elif choice == 5:
+        # Importar backup
         profile_path = app.settings.get("profile_path", "")
         export_file = os.path.join(profile_path, "stv_backup.json")
         if not os.path.exists(export_file):
@@ -126,37 +166,14 @@ def show_sync_dialog(app: "AppContainer") -> None:
         try:
             with open(export_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            if not isinstance(data, dict) or data.get("addon") != "plugin.video.stv":
-                raise ValueError("Arquivo de backup incompatível")
-            favs = data.get("favorites", {})
-            if not isinstance(favs, dict):
-                raise ValueError("Favoritos inválidos no backup")
-            count = 0
-            for media_type, item_ids in favs.items():
-                if media_type not in {"live", "vod", "series"} or not isinstance(item_ids, list):
-                    continue
-                for item_id in item_ids:
-                    app.catalog.add_favorite(media_type, str(item_id))
-                    count += 1
-            notify_success("sTv", f"{count} registros restaurados!")
+            res = apply_import_payload(app, data)
+            count = res.get("favorites_applied", 0)
+            notify_success("sTv", f"{count} favoritos restaurados com sucesso!")
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
             notify_error("sTv", f"Erro ao importar: {exc}")
 
-    elif choice == 4:
-        # Status da LAN
-        local_ip = _get_local_ip()
-        msg = (
-            f"Endereço IP Local: {local_ip}\n\n"
-            "A sincronização LAN do ecossistema sKodi é estritamente manual e local-first.\n\n"
-            "Para sincronizar com outro dispositivo na mesma rede:\n"
-            "1. Exporte o backup neste dispositivo.\n"
-            "2. Copie o arquivo stv_backup.json para o segundo dispositivo.\n"
-            "3. Use a opção 'Importar Favoritos' no segundo Kodi."
-        )
-        dialog.ok("sTv — Sincronização LAN", msg)
-
-    elif choice == 5:
+    elif choice == 6:
         # Limpar Cache
         confirm = dialog.yesno("sTv — Limpar Cache", "Deseja apagar todo o catálogo local e forçar novo download?")
         if confirm:
@@ -164,6 +181,7 @@ def show_sync_dialog(app: "AppContainer") -> None:
                 with app.database.connect() as conn:
                     conn.execute("DELETE FROM categories")
                     conn.execute("DELETE FROM media_items")
+                    conn.execute("DELETE FROM catalog_sync_state")
                 app.epg.clear()
                 notify_success("sTv", "Catálogo local limpo com sucesso!")
                 xbmc.executebuiltin("Container.Refresh")

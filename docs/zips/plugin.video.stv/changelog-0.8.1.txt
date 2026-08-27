@@ -1,5 +1,0 @@
-0.8.1
-- Auto-atualização silenciosa em background (daemon thread) do EPG Claro TV+ com TTL configurável (4h, 6h, 12h, 24h).
-- Trava de concorrência para evitar requisições paralelas à API.
-- Resolução do guia de programação Agora/Próximo em lote (1 única consulta SQLite por categoria no InfoWall 54).
-- Janela de programação estendida para 36 horas.

@@ -254,6 +254,10 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
 
     if hasattr(app, "trigger_background_epg_sync_if_expired"):
         app.trigger_background_epg_sync_if_expired()
+    if hasattr(app, "trigger_background_catalog_sync_if_expired"):
+        app.trigger_background_catalog_sync_if_expired()
+    if hasattr(app, "trigger_background_lan_sync"):
+        app.trigger_background_lan_sync()
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     init_directory(request.handle, "movies", view_mode=view_mode)
@@ -279,6 +283,8 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
 
     if section == "live" and hasattr(app, "trigger_background_epg_sync_if_expired"):
         app.trigger_background_epg_sync_if_expired()
+    if hasattr(app, "trigger_background_catalog_sync_if_expired"):
+        app.trigger_background_catalog_sync_if_expired(section)
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"

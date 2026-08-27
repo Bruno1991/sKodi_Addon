@@ -147,6 +147,20 @@
         </setting>
       </group>
     </category>
+    <category id="lan_sync" label="30090" help="">
+      <group id="lan_sync_config" label="30091">
+        <setting id="lan_sync_enabled" type="boolean" label="30092" help="30093">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="lan_sync_auto" type="boolean" label="30094" help="30095">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="advanced" label="30030" help="">
       <group id="cache" label="30031">
         <setting id="cache_ttl_hours" type="integer" label="30032" help="30033">

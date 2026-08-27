@@ -139,6 +139,30 @@ msgctxt "#30053"
 msgid "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
 msgstr "Displays current and next program in the InfoWall sidepanel"
 
+msgctxt "#30054"
+msgid "Validade do Cache do EPG"
+msgstr "EPG Cache Validity"
+
+msgctxt "#30055"
+msgid "Intervalo em horas para atualização automática em segundo plano"
+msgstr "Interval in hours for automatic background updates"
+
+msgctxt "#30056"
+msgid "4 Horas"
+msgstr "4 Hours"
+
+msgctxt "#30057"
+msgid "6 Horas (Padrão)"
+msgstr "6 Hours (Default)"
+
+msgctxt "#30058"
+msgid "12 Horas"
+msgstr "12 Hours"
+
+msgctxt "#30059"
+msgid "24 Horas"
+msgstr "24 Hours"
+
 msgctxt "#30060"
 msgid "Reprodução de TV ao Vivo"
 msgstr "Live TV Playback"
@@ -246,3 +270,27 @@ msgstr "List (50)"
 msgctxt "#30089"
 msgid "Wall (500)"
 msgstr "Wall (500)"
+
+msgctxt "#30090"
+msgid "Sincronização LAN"
+msgstr "LAN Sync"
+
+msgctxt "#30091"
+msgid "Configurações de Rede Local"
+msgstr "Local Network Settings"
+
+msgctxt "#30092"
+msgid "Ativar Sincronização em LAN"
+msgstr "Enable LAN Sync"
+
+msgctxt "#30093"
+msgid "Permite descobrir e sincronizar favoritos entre aparelhos Kodi na mesma casa"
+msgstr "Allows discovering and syncing favorites between Kodi devices on the same home network"
+
+msgctxt "#30094"
+msgid "Auto-Sincronização LAN na Inicialização"
+msgstr "Auto LAN Sync on Startup"
+
+msgctxt "#30095"
+msgid "Busca automaticamente outros dispositivos na rede ao abrir o add-on"
+msgstr "Automatically discovers other devices on the network when opening the add-on"
