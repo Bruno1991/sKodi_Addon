@@ -64,6 +64,17 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
         self.assertEqual(get_canonical_channel_name("BR: WARNER"), "WARNER CHANNEL")
         self.assertEqual(get_canonical_channel_name("BR: SONY"), "SONY CHANNEL")
         self.assertEqual(get_canonical_channel_name("BR: REDETV SP"), "REDE TV")
+        self.assertEqual(get_canonical_channel_name("RPC Curitiba"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("EPTV Campinas"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("RBS Caxias Do Sul"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("NSC Florianopolis"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("Tv Bahia"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("SBT MG Tv Alterosa"), "SBT")
+        self.assertEqual(get_canonical_channel_name("Rd Bahia Hd¹"), "RECORD")
+        self.assertEqual(get_canonical_channel_name("Bd SP Hd¹"), "BAND")
+        self.assertEqual(get_canonical_channel_name("SporTV 4k¹"), "SPORTV")
+        self.assertEqual(get_canonical_channel_name("Ge-fast"), "GE TV")
+        self.assertEqual(get_canonical_channel_name("Receitas Fast"), "SABOR ARTE")
 
     def test_resolve_channel_with_various_iptv_names(self) -> None:
         # 1. Globo RJ / Minas -> matches Claro Globo SP

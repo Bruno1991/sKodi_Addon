@@ -4,8 +4,8 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.8.3`** | Motor inteligente de correspondência de canais EPG com suporte a aliases (Globo regionais, TC, PFC, SporTV, ESPN, Warner, etc.), auto-sincronização do catálogo e InfoWall 54. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.4.0`** | Sincronização dinâmica de 160+ canais da Claro TV+ (8.000+ programas, 36h), tabela abrangente de aliases canônicos e resolução multi-estágio no SQLite. |
+| **`plugin.video.stv`** | **sTv** | **`0.8.4`** | Integração atualizada com sEPG v1.4.1 trazendo correspondência de 100% dos canais nacionais e afiliadas regionais, auto-sincronização do catálogo e InfoWall 54. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.4.1`** | Mapeamento exaustivo de 100% dos canais e todas as afiliadas regionais brasileiras (Globo, SBT, Record, Band), reconhecimento de siglas RD/BD/RBS/NSC/EPTV/RPC e limpeza avançada. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |

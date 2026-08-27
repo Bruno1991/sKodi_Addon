@@ -10,7 +10,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 283,
+  "file_count_excluding_manifest": 286,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -54,8 +54,8 @@
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
-      "bytes": 1390,
-      "sha256": "8ab52b4130f35c5f989ddae30a0a9cd3ad1e7e13d96cfb854a227545f85f3d4a"
+      "bytes": 1373,
+      "sha256": "d410d08a692a6418e96acab2f9f0be049624ee1475bc5e4bde32442d7db3753a"
     },
     {
       "path": "addons/plugin.video.stv/changelog-0.2.1.txt",
@@ -251,6 +251,11 @@
       "path": "addons/plugin.video.stv/changelog-0.8.3.txt",
       "bytes": 312,
       "sha256": "07117d0011cc2173541cad3606966d19342b260b487ecd7e2ba564370deb43a5"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.8.4.txt",
+      "bytes": 277,
+      "sha256": "ef3097011a7a4a3925f92a0c186bec8d288632e4bb8d460b9c64c3e3571a7662"
     },
     {
       "path": "addons/plugin.video.stv/default.py",
@@ -579,8 +584,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/addon.xml",
-      "bytes": 1115,
-      "sha256": "e969f576c691cb1e313dd5f58b2b79c9a78a1f683524b51e1e6f91cdd296ab8a"
+      "bytes": 1055,
+      "sha256": "57bf24d422287469278e8ee9d80d3842db6a86b2ce3acff5bfeeb741e85efb26"
     },
     {
       "path": "addons/script.module.saile.epg/changelog-1.0.0.txt",
@@ -643,6 +648,11 @@
       "sha256": "693bf1099a24133a82072680c5e2d65d0a64572aa534e188b0e20437f6c86378"
     },
     {
+      "path": "addons/script.module.saile.epg/changelog-1.4.1.txt",
+      "bytes": 444,
+      "sha256": "76bf5c8c0d339648bd2a50355fefdde74d79f00b53be04ac234144ccaac79f53"
+    },
+    {
       "path": "addons/script.module.saile.epg/fanart.jpg",
       "bytes": 117484,
       "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
@@ -655,7 +665,7 @@
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/__init__.py",
       "bytes": 651,
-      "sha256": "9ad3417890874133b7b5fd3971821a2e93bc1555cc498471e233c41f08fcee79"
+      "sha256": "687d1c877a0e88e913fd1ef0a1da33fd0a8e7a2133764831cbf8e2405de2dec6"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/database.py",
@@ -674,8 +684,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/normalizer.py",
-      "bytes": 7239,
-      "sha256": "15d773ca3bfe06b85f1acc69add97c6ca04decd02249fc85aaa4e3350f38e0e5"
+      "bytes": 14944,
+      "sha256": "8d9876299f871d2f8fa101066d016bb83e6472e3ffe795c4eea3263d3c43a191"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/__init__.py",
@@ -689,8 +699,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/claro.py",
-      "bytes": 26971,
-      "sha256": "fb27263d55e67d48c07e4f9620abd4ad007669556ac08f7502e9fafa083a4c99"
+      "bytes": 28404,
+      "sha256": "a427e3e1f8cbf332351c65c4bb3f6536b74bfd9e331ea0a1e7437ab29b709bcd"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xmltv.py",
@@ -930,42 +940,42 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 620,
-      "sha256": "56561467136011834e143e51a41fa8bff3d6abdf68c384ccf1fb82c9062a8caa"
+      "sha256": "c38938ee24b609f39008dc81a0667284fd4c343bc7b2ca9006f5318cddaac6fb"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 5558,
-      "sha256": "cb1b26ec1980337705028d516fe06161c16355b79ff3648a3dbf90289c011179"
+      "bytes": 5481,
+      "sha256": "abde1c2e5a518c4b2d915fd910e07b56f08131876b4f8b8c1402ee975b0a03b4"
     },
     {
       "path": "docs/addons.xml.gz",
-      "bytes": 1400,
-      "sha256": "337d18039ff43ed8a476d68f0603ebcb8c71b475ada41c4fa255f15fa10a5657"
+      "bytes": 1381,
+      "sha256": "0c9d9214887cf89ccff2fd3b408915c8e0c27bf5d2b8b2c688834fa4760a65e6"
     },
     {
       "path": "docs/addons.xml.gz.md5",
       "bytes": 34,
-      "sha256": "b366ecb11cc5169fa75ff1c38fad37fd5743bdb2d6ca7c7b227e6945c44b9aa3"
+      "sha256": "b4ae03002b08212758c0dc81a468e86a725e2e6b5be9251e51a899778150bf41"
     },
     {
       "path": "docs/addons.xml.gz.sha256",
       "bytes": 66,
-      "sha256": "8d18098842fc87066aaf9b431c96a6c1fb94ce1d9ff82f3a6c77c2d1fa8d588a"
+      "sha256": "3ec2aaf1eeeee8f64391220ca680cbc1c97c4d826fb4141ccf6053aed4883a33"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "5c32da88baea9a32e6f053a66dac74ada63529c518f86bd30624db6321485947"
+      "sha256": "a8bbff2568475bb9646f1b74bfe241fa6a54cf9d5395e350e138fe71765979a0"
     },
     {
       "path": "docs/addons.xml.sha256",
       "bytes": 66,
-      "sha256": "a9b70023704808206b728d46b8a7d235a0fc76f708e51125e7ab9790a122c142"
+      "sha256": "57352658ffdb46655bff1587841331d9658a1d79b4d76075f86b4bc8acde58f0"
     },
     {
       "path": "docs/index.html",
       "bytes": 2540,
-      "sha256": "4035d3794f2844455b8befaf7b9b55e5321f46c373bfdab0963ff747ba9be6b3"
+      "sha256": "f21eeef98ecde3ffaf1fee63487fe8fdf44c9c79aab08ef273abecf7562b9cbe"
     },
     {
       "path": "docs/repository.srepo-1.1.1.zip",
@@ -983,9 +993,9 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
-      "path": "docs/zips/plugin.video.stv/changelog-0.8.3.txt",
-      "bytes": 312,
-      "sha256": "07117d0011cc2173541cad3606966d19342b260b487ecd7e2ba564370deb43a5"
+      "path": "docs/zips/plugin.video.stv/changelog-0.8.4.txt",
+      "bytes": 277,
+      "sha256": "ef3097011a7a4a3925f92a0c186bec8d288632e4bb8d460b9c64c3e3571a7662"
     },
     {
       "path": "docs/zips/plugin.video.stv/fanart.jpg",
@@ -998,14 +1008,14 @@
       "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.3.zip",
-      "bytes": 325856,
-      "sha256": "8a8eb24d4b0e46655e1998fc564f81d5297b6bc9194d7904e08737d0d1fa3fd4"
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.4.zip",
+      "bytes": 325814,
+      "sha256": "1abf8a87de2c90307ecc272c9a4c6500a7026e38bb8ad901d70f6ad60f905967"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.3.zip.sha256",
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.4.zip.sha256",
       "bytes": 66,
-      "sha256": "f0930c9ed76abe3bc55fefa983f1fb56ce6699ba7052a52252caab92080de9fc"
+      "sha256": "00abb6eb56a7591792bc59d61032813452cb574b1531755a0383a49dc4856cc2"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
@@ -1083,9 +1093,9 @@
       "sha256": "8b185d50c13d2e2f641c535516d30b618bfa5ca311443aa1277d72e490834671"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/changelog-1.4.0.txt",
-      "bytes": 417,
-      "sha256": "693bf1099a24133a82072680c5e2d65d0a64572aa534e188b0e20437f6c86378"
+      "path": "docs/zips/script.module.saile.epg/changelog-1.4.1.txt",
+      "bytes": 444,
+      "sha256": "76bf5c8c0d339648bd2a50355fefdde74d79f00b53be04ac234144ccaac79f53"
     },
     {
       "path": "docs/zips/script.module.saile.epg/fanart.jpg",
@@ -1098,14 +1108,14 @@
       "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.0.zip",
-      "bytes": 148241,
-      "sha256": "44c98dec4b6e9cc5ebc1bc947aa18a12eccb9bb3ab05ce641b0a7b9451437284"
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.1.zip",
+      "bytes": 150406,
+      "sha256": "9817793297d0b62ba00bf01c142aa163d06ea912effdc4ffd8e4d4a34ccec8b0"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.0.zip.sha256",
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.1.zip.sha256",
       "bytes": 66,
-      "sha256": "b027a69fc94784222e23b19e359c3c26910107bd547a50c5b6bee5178f5b9155"
+      "sha256": "a782d77a9499a8c3daf207721d667e9e12984a3e92b6f18e3fcecb5346de7698"
     },
     {
       "path": "documentation/README.md",
@@ -1134,13 +1144,13 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 52145,
-      "sha256": "787733633d5505ae1e825abb63a00ad539921b51d4570d9965dd1f2ae79723b8"
+      "bytes": 52687,
+      "sha256": "bad593099cf37c0241f337a241dc6540d2b6a3d0db92c2e0783cbc86ab13121f"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 15613,
-      "sha256": "644b1750e33655a761a9a21f25f3b3ac822b0cba4302dfce4cb28976a7f86dbb"
+      "bytes": 15740,
+      "sha256": "5d09ed85e0654e0c754617cd76c51ab9d579c63edc37143419f71f181b5174a4"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1169,13 +1179,13 @@
     },
     {
       "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",
-      "bytes": 3909,
-      "sha256": "401e6ff7408b01c413783dfbfc4bb6ff33da90e2a98cbc7f3d6212a9c17765b7"
+      "bytes": 3918,
+      "sha256": "ba42ad34a4e48db70ab62053cc6d5fe520e3c35308fd02a62b7e81981fb5c015"
     },
     {
       "path": "documentation/release/STATE.md",
-      "bytes": 4367,
-      "sha256": "72c2079f720a12f4b33734a895bcc14d0337eef164c5eff06fa4556eb4a38033"
+      "bytes": 4363,
+      "sha256": "0f52733de44156777f8ecbc91eb495c25d15cc0ce2243e3ff5c702f3ef366888"
     },
     {
       "path": "examples/kodi_router_pattern.py",
@@ -1221,6 +1231,11 @@
       "path": "scratch/formatted_channel_listing.txt",
       "bytes": 32258,
       "sha256": "682b27e77d221442ba03c675f206fc635a59016f876656829627f5a6379f26ff"
+    },
+    {
+      "path": "scratch/test_match_benchmark.py",
+      "bytes": 2142,
+      "sha256": "b95dfe548e55a9cddb17429ba216fbd168e16e40ee1191c06e790e1de4cad52a"
     },
     {
       "path": "scratch/xtream_tv_channels_detailed.txt",
@@ -1284,8 +1299,8 @@
     },
     {
       "path": "tests/test_saile_epg_aliases.py",
-      "bytes": 5554,
-      "sha256": "68a072a15a0a267a1a3f81c18b43850da0a0ccfca9afa648f07138c7d81c2aab"
+      "bytes": 6438,
+      "sha256": "9a89cc3a8243e41adb1e60fdd9c7b8ed27a4e0b8984f32c9597d1e21ada51d5e"
     },
     {
       "path": "tests/test_saile_epg_claro.py",
