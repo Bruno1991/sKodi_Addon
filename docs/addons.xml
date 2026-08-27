@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.2" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.3" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
       <import addon="script.module.saile.core" version="1.0.1" />
-      <import addon="script.module.saile.epg" version="1.3.2" />
+      <import addon="script.module.saile.epg" version="1.4.0" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Cliente IPTV local para provedores Xtream com EPG Oficial.</summary>
-      <description lang="pt_BR">Navegação de canais ao vivo por categorias nativas, auto-atualização silenciosa do catálogo (TTL) e EPG, sincronização automática em LAN (UDP) e InfoWall 54.</description>
+      <description lang="pt_BR">Navegação por categorias nativas Xtream, auto-atualização silenciosa, sincronização LAN, EPG Claro TV+ com matching inteligente e InfoWall 54.</description>
       <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.2 - Auto-sincronização do catálogo Xtream em background (TTL) e sincronização automática em LAN (Zero-Config UDP Peer-to-Peer).</news>
+      <news>0.8.3 - Motor inteligente de correspondência de canais EPG com suporte a aliases (Globo regionais, TC, PFC, SporTV, ESPN, Warner, etc.).</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -85,7 +85,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.3.2" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.4.0" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
@@ -93,11 +93,11 @@
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Provedor oficial de guia de programação (EPG) do ecossistema sKodi.</summary>
-      <description lang="pt_BR">Integração com a API oficial da Claro TV+ em paralelo, janela estendida de 36h e Agora/Próximo em lote no SQLite.</description>
+      <description lang="pt_BR">Integração dinâmica em tempo real com a Claro TV+, tabela abrangente de aliases canônicos e resolução multi-estágio de canais.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.3.2 - Janela de programação estendida para 36 horas e suporte a consultas Agora/Próximo em lote.</news>
+      <news>1.4.0 - Sincronização dinâmica de 160+ canais da Claro TV+ e motor inteligente de correspondência com tabela abrangente de aliases (Globo, TC, PFC, SporTV, ESPN, HBO, Warner, etc.).</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

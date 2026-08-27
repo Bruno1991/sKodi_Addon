@@ -85,3 +85,156 @@ def normalize_channel_name(raw_name: str) -> str:
     cleaned = _EXTRA_PUNCTUATION.sub(" ", cleaned)
     cleaned = re.sub(r"[^A-Z0-9\s]", " ", cleaned)
     return re.sub(r"\s+", " ", cleaned).strip()
+
+
+_CHANNEL_ALIASES: dict[str, str] = {
+    # GLOBO
+    "GLOBO": "GLOBO SP",
+    "REDE GLOBO": "GLOBO SP",
+    "TV GLOBO": "GLOBO SP",
+    "GLOBO SAO PAULO": "GLOBO SP",
+    "GLOBO RIO": "GLOBO SP",
+    "GLOBO RJ": "GLOBO SP",
+    "GLOBO MINAS": "GLOBO SP",
+    "GLOBO MG": "GLOBO SP",
+    "GLOBO BRASILIA": "GLOBO SP",
+    "GLOBO DF": "GLOBO SP",
+    "GLOBO RS": "GLOBO SP",
+    "GLOBO BAHIA": "GLOBO SP",
+    "GLOBO BA": "GLOBO SP",
+    "GLOBO PE": "GLOBO SP",
+    "GLOBO NORDESTE": "GLOBO SP",
+    "GLOBO PARANA": "GLOBO SP",
+    "GLOBO PR": "GLOBO SP",
+    # SBT
+    "SBT SP": "SBT",
+    "SBT RJ": "SBT",
+    "SBT BRASIL": "SBT",
+    "REDE SBT": "SBT",
+    "TV SBT": "SBT",
+    # RECORD
+    "RECORD SP": "RECORD",
+    "RECORD RJ": "RECORD",
+    "RECORD TV": "RECORD",
+    "REDE RECORD": "RECORD",
+    "TV RECORD": "RECORD",
+    "RECORD HD": "RECORD",
+    # BAND
+    "BAND SP": "BAND",
+    "BAND RJ": "BAND",
+    "REDE BANDEIRANTES": "BAND",
+    "BANDEIRANTES": "BAND",
+    "TV BAND": "BAND",
+    "BAND HD": "BAND",
+    "BANDNEWS": "BAND NEWS",
+    "BANDSPORTS": "BAND SPORTS",
+    # REDE TV
+    "REDETV": "REDE TV",
+    "REDETV SP": "REDE TV",
+    "REDETV HD": "REDE TV",
+    "REDE TV HD": "REDE TV",
+    # CULTURA / TV BRASIL
+    "TV CULTURA": "CULTURA",
+    "CULTURA HD": "CULTURA",
+    # SPORTV
+    "SPORTV 1": "SPORTV",
+    "CANAL SPORTV": "SPORTV",
+    "SPORTV HD": "SPORTV",
+    "SPORTV 2 HD": "SPORTV 2",
+    "SPORTV 3 HD": "SPORTV 3",
+    # TELECINE
+    "TC PREMIUM": "TELECINE PREMIUM",
+    "TC ACTION": "TELECINE ACTION",
+    "TC TOUCH": "TELECINE TOUCH",
+    "TC FUN": "TELECINE FUN",
+    "TC PIPOCA": "TELECINE PIPOCA",
+    "TC CULT": "TELECINE CULT",
+    # PREMIERE / PFC
+    "PFC CLUBES": "PREMIERE CLUBES",
+    "PFC 1": "PREMIERE CLUBES",
+    "PREMIERE 1": "PREMIERE CLUBES",
+    "PFC 2": "PREMIERE 2",
+    "PFC 3": "PREMIERE 3",
+    "PFC 4": "PREMIERE 4",
+    "PFC 5": "PREMIERE 5",
+    "PFC 6": "PREMIERE 6",
+    "PFC 7": "PREMIERE 7",
+    "PFC 8": "PREMIERE 8",
+    "PREMIERE 1 HD": "PREMIERE CLUBES",
+    # ESPN
+    "ESPN BRASIL": "ESPN",
+    "ESPN 1": "ESPN",
+    "ESPN 1 HD": "ESPN",
+    "FOX SPORTS": "ESPN 4",
+    "FOX SPORTS 1": "ESPN 4",
+    "FOX SPORTS 2": "ESPN 5",
+    # HBO
+    "HBO 1": "HBO",
+    "HBO 2": "HBO2",
+    "HBO PLUS": "HBO",
+    "HBO HD": "HBO",
+    # DISCOVERY
+    "DISCOVERY CHANNEL": "DISCOVERY",
+    "DISC CHANNEL": "DISCOVERY",
+    "DISC KIDS": "DISCOVERY KIDS",
+    "DISC TURBO": "DISCOVERY TURBO",
+    "DISC THEATER": "DISCOVERY THEATER",
+    "DISC SCIENCE": "DISCOVERY SCIENCE",
+    "DISC WORLD": "DISCOVERY WORLD",
+    "DISC HOME HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC H HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC H AND HEALTH": "DISCOVERY HOME HEALTH",
+    "DISCOVERY H H": "DISCOVERY HOME HEALTH",
+    "DISCOVERY HOME E HEALTH": "DISCOVERY HOME HEALTH",
+    "DISCOVERY HOME HEALTH": "DISCOVERY HOME HEALTH",
+    "DISC ID": "ID",
+    "INVESTIGATION DISCOVERY": "ID",
+    "INVESTIGACAO DISCOVERY": "ID",
+    # INFANTIL
+    "CARTOON NETWORK": "CARTOON",
+    "NICK": "NICKELODEON",
+    "NICK JR HD": "NICK JR",
+    # FILMES / SERIES / VARIEDADES
+    "WARNER": "WARNER CHANNEL",
+    "WARNER BROS": "WARNER CHANNEL",
+    "SONY": "SONY CHANNEL",
+    "UNIVERSAL": "UNIVERSAL TV",
+    "PARAMOUNT": "PARAMOUNT NETWORK",
+    "CANAL OFF": "OFF",
+    "CANAL GNT": "GNT",
+    "CANAL BIS": "BIS",
+    "CANAL MULTISHOW": "MULTISHOW",
+    "CANAL VIVA": "VIVA",
+    "CANAL BRASIL HD": "CANAL BRASIL",
+    "MEGAPIX HD": "MEGAPIX",
+    "STUDIO UNIVERSAL HD": "STUDIO UNIVERSAL",
+    "CINEMAX HD": "CINEMAX",
+    "SPACE HD": "SPACE",
+    "TNT HD": "TNT",
+    "AXN HD": "AXN",
+    "HISTORY CHANNEL": "HISTORY",
+    "HISTORY 2 HD": "HISTORY 2",
+    "H2": "HISTORY 2",
+    "AE": "A E",
+    "A AND E": "A E",
+    "A E": "A E",
+    "TCM": "TCM BR",
+    "SABOR E ARTE": "SABOR ARTE",
+    "TRAVEL BOX BRASIL": "TRAVEL BOX",
+    "COMBATE": "COMBATE",
+    "CANAL COMBATE": "COMBATE",
+}
+
+
+def get_canonical_channel_name(raw_name: str) -> str:
+    """Normaliza o nome e resolve aliases para o nome canônico do canal."""
+    normalized = normalize_channel_name(raw_name)
+    if not normalized:
+        return ""
+    if normalized in _CHANNEL_ALIASES:
+        return _CHANNEL_ALIASES[normalized]
+    no_spaces = normalized.replace(" ", "")
+    for alias_key, canonical in _CHANNEL_ALIASES.items():
+        if alias_key.replace(" ", "") == no_spaces:
+            return canonical
+    return normalized

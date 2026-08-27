@@ -4,7 +4,7 @@ import time
 
 from saile_epg.database import EpgDatabase
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
-from saile_epg.normalizer import normalize_channel_name
+from saile_epg.normalizer import get_canonical_channel_name, normalize_channel_name
 
 
 class EpgRepository:
@@ -23,8 +23,13 @@ class EpgRepository:
             connection.executemany(
                 """
                 INSERT OR REPLACE INTO epg_channels (
-                    provider_id, channel_key, epg_id, display_name,
-                    normalized_name, icon_url, updated_at_utc
+                    provider_id,
+                    channel_key,
+                    epg_id,
+                    display_name,
+                    normalized_name,
+                    icon_url,
+                    updated_at_utc
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
@@ -40,11 +45,22 @@ class EpgRepository:
                     for channel in snapshot.channels
                 ],
             )
+            connection.execute(
+                "DELETE FROM epg_programs WHERE provider_id = ?",
+                (snapshot.provider_id,),
+            )
             connection.executemany(
                 """
                 INSERT OR REPLACE INTO epg_programs (
-                    provider_id, channel_key, start_utc, end_utc, title,
-                    description, category, icon_url, fetched_at_utc
+                    provider_id,
+                    channel_key,
+                    start_utc,
+                    end_utc,
+                    title,
+                    description,
+                    category,
+                    icon_url,
+                    fetched_at_utc
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
@@ -64,9 +80,8 @@ class EpgRepository:
             )
             connection.execute(
                 """
-                INSERT INTO epg_sync_state (
-                    provider_id, synced_at_utc, channel_count, program_count
-                ) VALUES (?, ?, ?, ?)
+                INSERT INTO epg_sync_state (provider_id, synced_at_utc, channel_count, program_count)
+                VALUES (?, ?, ?, ?)
                 ON CONFLICT(provider_id) DO UPDATE SET
                     synced_at_utc = excluded.synced_at_utc,
                     channel_count = excluded.channel_count,
@@ -122,7 +137,9 @@ class EpgRepository:
         channel_name: str,
     ) -> EpgChannel | None:
         with self.database.connect() as connection:
-            if epg_id.strip():
+            # 1. Busca por epg_id explícito
+            if epg_id and epg_id.strip():
+                clean_epg_id = epg_id.strip()
                 if provider_id:
                     row = connection.execute(
                         """
@@ -130,7 +147,7 @@ class EpgRepository:
                         WHERE provider_id = ? AND epg_id = ? COLLATE NOCASE
                         LIMIT 1
                         """,
-                        (provider_id, epg_id.strip()),
+                        (provider_id, clean_epg_id),
                     ).fetchone()
                 else:
                     row = connection.execute(
@@ -139,33 +156,83 @@ class EpgRepository:
                         WHERE epg_id = ? COLLATE NOCASE
                         ORDER BY provider_id LIMIT 1
                         """,
-                        (epg_id.strip(),),
+                        (clean_epg_id,),
                     ).fetchone()
                 if row:
                     return self._channel_from_row(row)
 
-            normalized_name = normalize_channel_name(channel_name)
-            if normalized_name:
+            # 2. Busca por nome canônico com tabela de aliases
+            canonical = get_canonical_channel_name(channel_name)
+            if canonical:
                 if provider_id:
                     rows = connection.execute(
                         """
                         SELECT * FROM epg_channels
                         WHERE provider_id = ? AND normalized_name = ?
-                        ORDER BY channel_key
+                        ORDER BY channel_key LIMIT 1
                         """,
-                        (provider_id, normalized_name),
+                        (provider_id, canonical),
                     ).fetchall()
                 else:
                     rows = connection.execute(
                         """
                         SELECT * FROM epg_channels
                         WHERE normalized_name = ?
-                        ORDER BY provider_id, channel_key
+                        ORDER BY provider_id, channel_key LIMIT 1
                         """,
-                        (normalized_name,),
+                        (canonical,),
                     ).fetchall()
-                if len(rows) >= 1:
+                if rows:
                     return self._channel_from_row(rows[0])
+
+            # 3. Busca por nome normalizado direto
+            normalized = normalize_channel_name(channel_name)
+            if normalized and normalized != canonical:
+                if provider_id:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE provider_id = ? AND normalized_name = ?
+                        ORDER BY channel_key LIMIT 1
+                        """,
+                        (provider_id, normalized),
+                    ).fetchall()
+                else:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE normalized_name = ?
+                        ORDER BY provider_id, channel_key LIMIT 1
+                        """,
+                        (normalized,),
+                    ).fetchall()
+                if rows:
+                    return self._channel_from_row(rows[0])
+
+            # 4. Busca sem espaços
+            if normalized:
+                no_spaces = normalized.replace(" ", "")
+                if provider_id:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE provider_id = ? AND REPLACE(normalized_name, ' ', '') = ?
+                        ORDER BY channel_key LIMIT 1
+                        """,
+                        (provider_id, no_spaces),
+                    ).fetchall()
+                else:
+                    rows = connection.execute(
+                        """
+                        SELECT * FROM epg_channels
+                        WHERE REPLACE(normalized_name, ' ', '') = ?
+                        ORDER BY provider_id, channel_key LIMIT 1
+                        """,
+                        (no_spaces,),
+                    ).fetchall()
+                if rows:
+                    return self._channel_from_row(rows[0])
+
         return None
 
     def _resolve_channel_key(self, provider_id: str, epg_id: str, channel_name: str) -> str:

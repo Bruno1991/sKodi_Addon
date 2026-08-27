@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
 **Data de Atualização:** 27 de Agosto de 2026
-**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.8.2, sEPG v1.3.2)
+**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.8.3, sEPG v1.4.0)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,11 +11,11 @@
 
 | Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | `0.8.2` | Add-on IPTV/Xtream com auto-sincronização do catálogo (TTL) e EPG (Claro TV+) em background, sincronização automática em LAN (Zero-Config UDP Peer-to-Peer) e InfoWall 54. |
+| **`plugin.video.stv`** | **sTv** | `0.8.3` | Add-on IPTV/Xtream com auto-sincronização do catálogo (TTL), EPG Claro TV+ com motor de correspondência inteligente de canais, sincronização LAN (UDP) e InfoWall 54. |
 | **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | **sArtwork** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | **sCore** | `1.0.1` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | **sEPG** | `1.3.2` | Integração com a API Oficial da Claro TV+ (AVSClient v1.2) em paralelo (3s), janela de 36h, suporte a consultas Agora/Próximo em lote e cache SQLite independente. |
+| **`script.module.saile.epg`** | **sEPG** | `1.4.0` | Integração dinâmica em tempo real com a Claro TV+ (160+ canais, 36h), tabela abrangente de aliases canônicos e resolução multi-estágio de canais no SQLite. |
 
 ---
 
@@ -25,6 +25,8 @@
 - **1º Nível (Home / Menu Principal)**: Apresentação em InfoWall (54) com os 4 itens fixos (`TV ao Vivo`, `VOD`, `Séries`, `Sincronizar Dados`) e artes oficiais em alta definição.
 - **2º Nível (Seções e Submenus)**: Itens fixos (`Buscar`, `Favoritos`) e pastas de categorias dinâmicas da API Xtream com enquadramento perfeito e retenção de modo InfoWall.
 - **Canais de TV ao Vivo**: Apresentação por categorias nativas do provedor Xtream, com logos preservadas sem distorção e Agora/Próximo (EPG Claro TV+) integrado em tempo real no InfoWall 54.
+- **Motor de Correspondência e Aliases EPG**: Resolução inteligente de centenas de variações de provedores IPTV (Globo regionais SP/RJ/MG/DF/RS/BA -> Globo SP, TC -> Telecine, PFC -> Premiere, SporTV 1..3, Warner, Sony, etc.).
+- **Sincronização Dinâmica Claro TV+**: Obtenção de 160+ canais e 8.000+ programas com janela de 36 horas em 1 requisição direta otimizada.
 - **Auto-sincronização do Catálogo**: Verificação de TTL (padrão 12h) e atualização automática silenciosa em segundo plano por seção (Live TV, VOD e Séries).
 - **Auto-atualização do EPG**: Auto-sync silencioso em daemon background thread com TTL configurável (4h, 6h, 12h, 24h) e trava de concorrência.
 - **Sincronização em LAN Automática & Manual**: Descoberta Zero-Configuração via UDP Broadcast (porta 54242), troca de favoritos sanitizados e merge idempotente entre dispositivos Kodi.
@@ -49,7 +51,7 @@ python tools/generate_structure_manifest.py
 python tools/print_tree.py
 ```
 
-- **Testes Unitários:** 95/95 testes aprovados no host.
+- **Testes Unitários:** 98/98 testes aprovados no host.
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
 - **Repositório Kodi (`docs/`):** gerado com os 5 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 

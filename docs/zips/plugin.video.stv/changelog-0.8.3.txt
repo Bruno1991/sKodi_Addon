@@ -1,0 +1,3 @@
+0.8.3
+- Resolução e exibição de EPG aprimorada para 100% dos canais suportados com suporte ao script.module.saile.epg v1.4.0.
+- Compatibilização automática de nomes de canais com variações de operadoras (Globo RJ/SP/MG/RS/DF/BA, TC Pipoca/Action/Premium, PFC/Premiere, SporTV 1..3, Warner, Sony, etc.).

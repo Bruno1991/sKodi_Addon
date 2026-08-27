@@ -1,0 +1,4 @@
+1.4.0
+- Sincronização dinâmica de todos os canais e horários em tempo real direto da API da Claro TV+ (AVSClient).
+- Tabela abrangente de aliases canônicos cobrindo centenas de variações de provedores IPTV (Globo regionais, Telecine/TC, Premiere/PFC, SporTV, ESPN, HBO, Warner, Discovery, Cartoon, etc.).
+- Motor de resolução multi-estágio de canais no SQLite com correspondência canônica e sem espaços.

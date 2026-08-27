@@ -91,6 +91,7 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.8.0.txt
 │   │   ├── changelog-0.8.1.txt
 │   │   ├── changelog-0.8.2.txt
+│   │   ├── changelog-0.8.3.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -163,6 +164,7 @@ s_Kodi_Addon/
 │       ├── changelog-1.3.0.txt
 │       ├── changelog-1.3.1.txt
 │       ├── changelog-1.3.2.txt
+│       ├── changelog-1.4.0.txt
 │       ├── fanart.jpg
 │       └── icon.png
 ├── artwork/
@@ -231,11 +233,11 @@ s_Kodi_Addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.8.2.txt
+│   │   │   ├── changelog-0.8.3.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.8.2.zip
-│   │   │   └── plugin.video.stv-0.8.2.zip.sha256
+│   │   │   ├── plugin.video.stv-0.8.3.zip
+│   │   │   └── plugin.video.stv-0.8.3.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -255,11 +257,11 @@ s_Kodi_Addon/
 │   │   │   ├── script.module.saile.core-1.0.1.zip
 │   │   │   └── script.module.saile.core-1.0.1.zip.sha256
 │   │   └── script.module.saile.epg/
-│   │       ├── changelog-1.3.2.txt
+│   │       ├── changelog-1.4.0.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.epg-1.3.2.zip
-│   │       └── script.module.saile.epg-1.3.2.zip.sha256
+│   │       ├── script.module.saile.epg-1.4.0.zip
+│   │       └── script.module.saile.epg-1.4.0.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz
@@ -318,6 +320,7 @@ s_Kodi_Addon/
 │   ├── test_navigation_contract.py
 │   ├── test_routing.py
 │   ├── test_saile_core.py
+│   ├── test_saile_epg_aliases.py
 │   ├── test_saile_epg_claro.py
 │   ├── test_saile_epg_normalizer.py
 │   ├── test_saile_epg_persistence.py
