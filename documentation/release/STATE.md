@@ -47,7 +47,7 @@ python tools/generate_structure_manifest.py
 python tools/print_tree.py
 ```
 
-- **Testes Unitários:** 80/80 testes aprovados no host.
+- **Testes Unitários:** 83/83 testes aprovados no host.
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
 - **Repositório Kodi (`docs/`):** gerado com os 5 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 

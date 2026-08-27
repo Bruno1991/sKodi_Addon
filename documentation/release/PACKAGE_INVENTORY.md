@@ -4,7 +4,7 @@
 
 - Add-ons ativos: **5**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **78**
+- Testes unitários: **83**
 - ZIPs Kodi gerados em `docs/zips/`: **5**
 - Manifesto estrutural de referência: `../generated/STRUCTURE_MANIFEST.json`
 
@@ -14,7 +14,7 @@
 - `repository.srepo` (**sRepo**): Repositório oficial para Kodi (distribuição via GitHub Pages).
 - `resource.images.saile` (**sArtwork**): Recurso com 9 ícones de interface compartilhados.
 - `script.module.saile.core` (**sCore**): Infraestrutura Python comum estável.
-- `script.module.saile.epg` (**sEPG**): Provider XMLTV, matching e cache SQLite UTC independente.
+- `script.module.saile.epg` (**sEPG**): Provider XMLTV, Claro TV+ oficial em paralelo, matching e cache SQLite UTC independente.
 
 ## Decisões Incorporadas
 
@@ -31,7 +31,7 @@
 ```text
 5 add-ons válidos
 9 artes compartilhadas válidas
-78 testes unitários aprovados
+83 testes unitários aprovados
 0 segredos conhecidos encontrados
 5 ZIPs Kodi gerados
 ```

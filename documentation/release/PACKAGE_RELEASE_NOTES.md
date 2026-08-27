@@ -38,6 +38,6 @@
 
 ## Validação e Qualidade
 
-- **Testes Unitários:** 80/80 testes automatizados aprovados (100% de sucesso).
+- **Testes Unitários:** 83/83 testes automatizados aprovados (100% de sucesso).
 - **Auditoria de Segurança:** 0 credenciais ou segredos em arquivos versionáveis.
 - **Deploy:** Repositório estático atualizado com checksums SHA256/MD5 e XMLs gzip em `docs/`.
