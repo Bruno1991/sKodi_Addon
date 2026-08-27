@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.0" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.1" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
       <import addon="script.module.saile.core" version="1.0.1" />
-      <import addon="script.module.saile.epg" version="1.3.1" />
+      <import addon="script.module.saile.epg" version="1.3.2" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Cliente IPTV local para provedores Xtream com EPG Oficial.</summary>
-      <description lang="pt_BR">Navegação de canais ao vivo por categorias nativas do provedor Xtream com logos originais e Agora/Próximo (EPG Claro TV+) integrado em tempo real.</description>
+      <description lang="pt_BR">Navegação de canais ao vivo por categorias nativas do provedor Xtream com auto-atualização silenciosa em background (TTL), resolução EPG em lote e InfoWall 54.</description>
       <disclaimer lang="pt_BR">Use apenas serviços e conteúdos para os quais você possua autorização.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.0 - Restauração da navegação de TV ao Vivo por categorias nativas da API Xtream com Agora/Próximo (EPG Claro TV+) integrado em cada canal.</news>
+      <news>0.8.1 - Auto-atualização silenciosa em background do EPG com TTL configurável e resolução de guia em lote (1 única query por categoria).</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -85,7 +85,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.3.1" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.3.2" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
@@ -93,11 +93,11 @@
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
       <summary lang="pt_BR">Provedor oficial de guia de programação (EPG) do ecossistema sKodi.</summary>
-      <description lang="pt_BR">Integração com a API oficial da Claro TV+ em paralelo, extração segura de metadados nulos e Agora/Próximo em cache local SQLite.</description>
+      <description lang="pt_BR">Integração com a API oficial da Claro TV+ em paralelo, janela estendida de 36h e Agora/Próximo em lote no SQLite.</description>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.3.1 - Download paralelo ultrarrápido (3s) de todos os canais e tratamento de campos nulos na API Claro TV+.</news>
+      <news>1.3.2 - Janela de programação estendida para 36 horas e suporte a consultas Agora/Próximo em lote.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

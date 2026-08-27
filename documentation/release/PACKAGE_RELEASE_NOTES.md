@@ -4,8 +4,8 @@
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.8.0`** | Restauração da navegação de TV ao Vivo pelas categorias nativas entregues pela API Xtream, com Agora/Próximo (EPG Claro TV+) integrado em tempo real no InfoWall 54. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.3.1`** | Download paralelo em ThreadPool da API oficial Claro TV+ (3s), extração segura de metadados nulos e cache local SQLite com mais de 5.500 programas. |
+| **`plugin.video.stv`** | **sTv** | **`0.8.1`** | Auto-atualização silenciosa do EPG em segundo plano com TTL configurável, resolução de guia em lote (1 única query SQL por categoria) e navegação por categorias nativas da API Xtream. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.3.2`** | Janela de programação estendida para 36h, download paralelo Claro TV+ (3s), consultas em lote otimizadas no SQLite e mais de 5.500 programas em UTC. |
 | **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
 | **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |

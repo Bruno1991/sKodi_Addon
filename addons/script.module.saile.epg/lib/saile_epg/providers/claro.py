@@ -218,7 +218,7 @@ class ClaroEpgProvider:
         ctx.verify_mode = ssl.CERT_NONE
         return ctx
 
-    def fetch(self, window_hours: int = 24) -> EpgSnapshot:
+    def fetch(self, window_hours: int = 36) -> EpgSnapshot:
         now = int(time.time())
         start_time = now - 3600  # 1h atrás para cobrir com precisão o programa em exibição
         end_time = now + max(3600 * 12, window_hours * 3600)

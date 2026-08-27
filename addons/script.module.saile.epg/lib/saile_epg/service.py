@@ -51,7 +51,7 @@ class EpgService:
     def sync_claro(
         self,
         provider_id: str = "claro",
-        window_hours: int = 24,
+        window_hours: int = 36,
         wipe_legacy: bool = True,
     ) -> dict[str, object]:
         """Sincroniza o guia oficial da Claro TV+ diretamente via API oficial com logos em alta resolução."""

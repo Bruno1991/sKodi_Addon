@@ -5,14 +5,24 @@ Keep Kodi imports out of this package so services remain unit-testable.
 from __future__ import annotations
 
 import os
+import threading
+import time
+from typing import TYPE_CHECKING, Sequence
 
 from stv.persistence.database import Database
 from stv.persistence.repository import CatalogRepository
 from stv.providers.xtream.client import XtreamClient
 
+if TYPE_CHECKING:
+    from saile_epg.models import EpgProgram
+    from stv.domain.models import MediaItem
+
 
 class AppContainer:
     """Dependency injection container for the application."""
+
+    _epg_sync_lock: threading.Lock = threading.Lock()
+    _epg_syncing: bool = False
 
     def __init__(self, settings: dict[str, str]) -> None:
         self.settings = settings
@@ -79,6 +89,65 @@ class AppContainer:
                 EpgService.for_profile(profile_path) if profile_path else EpgService.for_kodi()
             )
         return self._epg_service
+
+    def is_epg_cache_valid(self, ttl_hours: int | None = None) -> bool:
+        """Verifica se o cache do EPG ainda está dentro do período de validade configurado."""
+        if ttl_hours is None:
+            try:
+                ttl_hours = int(self.settings.get("epg_ttl_hours", "6") or 6)
+            except (ValueError, TypeError):
+                ttl_hours = 6
+        status = self.epg.status("claro")
+        if not status or not status.get("synced_at_utc"):
+            return False
+        age_seconds = int(time.time()) - int(status["synced_at_utc"])
+        return age_seconds < (ttl_hours * 3600)
+
+    def trigger_background_epg_sync_if_expired(self) -> bool:
+        """Dispara auto-atualização silenciosa em background se o cache do EPG estiver expirado."""
+        if self.settings.get("epg_enabled", "true").lower() == "false":
+            return False
+        if self.is_epg_cache_valid():
+            return False
+
+        with AppContainer._epg_sync_lock:
+            if AppContainer._epg_syncing:
+                return False
+            AppContainer._epg_syncing = True
+
+        def _bg_worker() -> None:
+            try:
+                self.sync_epg(refresh_live_catalog=False)
+            except Exception:
+                pass
+            finally:
+                with AppContainer._epg_sync_lock:
+                    AppContainer._epg_syncing = False
+
+        thread = threading.Thread(target=_bg_worker, daemon=True, name="sTv-EpgSync")
+        thread.start()
+        return True
+
+    def get_items_epg_schedule(
+        self,
+        items: Sequence['MediaItem'],
+    ) -> dict[str, tuple['EpgProgram' | None, 'EpgProgram' | None]]:
+        """Resolve Agora/Próximo em lote para uma lista de itens/canais em 1 única query SQL."""
+        if self.settings.get("epg_enabled", "true").lower() == "false" or not items:
+            return {}
+        item_to_key: dict[str, str] = {}
+        for item in items:
+            ch = self.epg.resolve_channel(item.epg_id, item.name)
+            if ch and ch.channel_key:
+                item_to_key[item.item_id] = ch.channel_key
+        unique_keys = tuple(set(item_to_key.values()))
+        if not unique_keys:
+            return {}
+        key_schedule = self.epg.get_now_next_many(unique_keys)
+        return {
+            item_id: key_schedule.get(key, (None, None))
+            for item_id, key in item_to_key.items()
+        }
 
     def get_channel_epg(
         self,

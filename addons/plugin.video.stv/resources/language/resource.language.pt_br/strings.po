@@ -139,6 +139,30 @@ msgctxt "#30053"
 msgid "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
 msgstr "Exibe o programa no ar e o próximo no painel lateral do InfoWall"
 
+msgctxt "#30054"
+msgid "Validade do Cache do EPG"
+msgstr "Validade do Cache do EPG"
+
+msgctxt "#30055"
+msgid "Intervalo em horas para atualização automática em segundo plano"
+msgstr "Intervalo em horas para atualização automática em segundo plano"
+
+msgctxt "#30056"
+msgid "4 Horas"
+msgstr "4 Horas"
+
+msgctxt "#30057"
+msgid "6 Horas (Padrão)"
+msgstr "6 Horas (Padrão)"
+
+msgctxt "#30058"
+msgid "12 Horas"
+msgstr "12 Horas"
+
+msgctxt "#30059"
+msgid "24 Horas"
+msgstr "24 Horas"
+
 msgctxt "#30060"
 msgid "Reprodução de TV ao Vivo"
 msgstr "Reprodução de TV ao Vivo"

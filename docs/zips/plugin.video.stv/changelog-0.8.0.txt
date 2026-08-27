@@ -1,4 +1,0 @@
-0.8.0
-- Restauração da navegação de TV ao Vivo por categorias nativas da API Xtream.
-- Exibição de todos os canais dentro de suas respectivas categorias de origem com metadados Agora/Próximo (EPG Claro TV+) e progresso em tempo real.
-- Preservação da busca e favoritos diretos para canais de TV ao vivo no padrão InfoWall 54.

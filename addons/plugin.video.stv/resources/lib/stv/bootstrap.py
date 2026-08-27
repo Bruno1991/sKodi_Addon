@@ -252,6 +252,9 @@ def _format_epg_card(
 def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
+    if hasattr(app, "trigger_background_epg_sync_if_expired"):
+        app.trigger_background_epg_sync_if_expired()
+
     view_mode = getattr(app, "preferred_view_mode", 54)
     init_directory(request.handle, "movies", view_mode=view_mode)
 
@@ -273,6 +276,9 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
 
 def _show_section(request: Request, app: AppContainer, section: str, fanart: str) -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
+
+    if section == "live" and hasattr(app, "trigger_background_epg_sync_if_expired"):
+        app.trigger_background_epg_sync_if_expired()
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
@@ -299,7 +305,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
         add_folder(
             request.handle,
             cat.name,
-            request.url(action="category", section=section, category_id=cat.category_id, title=cat.name),
+            request.url(action="category", section=section, category_id=cat.category_id, category_name=cat.name),
             icon=folder_icon,
             fanart=fanart,
             is_folder=True,
@@ -311,6 +317,9 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
 
 def _show_category(request: Request, app: AppContainer, section: str, category_id: str, fanart: str, category_name: str = "") -> None:
     from stv.ui.directory import add_folder, finish_directory, init_directory
+
+    if section == "live" and hasattr(app, "trigger_background_epg_sync_if_expired"):
+        app.trigger_background_epg_sync_if_expired()
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
@@ -339,6 +348,12 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             is_folder=False,
             media_type="video",
         )
+
+    epg_schedule = (
+        app.get_items_epg_schedule(items)
+        if (section == "live" and hasattr(app, "get_items_epg_schedule"))
+        else {}
+    )
 
     for item in items:
         icon_url = _item_icon(section, item.icon)
@@ -379,14 +394,18 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 media_type="movie",
             )
         else:
-            # TV ao vivo: apresentação limpa no InfoWall com EPG local do provedor.
+            # TV ao vivo: apresentação limpa no InfoWall com EPG em lote.
             display_title, live_plot = _format_live_channel_metadata(
                 app,
                 item.name,
                 default_plot=item.plot,
                 epg_id=item.epg_id,
             )
-            now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+            now_prog, next_prog = (
+                epg_schedule.get(item.item_id)
+                if item.item_id in epg_schedule
+                else app.get_channel_epg(item.name, epg_id=item.epg_id)
+            )
             _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
@@ -565,6 +584,11 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
     if keyboard.isConfirmed() and keyboard.getText():
         query = keyboard.getText().strip()
         items = app.catalog.search_media(section, query)
+        epg_schedule = (
+            app.get_items_epg_schedule(items)
+            if (section == "live" and hasattr(app, "get_items_epg_schedule"))
+            else {}
+        )
 
         for item in items:
             icon_url = _item_icon(section, item.icon)
@@ -603,7 +627,11 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                     default_plot=item.plot,
                     epg_id=item.epg_id,
                 )
-                now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+                now_prog, next_prog = (
+                    epg_schedule.get(item.item_id)
+                    if item.item_id in epg_schedule
+                    else app.get_channel_epg(item.name, epg_id=item.epg_id)
+                )
                 _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
@@ -642,6 +670,11 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     init_directory(request.handle, content_type, view_mode=view_mode)
 
     items = app.catalog.get_favorites(section)
+    epg_schedule = (
+        app.get_items_epg_schedule(items)
+        if (section == "live" and hasattr(app, "get_items_epg_schedule"))
+        else {}
+    )
 
     for item in items:
         icon_url = _item_icon(section, item.icon)
@@ -680,7 +713,11 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
                 default_plot=item.plot,
                 epg_id=item.epg_id,
             )
-            now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+            now_prog, next_prog = (
+                epg_schedule.get(item.item_id)
+                if item.item_id in epg_schedule
+                else app.get_channel_epg(item.name, epg_id=item.epg_id)
+            )
             _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
