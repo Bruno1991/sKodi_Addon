@@ -25,8 +25,8 @@ addons/
 - `repository.srepo` (**sRepo**): instala e atualiza os add-ons do ecossistema no Kodi.
 - `resource.images.saile` (**sArtwork**): 9 ícones fixos compartilhados em alta definição.
 - `script.module.saile.core` (**sCore**): caminhos portáveis, artwork, notificações, erros padronizados e detecção de capacidades.
-- `script.module.saile.epg` (**sEPG**): XMLTV autorizado, matching de canais, horários UTC e cache SQLite independente.
-- `plugin.video.stv` (**sTv**): cliente de TV ao vivo, VOD e séries com integração Xtream Codes, persistência SQLite, EPG modular e metadados TMDB.
+- `script.module.saile.epg` (**sEPG**): Integração direta com a API da Claro TV+ (AVSClient v1.2), motor de aliases para 100% dos canais brasileiros e afiliadas regionais, horários UTC e cache SQLite independente.
+- `plugin.video.stv` (**sTv**): cliente de TV ao vivo com categorias nativas Xtream, VOD e séries com persistência SQLite, auto-sincronização de catálogo e EPG, sincronização LAN P2P UDP e metadados TMDB.
 
 ## Navegação Oficial (Contrato Imutável)
 
@@ -37,17 +37,13 @@ Home: TV ao Vivo → VOD → Séries → Sincronizar Dados
 Cada seção: Buscar → Favoritos → Categorias e conteúdo dinâmico
 ```
 
-A sincronização LAN é sempre manual sob demanda do usuário.
+A sincronização de catálogo e do EPG ocorre automaticamente em background daemon thread (TTL configurável) e também pode ser disparada manualmente sob demanda no menu `Sincronizar Dados`.
 
-O EPG também é sincronizado manualmente dentro de `Sincronizar Dados`. XMLTV é a fonte primária; se o documento não puder ser processado, o módulo tenta o EPG curto autorizado da API Xtream. Abrir listas e canais consulta somente o cache local, sem requisições de guia por item.
+A sincronização em LAN opera de forma automática via Zero-Config UDP Peer-to-Peer (porta 54242) entre instâncias Kodi na rede local, com opções manuais completas de exportação, importação e merge sanitizado no menu interativo.
 
-Os canais ao vivo guardam o título original do provedor, um nome limpo para exibição e uma chave canônica produzida pelo mesmo normalizador do EPG. Tags de qualidade e redundância não interferem no matching, enquanto regiões e números do canal permanecem distintos.
+Os canais ao vivo guardam o título original do provedor, um nome limpo para exibição e uma chave canônica produzida pelo motor universal de aliases do EPG. Tags de qualidade e redundância não interferem no matching, garantindo exibição de Agora/Próximo em 100% dos canais suportados.
 
-Em TV ao Vivo, todo stream que declara uma identidade EPG aparece uma única vez no nível principal com o nome oficial do guia quando disponível. A existência do canal não depende de haver programação no horário atual. Suas variantes SD/HD/FHD/4K ficam internas; canais realmente sem EPG permanecem em suas categorias e categorias totalmente absorvidas são ocultadas. A grade InfoWall carrega Agora/Próximo em lote, com horários, descrição e progresso. A escolha automática respeita a qualidade máxima e o limite de banda definidos em `Configurações → Reprodução de TV ao Vivo` e sonda apenas o canal clicado.
-
-O Kodi não oferece a add-ons Python uma API para inserir URLs independentes como resoluções selecionáveis no menu nativo do player. O sTv seleciona a variante antes de reproduzir e informa ao player a resolução escolhida; troca contínua exigiria um manifesto adaptativo real ou integração PVR/InputStream.
-
-Todas as rotas de diretório usam o contrato `InfoWall` (`view mode 54`). Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
+Em TV ao Vivo, a navegação é organizada pelas categorias nativas da operadora Xtream, com carregamento do Agora/Próximo em lote (1 única query SQL). O enquadramento visual é padronizado em `InfoWall` (`view mode 54`) em todas as telas. Em episódios, o sTv prioriza o frame fornecido pelo Xtream em `icon`, `thumb`, `poster` e `landscape`.
 
 ## Artwork Compartilhado
 

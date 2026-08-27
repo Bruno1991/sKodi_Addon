@@ -29,8 +29,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 512,
-      "sha256": "78a6c8118bf75b177ee1427e09fd09a01b408e43e877bc97f55256dad2de576d"
+      "bytes": 615,
+      "sha256": "0b15eb732ed0f33baee3397d90acce38d76a7349fa405698a9c283f2a84637bf"
     },
     {
       "path": "AGENTS.md",
@@ -49,8 +49,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4953,
-      "sha256": "7e729ccd28126d270a51ce71f002191eba82abe2ffe76585b499ca13ba1997ae"
+      "bytes": 4424,
+      "sha256": "91eabd1c3f165ae97eada6e4921b94e394343a1e09068d93fde71a375d4cd221"
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
@@ -1144,13 +1144,13 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 52687,
-      "sha256": "bad593099cf37c0241f337a241dc6540d2b6a3d0db92c2e0783cbc86ab13121f"
+      "bytes": 53230,
+      "sha256": "236fb332473dc4a7a17b9ee306cf7f80bc2e1938600348fa8ea1830a72069f2f"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
-      "bytes": 15740,
-      "sha256": "5d09ed85e0654e0c754617cd76c51ab9d579c63edc37143419f71f181b5174a4"
+      "bytes": 15865,
+      "sha256": "ff7e2fff7796df89163c47f06adc59064ec6f0c77de9ea24a2ba09eb7be6a86a"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1174,8 +1174,8 @@
     },
     {
       "path": "documentation/release/PACKAGE_INVENTORY.md",
-      "bytes": 2298,
-      "sha256": "9d9aaddec26e535fd1a28c08272cda123591d8efcdae9e73db8ceb57d95dc83d"
+      "bytes": 2685,
+      "sha256": "d0338aa2bf91d7866ef67a367962cba49abfcc4707fae9cd6f01c9bd74472904"
     },
     {
       "path": "documentation/release/PACKAGE_RELEASE_NOTES.md",

@@ -4,34 +4,35 @@
 
 - Add-ons ativos: **5**
 - Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **83**
+- Testes unitários: **98**
 - ZIPs Kodi gerados em `docs/zips/`: **5**
 - Manifesto estrutural de referência: `../generated/STRUCTURE_MANIFEST.json`
 
 ## Add-ons Ativos
 
-- `plugin.video.stv` (**sTv**): Add-on principal de IPTV/Xtream (TV ao Vivo, VOD, Séries, Favoritos, TMDB).
+- `plugin.video.stv` (**sTv**): Add-on principal de IPTV/Xtream (TV ao Vivo com categorias nativas, VOD, Séries, Favoritos, TMDB, auto-sync de catálogo e EPG e sincronização LAN P2P).
 - `repository.srepo` (**sRepo**): Repositório oficial para Kodi (distribuição via GitHub Pages).
 - `resource.images.saile` (**sArtwork**): Recurso com 9 ícones de interface compartilhados.
 - `script.module.saile.core` (**sCore**): Infraestrutura Python comum estável.
-- `script.module.saile.epg` (**sEPG**): Provider XMLTV, Claro TV+ oficial em paralelo, matching e cache SQLite UTC independente.
+- `script.module.saile.epg` (**sEPG**): Provider Claro TV+ oficial dinâmico em tempo real, 100% de correspondência de canais e afiliados regionais, matching multi-estágio e cache SQLite UTC independente.
 
 ## Decisões Incorporadas
 
 - `resource.images.saile` (**sArtwork**) centraliza exatamente 9 artes fixas em PNG.
 - `script.module.saile.core` (**sCore**) provê apenas caminhos portáveis, artwork, notificações, erros e capabilities.
-- `script.module.saile.epg` (**sEPG**) concentra toda a regra e persistência de EPG fora do sTv e do core.
+- `script.module.saile.epg` (**sEPG**) concentra toda a regra e persistência de EPG fora do sTv e do core, com integração direta na API Claro TV+ e tabela universal de aliases.
 - Contrato imutável de navegação do sTv:
   - Home: `TV ao Vivo` → `VOD` → `Séries` → `Sincronizar Dados`.
   - Seções: `Buscar` → `Favoritos` → conteúdo dinâmico.
-- Sincronização LAN é manual sob demanda e não compartilha SQLite bruto.
+- Sincronização LAN opera tanto via UDP Broadcast peer-to-peer em segundo plano quanto sob demanda interativa no menu `Sincronizar Dados`.
+- Auto-sincronização do catálogo e EPG em background daemon thread com TTL configurável.
 
 ## Validações Executadas
 
 ```text
 5 add-ons válidos
 9 artes compartilhadas válidas
-83 testes unitários aprovados
+98 testes unitários aprovados
 0 segredos conhecidos encontrados
 5 ZIPs Kodi gerados
 ```
