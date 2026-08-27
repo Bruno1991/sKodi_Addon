@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
-**Data de Atualização:** 24 de Agosto de 2026
-**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.7.9, sEPG v1.3.1)
+**Data de Atualização:** 27 de Agosto de 2026
+**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.8.0, sEPG v1.3.1)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,7 +11,7 @@
 
 | Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | `0.7.9` | Add-on IPTV/Xtream com promoção de canais oficiais no 1º nível, restauração das logos originais Xtream, canais fora da grade preservados em pastas originais, Agora/Próximo em tempo real, sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
+| **`plugin.video.stv`** | **sTv** | `0.8.0` | Add-on IPTV/Xtream com navegação de canais ao vivo pelas categorias nativas da API Xtream, Agora/Próximo em tempo real (EPG Claro TV+), sem lag no InfoWall 54, frames 16:9 TMDB e controle parental. |
 | **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | **sArtwork** | `1.0.3` | 9 ícones fixos compartilhados originais em alta definição. |
 | **`script.module.saile.core`** | **sCore** | `1.0.1` | Módulo base Python (artwork, notificações, erros, capabilities). |
@@ -23,14 +23,12 @@
 
 ### ✅ Itens Concluídos e Aprovados pelo Usuário
 - **1º Nível (Home / Menu Principal)**: Apresentação em InfoWall (54) com os 4 itens fixos (`TV ao Vivo`, `VOD`, `Séries`, `Sincronizar Dados`) e artes oficiais em alta definição.
-- **2º Nível (Seções e Submenus)**: Itens fixos (`Buscar`, `Favoritos`) e pastas de categorias dinâmicas com enquadramento perfeito e retenção de modo InfoWall.
-- **Canais de TV ao Vivo**: Logos dos canais de TV ao vivo com proporção natural, centralizadas, nítidas e **100% livres de cortes ou zoom lateral**, com carregamento instantâneo.
+- **2º Nível (Seções e Submenus)**: Itens fixos (`Buscar`, `Favoritos`) e pastas de categorias dinâmicas da API Xtream com enquadramento perfeito e retenção de modo InfoWall.
+- **Canais de TV ao Vivo**: Apresentação por categorias nativas do provedor Xtream, com logos preservadas sem distorção e Agora/Próximo (EPG Claro TV+) integrado em tempo real no InfoWall 54.
 - **VOD e Séries**: Cartazes 2:3 de cinema com metadados TMDB e fanarts.
 - **Roteamento Estrutural & Retenção de ViewMode**: Travamento em InfoWall 54 com preservação de cache de navegação (`cacheToDisc=True`) ao retornar de diretórios/temporadas/episódios e priorização de preferências persistidas em `user_preferences`.
 - **Controle Parental**: Proteção com PIN de até 6 dígitos e teclado mascarado para conteúdos adultos e configurações.
-- **EPG modular**: XMLTV primário, identidades Xtream complementares e fallback manual `get_short_epg`; canais sem programa atual permanecem no catálogo.
-- **TV ao vivo projetada pelo EPG**: uma entrada por identidade declarada, variantes internas e categorias remanescentes apenas para itens realmente sem EPG.
-- **Grade profissional**: Agora/Próximo em lote, horários, descrição, progresso e resolução escolhida informada ao player.
+- **EPG modular**: Integração Claro TV+ em paralelo, fallback XMLTV/Xtream e cache local SQLite UTC (`epg.db`).
 - **Episódios**: frame 16:9 do próprio episódio priorizado nos slots de thumb e landscape.
 
 ---

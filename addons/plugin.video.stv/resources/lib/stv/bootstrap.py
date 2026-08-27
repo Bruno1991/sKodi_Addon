@@ -291,49 +291,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
             media_type="video",
         )
         
-    if section == "live":
-        # TV ao Vivo: exibe no primeiro nível APENAS os canais que estão na grade EPG oficial (com logos e Agora/Próximo)
-        ensure_all_live_streams_loaded(app)
-        ensure_categories_loaded(app, "live")
-        live_catalog = app.get_live_catalog()
-        schedule = app.get_live_schedule(
-            tuple(group.channel.channel_key for group in live_catalog.groups)
-        )
-
-        # 1. Canais oficiais promovidos com EPG e logo de alta definição
-        for group in live_catalog.groups:
-            _add_promoted_live_channel(
-                request,
-                app,
-                group,
-                fanart,
-                now_next=schedule.get(group.channel.channel_key, (None, None)),
-            )
-
-        # 2. Pastas de categorias originais para os canais que NÃO estão na grade EPG (24h, rádios, testes, etc.)
-        categories = app.catalog.get_categories("live") if hasattr(app.catalog, "get_categories") else ()
-        catalog_complete = app.catalog.is_catalog_complete("live") if hasattr(app.catalog, "is_catalog_complete") else False
-        visible_category_ids = live_catalog.visible_category_ids(
-            [category.category_id for category in categories],
-            catalog_complete=catalog_complete,
-        )
-        folder_icon = _icon("common", "folder.png")
-        for cat in categories:
-            if cat.category_id in visible_category_ids:
-                add_folder(
-                    request.handle,
-                    cat.name,
-                    request.url(action="category", section="live", category_id=cat.category_id, title=cat.name),
-                    icon=folder_icon,
-                    fanart=fanart,
-                    is_folder=True,
-                    media_type="video",
-                )
-
-        finish_directory(request.handle, content=content_type, view_mode=view_mode)
-        return
-
-    # 2. Dynamic categories from database / Xtream for VOD and Series
+    # 2. Dynamic categories from database / Xtream for all sections (live, vod, series)
     ensure_categories_loaded(app, section)
     categories = app.catalog.get_categories(section)
     folder_icon = _icon("common", "folder.png")
@@ -368,8 +326,6 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
 
     ensure_streams_loaded(app, section, category_id)
     items = app.catalog.get_media_items(section, category_id)
-    if section == "live":
-        items = list(app.get_live_catalog().unmatched_in_category(category_id))
 
     if not items:
         # Item informativo para manter o container no modo InfoWall mesmo se a categoria estiver sem itens
@@ -430,6 +386,8 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 default_plot=item.plot,
                 epg_id=item.epg_id,
             )
+            now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+            _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
@@ -444,6 +402,8 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 context_menu=context_menu,
                 plot=live_plot,
                 media_type="video",
+                label2=label2,
+                properties=epg_props,
             )
 
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -606,18 +566,6 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
         query = keyboard.getText().strip()
         items = app.catalog.search_media(section, query)
 
-        if section == "live":
-            result_ids = {item.item_id for item in items}
-            live_catalog = app.get_live_catalog()
-            for group in live_catalog.groups:
-                if any(variant.item_id in result_ids for variant in group.variants):
-                    _add_promoted_live_channel(request, app, group, fanart)
-            for item in live_catalog.unmatched_items:
-                if item.item_id in result_ids:
-                    _add_unmatched_live_item(request, app, item, fanart)
-            finish_directory(request.handle, content=content_type, view_mode=view_mode)
-            return
-
         for item in items:
             icon_url = _item_icon(section, item.icon)
             fav_action = request.url(action="toggle_fav", section=section, stream_id=item.item_id)
@@ -633,12 +581,20 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_playable = False
                 media_type = "tvshow"
                 poster_val = icon_url
+                item_label = item.name
+                item_plot = item.plot
+                label2 = ""
+                epg_props = None
             elif section == "vod":
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "movie"
                 poster_val = icon_url
+                item_label = item.name
+                item_plot = item.plot
+                label2 = ""
+                epg_props = None
             else:
                 # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
                 display_title, live_plot = _format_live_channel_metadata(
@@ -647,6 +603,8 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                     default_plot=item.plot,
                     epg_id=item.epg_id,
                 )
+                now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+                _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
@@ -657,7 +615,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
 
             add_folder(
                 request.handle,
-                item_label if section == "live" else item.name,
+                item_label,
                 url,
                 icon=icon_url,
                 poster=poster_val,
@@ -667,8 +625,10 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 is_folder=is_folder,
                 is_playable=is_playable,
                 context_menu=context_menu,
-                plot=item_plot if section == "live" else item.plot,
+                plot=item_plot,
                 media_type=media_type,
+                label2=label2,
+                properties=epg_props,
             )
             
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -682,22 +642,6 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
     init_directory(request.handle, content_type, view_mode=view_mode)
 
     items = app.catalog.get_favorites(section)
-
-    if section == "live":
-        live_catalog = app.get_live_catalog()
-        favorite_variant_ids = {item.item_id for item in items}
-        favorite_channel_keys = set(app.catalog.get_favorite_channel_keys())
-        for group in live_catalog.groups:
-            if (
-                group.channel.channel_key in favorite_channel_keys
-                or any(variant.item_id in favorite_variant_ids for variant in group.variants)
-            ):
-                _add_promoted_live_channel(request, app, group, fanart)
-        for item in live_catalog.unmatched_items:
-            if item.item_id in favorite_variant_ids:
-                _add_unmatched_live_item(request, app, item, fanart)
-        finish_directory(request.handle, content=content_type, view_mode=view_mode)
-        return
 
     for item in items:
         icon_url = _item_icon(section, item.icon)
@@ -714,12 +658,20 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_playable = False
             media_type = "tvshow"
             poster_val = icon_url
+            item_label = item.name
+            item_plot = item.plot
+            label2 = ""
+            epg_props = None
         elif section == "vod":
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "movie"
             poster_val = icon_url
+            item_label = item.name
+            item_plot = item.plot
+            label2 = ""
+            epg_props = None
         else:
             # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
             display_title, live_plot = _format_live_channel_metadata(
@@ -728,6 +680,8 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
                 default_plot=item.plot,
                 epg_id=item.epg_id,
             )
+            now_prog, next_prog = app.get_channel_epg(item.name, epg_id=item.epg_id)
+            _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
@@ -738,7 +692,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
 
         add_folder(
             request.handle,
-            item_label if section == "live" else item.name,
+            item_label,
             url,
             icon=icon_url,
             poster=poster_val,
@@ -748,10 +702,11 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             is_folder=is_folder,
             is_playable=is_playable,
             context_menu=context_menu,
-            plot=item_plot if section == "live" else item.plot,
+            plot=item_plot,
             media_type=media_type,
+            label2=label2,
+            properties=epg_props,
         )
-        
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
 
 

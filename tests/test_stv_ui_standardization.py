@@ -51,36 +51,25 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(kwargs["label2"], "Programação indisponível")
         self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
 
-    def test_live_root_renders_epg_channels_and_unmatched_category_folders(self) -> None:
-        from saile_epg.models import EpgChannel
+    def test_live_root_renders_fixed_entries_and_xtream_categories(self) -> None:
         from stv.domain.models import Category
 
         matched = MediaItem(
             "live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT"
         )
-        unmatched = MediaItem(
-            "live", "2", "Canal 24h", "20", normalized_name="CANAL 24H"
-        )
-        live_catalog = build_live_catalog(
-            (EpgChannel("claro", "sbt", "sbt", "SBT HD", "SBT"),),
-            (matched, unmatched),
-        )
         app = SimpleNamespace(
-            get_live_catalog=lambda: live_catalog,
-            get_live_schedule=lambda channel_keys: {
-                key: (None, None) for key in channel_keys
-            },
+            get_channel_epg=lambda *_args, **_kwargs: (None, None),
             catalog=SimpleNamespace(
-                get_all_media_items=lambda _section: [matched, unmatched],
-                is_cache_valid=lambda _section, _ttl: True,
-                get_categories=lambda _section: [Category("20", "24 Horas", "live")],
-                is_catalog_complete=lambda _section: True,
+                get_categories=lambda _section: [
+                    Category("10", "Abertos", "live"),
+                    Category("20", "24 Horas", "live"),
+                ],
+                get_media_items=lambda _section, cat_id: [matched] if cat_id == "10" else [],
             ),
         )
         added_labels: list[str] = []
         request = Request("plugin://plugin.video.stv/", 7, {})
         with (
-            patch("stv.bootstrap.ensure_all_live_streams_loaded"),
             patch("stv.bootstrap.ensure_categories_loaded"),
             patch("stv.ui.directory.init_directory"),
             patch("stv.ui.directory.finish_directory"),
@@ -92,10 +81,22 @@ class UIStandardizationTests(unittest.TestCase):
         ):
             _show_section(request, app, "live", "fanart.jpg")
 
-        self.assertIn("Buscar", added_labels)
-        self.assertIn("Favoritos", added_labels)
-        self.assertIn("SBT HD", added_labels)
-        self.assertIn("24 Horas", added_labels)
+        self.assertEqual(added_labels, ["Buscar", "Favoritos", "Abertos", "24 Horas"])
+
+        cat_labels: list[str] = []
+        with (
+            patch("stv.bootstrap.ensure_streams_loaded"),
+            patch("stv.ui.directory.init_directory"),
+            patch("stv.ui.directory.finish_directory"),
+            patch(
+                "stv.ui.directory.add_folder",
+                side_effect=lambda _handle, label, *_args, **_kwargs: cat_labels.append(label),
+            ),
+        ):
+            from stv.bootstrap import _show_category
+            _show_category(request, app, "live", "10", "fanart.jpg", "Abertos")
+
+        self.assertIn("SBT", cat_labels)
 
     def test_parse_streams_live_logos_and_epg_id(self) -> None:
         data = [

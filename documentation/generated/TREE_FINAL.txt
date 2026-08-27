@@ -87,6 +87,7 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.7.7.txt
 │   │   ├── changelog-0.7.8.txt
 │   │   ├── changelog-0.7.9.txt
+│   │   ├── changelog-0.8.0.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -226,11 +227,11 @@ s_Kodi_Addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.7.9.txt
+│   │   │   ├── changelog-0.8.0.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.7.9.zip
-│   │   │   └── plugin.video.stv-0.7.9.zip.sha256
+│   │   │   ├── plugin.video.stv-0.8.0.zip
+│   │   │   └── plugin.video.stv-0.8.0.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
