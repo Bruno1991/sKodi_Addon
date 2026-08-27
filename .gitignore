@@ -1,5 +1,6 @@
-# Segredos e configuração local
+# Segredos e configuracao local
 .env
+*.env
 .env.*
 !.env.example
 *.pem
@@ -7,7 +8,11 @@
 *.p12
 *.pfx
 
-# Instruções de agente locais
+# Engineering Library (lives in C:/dev root)
+engineering-library/
+Biblioteca_Universal_Corporativa/
+
+# Instrucoes de agente locais
 .agents/
 
 # Python
