@@ -1,4 +1,0 @@
-1.4.1
-- Mapeamento exaustivo de 100% dos canais da lista com resolução de todas as afiliadas regionais brasileiras (Globo, SBT, Record, Band).
-- Reconhecimento automático de prefixos e siglas de operadoras (RD, BD, RBS, NSC, EPTV, RPC, TV Tem, Inter TV, TV Gazeta, TV Tribuna, etc.).
-- Normalização aprimorada com remoção de caracteres sobrescritos (¹²³⁴), tags de redundância (FAST, STREAM, FULLHD) e aliases de canais especiais.

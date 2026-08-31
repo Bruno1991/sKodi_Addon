@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.4" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.5" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
       <import addon="script.module.saile.core" version="1.0.1" />
-      <import addon="script.module.saile.epg" version="1.4.1" />
+      <import addon="script.module.saile.epg" version="1.4.2" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>video</provides>
@@ -18,7 +18,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.4 - Integração com sEPG v1.4.1 trazendo 100% de correspondência de canais abertos, regionais e por assinatura.</news>
+      <news>0.8.5 - Integração com sEPG v1.4.2 (distinção precisa entre canais Globo e notícias) e otimização de renderização de cards EPG no InfoWall.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -85,7 +85,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.4.1" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.4.2" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
@@ -97,7 +97,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.4.1 - Mapeamento exaustivo de 100% dos canais e afiliadas regionais (Globo, SBT, Record, Band, canais por assinatura e feeds IPTV).</news>
+      <news>1.4.2 - Correção na resolução de aliases para canais do grupo Globo (GloboNews, Globoplay Novelas e Globo SP independentes).</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

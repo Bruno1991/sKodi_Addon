@@ -26,6 +26,7 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
         # Snapshot com canais oficiais da Claro
         channels = (
             EpgChannel("claro", "claro_124", "124", "Globo SP", "GLOBO SP", "http://logo/globo.png"),
+            EpgChannel("claro", "claro_78", "78", "GloboNews", "GLOBONEWS", "http://logo/globonews.png"),
             EpgChannel("claro", "claro_184", "184", "SBT", "SBT", "http://logo/sbt.png"),
             EpgChannel("claro", "claro_317", "317", "Record", "RECORD", "http://logo/record.png"),
             EpgChannel("claro", "claro_174", "174", "Band", "BAND", "http://logo/band.png"),
@@ -44,6 +45,7 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
         now = int(time.time())
         programs = (
             EpgProgram("claro", "claro_124", "Jornal Nacional", now - 300, now + 1800, "Notícias"),
+            EpgProgram("claro", "claro_78", "Estúdio i", now - 300, now + 1800, "Notícias"),
             EpgProgram("claro", "claro_72", "Filme Incrível", now - 600, now + 3600, "Filme"),
             EpgProgram("claro", "claro_107", "Jogo Ao Vivo", now - 100, now + 5000, "Futebol"),
         )
@@ -55,6 +57,9 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
     def test_canonical_channel_aliases(self) -> None:
         self.assertEqual(get_canonical_channel_name("BR | GLOBO RJ FHD"), "GLOBO SP")
         self.assertEqual(get_canonical_channel_name("BR: GLOBO MINAS"), "GLOBO SP")
+        self.assertEqual(get_canonical_channel_name("BR | GLOBO NEWS HD"), "GLOBONEWS")
+        self.assertEqual(get_canonical_channel_name("BR: GLOBONEWS FHD"), "GLOBONEWS")
+        self.assertEqual(get_canonical_channel_name("BR: GLOBOPLAY NOVELAS HD"), "GLOBOPLAY NOVELAS")
         self.assertEqual(get_canonical_channel_name("BR: TC PIPOCA 4K"), "TELECINE PIPOCA")
         self.assertEqual(get_canonical_channel_name("BR: TC PREMIUM HD"), "TELECINE PREMIUM")
         self.assertEqual(get_canonical_channel_name("BR: PFC CLUBES"), "PREMIERE CLUBES")
@@ -82,22 +87,31 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
         self.assertIsNotNone(ch_globo_rj)
         self.assertEqual(ch_globo_rj.channel_key, "claro_124")
 
-        # 2. TC Pipoca -> matches Telecine Pipoca
+        # 2. GloboNews -> matches Claro GloboNews (claro_78), not Globo SP (claro_124)
+        ch_globonews = self.repo.resolve_channel("claro", "", "BR | GLOBO NEWS HD")
+        self.assertIsNotNone(ch_globonews)
+        self.assertEqual(ch_globonews.channel_key, "claro_78")
+
+        ch_gnews = self.repo.resolve_channel("claro", "", "BR: GLOBONEWS FHD")
+        self.assertIsNotNone(ch_gnews)
+        self.assertEqual(ch_gnews.channel_key, "claro_78")
+
+        # 3. TC Pipoca -> matches Telecine Pipoca
         ch_pipoca = self.repo.resolve_channel("claro", "", "BR: TC PIPOCA FHD")
         self.assertIsNotNone(ch_pipoca)
         self.assertEqual(ch_pipoca.channel_key, "claro_72")
 
-        # 3. PFC 1 -> matches Premiere Clubes
+        # 4. PFC 1 -> matches Premiere Clubes
         ch_pfc = self.repo.resolve_channel("claro", "", "BR: PFC 1 FHD")
         self.assertIsNotNone(ch_pfc)
         self.assertEqual(ch_pfc.channel_key, "claro_107")
 
-        # 4. Cartoon Network -> matches Cartoon
+        # 5. Cartoon Network -> matches Cartoon
         ch_cartoon = self.repo.resolve_channel("claro", "", "BR: CARTOON NETWORK")
         self.assertIsNotNone(ch_cartoon)
         self.assertEqual(ch_cartoon.channel_key, "claro_2")
 
-        # 5. Warner -> matches Warner Channel
+        # 6. Warner -> matches Warner Channel
         ch_warner = self.repo.resolve_channel("claro", "", "BR: WARNER HD")
         self.assertIsNotNone(ch_warner)
         self.assertEqual(ch_warner.channel_key, "claro_83")
@@ -106,6 +120,10 @@ class EpgAliasesAndResolutionTests(unittest.TestCase):
         now_prog, next_prog = self.repo.get_now_next("claro", "", "BR | GLOBO RJ FHD")
         self.assertIsNotNone(now_prog)
         self.assertEqual(now_prog.title, "Jornal Nacional")
+
+        now_prog_news, _ = self.repo.get_now_next("claro", "", "BR | GLOBO NEWS HD")
+        self.assertIsNotNone(now_prog_news)
+        self.assertEqual(now_prog_news.title, "Estúdio i")
 
         now_prog_tc, _ = self.repo.get_now_next("claro", "", "BR: TC PIPOCA HD")
         self.assertIsNotNone(now_prog_tc)

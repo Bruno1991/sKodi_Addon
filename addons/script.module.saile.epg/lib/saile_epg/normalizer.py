@@ -95,7 +95,7 @@ def normalize_channel_name(raw_name: str) -> str:
 
 
 _GLOBO_AFFILIATE_TOKENS = (
-    "GLOBO", "RPC", "EPTV", "TV TEM", "TV TRIBUNA", "TV VANGUARDA", "TV DIARIO",
+    "RPC", "EPTV", "TV TEM", "TV TRIBUNA", "TV VANGUARDA", "TV DIARIO",
     "TV FRONTEIRA", "TV BAHIA", "TV SANTA CRUZ", "TV SUBAE", "TV SUDOESTE",
     "TV SAO FRANCISCO", "TV VERDES MARES", "TV MIRANTE", "TV CENTRO AMERICA",
     "TV MORENA", "TV LIBERAL", "TV CLUBE", "TV CABO BRANCO", "TV PARAIBA",
@@ -121,6 +121,18 @@ _BAND_AFFILIATE_TOKENS = (
 )
 
 _CHANNEL_ALIASES: dict[str, str] = {
+    # GLOBO NEWS
+    "GLOBONEWS": "GLOBONEWS",
+    "GLOBO NEWS": "GLOBONEWS",
+    "GNEWS": "GLOBONEWS",
+    "GN NEWS": "GLOBONEWS",
+    "GLOBONEWS HD": "GLOBONEWS",
+    "GLOBO NEWS HD": "GLOBONEWS",
+    # GLOBOPLAY NOVELAS
+    "GLOBOPLAY NOVELAS": "GLOBOPLAY NOVELAS",
+    "GLOBO PLAY NOVELAS": "GLOBOPLAY NOVELAS",
+    "GLOBOPLAY": "GLOBOPLAY NOVELAS",
+    "GLOBO NOVELAS": "GLOBOPLAY NOVELAS",
     # GLOBO
     "GLOBO": "GLOBO SP",
     "REDE GLOBO": "GLOBO SP",
@@ -377,8 +389,27 @@ def get_canonical_channel_name(raw_name: str) -> str:
         if alias_key.replace(" ", "") == no_spaces:
             return canonical
 
-    # 3. Reconhecimento de Afiliadas Regionais
-    # Globo
+    # 3. Reconhecimento de Afiliadas Regionais e Canais Específicos
+    # Globo News
+    if (
+        "GLOBONEWS" in normalized
+        or "GLOBO NEWS" in normalized
+        or "GNEWS" in normalized
+        or "GN NEWS" in normalized
+    ):
+        return "GLOBONEWS"
+
+    # Globoplay Novelas
+    if (
+        "GLOBOPLAY NOVELAS" in normalized
+        or "GLOBO PLAY NOVELAS" in normalized
+        or "GLOBO NOVELAS" in normalized
+        or normalized == "GLOBOPLAY"
+        or normalized.startswith("GLOBOPLAY ")
+    ):
+        return "GLOBOPLAY NOVELAS"
+
+    # Globo (Nacional e Afiliadas Regionais)
     if (
         normalized.startswith("RBS ")
         or normalized.startswith("NSC ")
@@ -388,6 +419,12 @@ def get_canonical_channel_name(raw_name: str) -> str:
         or normalized.startswith("ITEGRACAO ")
         or normalized.startswith("AMAZONICA ")
         or "GAZETA SUL" in normalized
+        or normalized == "GLOBO"
+        or normalized.startswith("GLOBO ")
+        or normalized.endswith(" GLOBO")
+        or " GLOBO " in normalized
+        or "REDE GLOBO" in normalized
+        or "TV GLOBO" in normalized
     ):
         return "GLOBO SP"
 

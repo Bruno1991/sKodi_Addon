@@ -235,11 +235,10 @@ s_Kodi_Addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.8.4.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.8.4.zip
-│   │   │   └── plugin.video.stv-0.8.4.zip.sha256
+│   │   │   ├── plugin.video.stv-0.8.5.zip
+│   │   │   └── plugin.video.stv-0.8.5.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -259,11 +258,10 @@ s_Kodi_Addon/
 │   │   │   ├── script.module.saile.core-1.0.1.zip
 │   │   │   └── script.module.saile.core-1.0.1.zip.sha256
 │   │   └── script.module.saile.epg/
-│   │       ├── changelog-1.4.1.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.epg-1.4.1.zip
-│   │       └── script.module.saile.epg-1.4.1.zip.sha256
+│   │       ├── script.module.saile.epg-1.4.2.zip
+│   │       └── script.module.saile.epg-1.4.2.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz

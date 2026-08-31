@@ -401,18 +401,14 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
             )
         else:
             # TV ao vivo: apresentação limpa no InfoWall com EPG em lote.
-            display_title, live_plot = _format_live_channel_metadata(
-                app,
-                item.name,
-                default_plot=item.plot,
-                epg_id=item.epg_id,
-            )
+            from saile_epg.normalizer import clean_channel_title
+            display_title = clean_channel_title(item.name)
             now_prog, next_prog = (
                 epg_schedule.get(item.item_id)
                 if item.item_id in epg_schedule
                 else app.get_channel_epg(item.name, epg_id=item.epg_id)
             )
-            _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
+            plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             add_folder(
                 request.handle,
@@ -425,7 +421,7 @@ def _show_category(request: Request, app: AppContainer, section: str, category_i
                 is_folder=False,
                 is_playable=True,
                 context_menu=context_menu,
-                plot=live_plot,
+                plot=plot,
                 media_type="video",
                 label2=label2,
                 properties=epg_props,
@@ -627,25 +623,21 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 epg_props = None
             else:
                 # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
-                display_title, live_plot = _format_live_channel_metadata(
-                    app,
-                    item.name,
-                    default_plot=item.plot,
-                    epg_id=item.epg_id,
-                )
+                from saile_epg.normalizer import clean_channel_title
+                display_title = clean_channel_title(item.name)
                 now_prog, next_prog = (
                     epg_schedule.get(item.item_id)
                     if item.item_id in epg_schedule
                     else app.get_channel_epg(item.name, epg_id=item.epg_id)
                 )
-                _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
+                plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
                 url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
                 is_folder = False
                 is_playable = True
                 media_type = "video"
                 poster_val = ""
                 item_label = display_title
-                item_plot = live_plot
+                item_plot = plot
 
             add_folder(
                 request.handle,
@@ -713,25 +705,21 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
             epg_props = None
         else:
             # TV ao vivo: preserva a proporção natural da logo e usa o EPG local.
-            display_title, live_plot = _format_live_channel_metadata(
-                app,
-                item.name,
-                default_plot=item.plot,
-                epg_id=item.epg_id,
-            )
+            from saile_epg.normalizer import clean_channel_title
+            display_title = clean_channel_title(item.name)
             now_prog, next_prog = (
                 epg_schedule.get(item.item_id)
                 if item.item_id in epg_schedule
                 else app.get_channel_epg(item.name, epg_id=item.epg_id)
             )
-            _plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
+            plot, label2, epg_props = _format_epg_card(display_title, item.plot, now_prog, next_prog)
             url = request.url(action="play", section=section, stream_id=item.item_id, extension=item.extension, title=item.name)
             is_folder = False
             is_playable = True
             media_type = "video"
             poster_val = ""
             item_label = display_title
-            item_plot = live_plot
+            item_plot = plot
 
         add_folder(
             request.handle,

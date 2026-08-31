@@ -1,4 +1,0 @@
-0.8.4
-- Integração atualizada com o script.module.saile.epg v1.4.1.
-- Suporte total a 100% dos canais abertos e afiliados regionais (Globo, SBT, Record, Band em todos os estados).
-- Correspondência inteligente para siglas IPTV (RD, BD, RBS, NSC, EPTV, RPC, Inter TV, etc.).
