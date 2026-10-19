@@ -52,29 +52,75 @@ class TmdbClient:
             return {}
 
     def search_movie(self, title: str, year: str = "") -> dict[str, Any] | None:
-        """Busca filmes pelo título com ano opcional."""
+        """Busca filmes pelo título com ano opcional e sanitização automática de tags IPTV."""
         if not title:
             return None
-        params = {"query": title}
-        if year:
-            params["primary_release_year"] = str(year)
-        data = self._request("search/movie", params)
-        results = data.get("results", [])
-        if results and isinstance(results, list):
-            return results[0]
+        try:
+            from saile_epg.normalizer import clean_media_title
+            clean_title, extracted_year = clean_media_title(title)
+        except Exception:
+            clean_title, extracted_year = title, ""
+
+        use_year = str(year or extracted_year or "").strip()
+        if use_year and clean_title:
+            params = {"query": clean_title, "primary_release_year": use_year}
+            data = self._request("search/movie", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
+        if clean_title:
+            params = {"query": clean_title}
+            data = self._request("search/movie", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
+        if clean_title != title:
+            params = {"query": title}
+            if year:
+                params["primary_release_year"] = str(year)
+            data = self._request("search/movie", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
         return None
 
     def search_tv(self, title: str, year: str = "") -> dict[str, Any] | None:
-        """Busca séries/programas de TV pelo título com ano opcional."""
+        """Busca séries/programas de TV pelo título com ano opcional e sanitização automática de tags IPTV."""
         if not title:
             return None
-        params = {"query": title}
-        if year:
-            params["first_air_date_year"] = str(year)
-        data = self._request("search/tv", params)
-        results = data.get("results", [])
-        if results and isinstance(results, list):
-            return results[0]
+        try:
+            from saile_epg.normalizer import clean_media_title
+            clean_title, extracted_year = clean_media_title(title)
+        except Exception:
+            clean_title, extracted_year = title, ""
+
+        use_year = str(year or extracted_year or "").strip()
+        if use_year and clean_title:
+            params = {"query": clean_title, "first_air_date_year": use_year}
+            data = self._request("search/tv", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
+        if clean_title:
+            params = {"query": clean_title}
+            data = self._request("search/tv", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
+        if clean_title != title:
+            params = {"query": title}
+            if year:
+                params["first_air_date_year"] = str(year)
+            data = self._request("search/tv", params)
+            results = data.get("results", [])
+            if results and isinstance(results, list):
+                return results[0]
+
         return None
 
     def get_season_episodes(

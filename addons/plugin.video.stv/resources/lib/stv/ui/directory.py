@@ -55,7 +55,7 @@ def add_folder(
     if poster:
         art["poster"] = poster
         art["keyart"] = poster
-        if media_type in {"tvshow", "season", "episode"}:
+        if media_type in {"tvshow", "season"}:
             art["tvshow.poster"] = poster
             art["season.poster"] = poster
     elif media_type in {"movie", "tvshow", "season"} and icon:
@@ -64,6 +64,10 @@ def add_folder(
         if media_type in {"tvshow", "season"}:
             art["tvshow.poster"] = icon
             art["season.poster"] = icon
+    elif media_type == "episode" and effective_thumb:
+        art["poster"] = effective_thumb
+        art["keyart"] = effective_thumb
+        art["still"] = effective_thumb
 
     if fanart:
         art["fanart"] = fanart
@@ -114,6 +118,7 @@ def add_folder(
     # Propriedades de skin para fixar visualização InfoWall / Poster
     item.setProperty("widget", "true")
     item.setProperty("skin.infowall", "true")
+    item.setProperty("viewmode", "54")
 
     for key, value in (properties or {}).items():
         item.setProperty(str(key), str(value))
@@ -160,27 +165,33 @@ def finish_directory(
             xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
         except Exception:
             pass
+        try:
+            xbmc.executebuiltin(f"SetViewMode({view_mode})")
+        except Exception:
+            pass
 
-
-_INFOWALL_DB_ENSURED = False
+    ensure_infowall_in_kodi_db()
 
 
 def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%") -> None:
-    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54) uma única vez por sessão."""
-    global _INFOWALL_DB_ENSURED
-    if _INFOWALL_DB_ENSURED:
-        return
-    _INFOWALL_DB_ENSURED = True
-
+    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54) de forma portável."""
     import os
     import sqlite3
     from pathlib import Path
 
     try:
-        candidates = []
+        db_candidates: list[Path] = []
+        try:
+            import xbmcvfs
+            kodi_db_path = xbmcvfs.translatePath("special://database/ViewModes6.db")
+            if kodi_db_path:
+                db_candidates.append(Path(kodi_db_path))
+        except Exception:
+            pass
+
         local_app_data = os.environ.get("LOCALAPPDATA", "")
         if local_app_data:
-            candidates.append(
+            db_candidates.append(
                 Path(local_app_data)
                 / "Packages"
                 / "XBMCFoundation.Kodi_4n2hpmxwrvr6p"
@@ -193,13 +204,13 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
             )
         app_data = os.environ.get("APPDATA", "")
         if app_data:
-            candidates.append(
+            db_candidates.append(
                 Path(app_data) / "Kodi" / "userdata" / "Database" / "ViewModes6.db"
             )
 
-        for db_path in candidates:
+        for db_path in db_candidates:
             if db_path.exists():
-                conn = sqlite3.connect(db_path, timeout=0.5)
+                conn = sqlite3.connect(str(db_path), timeout=0.5)
                 conn.execute(
                     "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
                     (path_pattern,),

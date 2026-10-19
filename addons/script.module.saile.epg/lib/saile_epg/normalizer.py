@@ -94,6 +94,45 @@ def normalize_channel_name(raw_name: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
+_MEDIA_AUDIO_TAGS = re.compile(
+    r"\[(DUBLADO|LEGENDADO|DUAL|MULTI|NACIONAL|LEG|DUB|AUDIO\s*\d+|DUAL\s*AUDIO)\]"
+    r"|\((DUBLADO|LEGENDADO|DUAL|MULTI|NACIONAL|LEG|DUB|AUDIO\s*\d+|DUAL\s*AUDIO)\)"
+    r"|\b(DUBLADO|LEGENDADO|DUAL|MULTI|NACIONAL|LEG|DUB)\b",
+    re.IGNORECASE,
+)
+_MEDIA_SEASON_TAGS = re.compile(
+    r"\[(S\d{1,2}(?:\s*-\s*S\d{1,2})?|TEMPORADA\s*\d{1,2}|TEMP\s*\d{1,2}|T\d{1,2}|COMPLETA|COMPLETO)\]"
+    r"|\((S\d{1,2}(?:\s*-\s*S\d{1,2})?|TEMPORADA\s*\d{1,2}|TEMP\s*\d{1,2}|T\d{1,2}|COMPLETA|COMPLETO)\)"
+    r"|\b(S\d{1,2}(?:\s*-\s*S\d{1,2})?|TEMPORADA\s*\d{1,2}|TEMP\s*\d{1,2}|T\d{1,2}|COMPLETA|COMPLETO)\b",
+    re.IGNORECASE,
+)
+_MEDIA_YEAR_REGEX = re.compile(
+    r"[\(\[\-]\s*\b(19\d{2}|20\d{2})\b\s*[\)\]]|\b(19\d{2}|20\d{2})\b",
+    re.IGNORECASE,
+)
+
+
+def clean_media_title(raw_name: str) -> tuple[str, str]:
+    """Limpa títulos de filmes e séries removendo tags IPTV e extraindo o ano (título_limpo, ano)."""
+    if not raw_name:
+        return ("", "")
+    name = raw_name.translate(_SUPERSCRIPTS)
+    name = _COUNTRY_PREFIXES.sub("", name.strip())
+    name = _QUALITY_TAGS.sub("", name)
+    name = _MEDIA_AUDIO_TAGS.sub("", name)
+    name = _MEDIA_SEASON_TAGS.sub("", name)
+
+    year = ""
+    m = _MEDIA_YEAR_REGEX.search(name)
+    if m:
+        year = m.group(1) or m.group(2) or ""
+        name = _MEDIA_YEAR_REGEX.sub(" ", name)
+
+    name = re.sub(r"[{}\[\]\(\)\-_|#*~^`´\"«»!?:;]", " ", name)
+    name = re.sub(r"\s+", " ", name).strip(" -:.")
+    return (name or raw_name.strip(), year)
+
+
 _GLOBO_AFFILIATE_TOKENS = (
     "RPC", "EPTV", "TV TEM", "TV TRIBUNA", "TV VANGUARDA", "TV DIARIO",
     "TV FRONTEIRA", "TV BAHIA", "TV SANTA CRUZ", "TV SUBAE", "TV SUDOESTE",

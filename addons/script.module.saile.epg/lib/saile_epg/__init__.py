@@ -4,6 +4,7 @@ from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.normalizer import (
     clean_channel_title,
+    clean_media_title,
     get_canonical_channel_name,
     normalize_channel_name,
     normalize_search_term,
@@ -18,9 +19,10 @@ __all__ = [
     "EpgSnapshot",
     "EpgSyncError",
     "clean_channel_title",
+    "clean_media_title",
     "get_canonical_channel_name",
     "normalize_channel_name",
     "normalize_search_term",
     "strip_accents",
 ]
-__version__ = "1.4.1"
+__version__ = "1.4.2"
