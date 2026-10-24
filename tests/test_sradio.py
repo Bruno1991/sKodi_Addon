@@ -76,6 +76,13 @@ class TuneInAPITests(unittest.TestCase):
         self.assertIn("partnerId=xwhZkVKi", built)
         self.assertIn("c=local", built)
 
+    def test_build_url_relative_with_query(self) -> None:
+        built = TuneInAPI._build_url("Browse.ashx?c=music")
+        self.assertEqual(built.count("?"), 1)
+        self.assertIn("c=music", built)
+        self.assertIn("render=json", built)
+        self.assertIn("partnerId=xwhZkVKi", built)
+
     def test_parse_outlines_station_and_folder(self) -> None:
         raw_outlines = [
             {

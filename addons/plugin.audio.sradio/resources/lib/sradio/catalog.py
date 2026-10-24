@@ -28,28 +28,24 @@ class TuneInAPI:
     @classmethod
     def _build_url(cls, endpoint_or_url: str, params: Optional[Dict[str, str]] = None) -> str:
         """Garante que render=json e partnerId=xwhZkVKi estejam sempre presentes na URL."""
-        if endpoint_or_url.startswith("http://") or endpoint_or_url.startswith("https://"):
-            parsed = urllib.parse.urlparse(endpoint_or_url)
-            query_dict = dict(urllib.parse.parse_qsl(parsed.query))
-            if params:
-                query_dict.update(params)
-            query_dict.setdefault("render", "json")
-            query_dict.setdefault("partnerId", cls.PARTNER_ID)
-            new_query = urllib.parse.urlencode(query_dict)
-            return urllib.parse.urlunparse((
-                parsed.scheme,
-                parsed.netloc,
-                parsed.path,
-                parsed.params,
-                new_query,
-                parsed.fragment
-            ))
-        else:
-            path = endpoint_or_url.lstrip("/")
-            query_dict = {"render": "json", "partnerId": cls.PARTNER_ID}
-            if params:
-                query_dict.update(params)
-            return f"{cls.BASE_URL}/{path}?{urllib.parse.urlencode(query_dict)}"
+        if not (endpoint_or_url.startswith("http://") or endpoint_or_url.startswith("https://")):
+            endpoint_or_url = f"{cls.BASE_URL}/{endpoint_or_url.lstrip('/')}"
+
+        parsed = urllib.parse.urlparse(endpoint_or_url)
+        query_dict = dict(urllib.parse.parse_qsl(parsed.query))
+        if params:
+            query_dict.update(params)
+        query_dict.setdefault("render", "json")
+        query_dict.setdefault("partnerId", cls.PARTNER_ID)
+        new_query = urllib.parse.urlencode(query_dict)
+        return urllib.parse.urlunparse((
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            parsed.params,
+            new_query,
+            parsed.fragment
+        ))
 
     @classmethod
     def _fetch_json(cls, url: str, timeout: int = 8) -> Optional[Dict[str, Any]]:

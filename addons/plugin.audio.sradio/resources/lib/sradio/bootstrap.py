@@ -39,6 +39,7 @@ def _set_video_metadata(
             tag.setMediaType("video")
         if hasattr(tag, "setTagLine"):
             tag.setTagLine("Rádio ao Vivo - sRadio")
+        return
     except Exception:
         pass
 
@@ -384,7 +385,8 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     media_type = stream_info.get("media_type") or "mp3"
     fanart_path = _icon("stv", "fanart.jpg")
 
-    item = xbmcgui.ListItem(label=name, path=stream_url)
+    item = xbmcgui.ListItem(label=name, path=stream_url, offscreen=True)
+    item.setContentLookup(False)
     item.setArt({
         "icon": logo,
         "thumb": logo,
@@ -429,13 +431,18 @@ def handle_toggle_fav(request: Request, catalog: RadioCatalog, favorites: Favori
     added = favorites.toggle(station)
     msg = f"{station.get('name')} adicionada aos Favoritos" if added else f"{station.get('name')} removida dos Favoritos"
     notify_success("sRadio", msg)
+    if request.handle >= 0:
+        import xbmcplugin
+        xbmcplugin.endOfDirectory(request.handle, succeeded=True)
     xbmc.executebuiltin("Container.Refresh")
 
 
 def handle_search(request: Request, catalog: RadioCatalog, favorites: FavoritesManager, fanart: str) -> None:
-    import xbmcgui
-    dialog = xbmcgui.Dialog()
-    query = dialog.input("Buscar Rádio (Nome, Cidade ou Frequência):", type=xbmcgui.INPUT_ALPHANUM)
+    query = request.params.get("query", "").strip()
+    if not query:
+        import xbmcgui
+        dialog = xbmcgui.Dialog()
+        query = dialog.input("Buscar Rádio (Nome, Cidade ou Frequência):", type=xbmcgui.INPUT_ALPHANUM)
     if not query:
         show_home(request, catalog, favorites, fanart)
         return
