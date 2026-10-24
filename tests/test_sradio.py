@@ -61,6 +61,25 @@ class SRadioCatalogTests(unittest.TestCase):
             self.assertIn("url", stream)
             self.assertTrue(stream["url"].startswith("http"))
 
+    def test_resolve_station_stream_preferred_bitrate_fallback(self) -> None:
+        station_with_streams = {
+            "guide_id": "s999",
+            "name": "Multi Bitrate Radio",
+            "all_streams": [
+                {"url": "http://low.mp3", "bitrate": 32, "reliability": 100, "media_type": "mp3"},
+                {"url": "http://high.mp3", "bitrate": 320, "reliability": 100, "media_type": "mp3"},
+            ],
+        }
+        with patch.object(TuneInAPI, "resolve_stream", return_value=None):
+            high = self.catalog.resolve_station_stream("s999", fallback_station=station_with_streams, preferred_bitrate="highest")
+            self.assertEqual(high["url"], "http://high.mp3")
+            self.assertEqual(high["bitrate"], 320)
+
+            low = self.catalog.resolve_station_stream("s999", fallback_station=station_with_streams, preferred_bitrate="lowest")
+            self.assertEqual(low["url"], "http://low.mp3")
+            self.assertEqual(low["bitrate"], 32)
+
+
 
 class TuneInAPITests(unittest.TestCase):
     def test_build_url_adds_partner_and_json(self) -> None:
@@ -136,15 +155,23 @@ class TuneInAPITests(unittest.TestCase):
         mock_payload = {
             "head": {"status": "200"},
             "body": [
-                {"url": "http://stream1.mp3", "bitrate": 64, "reliability": 80, "media_type": "mp3"},
+                {"url": "http://stream1.mp3", "bitrate": 64, "reliability": 100, "media_type": "mp3"},
                 {"url": "http://stream2.mp3", "bitrate": 128, "reliability": 100, "media_type": "mp3"},
             ],
         }
         with patch.object(TuneInAPI, "_fetch_json", return_value=mock_payload):
-            resolved = TuneInAPI.resolve_stream("s1234")
-            self.assertIsNotNone(resolved)
-            self.assertEqual(resolved["url"], "http://stream2.mp3")
-            self.assertEqual(resolved["bitrate"], 128)
+            resolved_high = TuneInAPI.resolve_stream("s1234", preferred_bitrate="highest")
+            self.assertIsNotNone(resolved_high)
+            self.assertEqual(resolved_high["url"], "http://stream2.mp3")
+            self.assertEqual(resolved_high["bitrate"], 128)
+
+            resolved_low = TuneInAPI.resolve_stream("s1234", preferred_bitrate="lowest")
+            self.assertIsNotNone(resolved_low)
+            self.assertEqual(resolved_low["url"], "http://stream1.mp3")
+            self.assertEqual(resolved_low["bitrate"], 64)
+
+
+
 
 
 class SRadioFavoritesTests(unittest.TestCase):

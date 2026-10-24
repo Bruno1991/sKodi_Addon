@@ -408,8 +408,14 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     logo = param_logo or (fallback_station.get("logo") if fallback_station else "") or _icon("common", "radio.png")
     cat = param_cat or (fallback_station.get("category") if fallback_station else "Rádio")
 
+    try:
+        import xbmcaddon
+        preferred_bitrate = str(xbmcaddon.Addon("plugin.audio.sradio").getSetting("preferred_bitrate") or "highest")
+    except Exception:
+        preferred_bitrate = "highest"
+
     # Resolução dinâmica do stream via Tune.ashx (com tokens frescos) ou fallback para cache
-    stream_info = catalog.resolve_station_stream(guide_id, fallback_station)
+    stream_info = catalog.resolve_station_stream(guide_id, fallback_station, preferred_bitrate=preferred_bitrate)
 
     if not stream_info or not stream_info.get("url"):
         from saile_core.notifications import notify_error
@@ -444,7 +450,10 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     item.setProperty("mimetype", "audio/mpeg" if media_type == "mp3" else "application/x-mpegURL")
 
     # Resolver URL para o Kodi iniciar a reprodução
-    xbmcplugin.setResolvedUrl(request.handle, True, item)
+    if request.handle > 0:
+        xbmcplugin.setResolvedUrl(request.handle, True, item)
+    else:
+        xbmc.Player().play(stream_url, item)
 
     # Forçar a abertura da janela do player em tela cheia com barra de controles frontais
     xbmc.executebuiltin("ActivateWindow(fullscreenvideo)")

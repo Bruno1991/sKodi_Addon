@@ -2,6 +2,7 @@
   "package": "sKodi sRepo architecture V2",
   "version": "2.0.0",
   "canonical_addon_ids": [
+    "plugin.audio.sradio",
     "plugin.video.stv",
     "repository.srepo",
     "resource.images.saile",
@@ -9,8 +10,8 @@
     "script.module.saile.epg"
   ],
   "skill_count": 0,
-  "fixed_shared_artwork_count": 9,
-  "file_count_excluding_manifest": 284,
+  "fixed_shared_artwork_count": 20,
+  "file_count_excluding_manifest": 348,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -29,8 +30,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 615,
-      "sha256": "0b15eb732ed0f33baee3397d90acce38d76a7349fa405698a9c283f2a84637bf"
+      "bytes": 624,
+      "sha256": "5c09c049866d44395a60ca56db244db2e75e5e313094969f84e96571ae6b95d7"
     },
     {
       "path": "AGENTS.md",
@@ -51,6 +52,81 @@
       "path": "README.md",
       "bytes": 4424,
       "sha256": "91eabd1c3f165ae97eada6e4921b94e394343a1e09068d93fde71a375d4cd221"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/addon.xml",
+      "bytes": 1661,
+      "sha256": "474534a8f701b49a4aeb973bf948dea823dba88bb5e6a40fc5233baa10d009af"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.0.txt",
+      "bytes": 388,
+      "sha256": "3610b9068fde8a32606ea843917da3533a5a95b63aa78ce9125a48d51e440d0f"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.1.txt",
+      "bytes": 158,
+      "sha256": "eca4428cc595c6becdcfa0a3f6636257119d9da5ddde5aebc1d2657bf2af5725"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.2.txt",
+      "bytes": 375,
+      "sha256": "8ef575c8871e74998b2509e6f6dbaffae1bd8e1c9e431eed3078cd57d3f3d469"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.3.txt",
+      "bytes": 454,
+      "sha256": "5f542694fd377fa2a8dea55fd63ffde312ee3a8a4de46e9c7fff108c4547e3a1"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/default.py",
+      "bytes": 282,
+      "sha256": "805ef28850bf6d7a55b3a2706ea21b18a511efc01d6f010215e994852ef5727a"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/fanart.jpg",
+      "bytes": 254249,
+      "sha256": "b490049acd2ff25f52964c152cb66452fb34a1b141e87747acc156e4699a753c"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/icon.png",
+      "bytes": 43810,
+      "sha256": "58e053705c7e1124fbb2c8cf410338f71f37a8a8a858d4f21b9acfc216dcef34"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/data/radios.json",
+      "bytes": 1607337,
+      "sha256": "fb909e414975c59151687ee8e9ca25b888d1b80f2e96b973b19741208d969c76"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/lib/sradio/__init__.py",
+      "bytes": 73,
+      "sha256": "6fcbf851c6e21591ea7df572861244fd365a0fb7ef57893a72221a73880bc362"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py",
+      "bytes": 17942,
+      "sha256": "43050b744ccba9f3f5832fe26c3d20754eedcc028fda1f2fa2dd3df4b155b626"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/lib/sradio/catalog.py",
+      "bytes": 14400,
+      "sha256": "5d6150643db6c79fd89a75352252982422ced18de6f5d81b2acd52de7418ab97"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/lib/sradio/favorites.py",
+      "bytes": 2411,
+      "sha256": "936c1fb99dcd51ca8904a6b305133ca0ef8f54161f83067826f8aef94503ae8a"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/lib/sradio/routing.py",
+      "bytes": 946,
+      "sha256": "2e184cedee12407835a1d35dce9d224f7524f9bbb9a3a4f2669f3c0f83b80b58"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/resources/settings.xml",
+      "bytes": 786,
+      "sha256": "79209ef0677b0f09da846445c45fea11576037ada7f46254c377c807a8bc7acb"
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
@@ -309,8 +385,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/bootstrap.py",
-      "bytes": 35896,
-      "sha256": "842d554f6686578ffa85ceef151731ff1c6a17dd3f5d433b4b9e2a59d66e6daf"
+      "bytes": 37134,
+      "sha256": "ddc041c0d5950eecbdb7cb76cfec0d0e2fe7b61f78e10e0cc82f90d403df29a0"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/__init__.py",
@@ -379,8 +455,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py",
-      "bytes": 4421,
-      "sha256": "a38f12c25ec8d2a34b37875bdcae0f59b7920e91f950eedee277146c3537f62a"
+      "bytes": 6320,
+      "sha256": "618ed654b2b3dee0e4d0dde27dfae71198c43273aa7a02db667388e98ecb171a"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/__init__.py",
@@ -409,8 +485,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/directory.py",
-      "bytes": 6223,
-      "sha256": "d684a6a80a71e878a92cde6985b3c3b7e8e9a000ffb6bc72260552da6fabf96c"
+      "bytes": 6711,
+      "sha256": "e1578fb1481909d66161c5e28f63bd4f605147fe131e71814c633017acea996c"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/player.py",
@@ -454,8 +530,8 @@
     },
     {
       "path": "addons/resource.images.saile/addon.xml",
-      "bytes": 782,
-      "sha256": "4ff2470cb0b0c2909873b1e32b43e1c8159a862f3dc300d8b609092d2f1c2861"
+      "bytes": 822,
+      "sha256": "cb39c045d7be1062a2d9cec71fee6958b68d049de2d900b17e7ba322e5d60451"
     },
     {
       "path": "addons/resource.images.saile/changelog-1.0.0.txt",
@@ -473,6 +549,11 @@
       "sha256": "81bcac88bb0332edc1003ac410a34e473363cdf2561076375f9691642d636072"
     },
     {
+      "path": "addons/resource.images.saile/changelog-1.0.4.txt",
+      "bytes": 324,
+      "sha256": "3f791df75bc434d2a87f9ecb52e899d94bb6b8f5068b27233fafc3180fa8fc66"
+    },
+    {
       "path": "addons/resource.images.saile/fanart.jpg",
       "bytes": 117484,
       "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
@@ -481,6 +562,16 @@
       "path": "addons/resource.images.saile/icon.png",
       "bytes": 23801,
       "sha256": "1340cc42967a441ef44538f7b4b3d7ab959b923bd9b143304c5fed00891f66c3"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/alta.png",
+      "bytes": 42989,
+      "sha256": "6e231e647e1c3d1b3c8a13dc5a156701f4f9ce4313664a3715f90cf8478bb602"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/brasil.png",
+      "bytes": 23591,
+      "sha256": "f645e3fae4ca2ebcf72710e70e482200c2937e04dfdc3e2c828c5207dfdf0b9a"
     },
     {
       "path": "addons/resource.images.saile/resources/media/common/check.png",
@@ -493,9 +584,54 @@
       "sha256": "2ae8827a97e10f80c2103914b8432f16fbf99a4ebd516c05b443df44caefdd8e"
     },
     {
+      "path": "addons/resource.images.saile/resources/media/common/esportes.png",
+      "bytes": 58517,
+      "sha256": "306a4097e84f5d9fb364c55c52091df0c28d67fee3cc8afa16fccb27683f5d32"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/favoritos.png",
+      "bytes": 32085,
+      "sha256": "edc0050b1a1af4d4164add9b16c7bb33bea02a8f9c712cc68f9019cd514f999c"
+    },
+    {
       "path": "addons/resource.images.saile/resources/media/common/folder.png",
       "bytes": 5240,
       "sha256": "d6d74f3f9aec630da1b11ca66d2a7e63786a586447a07e92ab0801e0cd555340"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/idioma.png",
+      "bytes": 42383,
+      "sha256": "d0098b411de9c773f76c41e4844e56486bcb524c052b3f95cb63a67281a274a2"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/local.png",
+      "bytes": 46387,
+      "sha256": "6b0cf9151d18d991eb785da958e84af34f976c2e0ac7011899266a02899874d2"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/mundo.png",
+      "bytes": 56047,
+      "sha256": "becf4dd2538c0a89a2a5c12155c88892427c94d39766ad6d9af22788fa1ec68c"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/musica.png",
+      "bytes": 19809,
+      "sha256": "7527305249771a7b2a5df44834e4b82111affe334b480d01acba09a429b23329"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/noticias.png",
+      "bytes": 55344,
+      "sha256": "28cab39e2dbdfe5bae4db1a464f9ffb4561eaface2d96a36842b375566e82aa2"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/podcast.png",
+      "bytes": 52202,
+      "sha256": "4da743e4831b55fd0d52a6be6bfd1d108d1723ca9cb1063df329d2582b5c67d9"
+    },
+    {
+      "path": "addons/resource.images.saile/resources/media/common/radio.png",
+      "bytes": 45625,
+      "sha256": "a740754e09e78617ca2d3e137b52a1e05a9728fce9dd80d4fc532790629f36b7"
     },
     {
       "path": "addons/resource.images.saile/resources/media/common/search.png",
@@ -559,8 +695,8 @@
     },
     {
       "path": "addons/script.module.saile.core/lib/saile_core/artwork.py",
-      "bytes": 1405,
-      "sha256": "63b101b526283f7c583d34a011fc56bee5c8606b9a0fa2da193b137a75e8e570"
+      "bytes": 1552,
+      "sha256": "e40cf06a6849aeedc27ecaa9ae9c7ac151bfcef17c92570fdd566172d64b5ed1"
     },
     {
       "path": "addons/script.module.saile.core/lib/saile_core/capabilities.py",
@@ -664,8 +800,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/__init__.py",
-      "bytes": 651,
-      "sha256": "687d1c877a0e88e913fd1ef0a1da33fd0a8e7a2133764831cbf8e2405de2dec6"
+      "bytes": 699,
+      "sha256": "1e1db829286b86de91049c4818ee1ed2934cbe5099bf0355eaf85ac9801d4698"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/database.py",
@@ -684,8 +820,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/normalizer.py",
-      "bytes": 16102,
-      "sha256": "bbfb4594cb8092806f2631ad872ca6c0ba7dbf06c54e05ab3535f0965d9d3a25"
+      "bytes": 17633,
+      "sha256": "5e4af9b38664b82c84c0165c90624ca8bd931688742ed4f262300695e221f9e5"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/__init__.py",
@@ -724,8 +860,8 @@
     },
     {
       "path": "artwork/README.md",
-      "bytes": 580,
-      "sha256": "dd959ce0b7e26dd616cbad4ba2b769d77011f0f2742fb51abd058c7304901493"
+      "bytes": 638,
+      "sha256": "746bf8a14ba6a7ae4e31b54deeee7933200d3280d04e5581f2f4f71c766afad0"
     },
     {
       "path": "artwork/addons/fanarts/Style-1/plugin.video.stv/fanart.jpg",
@@ -779,8 +915,8 @@
     },
     {
       "path": "artwork/artwork-manifest.json",
-      "bytes": 5349,
-      "sha256": "52ec60f245d494f7ccfbebdc93aeef5e8e60f743e3f89f19f0955b08d0023f09"
+      "bytes": 8622,
+      "sha256": "6997b212dd06efe1de80857a13af65c319e66f5cd0ebb2925ee4e06de648073a"
     },
     {
       "path": "artwork/common/html/check_circle_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
@@ -803,6 +939,11 @@
       "sha256": "6e0e6b2e6b031b67b8c7d52f9f206cb143d9a6f0ed8fe57bb9319e1fa9b2349d"
     },
     {
+      "path": "artwork/common/html/flag_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 773,
+      "sha256": "79c2b54aa6ba6a8de6c7ccb3b6e8efd00acd1a35bfd3ea7f5997a33825d6c5c4"
+    },
+    {
       "path": "artwork/common/html/folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
       "bytes": 864,
       "sha256": "6f5643d84ad6acb1fbd63b373b91c511219aadd8f9c474f30c337fef97ff8457"
@@ -818,14 +959,69 @@
       "sha256": "27e12935ee3f464adeb043719eece9b3eb9abf4f3ba2870a7f73b4db14d98272"
     },
     {
+      "path": "artwork/common/html/music_note_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 797,
+      "sha256": "35bd84f723e7daaaaa4a0ebd650e0cb1533ad6c3044bb8255562c74424c9f7aa"
+    },
+    {
+      "path": "artwork/common/html/my_location_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 798,
+      "sha256": "bc4d9b63c5d5618af4295d49eadfc4a516258c1043f6f3ab59ed56a0cf681f95"
+    },
+    {
+      "path": "artwork/common/html/newspaper_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 797,
+      "sha256": "0b944b9ac7f8bba2fdab03a70f019707bf321d4f3a131f8ff4df3c3244b7521e"
+    },
+    {
+      "path": "artwork/common/html/podcasts_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 793,
+      "sha256": "418febc46c4ee22c02136e28226f89cbb0fcd36f21b3f908e1b3b9246adb9ac2"
+    },
+    {
+      "path": "artwork/common/html/public_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 783,
+      "sha256": "2edbeeb9ae7c7dec1ef9e97d6dbf875c1f4cf9ffb0dba53177872fe9d1fca65e"
+    },
+    {
+      "path": "artwork/common/html/radio_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 789,
+      "sha256": "7cfb3ef55861fa4be9651c3a47ac7783e19d62b900592b250176fd8c63be87a6"
+    },
+    {
       "path": "artwork/common/html/search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
       "bytes": 785,
       "sha256": "411691af4b988d05ecec520fbdcfb3d32129b304a53e1731d6ed94fc55441e07"
     },
     {
+      "path": "artwork/common/html/sports_soccer_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 809,
+      "sha256": "6fced2b05517cfb7d34d90a6a970b0c2ca801cead1161b1bd731afd15570ad2c"
+    },
+    {
       "path": "artwork/common/html/sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
       "bytes": 800,
       "sha256": "d9c557813efef4ce739d0b8a00b96dc07f247c6fb243475f4119f18c4f7c2b3e"
+    },
+    {
+      "path": "artwork/common/html/translate_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 784,
+      "sha256": "805b1df6a8cc200040a6afdfa8080302ca3227aedee20f7549f1dcd087894b1a"
+    },
+    {
+      "path": "artwork/common/html/whatshot_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html",
+      "bytes": 798,
+      "sha256": "aefa6eefe9337fe10700f1187aaff3819029d5a973a9b77bc7f6e610c25a0195"
+    },
+    {
+      "path": "artwork/common/png/alta.png",
+      "bytes": 42989,
+      "sha256": "6e231e647e1c3d1b3c8a13dc5a156701f4f9ce4313664a3715f90cf8478bb602"
+    },
+    {
+      "path": "artwork/common/png/brasil.png",
+      "bytes": 23591,
+      "sha256": "f645e3fae4ca2ebcf72710e70e482200c2937e04dfdc3e2c828c5207dfdf0b9a"
     },
     {
       "path": "artwork/common/png/check.png",
@@ -838,6 +1034,11 @@
       "sha256": "2ae8827a97e10f80c2103914b8432f16fbf99a4ebd516c05b443df44caefdd8e"
     },
     {
+      "path": "artwork/common/png/esportes.png",
+      "bytes": 58517,
+      "sha256": "306a4097e84f5d9fb364c55c52091df0c28d67fee3cc8afa16fccb27683f5d32"
+    },
+    {
       "path": "artwork/common/png/favoritos.png",
       "bytes": 32085,
       "sha256": "edc0050b1a1af4d4164add9b16c7bb33bea02a8f9c712cc68f9019cd514f999c"
@@ -848,9 +1049,44 @@
       "sha256": "d6d74f3f9aec630da1b11ca66d2a7e63786a586447a07e92ab0801e0cd555340"
     },
     {
+      "path": "artwork/common/png/idioma.png",
+      "bytes": 42383,
+      "sha256": "d0098b411de9c773f76c41e4844e56486bcb524c052b3f95cb63a67281a274a2"
+    },
+    {
       "path": "artwork/common/png/live.png",
       "bytes": 29944,
       "sha256": "efaaed3abea2fe2a519a23a2e3ec0427eff6edd6566a315c3dd9a8586d2b107f"
+    },
+    {
+      "path": "artwork/common/png/local.png",
+      "bytes": 46387,
+      "sha256": "6b0cf9151d18d991eb785da958e84af34f976c2e0ac7011899266a02899874d2"
+    },
+    {
+      "path": "artwork/common/png/mundo.png",
+      "bytes": 56047,
+      "sha256": "becf4dd2538c0a89a2a5c12155c88892427c94d39766ad6d9af22788fa1ec68c"
+    },
+    {
+      "path": "artwork/common/png/musica.png",
+      "bytes": 19809,
+      "sha256": "7527305249771a7b2a5df44834e4b82111affe334b480d01acba09a429b23329"
+    },
+    {
+      "path": "artwork/common/png/noticias.png",
+      "bytes": 55344,
+      "sha256": "28cab39e2dbdfe5bae4db1a464f9ffb4561eaface2d96a36842b375566e82aa2"
+    },
+    {
+      "path": "artwork/common/png/podcast.png",
+      "bytes": 52202,
+      "sha256": "4da743e4831b55fd0d52a6be6bfd1d108d1723ca9cb1063df329d2582b5c67d9"
+    },
+    {
+      "path": "artwork/common/png/radio.png",
+      "bytes": 45625,
+      "sha256": "a740754e09e78617ca2d3e137b52a1e05a9728fce9dd80d4fc532790629f36b7"
     },
     {
       "path": "artwork/common/png/search.png",
@@ -893,6 +1129,11 @@
       "sha256": "b57b1e5b684ce14fab45d0b04d1683ce6c999a35b259d95db57e43b405e0fe1f"
     },
     {
+      "path": "artwork/common/svg/flag_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 238,
+      "sha256": "9a9c071c37714873c9279997a6c7bb4a0c4ded2c7d3b33f56724fa013d738df7"
+    },
+    {
       "path": "artwork/common/svg/folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
       "bytes": 297,
       "sha256": "4d8d58aae0c7492ee88b6586dcfdf20153feefd43dd256208b42699b4e78bd08"
@@ -908,14 +1149,59 @@
       "sha256": "969ac3637e9c29c44e89b63b4d89472611d799dd040dc021317dacd84b9beeb8"
     },
     {
+      "path": "artwork/common/svg/music_note_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 248,
+      "sha256": "91d2b10f7603d1eec12397072d5887b261c3248e1f0df662ce35eedb849b3c1a"
+    },
+    {
+      "path": "artwork/common/svg/my_location_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 564,
+      "sha256": "5af41e9ed14128c4d0e0890c90f5078626ceceb163c085fafce69b0f5cb043d2"
+    },
+    {
+      "path": "artwork/common/svg/newspaper_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 393,
+      "sha256": "2b4aa02fc9a045f565068893d9984d2131af67c611a7eadb3af5ce4f8627d18d"
+    },
+    {
+      "path": "artwork/common/svg/podcasts_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 670,
+      "sha256": "9d0762eeb5b3a1b20401fb0e6e46c101eb7ced7de33cb1c033352fc329fcf05f"
+    },
+    {
+      "path": "artwork/common/svg/public_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 581,
+      "sha256": "a63c64d863596a79448b161a2ceac34c2c051ed9cdbec60e589f43a1eda1b0df"
+    },
+    {
+      "path": "artwork/common/svg/radio_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 475,
+      "sha256": "275589f7c73882512a58b72315439421d51060c4afa5ac80f1240ad1a938f30e"
+    },
+    {
       "path": "artwork/common/svg/search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
       "bytes": 364,
       "sha256": "cc206c4fa67f48927fff5ab5e1260a87803d846dbcd739ad601674d2ec2672d1"
     },
     {
+      "path": "artwork/common/svg/sports_soccer_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 694,
+      "sha256": "ecb34738b6d9c243c961ef32d6fcbd5c80d6f04410980c3fec8bc19d39073ee3"
+    },
+    {
       "path": "artwork/common/svg/sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
       "bytes": 405,
       "sha256": "d51eccaa69c29356b3835788361a211fd295a7b975fe91c0bf027d5d1738d79e"
+    },
+    {
+      "path": "artwork/common/svg/translate_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 391,
+      "sha256": "add36a63dc35f0b4d5a9c2cc531ce07731e426d8bf822a4d0269cdc28644445b"
+    },
+    {
+      "path": "artwork/common/svg/whatshot_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg",
+      "bytes": 516,
+      "sha256": "f53a355157b89eda3bcbddfe922661542357e671af95927523c72aecf2edf527"
     },
     {
       "path": "decisions/ADR-0001-modulo-epg-local.md",
@@ -939,43 +1225,43 @@
     },
     {
       "path": "docs/SHA256SUMS",
-      "bytes": 620,
-      "sha256": "45bf9cd968f45343258e49313672f60a24cf13cd33ba95455f5af6335683914a"
+      "bytes": 742,
+      "sha256": "c0b24d4131c3481423f261aef95fcefcff992dedaed10e4b93574845ecb6fe40"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 5507,
-      "sha256": "3e36da29b0b05d8167f9f66116ac35dd00c60b9715f1d38d66673107926ad0a0"
+      "bytes": 7200,
+      "sha256": "04fae5df042dd32bd80dff84048255ca0471369e64846ad138f92935dd24fcb3"
     },
     {
       "path": "docs/addons.xml.gz",
-      "bytes": 1410,
-      "sha256": "d591db7d0a4dabe7b5e51b3ecf0c14e3191def0d49427da13c6d8ba252510f32"
+      "bytes": 1827,
+      "sha256": "2997681451e844a7889e8584db6d4613aef02780cfd16c2f216aacb27145da0b"
     },
     {
       "path": "docs/addons.xml.gz.md5",
       "bytes": 34,
-      "sha256": "174a51b5158373ad062ecb74fe7fa1d7cd6bbbc3a0579fc210dc3f9b1719ddbe"
+      "sha256": "efc353fbe32fa7ad80be8ffaad5c558b0f78e7adae6e8a0ab5ff25ed022c8056"
     },
     {
       "path": "docs/addons.xml.gz.sha256",
       "bytes": 66,
-      "sha256": "7933ee4be9d0990caa08ce0d285f9d8332b3dfefbe0ca5f52bd865c330c5b255"
+      "sha256": "fd5d0a70e582bce30eb398a66aed3a0cd6d680cabd0c13479da8486afa75b89a"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "84020e46511960131865260a803c82cd93a680c59ac6b185a6e578b55f9fdb3f"
+      "sha256": "f3870d29a87187b61db8f1607fe594e1679536d4d874b0d1b718f86721ce0547"
     },
     {
       "path": "docs/addons.xml.sha256",
       "bytes": 66,
-      "sha256": "1285dbd50378293c243eb79f4afe9926712260d115211a70f79bb28bdbfb876c"
+      "sha256": "9c41bbcf407adefd759cb2c0745c5173812c2d6ffbafca3fdd41f2a08dc9b067"
     },
     {
       "path": "docs/index.html",
-      "bytes": 2540,
-      "sha256": "0222f7f0973fb130d4ff9b21dcb6168578548ebbe4e6dd58d37cfcdc5e60cf99"
+      "bytes": 2895,
+      "sha256": "d31142831f175f7d3e611683c054432b76786f251e2942c3eff5056b6f13a766"
     },
     {
       "path": "docs/repository.srepo-1.1.1.zip",
@@ -993,6 +1279,31 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
+      "path": "docs/zips/plugin.audio.sradio/changelog-1.0.3.txt",
+      "bytes": 454,
+      "sha256": "5f542694fd377fa2a8dea55fd63ffde312ee3a8a4de46e9c7fff108c4547e3a1"
+    },
+    {
+      "path": "docs/zips/plugin.audio.sradio/fanart.jpg",
+      "bytes": 254249,
+      "sha256": "b490049acd2ff25f52964c152cb66452fb34a1b141e87747acc156e4699a753c"
+    },
+    {
+      "path": "docs/zips/plugin.audio.sradio/icon.png",
+      "bytes": 43810,
+      "sha256": "58e053705c7e1124fbb2c8cf410338f71f37a8a8a858d4f21b9acfc216dcef34"
+    },
+    {
+      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.3.zip",
+      "bytes": 443928,
+      "sha256": "8d1f2595c0cacd1b6e87d5a9a2b7a80f0bd697435eac1eaf0b420665c51e3b67"
+    },
+    {
+      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.3.zip.sha256",
+      "bytes": 66,
+      "sha256": "da1bc97cf8766043272939176b9f8d3467551b41b1f16253351775ddb7587cbf"
+    },
+    {
       "path": "docs/zips/plugin.video.stv/fanart.jpg",
       "bytes": 248046,
       "sha256": "0d0a98488c0410eb750ae1df9810172bc2b990b52bc723c32f53a62c1f033172"
@@ -1004,13 +1315,13 @@
     },
     {
       "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.5.zip",
-      "bytes": 325444,
-      "sha256": "d752de31976c0e348e4cf6d6d1dc41c5c3fc6b255f036f872117917dbfa652a7"
+      "bytes": 325932,
+      "sha256": "beecf25588a529b7a74bbb26a76a8e12db6bd68bbff73525333643ee36f7e390"
     },
     {
       "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.5.zip.sha256",
       "bytes": 66,
-      "sha256": "e9860aa25951efcdfb00fd22bd1505bbab1e05e40b0015033736cbce85e60935"
+      "sha256": "be6a441f8f697afacb68588997be508b5596ff6d95a60ccc0ba48a12fb751164"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
@@ -1038,9 +1349,9 @@
       "sha256": "8b80f80cdbbb2a26e75072a2cc15963bee26c4b662e51cd3a1d8e2ef9429e8a8"
     },
     {
-      "path": "docs/zips/resource.images.saile/changelog-1.0.3.txt",
-      "bytes": 60,
-      "sha256": "81bcac88bb0332edc1003ac410a34e473363cdf2561076375f9691642d636072"
+      "path": "docs/zips/resource.images.saile/changelog-1.0.4.txt",
+      "bytes": 324,
+      "sha256": "3f791df75bc434d2a87f9ecb52e899d94bb6b8f5068b27233fafc3180fa8fc66"
     },
     {
       "path": "docs/zips/resource.images.saile/fanart.jpg",
@@ -1053,14 +1364,14 @@
       "sha256": "1340cc42967a441ef44538f7b4b3d7ab959b923bd9b143304c5fed00891f66c3"
     },
     {
-      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.3.zip",
-      "bytes": 373277,
-      "sha256": "d4dc6d5c7410c13d008eb249fc341849f8764626acd396b0bfdbf7a8a2b7d502"
+      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.4.zip",
+      "bytes": 826609,
+      "sha256": "e0f7aa370e793c1d4e586aee7ce6aac466bf077c2ba035d5a0645a3127589a50"
     },
     {
-      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.3.zip.sha256",
+      "path": "docs/zips/resource.images.saile/resource.images.saile-1.0.4.zip.sha256",
       "bytes": 66,
-      "sha256": "e48e0e6fe869bd40b0fc0f08139a93e41e84824ff98542dfb209977cbe8c4a3f"
+      "sha256": "5de2feccb91aff03bad1a94e4ee2c61798118b6adce7df825129b2c21f1e9f95"
     },
     {
       "path": "docs/zips/script.module.saile.core/changelog-1.0.1.txt",
@@ -1079,13 +1390,13 @@
     },
     {
       "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.1.zip",
-      "bytes": 149497,
-      "sha256": "3505f9b6ce18093aca1660aec2684b26799fc0c5fb64c42d26c34d36f9b15aa9"
+      "bytes": 149521,
+      "sha256": "c1fb7fc8ef3c3b70a45869bba12e63965481d328800fa9b05b300f1bf263e060"
     },
     {
       "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.1.zip.sha256",
       "bytes": 66,
-      "sha256": "8b185d50c13d2e2f641c535516d30b618bfa5ca311443aa1277d72e490834671"
+      "sha256": "4cc9a61b6634e97c32d6b8eec99e9e3fc1ed8b06f5b10e5b236da3fc03f35f1c"
     },
     {
       "path": "docs/zips/script.module.saile.epg/fanart.jpg",
@@ -1099,13 +1410,13 @@
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.2.zip",
-      "bytes": 150095,
-      "sha256": "9a18dae34e6115aa483142779213f52f3561998ab03159b2550eb6936a85f2ea"
+      "bytes": 150474,
+      "sha256": "af224ee4bcfb23a9962d24c5124d9109526b4760c22776eeecab77a2d10bedfe"
     },
     {
       "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.2.zip.sha256",
       "bytes": 66,
-      "sha256": "7588cd72b6566ba3feafe7e3f9baa01530660bf5c1d27be13dbb0f4233b929a0"
+      "sha256": "01532a9f42fc414032d0f1e735b468ad274a362dc94ba5bc511c3e5dcc70ce6b"
     },
     {
       "path": "documentation/README.md",
@@ -1134,8 +1445,8 @@
     },
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
-      "bytes": 52853,
-      "sha256": "2275f418a53e2df8899e038cd6c15e3d6aa7dcfd36807aecd26f39c6afa7a2a4"
+      "bytes": 65326,
+      "sha256": "eb5dc783ec9a0649172ca558fba54d107dea595eb9e7775ac53dd96c24360b0e"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
@@ -1213,26 +1524,6 @@
       "sha256": "ba10ee48fbc7b2a25e882fa57ebca69e8536c4d5bd8872539023de7a403c5dab"
     },
     {
-      "path": "scratch/channel_comparison.json",
-      "bytes": 388080,
-      "sha256": "464ec8a324fe7ca075981a1b4cd732582a40a12c3a757394dab56f16d888a8cb"
-    },
-    {
-      "path": "scratch/formatted_channel_listing.txt",
-      "bytes": 32258,
-      "sha256": "682b27e77d221442ba03c675f206fc635a59016f876656829627f5a6379f26ff"
-    },
-    {
-      "path": "scratch/test_match_benchmark.py",
-      "bytes": 2142,
-      "sha256": "b95dfe548e55a9cddb17429ba216fbd168e16e40ee1191c06e790e1de4cad52a"
-    },
-    {
-      "path": "scratch/xtream_tv_channels_detailed.txt",
-      "bytes": 84053,
-      "sha256": "99a8678e11f97c1366f9af9bd1ab7d4b02cee61bb24aec3c0ff75a6ba6a61e95"
-    },
-    {
       "path": "templates/ADR_TEMPLATE.md",
       "bytes": 221,
       "sha256": "9859f4906999aa683ead35c9bd6e5482315961ec7fccd2e052a305e7edc5ab61"
@@ -1258,9 +1549,14 @@
       "sha256": "db610e64dceca39b70ded5ea9b364f48348592c144d4d2fc93a5fbcfa0165d02"
     },
     {
+      "path": "templates/advancedsettings.xml",
+      "bytes": 668,
+      "sha256": "ea3fab7f8d7d79d3dd45c3c822fb7cceb70e0a4f1593c4802e01d0571d149d6e"
+    },
+    {
       "path": "tests/test_artwork_manifest.py",
-      "bytes": 714,
-      "sha256": "bfb38ca728517571ed42e724f147e4c33f74cfd92804a78bb41a80891f25a146"
+      "bytes": 810,
+      "sha256": "0c4d18eb26f7af25587151487fe70ae1dc31db2ab8bde1496481e62d3b88072d"
     },
     {
       "path": "tests/test_databases.py",
@@ -1269,8 +1565,8 @@
     },
     {
       "path": "tests/test_dependency_graph.py",
-      "bytes": 1215,
-      "sha256": "7f024636f511bbdd5c7b77260201a80b56d3e41849f6cccbb10dc5abd2884d6a"
+      "bytes": 1333,
+      "sha256": "89d9d4c0acc45ff160924ac351bf181324bc04b56916ccc72d9ad8f84938ed1b"
     },
     {
       "path": "tests/test_navigation_contract.py",
@@ -1284,8 +1580,8 @@
     },
     {
       "path": "tests/test_saile_core.py",
-      "bytes": 1111,
-      "sha256": "72105b16feb4e553039ec3b7b32a5a4599c65633b352a9732f3c47c6e4d85b16"
+      "bytes": 1365,
+      "sha256": "ff44ed999058a6c5602ac80e3ed83abc49695ec8abbe8b11f45b784f5cf2d01a"
     },
     {
       "path": "tests/test_saile_epg_aliases.py",
@@ -1316,6 +1612,11 @@
       "path": "tests/test_saile_epg_xtream.py",
       "bytes": 3814,
       "sha256": "6a5e4f25ed5f1be390561c04bdf28eddc2cca9b163ccd0b2385d9e4dd1c16eef"
+    },
+    {
+      "path": "tests/test_sradio.py",
+      "bytes": 11342,
+      "sha256": "3e165b4427f8b0e336a30542dfbfc72a3e5cf41f82a99fe927c09c6c3c5e11cd"
     },
     {
       "path": "tests/test_stv_catalog_auto_sync.py",
@@ -1389,8 +1690,18 @@
     },
     {
       "path": "tools/colorize_common_svgs.py",
-      "bytes": 3131,
-      "sha256": "59f8bb82635d03c90e4f4e93cbd82a88818e9e08af6a3b994d3f5a353b0a78de"
+      "bytes": 3495,
+      "sha256": "a273dfa12eb8b460fd6474188dc39e9a703a73b1becd67883c62e24ac9a24932"
+    },
+    {
+      "path": "tools/deploy_kodi_emulator.py",
+      "bytes": 8321,
+      "sha256": "fe0d0acf664e50c7f01660b0b4fefc577bc5d37c9d07338758840d2c889e5bed"
+    },
+    {
+      "path": "tools/generate_sradio_icons.py",
+      "bytes": 7205,
+      "sha256": "093d29c4fad6746c7ff430c9321086d2e12028f21625562b40029f4d68828134"
     },
     {
       "path": "tools/generate_structure_manifest.py",
@@ -1404,13 +1715,13 @@
     },
     {
       "path": "tools/secret_scan.py",
-      "bytes": 1456,
-      "sha256": "747e9aa1e3264a7012d4b6c366ea9467d3384bc53bc4d22f15f7c1613c0d2c54"
+      "bytes": 1471,
+      "sha256": "da05aca08e0b086d2412ef4ff2e5037d51fc32e77e235409db02354b08986f60"
     },
     {
       "path": "tools/select_artwork.py",
-      "bytes": 4927,
-      "sha256": "796fc10f2552d8607391f67c245e8fe1254c521f90870047a0d92c4151c997c0"
+      "bytes": 5623,
+      "sha256": "cc12da7a337dadc6fd789ff1b6366824f633603702f119bc44573fe2e2d249aa"
     },
     {
       "path": "tools/site_template/index.html",
@@ -1428,9 +1739,19 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
+      "path": "tools/test_lock_screen_playback.py",
+      "bytes": 6422,
+      "sha256": "08e18fbb7025fc3fb1b3153735069c534bddb46a2302e03ca743ff0112f15b48"
+    },
+    {
+      "path": "tools/test_sradio_full_battery.py",
+      "bytes": 15066,
+      "sha256": "30e85e5122f1d93aa2740889fad3d6eec81fee8c1baca8a7c19f3154fcc36e40"
+    },
+    {
       "path": "tools/validate_addons.py",
-      "bytes": 3700,
-      "sha256": "74494243fcd36b0c0dd1457c67be998c3f5f34349cd58ad112319c4e68fa2c6b"
+      "bytes": 4005,
+      "sha256": "e972d154e1a9a0365ac6da97dbdf5c718b6b7671bfbaecba31073ae07c68f13f"
     }
   ]
 }

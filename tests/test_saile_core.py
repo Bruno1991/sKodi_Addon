@@ -8,7 +8,7 @@ LIB_DIR = Path(__file__).resolve().parents[1] / "addons" / "script.module.saile.
 if str(LIB_DIR) not in sys.path:
     sys.path.insert(0, str(LIB_DIR))
 
-from saile_core.artwork import _ALLOWED_SCOPES
+from saile_core.artwork import _ALLOWED_SCOPES, common_art, sradio_art, stv_art
 from saile_core.capabilities import detect_capabilities
 from saile_core.errors import SaileError
 
@@ -16,6 +16,10 @@ from saile_core.errors import SaileError
 class SaileCoreTests(unittest.TestCase):
     def test_allowed_artwork_scopes(self) -> None:
         self.assertEqual(_ALLOWED_SCOPES, frozenset({"common", "stv"}))
+        self.assertTrue(common_art("radio.png").endswith("radio.png"))
+        self.assertTrue(stv_art("channels.png").endswith("channels.png"))
+        self.assertEqual(sradio_art("radio.png"), common_art("radio.png"))
+
 
     def test_saile_error_formatting(self) -> None:
         err = SaileError("ERR_AUTH", "Falha de autenticação")

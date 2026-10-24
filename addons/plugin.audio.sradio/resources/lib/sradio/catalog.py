@@ -145,7 +145,7 @@ class TuneInAPI:
         return cls._parse_outlines(body)
 
     @classmethod
-    def resolve_stream(cls, guide_id: str, timeout: int = 8) -> Optional[Dict[str, Any]]:
+    def resolve_stream(cls, guide_id: str, timeout: int = 8, preferred_bitrate: str = "highest") -> Optional[Dict[str, Any]]:
         """Resolve o link direto de áudio em tempo real via Tune.ashx com tokens CDN frescos."""
         if not guide_id:
             return None
@@ -159,27 +159,30 @@ class TuneInAPI:
         if not isinstance(body, list) or not body:
             return None
 
-        best_stream = None
+        valid_streams: List[Dict[str, Any]] = []
         for stream in body:
             url = stream.get("url")
             if url and (url.startswith("http://") or url.startswith("https://")):
-                reliability = int(stream.get("reliability", 0) or 0)
-                bitrate = int(stream.get("bitrate", 0) or 0)
-                score = reliability * 1000 + bitrate
+                valid_streams.append(stream)
 
-                if best_stream is None or score > best_stream[0]:
-                    best_stream = (score, stream)
+        if not valid_streams:
+            return None
 
-        if best_stream:
-            stream_info = best_stream[1]
-            return {
-                "url": stream_info.get("url"),
-                "bitrate": stream_info.get("bitrate"),
-                "media_type": stream_info.get("media_type", "mp3"),
-                "reliability": stream_info.get("reliability", 100),
-            }
+        prefer_lowest = preferred_bitrate == "lowest"
 
-        return None
+        def stream_score(s: Dict[str, Any]) -> Tuple[int, int]:
+            reliability = int(s.get("reliability", 0) or 0)
+            bitrate = int(s.get("bitrate", 0) or 0)
+            bitrate_key = -bitrate if prefer_lowest else bitrate
+            return (reliability, bitrate_key)
+
+        best_stream = max(valid_streams, key=stream_score)
+        return {
+            "url": best_stream.get("url"),
+            "bitrate": best_stream.get("bitrate"),
+            "media_type": best_stream.get("media_type", "mp3"),
+            "reliability": best_stream.get("reliability", 100),
+        }
 
 
 class RadioCatalog:
@@ -250,11 +253,16 @@ class RadioCatalog:
 
         return results
 
-    def resolve_station_stream(self, guide_id: str, fallback_station: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+    def resolve_station_stream(
+        self,
+        guide_id: str,
+        fallback_station: Optional[Dict[str, Any]] = None,
+        preferred_bitrate: str = "highest",
+    ) -> Optional[Dict[str, Any]]:
         """Resolve link de streaming fresco em tempo real com fallback automático para cache."""
         if guide_id:
             try:
-                resolved = self.api.resolve_stream(guide_id)
+                resolved = self.api.resolve_stream(guide_id, preferred_bitrate=preferred_bitrate)
                 if resolved and resolved.get("url"):
                     return resolved
             except Exception:
@@ -262,16 +270,37 @@ class RadioCatalog:
 
         station = fallback_station or self.get_station(guide_id)
         if station:
-            url = station.get("direct_stream_url")
+            url = None
+            bitrate = None
+            media_type = "mp3"
+
+            all_s = station.get("all_streams", [])
+            if all_s and isinstance(all_s, list):
+                valid = [s for s in all_s if s.get("url")]
+                if valid:
+                    prefer_lowest = preferred_bitrate == "lowest"
+
+                    def fallback_score(s: Dict[str, Any]) -> Tuple[int, int]:
+                        rel = int(s.get("reliability", 0) or 0)
+                        br = int(s.get("bitrate", 0) or 0)
+                        br_key = -br if prefer_lowest else br
+                        return (rel, br_key)
+
+                    chosen = max(valid, key=fallback_score)
+                    url = chosen.get("url")
+                    bitrate = chosen.get("bitrate")
+                    media_type = chosen.get("media_type") or "mp3"
+
             if not url:
-                all_s = station.get("all_streams", [])
-                if all_s:
-                    url = all_s[0].get("url")
+                url = station.get("direct_stream_url")
+                bitrate = station.get("stream_bitrate") or station.get("declared_bitrate")
+                media_type = station.get("stream_media_type") or "mp3"
+
             if url:
                 return {
                     "url": url,
-                    "bitrate": station.get("stream_bitrate") or station.get("declared_bitrate"),
-                    "media_type": station.get("stream_media_type") or "mp3",
+                    "bitrate": bitrate,
+                    "media_type": media_type,
                 }
 
         return None

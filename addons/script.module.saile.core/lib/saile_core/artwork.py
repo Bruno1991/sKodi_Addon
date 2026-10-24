@@ -40,3 +40,9 @@ def common_art(filename: str) -> str:
 def stv_art(filename: str) -> str:
     """Retorna uma arte do escopo do sTv."""
     return artwork_path("stv", filename)
+
+
+def sradio_art(filename: str) -> str:
+    """Retorna uma arte do escopo do sRadio (compartilhado em common)."""
+    return common_art(filename)
+
