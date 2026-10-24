@@ -162,11 +162,11 @@ def finish_directory(
 
     if view_mode:
         try:
-            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
+            xbmc.executebuiltin(f"SetViewMode({view_mode})")
         except Exception:
             pass
         try:
-            xbmc.executebuiltin(f"SetViewMode({view_mode})")
+            xbmc.executebuiltin(f"Container.SetViewMode({view_mode})")
         except Exception:
             pass
 

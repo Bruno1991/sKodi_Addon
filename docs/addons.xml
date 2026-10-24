@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
+  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.0" provider-name="Saile">
+    <requires>
+      <import addon="xbmc.python" version="3.0.0" />
+      <import addon="resource.images.saile" version="1.0.3" />
+      <import addon="script.module.saile.core" version="1.0.1" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+      <provides>audio</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <summary lang="pt_BR">Rádio Online Oficial do sRepo com mais de 1.500 emissoras ao vivo.</summary>
+      <description lang="pt_BR">Emissoras do Brasil inteiro organizadas por estados e cidades, principais gêneros musicais, notícias, rádios internacionais e favoritos rápidos com streams diretos de alta fidelidade.</description>
+      <disclaimer lang="pt_BR">Streams fornecidos pelas próprias emissoras públicas e gratuitas de rádio.</disclaimer>
+      <language>pt</language>
+      <platform>all</platform>
+      <license>GPL-3.0-or-later</license>
+      <source>https://github.com/Bruno1991/sKodi_Addon</source>
+      <news>1.0.0 - Versão inicial do sRadio com mais de 1.500 rádios, busca e favoritos.</news>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+    </extension>
+  </addon>
   <addon id="plugin.video.stv" name="sTv" version="0.8.5" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />

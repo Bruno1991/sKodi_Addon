@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<settings version="1">
+  <section id="plugin.audio.sradio">
+    <category id="general" label="Geral" help="">
+      <group id="playback" label="Reprodução">
+        <setting id="preferred_bitrate" type="string" label="Qualidade Preferida" help="">
+          <level>0</level>
+          <default>highest</default>
+          <constraints>
+            <options>
+              <option label="Maior Qualidade">highest</option>
+              <option label="Economia de Dados">lowest</option>
+            </options>
+          </constraints>
+          <control type="list" format="string">
+            <heading>Qualidade Preferida</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

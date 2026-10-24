@@ -22,6 +22,7 @@ class DependencyGraphTests(unittest.TestCase):
             "script.module.saile.epg",
         }
         self.assertTrue(expected <= dependencies("plugin.video.stv"))
+        self.assertTrue({"resource.images.saile", "script.module.saile.core"} <= dependencies("plugin.audio.sradio"))
 
     def test_core_uses_shared_artwork(self) -> None:
         self.assertIn("resource.images.saile", dependencies("script.module.saile.core"))

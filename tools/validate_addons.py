@@ -12,6 +12,7 @@ EXPECTED = {
     "script.module.saile.core",
     "script.module.saile.epg",
     "plugin.video.stv",
+    "plugin.audio.sradio",
 }
 LOCAL_DEPENDENCIES = EXPECTED - {"repository.srepo"}
 REQUIRED_SHARED_ART = {

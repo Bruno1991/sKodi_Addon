@@ -1,0 +1,6 @@
+1.0.0
+- Lançamento inicial do sRadio para Kodi.
+- Catálogo de mais de 1.500 estações de rádio online com streams diretos.
+- Navegação por Melhores & Em Alta, Estados/Cidades do Brasil, Gêneros Musicais e Rádios Internacionais.
+- Sistema de Favoritos persistente e ferramenta de Busca rápida.
+- Reprodução nativa de streams AAC, MP3 e HLS em alta qualidade com logos oficiais.
