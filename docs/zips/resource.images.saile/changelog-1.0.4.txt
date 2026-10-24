@@ -1,0 +1,3 @@
+1.0.4
+- Adicionados novos ícones compartilhados Google Fonts Material Symbols Outlined para suporte aos menus do sRadio (local, alta, brasil, musica, noticias, esportes, mundo, idioma, podcast, radio).
+- Inclusão dos respectivos arquivos SVG, HTML de referência e PNGs estilizados com o gradiente padrão do ecossistema.

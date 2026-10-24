@@ -1,0 +1,4 @@
+1.0.3
+- Adicionados ícones dedicados e coerentes para todos os menus do sRadio (Buscar, Favoritos, Rádios Locais, Melhores & Em Alta, Brasil Cidades e Estados, Música, Notícias, Esportes, Localização, Idioma, Podcasts e Catálogo).
+- Ícones obtidos do Google Fonts Material Symbols Outlined e entregues de forma compartilhada via módulo resource.images.saile.
+- Fallback automático para ícone oficial de rádio receptor em estações sem logo.

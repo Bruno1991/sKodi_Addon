@@ -11,7 +11,8 @@ class ArtworkManifestTests(unittest.TestCase):
     def test_shared_fixed_assets_exist(self) -> None:
         data = json.loads((ROOT / "artwork" / "artwork-manifest.json").read_text(encoding="utf-8"))
         shared = [item for item in data["assets"] if item.get("role") == "shared_ui_asset"]
-        self.assertEqual(len(shared), 9)
+        self.assertGreaterEqual(len(shared), 9)
+        self.assertEqual(len(shared), data.get("fixed_shared_asset_count", len(shared)))
         for item in shared:
             self.assertTrue((ROOT / item["source"]).is_file(), item["source"])
             self.assertTrue((ROOT / item["destination"]).is_file(), item["destination"])

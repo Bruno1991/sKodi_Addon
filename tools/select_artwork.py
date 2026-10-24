@@ -21,11 +21,25 @@ COMMON_MAP = {
     "check.png": ("common", "common/check.png"),
     "sync.png": ("common", "common/sync.png"),
     "folder.png": ("common", "common/folder.png"),
+    "favoritos.png": ("common", "common/favoritos.png"),
+    "local.png": ("common", "common/local.png"),
+    "alta.png": ("common", "common/alta.png"),
+    "brasil.png": ("common", "common/brasil.png"),
+    "musica.png": ("common", "common/musica.png"),
+    "noticias.png": ("common", "common/noticias.png"),
+    "esportes.png": ("common", "common/esportes.png"),
+    "mundo.png": ("common", "common/mundo.png"),
+    "idioma.png": ("common", "common/idioma.png"),
+    "podcast.png": ("common", "common/podcast.png"),
+    "radio.png": ("common", "common/radio.png"),
     "live.png": ("stv", "stv/live.png"),
     "vod.png": ("stv", "stv/vod.png"),
     "series.png": ("stv", "stv/series.png"),
-    "favoritos.png": ("stv", "stv/favoritos.png"),
 }
+
+EXTRA_SHARED_ASSETS = [
+    ("favoritos.png", "stv", "stv/favoritos.png"),
+]
 
 def get_available_styles(category: str) -> list[str]:
     path = ARTWORK_DIR / "addons" / category
@@ -60,8 +74,9 @@ def generate_manifest(icon_style: str, fanart_style: str) -> dict:
                 "temporary": False
             })
             
-    # Common assets
-    for filename, (scope, dest_suffix) in COMMON_MAP.items():
+    # Common and shared assets
+    all_shared = list(COMMON_MAP.items()) + [(fn, (sc, ds)) for fn, sc, ds in EXTRA_SHARED_ASSETS]
+    for filename, (scope, dest_suffix) in all_shared:
         assets.append({
             "source": f"artwork/common/png/{filename}",
             "addon_id": "resource.images.saile",
@@ -75,7 +90,7 @@ def generate_manifest(icon_style: str, fanart_style: str) -> dict:
         "version": "2.0.0",
         "status": "dynamic-artwork",
         "shared_resource_addon": "resource.images.saile",
-        "fixed_shared_asset_count": len(COMMON_MAP),
+        "fixed_shared_asset_count": len(all_shared),
         "replacement_rule": "Replace files keeping the canonical filename and compatible dimensions.",
         "icon_style": icon_style,
         "fanart_style": fanart_style,

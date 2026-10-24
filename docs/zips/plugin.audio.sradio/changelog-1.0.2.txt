@@ -1,6 +1,0 @@
-1.0.2
-- Modelo dinâmico TuneIn integrado (Browse, Search e Tune API).
-- 100% das rádios mundiais e brasileiras com busca global em tempo real.
-- Resolução dinâmica de streams ao vivo que nunca expiram.
-- Player em tela cheia estilo vídeo com controles frontais (OSD fullscreenvideo).
-- Suporte a reprodução contínua com tela bloqueada e em segundo plano no Android.

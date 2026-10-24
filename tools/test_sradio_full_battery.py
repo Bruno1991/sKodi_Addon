@@ -95,7 +95,7 @@ def send_jsonrpc(method: str, params: Optional[Dict[str, Any]] = None, timeout: 
 
 
 def get_directory(url: str, timeout: int = 12) -> Tuple[bool, List[Dict[str, Any]], str]:
-    resp = send_jsonrpc("Files.GetDirectory", {"directory": url, "media": "files"}, timeout=timeout)
+    resp = send_jsonrpc("Files.GetDirectory", {"directory": url, "media": "files", "properties": ["thumbnail", "art"]}, timeout=timeout)
     if not resp or "error" in resp:
         err = resp.get("error", {}).get("message", "Sem resposta do Kodi") if resp else "Timeout ou erro de conexão"
         return False, [], str(err)
@@ -105,7 +105,7 @@ def get_directory(url: str, timeout: int = 12) -> Tuple[bool, List[Dict[str, Any
 
 
 def sync_code_to_emulator() -> None:
-    log("[+] Sincronizando código atualizado do sRadio com o emulador...")
+    log("[+] Sincronizando código atualizado do sRadio e artwork compartilhada com o emulador...")
     target_addons = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/plugin.audio.sradio"
     local_sradio = ADDONS_DIR / "plugin.audio.sradio"
 
@@ -113,7 +113,15 @@ def sync_code_to_emulator() -> None:
     run_adb(["shell", f"cp -rf /data/local/tmp/plugin.audio.sradio/* {target_addons}/"])
     run_adb(["shell", f"chown -R u0_a193:ext_data_rw {target_addons}"])
     run_adb(["shell", f"chmod -R 775 {target_addons}"])
-    log("[+] Add-on atualizado no emulador.")
+
+    target_images = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/resource.images.saile"
+    local_images = ADDONS_DIR / "resource.images.saile"
+    run_adb(["push", str(local_images), "/data/local/tmp/"])
+    run_adb(["shell", f"cp -rf /data/local/tmp/resource.images.saile/* {target_images}/"])
+    run_adb(["shell", f"chown -R u0_a193:ext_data_rw {target_images}"])
+    run_adb(["shell", f"chmod -R 775 {target_images}"])
+
+    log("[+] Add-ons e artwork atualizados no emulador.")
 
 
 def get_log_offset() -> int:
@@ -129,6 +137,36 @@ def read_log_since(offset: int) -> List[str]:
     return out.splitlines()
 
 
+def ensure_kodi_running() -> None:
+    log("[+] Assegurando que Kodi está em execução no emulador...")
+    run_adb(["forward", "tcp:9090", "tcp:9090"])
+    pid = run_adb(["shell", "pidof org.xbmc.kodi"])
+    if not pid:
+        log("[+] Iniciando Kodi no emulador...")
+        run_adb(["shell", "am", "start", "-n", "org.xbmc.kodi/.Splash"])
+        for _ in range(25):
+            time.sleep(1)
+            resp = send_jsonrpc("JSONRPC.Ping", timeout=2)
+            if resp and resp.get("result") == "pong":
+                log("[+] Kodi iniciado e respondendo ao JSON-RPC!")
+                return
+    else:
+        resp = send_jsonrpc("JSONRPC.Ping", timeout=2)
+        if resp and resp.get("result") == "pong":
+            log("[+] Kodi já está rodando e respondendo ao JSON-RPC.")
+            return
+        log("[!] Kodi não responde ao ping, reiniciando...")
+        run_adb(["shell", "am", "force-stop", "org.xbmc.kodi"])
+        time.sleep(1)
+        run_adb(["shell", "am", "start", "-n", "org.xbmc.kodi/.Splash"])
+        for _ in range(25):
+            time.sleep(1)
+            resp = send_jsonrpc("JSONRPC.Ping", timeout=2)
+            if resp and resp.get("result") == "pong":
+                log("[+] Kodi reiniciado e respondendo ao JSON-RPC!")
+                return
+
+
 def run_battery() -> Dict[str, Any]:
     log("=" * 70)
     log(" Bateria Completa de Testes de Todos os Menus do sRadio")
@@ -136,6 +174,9 @@ def run_battery() -> Dict[str, Any]:
 
     # 1. Atualizar código no emulador
     sync_code_to_emulator()
+
+    # 2. Garantir que o Kodi está ativo
+    ensure_kodi_running()
 
     # 2. Registrar offset inicial do log
     log_offset_start = get_log_offset()

@@ -17,6 +17,43 @@ def _icon(scope: str, filename: str) -> str:
         return ""
 
 
+def _sradio_fanart() -> str:
+    try:
+        import os
+        import xbmcaddon
+        import xbmcvfs
+        addon = xbmcaddon.Addon("plugin.audio.sradio")
+        path = os.path.join(addon.getAddonInfo("path"), "fanart.jpg")
+        return xbmcvfs.translatePath(path)
+    except Exception:
+        import os
+        return os.path.join("addons", "plugin.audio.sradio", "fanart.jpg")
+
+
+def _folder_icon_for(url: str, title: str) -> str:
+    low_url = (url or "").lower()
+    low_title = (title or "").lower()
+    if "music" in low_url or "música" in low_title or "musica" in low_title:
+        return _icon("common", "musica.png")
+    if "podcast" in low_url or "podcast" in low_title:
+        return _icon("common", "podcast.png")
+    if "sport" in low_url or "esporte" in low_title:
+        return _icon("common", "esportes.png")
+    if "talk" in low_url or "notícia" in low_title or "noticia" in low_title:
+        return _icon("common", "noticias.png")
+    if "local" in low_url or "local" in low_title:
+        return _icon("common", "local.png")
+    if "best" in low_url or "alta" in low_title:
+        return _icon("common", "alta.png")
+    if "lang" in low_url or "idioma" in low_title:
+        return _icon("common", "idioma.png")
+    if "r101223" in low_url or "brasil" in low_title:
+        return _icon("common", "brasil.png")
+    if "r0" in low_url or "localização" in low_title or "mundo" in low_title:
+        return _icon("common", "mundo.png")
+    return _icon("common", "folder.png")
+
+
 def _set_video_metadata(
     item: Any,
     title: str,
@@ -128,7 +165,7 @@ def _render_station_item(
     guide_id = station.get("guide_id", "")
     name = station.get("name", "Rádio")
     subtext = station.get("subtext", "")
-    logo = station.get("logo") or _icon("common", "folder.png")
+    logo = station.get("logo") or _icon("common", "radio.png")
     cat = station.get("category", "")
     bitrate = station.get("bitrate") or station.get("stream_bitrate") or station.get("declared_bitrate")
     fmt = station.get("declared_formats") or station.get("stream_media_type")
@@ -196,7 +233,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         f"Favoritos ({fav_count})",
         request.url(action="favorites"),
-        icon=_icon("stv", "favoritos.png"),
+        icon=_icon("common", "favoritos.png"),
         fanart=fanart,
         plot="Suas emissoras de rádio favoritas salvas.",
     )
@@ -206,7 +243,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Rádios Locais",
         request.url(action="browse", url="Browse.ashx?c=local"),
-        icon=_icon("stv", "live.png"),
+        icon=_icon("common", "local.png"),
         fanart=fanart,
         plot="Emissoras locais sintonizadas na sua região.",
     )
@@ -216,7 +253,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Melhores & Em Alta",
         request.url(action="browse", url="Browse.ashx?c=best"),
-        icon=_icon("stv", "live.png"),
+        icon=_icon("common", "alta.png"),
         fanart=fanart,
         plot="As estações mais populares e recomendadas pela rede TuneIn.",
     )
@@ -226,7 +263,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Brasil (Cidades & Estados)",
         request.url(action="browse", url="Browse.ashx?id=r101223"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "brasil.png"),
         fanart=fanart,
         plot="Todas as estações do Brasil organizadas por estados, capitais e cidades do interior.",
     )
@@ -236,7 +273,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Música por Gênero",
         request.url(action="browse", url="Browse.ashx?c=music"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "musica.png"),
         fanart=fanart,
         plot="Rock, Pop, Sertanejo, Pagode, Jazz, Hip Hop, Eletrônica, Clássica e muito mais.",
     )
@@ -246,7 +283,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Notícias & Conversas",
         request.url(action="browse", url="Browse.ashx?c=talk"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "noticias.png"),
         fanart=fanart,
         plot="Jornalismo, debates, economia e notícias do Brasil e do mundo.",
     )
@@ -256,7 +293,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Esportes ao Vivo",
         request.url(action="browse", url="Browse.ashx?c=sports"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "esportes.png"),
         fanart=fanart,
         plot="Transmissões de futebol, automobilismo e programas esportivos.",
     )
@@ -266,7 +303,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Por Localização (Mundo Inteiro)",
         request.url(action="browse", url="Browse.ashx?id=r0"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "mundo.png"),
         fanart=fanart,
         plot="Emissoras da América do Sul, América do Norte, Europa, Ásia, África e Oceania.",
     )
@@ -276,7 +313,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Por Idioma",
         request.url(action="browse", url="Browse.ashx?c=lang"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "idioma.png"),
         fanart=fanart,
         plot="Estações de rádio transmitindo em Português, Inglês, Espanhol e outros idiomas.",
     )
@@ -286,7 +323,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         "Podcasts & Programas",
         request.url(action="browse", url="Browse.ashx?c=podcast"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "podcast.png"),
         fanart=fanart,
         plot="Podcasts, entrevistas e episódios gravados dos principais programas de rádio.",
     )
@@ -296,7 +333,7 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         request.handle,
         f"Catálogo em Cache Offline ({total})",
         request.url(action="all_stations"),
-        icon=_icon("common", "folder.png"),
+        icon=_icon("common", "radio.png"),
         fanart=fanart,
         plot=f"Lista completa pré-sincronizada com {total} estações para reprodução instantânea.",
     )
@@ -325,7 +362,7 @@ def show_browse_directory(
         if item.get("is_folder"):
             sub_url = item.get("url", "")
             title = item.get("title", "Pasta")
-            logo = item.get("logo") or folder_icon
+            logo = item.get("logo") or _folder_icon_for(sub_url, title)
             subtext = item.get("subtext", "")
             _add_directory_item(
                 request.handle,
@@ -368,7 +405,7 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     fallback_station = catalog.get_station(guide_id)
     name = param_name or (fallback_station.get("name") if fallback_station else "Rádio ao Vivo")
     subtext = param_subtext or (fallback_station.get("subtext") if fallback_station else "")
-    logo = param_logo or (fallback_station.get("logo") if fallback_station else "") or _icon("common", "folder.png")
+    logo = param_logo or (fallback_station.get("logo") if fallback_station else "") or _icon("common", "radio.png")
     cat = param_cat or (fallback_station.get("category") if fallback_station else "Rádio")
 
     # Resolução dinâmica do stream via Tune.ashx (com tokens frescos) ou fallback para cache
@@ -383,7 +420,7 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     stream_url = stream_info["url"]
     bitrate = stream_info.get("bitrate") or ""
     media_type = stream_info.get("media_type") or "mp3"
-    fanart_path = _icon("stv", "fanart.jpg")
+    fanart_path = _sradio_fanart()
 
     item = xbmcgui.ListItem(label=name, path=stream_url, offscreen=True)
     item.setContentLookup(False)
@@ -461,7 +498,7 @@ def run(argv: List[str]) -> None:
     request = Request.from_argv(argv)
     catalog = RadioCatalog()
     favorites = FavoritesManager()
-    fanart = _icon("stv", "fanart.jpg")
+    fanart = _sradio_fanart()
 
     action = request.action
 

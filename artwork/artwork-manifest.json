@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "status": "dynamic-artwork",
   "shared_resource_addon": "resource.images.saile",
-  "fixed_shared_asset_count": 9,
+  "fixed_shared_asset_count": 20,
   "replacement_rule": "Replace files keeping the canonical filename and compatible dimensions.",
   "icon_style": "Detailed-Flat-Circular",
   "fanart_style": "Style-1",
@@ -115,6 +115,94 @@
       "role": "shared_ui_asset",
       "scope": "common",
       "destination": "addons/resource.images.saile/resources/media/common/folder.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/favoritos.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/favoritos.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/local.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/local.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/alta.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/alta.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/brasil.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/brasil.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/musica.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/musica.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/noticias.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/noticias.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/esportes.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/esportes.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/mundo.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/mundo.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/idioma.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/idioma.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/podcast.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/podcast.png",
+      "temporary": false
+    },
+    {
+      "source": "artwork/common/png/radio.png",
+      "addon_id": "resource.images.saile",
+      "role": "shared_ui_asset",
+      "scope": "common",
+      "destination": "addons/resource.images.saile/resources/media/common/radio.png",
       "temporary": false
     },
     {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.audio.sradio" name="sRadio" version="1.0.2" provider-name="Saile">
+<addon id="plugin.audio.sradio" name="sRadio" version="1.0.3" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
-    <import addon="resource.images.saile" version="1.0.3" />
+    <import addon="resource.images.saile" version="1.0.4" />
     <import addon="script.module.saile.core" version="1.0.1" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
@@ -16,7 +16,7 @@
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>1.0.2 - Integração dinâmica completa da API TuneIn (busca e catálogo global 100%), resolução de streams em tempo real, player em tela cheia estilo vídeo com controles frontais e suporte a reprodução em segundo plano/tela bloqueada.</news>
+    <news>1.0.3 - Ícones dedicados e coerentes para cada menu principal (Brasil, Música, Notícias, Esportes, Localização, Idioma, Podcasts, Melhores, Rádios Locais) entregues via resource.images.saile a partir do Google Fonts Material Symbols.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

@@ -192,5 +192,61 @@ class SRadioRoutingTests(unittest.TestCase):
         self.assertEqual(req.params.get("url"), "Browse.ashx?c=music")
 
 
+class SRadioArtworkCoherenceTests(unittest.TestCase):
+    def test_shared_sradio_menu_icons_exist(self) -> None:
+        media_common = ROOT / "addons" / "resource.images.saile" / "resources" / "media" / "common"
+        expected_icons = [
+            "search.png",
+            "favoritos.png",
+            "local.png",
+            "alta.png",
+            "brasil.png",
+            "musica.png",
+            "noticias.png",
+            "esportes.png",
+            "mundo.png",
+            "idioma.png",
+            "podcast.png",
+            "radio.png",
+        ]
+        for icon in expected_icons:
+            icon_file = media_common / icon
+            self.assertTrue(icon_file.is_file(), f"Missing icon: {icon}")
+            self.assertGreater(icon_file.stat().st_size, 0)
+
+    def test_folder_icon_mapping(self) -> None:
+        from sradio.bootstrap import _folder_icon_for
+        self.assertIn("musica.png", _folder_icon_for("Browse.ashx?c=music", "Música"))
+        self.assertIn("podcast.png", _folder_icon_for("Browse.ashx?c=podcast", "Podcasts"))
+        self.assertIn("esportes.png", _folder_icon_for("Browse.ashx?c=sports", "Esportes"))
+        self.assertIn("noticias.png", _folder_icon_for("Browse.ashx?c=talk", "Notícias"))
+        self.assertIn("local.png", _folder_icon_for("Browse.ashx?c=local", "Local"))
+        self.assertIn("alta.png", _folder_icon_for("Browse.ashx?c=best", "Alta"))
+        self.assertIn("brasil.png", _folder_icon_for("Browse.ashx?id=r101223", "Brasil"))
+        self.assertIn("mundo.png", _folder_icon_for("Browse.ashx?id=r0", "Mundo"))
+        self.assertIn("idioma.png", _folder_icon_for("Browse.ashx?c=lang", "Idioma"))
+        self.assertIn("folder.png", _folder_icon_for("Browse.ashx?id=unknown", "Outros"))
+
+    def test_artwork_sources_exist_in_artwork(self) -> None:
+        svg_dir = ROOT / "artwork" / "common" / "svg"
+        html_dir = ROOT / "artwork" / "common" / "html"
+        png_dir = ROOT / "artwork" / "common" / "png"
+        symbols = [
+            "my_location",
+            "whatshot",
+            "flag",
+            "music_note",
+            "newspaper",
+            "sports_soccer",
+            "public",
+            "translate",
+            "podcasts",
+            "radio",
+        ]
+        for s in symbols:
+            self.assertTrue((svg_dir / f"{s}_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg").is_file())
+            self.assertTrue((html_dir / f"{s}_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html").is_file())
+
+
 if __name__ == "__main__":
     unittest.main()

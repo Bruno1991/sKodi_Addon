@@ -18,7 +18,17 @@ COMMON_MAP = {
     "cinematic_blur_256dp": "series.png",
     "favorite_256dp": "favoritos.png",
     "live_tv_256dp": "live.png",
-    "movie_256dp": "vod.png"
+    "movie_256dp": "vod.png",
+    "my_location_256dp": "local.png",
+    "whatshot_256dp": "alta.png",
+    "flag_256dp": "brasil.png",
+    "music_note_256dp": "musica.png",
+    "newspaper_256dp": "noticias.png",
+    "sports_soccer_256dp": "esportes.png",
+    "public_256dp": "mundo.png",
+    "translate_256dp": "idioma.png",
+    "podcasts_256dp": "podcast.png",
+    "radio_256dp": "radio.png",
 }
 
 async def render_svg_to_png(svg_content: str, background_style: str, output_path: Path):
