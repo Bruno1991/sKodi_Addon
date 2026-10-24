@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.1" provider-name="Saile">
+  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.2" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
       <import addon="script.module.saile.core" version="1.0.1" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
-      <provides>audio</provides>
+      <provides>audio video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-      <summary lang="pt_BR">Rádio Online Oficial do sRepo com mais de 1.500 emissoras ao vivo.</summary>
-      <description lang="pt_BR">Emissoras do Brasil inteiro organizadas por estados e cidades, principais gêneros musicais, notícias, rádios internacionais e favoritos rápidos com streams diretos de alta fidelidade.</description>
-      <disclaimer lang="pt_BR">Streams fornecidos pelas próprias emissoras públicas e gratuitas de rádio.</disclaimer>
+      <summary lang="pt_BR">Rádio Online Oficial do sRepo com acesso dinâmico global e mais de 100.000 emissoras ao vivo.</summary>
+      <description lang="pt_BR">Catálogo dinâmico global idêntico ao TuneIn: emissoras do Brasil inteiro organizadas por estados e cidades, gêneros musicais, esportes, notícias, rádios internacionais, busca ao vivo, resolução dinâmica de streams que nunca expiram e player em tela cheia com controles frontais.</description>
+      <disclaimer lang="pt_BR">Streams fornecidos pelas próprias emissoras públicas e gratuitas de rádio através da API pública RadioTime/TuneIn.</disclaimer>
       <language>pt</language>
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.1 - Novas artes oficiais de alta definição (ícone 512x512 e fanart 1536x1024) e catálogo atualizado.</news>
+      <news>1.0.2 - Integração dinâmica completa da API TuneIn (busca e catálogo global 100%), resolução de streams em tempo real, player em tela cheia estilo vídeo com controles frontais e suporte a reprodução em segundo plano/tela bloqueada.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

@@ -38,6 +38,7 @@ userdata/
 profile/
 cache/
 temp/
+scratch/
 cookies.txt
 
 # Builds e artefatos gerados

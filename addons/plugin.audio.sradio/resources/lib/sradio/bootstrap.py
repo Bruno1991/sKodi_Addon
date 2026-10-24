@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import sys
+import urllib.parse
 from typing import Any, Dict, List, Optional
 
-from .catalog import RadioCatalog
+from .catalog import RadioCatalog, TuneInAPI
 from .favorites import FavoritesManager
 from .routing import Request
 
@@ -16,6 +17,47 @@ def _icon(scope: str, filename: str) -> str:
         return ""
 
 
+def _set_video_metadata(
+    item: Any,
+    title: str,
+    artist: str = "",
+    genre: str = "",
+    plot: str = "",
+) -> None:
+    # Kodi 20/21+ InfoTagVideo nativo com suporte a controles OSD de vídeo
+    try:
+        tag = item.getVideoInfoTag()
+        if hasattr(tag, "setTitle"):
+            tag.setTitle(title)
+        if artist and hasattr(tag, "setArtists"):
+            tag.setArtists([artist])
+        if genre and hasattr(tag, "setGenres"):
+            tag.setGenres([genre])
+        if plot and hasattr(tag, "setPlot"):
+            tag.setPlot(plot)
+        if hasattr(tag, "setMediaType"):
+            tag.setMediaType("video")
+        if hasattr(tag, "setTagLine"):
+            tag.setTagLine("Rádio ao Vivo - sRadio")
+    except Exception:
+        pass
+
+    try:
+        info: Dict[str, Any] = {
+            "title": title,
+            "plot": plot,
+            "mediatype": "video",
+            "tagline": "Rádio ao Vivo - sRadio",
+        }
+        if artist:
+            info["artist"] = [artist]
+        if genre:
+            info["genre"] = [genre]
+        item.setInfo("video", info)
+    except Exception:
+        pass
+
+
 def _add_directory_item(
     handle: int,
     label: str,
@@ -23,6 +65,7 @@ def _add_directory_item(
     icon: str = "",
     fanart: str = "",
     thumb: str = "",
+    poster: str = "",
     is_folder: bool = True,
     is_playable: bool = False,
     title: str = "",
@@ -42,21 +85,26 @@ def _add_directory_item(
         art["thumb"] = thumb
     elif icon:
         art["thumb"] = icon
+    if poster:
+        art["poster"] = poster
+    elif icon:
+        art["poster"] = icon
     if fanart:
         art["fanart"] = fanart
 
     item.setArt(art)
 
-    info = {
-        "title": title or label,
-        "artist": artist,
-        "genre": genre,
-        "comment": plot,
-    }
-    item.setInfo("music", info)
+    _set_video_metadata(
+        item=item,
+        title=title or label,
+        artist=artist,
+        genre=genre,
+        plot=plot,
+    )
 
     if is_playable:
         item.setProperty("IsPlayable", "true")
+        item.setProperty("KeepAlive", "true")
 
     if context_menu:
         item.addContextMenuItems(context_menu)
@@ -64,46 +112,66 @@ def _add_directory_item(
     xbmcplugin.addDirectoryItem(handle, url, item, isFolder=is_folder)
 
 
-def _finish_directory(handle: int, content: str = "songs") -> None:
+def _finish_directory(handle: int, content: str = "videos") -> None:
     import xbmcplugin
     xbmcplugin.setContent(handle, content)
     xbmcplugin.endOfDirectory(handle, succeeded=True, updateListing=False, cacheToDisc=True)
 
 
-def _render_station_item(request: Request, station: Dict[str, Any], favorites: FavoritesManager, fanart: str) -> None:
+def _render_station_item(
+    request: Request,
+    station: Dict[str, Any],
+    favorites: FavoritesManager,
+    fanart: str,
+) -> None:
     guide_id = station.get("guide_id", "")
     name = station.get("name", "Rádio")
     subtext = station.get("subtext", "")
     logo = station.get("logo") or _icon("common", "folder.png")
     cat = station.get("category", "")
-    bitrate = station.get("stream_bitrate") or station.get("declared_bitrate")
-    fmt = station.get("stream_media_type") or station.get("declared_formats")
+    bitrate = station.get("bitrate") or station.get("stream_bitrate") or station.get("declared_bitrate")
+    fmt = station.get("declared_formats") or station.get("stream_media_type")
 
     badge = f" [{fmt.upper()} {bitrate}k]" if fmt and bitrate else ""
     label = f"{name}{badge}"
 
     is_fav = favorites.is_favorite(guide_id)
     fav_text = "Remover dos Favoritos" if is_fav else "Adicionar aos Favoritos"
-    fav_action = request.url(action="toggle_fav", guide_id=guide_id)
+    fav_action = request.url(
+        action="toggle_fav",
+        guide_id=guide_id,
+        name=name,
+        subtext=subtext,
+        logo=logo,
+        cat=cat,
+    )
 
     context_menu = [
         (fav_text, f"RunPlugin({fav_action})"),
     ]
 
-    play_url = request.url(action="play", guide_id=guide_id)
+    play_url = request.url(
+        action="play",
+        guide_id=guide_id,
+        name=name,
+        subtext=subtext,
+        logo=logo,
+        cat=cat,
+    )
     _add_directory_item(
         handle=request.handle,
         label=label,
         url=play_url,
         icon=logo,
         thumb=logo,
+        poster=logo,
         fanart=fanart,
         is_folder=False,
         is_playable=True,
         title=name,
         artist=subtext or cat,
         genre=cat,
-        plot=f"{subtext}\n\nCategoria: {cat}\nFormato: {fmt}\nBitrate: {bitrate} kbps",
+        plot=f"{name}\n{subtext}\n\nCategoria: {cat}\nFormato: {fmt}\nBitrate: {bitrate} kbps",
         context_menu=context_menu,
     )
 
@@ -111,14 +179,14 @@ def _render_station_item(request: Request, station: Dict[str, Any], favorites: F
 def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManager, fanart: str) -> None:
     total = catalog.total_count
 
-    # 1. Buscar
+    # 1. Buscar Global (TuneIn Live Search)
     _add_directory_item(
         request.handle,
-        "Buscar Rádio",
+        "Buscar Rádio (Global)",
         request.url(action="search"),
         icon=_icon("common", "search.png"),
         fanart=fanart,
-        plot="Pesquise estações de rádio por nome, gênero ou cidade.",
+        plot="Pesquise em tempo real em mais de 100.000 rádios de todo o planeta por nome, cidade ou frequência.",
     )
 
     # 2. Favoritos
@@ -132,152 +200,215 @@ def show_home(request: Request, catalog: RadioCatalog, favorites: FavoritesManag
         plot="Suas emissoras de rádio favoritas salvas.",
     )
 
-    # 3. Melhores & Em Alta
+    # 3. Rádios Locais (TuneIn Local)
+    _add_directory_item(
+        request.handle,
+        "Rádios Locais",
+        request.url(action="browse", url="Browse.ashx?c=local"),
+        icon=_icon("stv", "live.png"),
+        fanart=fanart,
+        plot="Emissoras locais sintonizadas na sua região.",
+    )
+
+    # 4. Melhores & Em Alta (TuneIn Trending)
     _add_directory_item(
         request.handle,
         "Melhores & Em Alta",
-        request.url(action="featured"),
+        request.url(action="browse", url="Browse.ashx?c=best"),
         icon=_icon("stv", "live.png"),
         fanart=fanart,
-        plot="As emissoras mais ouvidas e populares do momento.",
+        plot="As estações mais populares e recomendadas pela rede TuneIn.",
     )
 
-    # 4. Brasil por Cidades & Estados
+    # 5. Brasil (Todas as Cidades & Estados via TuneIn)
     _add_directory_item(
         request.handle,
         "Brasil (Cidades & Estados)",
-        request.url(action="brazil_menu"),
+        request.url(action="browse", url="Browse.ashx?id=r101223"),
         icon=_icon("common", "folder.png"),
         fanart=fanart,
-        plot="Estações de São Paulo, Rio de Janeiro, Minas, Curitiba e todo o Brasil.",
+        plot="Todas as estações do Brasil organizadas por estados, capitais e cidades do interior.",
     )
 
-    # 5. Gêneros Musicais
+    # 6. Música por Gênero
     _add_directory_item(
         request.handle,
-        "Gêneros Musicais",
-        request.url(action="genres_menu"),
+        "Música por Gênero",
+        request.url(action="browse", url="Browse.ashx?c=music"),
         icon=_icon("common", "folder.png"),
         fanart=fanart,
-        plot="Rock, Pop, Sertanejo, Pagode, Jazz, Hip Hop, Notícias e mais.",
+        plot="Rock, Pop, Sertanejo, Pagode, Jazz, Hip Hop, Eletrônica, Clássica e muito mais.",
     )
 
-    # 6. Rádios Internacionais
+    # 7. Notícias & Conversas (Talk)
     _add_directory_item(
         request.handle,
-        "Rádios Internacionais",
-        request.url(action="intl_menu"),
+        "Notícias & Conversas",
+        request.url(action="browse", url="Browse.ashx?c=talk"),
         icon=_icon("common", "folder.png"),
         fanart=fanart,
-        plot="Emissoras da Europa, América do Norte e América do Sul.",
+        plot="Jornalismo, debates, economia e notícias do Brasil e do mundo.",
     )
 
-    # 7. Catálogo Completo
+    # 8. Esportes
     _add_directory_item(
         request.handle,
-        f"Todas as Estações ({total})",
+        "Esportes ao Vivo",
+        request.url(action="browse", url="Browse.ashx?c=sports"),
+        icon=_icon("common", "folder.png"),
+        fanart=fanart,
+        plot="Transmissões de futebol, automobilismo e programas esportivos.",
+    )
+
+    # 9. Por Localização (Mundo Inteiro)
+    _add_directory_item(
+        request.handle,
+        "Por Localização (Mundo Inteiro)",
+        request.url(action="browse", url="Browse.ashx?id=r0"),
+        icon=_icon("common", "folder.png"),
+        fanart=fanart,
+        plot="Emissoras da América do Sul, América do Norte, Europa, Ásia, África e Oceania.",
+    )
+
+    # 10. Por Idioma (By Language)
+    _add_directory_item(
+        request.handle,
+        "Por Idioma",
+        request.url(action="browse", url="Browse.ashx?c=lang"),
+        icon=_icon("common", "folder.png"),
+        fanart=fanart,
+        plot="Estações de rádio transmitindo em Português, Inglês, Espanhol e outros idiomas.",
+    )
+
+    # 11. Podcasts & Programas
+    _add_directory_item(
+        request.handle,
+        "Podcasts & Programas",
+        request.url(action="browse", url="Browse.ashx?c=podcast"),
+        icon=_icon("common", "folder.png"),
+        fanart=fanart,
+        plot="Podcasts, entrevistas e episódios gravados dos principais programas de rádio.",
+    )
+
+    # 12. Catálogo em Cache Offline
+    _add_directory_item(
+        request.handle,
+        f"Catálogo em Cache Offline ({total})",
         request.url(action="all_stations"),
         icon=_icon("common", "folder.png"),
         fanart=fanart,
-        plot=f"Lista completa com todas as {total} emissoras catalogadas.",
+        plot=f"Lista completa pré-sincronizada com {total} estações para reprodução instantânea.",
     )
 
-    _finish_directory(request.handle, content="music")
+    _finish_directory(request.handle, content="videos")
 
 
-def show_brazil_menu(request: Request, catalog: RadioCatalog, fanart: str) -> None:
-    groups = catalog.get_brazil_groups()
+def show_browse_directory(
+    request: Request,
+    catalog: RadioCatalog,
+    favorites: FavoritesManager,
+    fanart: str,
+) -> None:
+    """Navega dinamicamente pelas pastas e estações da API TuneIn."""
+    browse_url = request.params.get("url", "Browse.ashx")
+    items = catalog.api.browse(browse_url)
+
+    if not items:
+        from saile_core.notifications import notify_error
+        notify_error("sRadio", "Nenhum conteúdo retornado para esta categoria")
+        show_home(request, catalog, favorites, fanart)
+        return
+
     folder_icon = _icon("common", "folder.png")
+    for item in items:
+        if item.get("is_folder"):
+            sub_url = item.get("url", "")
+            title = item.get("title", "Pasta")
+            logo = item.get("logo") or folder_icon
+            subtext = item.get("subtext", "")
+            _add_directory_item(
+                request.handle,
+                title,
+                request.url(action="browse", url=sub_url),
+                icon=logo,
+                thumb=logo,
+                fanart=fanart,
+                plot=subtext or f"Explorar {title}.",
+            )
+        else:
+            _render_station_item(request, item, favorites, fanart)
 
-    for city, stations in groups.items():
-        _add_directory_item(
-            request.handle,
-            f"{city} ({len(stations)})",
-            request.url(action="list_city", city=city),
-            icon=folder_icon,
-            fanart=fanart,
-            plot=f"Estações de rádio em {city}.",
-        )
-
-    _finish_directory(request.handle, content="music")
-
-
-def show_genres_menu(request: Request, catalog: RadioCatalog, fanart: str) -> None:
-    genres = catalog.get_genre_groups()
-    folder_icon = _icon("common", "folder.png")
-
-    for genre, stations in genres.items():
-        _add_directory_item(
-            request.handle,
-            f"{genre} ({len(stations)})",
-            request.url(action="list_genre", genre=genre),
-            icon=folder_icon,
-            fanart=fanart,
-            plot=f"Estações do gênero {genre}.",
-        )
-
-    _finish_directory(request.handle, content="music")
+    _finish_directory(request.handle, content="videos")
 
 
-def show_intl_menu(request: Request, catalog: RadioCatalog, fanart: str) -> None:
-    intl = catalog.get_international_groups()
-    folder_icon = _icon("common", "folder.png")
-
-    for region, stations in intl.items():
-        _add_directory_item(
-            request.handle,
-            f"{region} ({len(stations)})",
-            request.url(action="list_intl", region=region),
-            icon=folder_icon,
-            fanart=fanart,
-            plot=f"Estações internacionais em {region}.",
-        )
-
-    _finish_directory(request.handle, content="music")
-
-
-def show_station_list(request: Request, stations: List[Dict[str, Any]], favorites: FavoritesManager, fanart: str) -> None:
+def show_station_list(
+    request: Request,
+    stations: List[Dict[str, Any]],
+    favorites: FavoritesManager,
+    fanart: str,
+) -> None:
     for s in stations:
         _render_station_item(request, s, favorites, fanart)
-    _finish_directory(request.handle, content="songs")
+    _finish_directory(request.handle, content="videos")
 
 
 def handle_play(request: Request, catalog: RadioCatalog) -> None:
+    """Resolve stream dinamicamente e ativa o Player OSD frontal em tela cheia (estilo vídeo)."""
+    import xbmc
     import xbmcgui
     import xbmcplugin
 
     guide_id = request.params.get("guide_id", "")
-    station = catalog.get_station(guide_id)
-    if not station:
-        xbmcplugin.setResolvedUrl(request.handle, False, xbmcgui.ListItem())
-        return
+    param_name = request.params.get("name")
+    param_subtext = request.params.get("subtext", "")
+    param_logo = request.params.get("logo", "")
+    param_cat = request.params.get("cat", "")
 
-    stream_url = station.get("direct_stream_url")
-    if not stream_url:
-        all_s = station.get("all_streams", [])
-        if all_s:
-            stream_url = all_s[0].get("url")
+    fallback_station = catalog.get_station(guide_id)
+    name = param_name or (fallback_station.get("name") if fallback_station else "Rádio ao Vivo")
+    subtext = param_subtext or (fallback_station.get("subtext") if fallback_station else "")
+    logo = param_logo or (fallback_station.get("logo") if fallback_station else "") or _icon("common", "folder.png")
+    cat = param_cat or (fallback_station.get("category") if fallback_station else "Rádio")
 
-    if not stream_url:
+    # Resolução dinâmica do stream via Tune.ashx (com tokens frescos) ou fallback para cache
+    stream_info = catalog.resolve_station_stream(guide_id, fallback_station)
+
+    if not stream_info or not stream_info.get("url"):
         from saile_core.notifications import notify_error
-        notify_error("sRadio", "Stream indisponível para esta estação")
+        notify_error("sRadio", f"Stream indisponível para {name}")
         xbmcplugin.setResolvedUrl(request.handle, False, xbmcgui.ListItem())
         return
 
-    name = station.get("name", "Rádio")
-    subtext = station.get("subtext", "")
-    logo = station.get("logo", "")
+    stream_url = stream_info["url"]
+    bitrate = stream_info.get("bitrate") or ""
+    media_type = stream_info.get("media_type") or "mp3"
+    fanart_path = _icon("stv", "fanart.jpg")
 
     item = xbmcgui.ListItem(label=name, path=stream_url)
-    item.setArt({"icon": logo, "thumb": logo})
-    item.setInfo("music", {
-        "title": name,
-        "artist": subtext or station.get("category", ""),
-        "genre": station.get("category", ""),
+    item.setArt({
+        "icon": logo,
+        "thumb": logo,
+        "poster": logo,
+        "fanart": fanart_path,
+        "clearlogo": logo,
     })
-    item.setProperty("IsPlayable", "true")
 
+    _set_video_metadata(
+        item=item,
+        title=name,
+        artist=subtext or cat,
+        genre=cat,
+        plot=f"{name}\n{subtext}\n\nTransmissão oficial ao vivo.\nFormato: {media_type.upper()}\nBitrate: {bitrate} kbps",
+    )
+    item.setProperty("IsPlayable", "true")
+    item.setProperty("KeepAlive", "true")
+    item.setProperty("mimetype", "audio/mpeg" if media_type == "mp3" else "application/x-mpegURL")
+
+    # Resolver URL para o Kodi iniciar a reprodução
     xbmcplugin.setResolvedUrl(request.handle, True, item)
+
+    # Forçar a abertura da janela do player em tela cheia com barra de controles frontais
+    xbmc.executebuiltin("ActivateWindow(fullscreenvideo)")
 
 
 def handle_toggle_fav(request: Request, catalog: RadioCatalog, favorites: FavoritesManager) -> None:
@@ -287,7 +418,13 @@ def handle_toggle_fav(request: Request, catalog: RadioCatalog, favorites: Favori
     guide_id = request.params.get("guide_id", "")
     station = catalog.get_station(guide_id)
     if not station:
-        return
+        station = {
+            "guide_id": guide_id,
+            "name": request.params.get("name", "Rádio"),
+            "subtext": request.params.get("subtext", ""),
+            "logo": request.params.get("logo", ""),
+            "category": request.params.get("cat", ""),
+        }
 
     added = favorites.toggle(station)
     msg = f"{station.get('name')} adicionada aos Favoritos" if added else f"{station.get('name')} removida dos Favoritos"
@@ -298,7 +435,7 @@ def handle_toggle_fav(request: Request, catalog: RadioCatalog, favorites: Favori
 def handle_search(request: Request, catalog: RadioCatalog, favorites: FavoritesManager, fanart: str) -> None:
     import xbmcgui
     dialog = xbmcgui.Dialog()
-    query = dialog.input("Buscar Rádio (Nome, Cidade ou Gênero):", type=xbmcgui.INPUT_ALPHANUM)
+    query = dialog.input("Buscar Rádio (Nome, Cidade ou Frequência):", type=xbmcgui.INPUT_ALPHANUM)
     if not query:
         show_home(request, catalog, favorites, fanart)
         return
@@ -333,6 +470,10 @@ def run(argv: List[str]) -> None:
         handle_search(request, catalog, favorites, fanart)
         return
 
+    if action == "browse":
+        show_browse_directory(request, catalog, favorites, fanart)
+        return
+
     if action == "favorites":
         favs = favorites.get_all()
         show_station_list(request, favs, favorites, fanart)
@@ -343,36 +484,15 @@ def run(argv: List[str]) -> None:
         return
 
     if action == "brazil_menu":
-        show_brazil_menu(request, catalog, fanart)
-        return
-
-    if action == "list_city":
-        city = request.params.get("city", "")
-        groups = catalog.get_brazil_groups()
-        stations = groups.get(city, [])
-        show_station_list(request, stations, favorites, fanart)
+        show_browse_directory(request, catalog, favorites, fanart)
         return
 
     if action == "genres_menu":
-        show_genres_menu(request, catalog, fanart)
-        return
-
-    if action == "list_genre":
-        genre = request.params.get("genre", "")
-        genres = catalog.get_genre_groups()
-        stations = genres.get(genre, [])
-        show_station_list(request, stations, favorites, fanart)
+        show_browse_directory(request, catalog, favorites, fanart)
         return
 
     if action == "intl_menu":
-        show_intl_menu(request, catalog, fanart)
-        return
-
-    if action == "list_intl":
-        region = request.params.get("region", "")
-        intl = catalog.get_international_groups()
-        stations = intl.get(region, [])
-        show_station_list(request, stations, favorites, fanart)
+        show_browse_directory(request, catalog, favorites, fanart)
         return
 
     if action == "all_stations":

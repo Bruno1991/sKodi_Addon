@@ -1,3 +1,0 @@
-1.0.1
-- Novas artes oficiais de alta definição (ícone 512x512 e fanart 1536x1024).
-- Otimização do catálogo de estações e carregamento de categorias.

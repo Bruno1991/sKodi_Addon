@@ -3,12 +3,13 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SRADIO_LIB = ROOT / "addons" / "plugin.audio.sradio" / "resources" / "lib"
 sys.path.insert(0, str(SRADIO_LIB))
 
-from sradio.catalog import RadioCatalog, normalize_text
+from sradio.catalog import RadioCatalog, TuneInAPI, normalize_text
 from sradio.favorites import FavoritesManager
 from sradio.routing import Request
 
@@ -32,9 +33,10 @@ class SRadioCatalogTests(unittest.TestCase):
         self.assertEqual(station["guide_id"], first_id)
         self.assertTrue("direct_stream_url" in station)
 
-    def test_search_station(self) -> None:
-        results = self.catalog.search("FM")
-        self.assertGreater(len(results), 0)
+    def test_search_station_fallback(self) -> None:
+        with patch.object(TuneInAPI, "search", return_value=[]):
+            results = self.catalog.search("FM")
+            self.assertGreater(len(results), 0)
 
     def test_brazil_groups(self) -> None:
         groups = self.catalog.get_brazil_groups()
@@ -49,6 +51,93 @@ class SRadioCatalogTests(unittest.TestCase):
     def test_featured_stations(self) -> None:
         featured = self.catalog.get_featured()
         self.assertGreater(len(featured), 0)
+
+    def test_resolve_station_stream_fallback(self) -> None:
+        with patch.object(TuneInAPI, "resolve_stream", return_value=None):
+            all_stations = self.catalog.get_all()
+            first_id = all_stations[0]["guide_id"]
+            stream = self.catalog.resolve_station_stream(first_id)
+            self.assertIsNotNone(stream)
+            self.assertIn("url", stream)
+            self.assertTrue(stream["url"].startswith("http"))
+
+
+class TuneInAPITests(unittest.TestCase):
+    def test_build_url_adds_partner_and_json(self) -> None:
+        url = TuneInAPI._build_url("Browse.ashx", {"c": "music"})
+        self.assertIn("render=json", url)
+        self.assertIn("partnerId=xwhZkVKi", url)
+        self.assertIn("c=music", url)
+
+    def test_build_url_preserves_existing_url(self) -> None:
+        orig = "http://opml.radiotime.com/Browse.ashx?c=local"
+        built = TuneInAPI._build_url(orig)
+        self.assertIn("render=json", built)
+        self.assertIn("partnerId=xwhZkVKi", built)
+        self.assertIn("c=local", built)
+
+    def test_parse_outlines_station_and_folder(self) -> None:
+        raw_outlines = [
+            {
+                "element": "outline",
+                "type": "audio",
+                "text": "Antena 1 FM",
+                "guide_id": "s1234",
+                "URL": "http://opml.radiotime.com/Tune.ashx?id=s1234",
+                "image": "http://logo.png",
+                "bitrate": "128",
+            },
+            {
+                "element": "outline",
+                "type": "link",
+                "text": "São Paulo",
+                "URL": "http://opml.radiotime.com/Browse.ashx?id=r101223",
+            },
+            {
+                "element": "outline",
+                "text": "Shows Populares",
+                "children": [
+                    {
+                        "element": "outline",
+                        "type": "audio",
+                        "text": "Jovem Pan News",
+                        "guide_id": "s7047",
+                        "bitrate": "128",
+                    }
+                ],
+            },
+        ]
+
+        parsed = TuneInAPI._parse_outlines(raw_outlines)
+        self.assertEqual(len(parsed), 3)
+
+        # Item 1: Estação
+        self.assertFalse(parsed[0]["is_folder"])
+        self.assertEqual(parsed[0]["guide_id"], "s1234")
+        self.assertEqual(parsed[0]["name"], "Antena 1 FM")
+
+        # Item 2: Pasta
+        self.assertTrue(parsed[1]["is_folder"])
+        self.assertEqual(parsed[1]["title"], "São Paulo")
+
+        # Item 3: Filho descompactado
+        self.assertFalse(parsed[2]["is_folder"])
+        self.assertEqual(parsed[2]["guide_id"], "s7047")
+        self.assertEqual(parsed[2]["name"], "Jovem Pan News")
+
+    def test_resolve_stream_selection(self) -> None:
+        mock_payload = {
+            "head": {"status": "200"},
+            "body": [
+                {"url": "http://stream1.mp3", "bitrate": 64, "reliability": 80, "media_type": "mp3"},
+                {"url": "http://stream2.mp3", "bitrate": 128, "reliability": 100, "media_type": "mp3"},
+            ],
+        }
+        with patch.object(TuneInAPI, "_fetch_json", return_value=mock_payload):
+            resolved = TuneInAPI.resolve_stream("s1234")
+            self.assertIsNotNone(resolved)
+            self.assertEqual(resolved["url"], "http://stream2.mp3")
+            self.assertEqual(resolved["bitrate"], 128)
 
 
 class SRadioFavoritesTests(unittest.TestCase):
@@ -89,6 +178,11 @@ class SRadioRoutingTests(unittest.TestCase):
         url = req.url(action="play", guide_id="s123")
         self.assertIn("action=play", url)
         self.assertIn("guide_id=s123", url)
+
+    def test_request_browse_url(self) -> None:
+        req = Request.from_argv(["plugin://plugin.audio.sradio/", "2", "?action=browse&url=Browse.ashx%3Fc%3Dmusic"])
+        self.assertEqual(req.action, "browse")
+        self.assertEqual(req.params.get("url"), "Browse.ashx?c=music")
 
 
 if __name__ == "__main__":

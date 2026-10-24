@@ -1,0 +1,17 @@
+<advancedsettings version="1.0">
+  <audio>
+    <!-- Mantém o dispositivo de áudio sempre ativo para reprodução contínua com tela bloqueada -->
+    <streamsilence>1</streamsilence>
+    <playcountminimumpercent>99</playcountminimumpercent>
+  </audio>
+  <network>
+    <!-- Buffer contínuo em RAM (50MB) para resiliência a oscilações de rede em segundo plano -->
+    <buffermode>1</buffermode>
+    <memorysize>52428800</memorysize>
+    <readfactor>5</readfactor>
+  </network>
+  <powermanagement>
+    <!-- Evita suspensão ou desligamento do Kodi por inatividade durante reprodução -->
+    <shutdowntime>0</shutdowntime>
+  </powermanagement>
+</advancedsettings>

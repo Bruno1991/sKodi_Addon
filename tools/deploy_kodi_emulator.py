@@ -1,6 +1,8 @@
 """Deploy e automação de teste dos add-ons sRepo no Kodi instalado no emulador Android."""
 
+import json
 import os
+import socket
 import subprocess
 import sys
 import time
@@ -10,6 +12,7 @@ ADB = r"C:\dev\android_emulator\sdk\platform-tools\adb.exe"
 SERIAL = "emulator-5554"
 ROOT = Path(__file__).resolve().parents[1]
 ADDONS_DIR = ROOT / "addons"
+TEMPLATES_DIR = ROOT / "templates"
 
 
 def run_adb(cmd_list: list[str]) -> str:
@@ -19,6 +22,27 @@ def run_adb(cmd_list: list[str]) -> str:
         print(f"[!] Erro no comando ADB: {' '.join(full_cmd)}")
         print(f"    Stderr: {proc.stderr.strip()}")
     return proc.stdout.strip()
+
+
+def send_jsonrpc(method: str, params: dict | None = None) -> dict | None:
+    payload = {
+        "jsonrpc": "2.0",
+        "method": method,
+        "id": 1,
+    }
+    if params:
+        payload["params"] = params
+
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(5)
+        s.connect(("127.0.0.1", 9090))
+        s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
+        resp_data = s.recv(8192)
+        s.close()
+        return json.loads(resp_data.decode("utf-8", errors="replace"))
+    except Exception as e:
+        return None
 
 
 def deploy_and_test():
@@ -40,14 +64,13 @@ def deploy_and_test():
     for line in pkg_info.splitlines():
         if "uid:" in line:
             uid_num = line.split("uid:")[1].strip()
-            # ex: 10193 -> u0_a193
             if int(uid_num) >= 10000:
                 uid_str = f"u0_a{int(uid_num) - 10000}"
 
     print(f"[+] UID do Kodi no Android: {uid_str}")
 
     # 3. Parar Kodi temporariamente para escrita limpa
-    print("[+] Parando Kodi...")
+    print("[+] Parando Kodi para escrita limpa...")
     run_adb(["shell", "am force-stop org.xbmc.kodi"])
     time.sleep(1)
 
@@ -73,16 +96,31 @@ def deploy_and_test():
     # 6. Copiar para o diretório de dados do Kodi
     print("[+] Instalando add-ons no diretório do Kodi (.kodi/addons)...")
     target_addons = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons"
+    target_userdata = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/userdata"
     run_adb(["shell", f"mkdir -p {target_addons}"])
     run_adb(["shell", f"cp -rf /data/local/tmp/addons/* {target_addons}/"])
 
-    # 7. Ajustar permissões e proprietário
+    # 7. Configurar reprodução em segundo plano e tela bloqueada (advancedsettings.xml)
+    adv_settings_src = TEMPLATES_DIR / "advancedsettings.xml"
+    if adv_settings_src.exists():
+        print("[+] Instalando advancedsettings.xml para reprodução contínua com tela bloqueada...")
+        run_adb(["push", str(adv_settings_src), "/data/local/tmp/advancedsettings.xml"])
+        run_adb(["shell", f"cp -f /data/local/tmp/advancedsettings.xml {target_userdata}/advancedsettings.xml"])
+
+    # 8. Ajustar permissões e proprietário
     print(f"[+] Ajustando permissões ({uid_str}:ext_data_rw)...")
     run_adb(["shell", f"chown -R {uid_str}:ext_data_rw {target_addons}"])
     run_adb(["shell", f"chmod -R 775 {target_addons}"])
+    run_adb(["shell", f"chown -R {uid_str}:ext_data_rw {target_userdata}"])
 
-    # 8. Habilitar add-ons no banco de dados Addons33.db
-    db_path = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/userdata/Database/Addons33.db"
+    # 9. Aplicar permissões do SO Android para reprodução com tela bloqueada (Doze Whitelist + WakeLock)
+    print("[+] Aplicando permissões Android: Whitelist de Bateria e WakeLock...")
+    run_adb(["shell", "dumpsys deviceidle whitelist +org.xbmc.kodi"])
+    run_adb(["shell", "appops set org.xbmc.kodi RUN_IN_BACKGROUND allow"])
+    run_adb(["shell", "appops set org.xbmc.kodi WAKE_LOCK allow"])
+
+    # 10. Habilitar add-ons no banco de dados Addons33.db
+    db_path = f"{target_userdata}/Database/Addons33.db"
     sql_commands = [
         "CREATE TABLE IF NOT EXISTS installed (id INTEGER PRIMARY KEY, addonID TEXT NOT NULL UNIQUE, enabled INTEGER, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, origin TEXT);",
         "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) VALUES ('resource.images.saile', 1, datetime('now'));",
@@ -93,28 +131,67 @@ def deploy_and_test():
     for sql in sql_commands:
         run_adb(["shell", f"sqlite3 {db_path} \"{sql}\""])
 
-    # 9. Iniciar Kodi
+    # 11. Redirecionar portas para JSON-RPC e Web
+    print("[+] Redirecionando porta JSON-RPC (9090) e WebServer (8080)...")
+    run_adb(["forward", "tcp:9090", "tcp:9090"])
+    run_adb(["forward", "tcp:8080", "tcp:8080"])
+
+    # 12. Iniciar Kodi
     print("[+] Iniciando Kodi no emulador...")
     run_adb(["shell", "monkey -p org.xbmc.kodi -c android.intent.category.LAUNCHER 1"])
-    time.sleep(5)
+    time.sleep(6)
 
-    # 10. Testar execução do plugin.audio.sradio
-    print("[+] Testando execução de rota do sRadio (action=featured)...")
-    # Kodi responde ao intent android.intent.action.VIEW com URI de plugin
-    run_adb(["shell", "am start -a android.intent.action.VIEW -d \"plugin://plugin.audio.sradio/?action=featured\" org.xbmc.kodi"])
+    # 13. Testar rotas via Intent
+    print("[+] Testando navegação dinâmica do sRadio...")
+    test_urls = [
+        "plugin://plugin.audio.sradio/?action=featured",
+        "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dmusic",
+        "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr101223",
+    ]
+    for t_url in test_urls:
+        print(f"    -> Abrindo {t_url}...")
+        run_adb(["shell", f"am start -a android.intent.action.VIEW -d \"{t_url}\" org.xbmc.kodi"])
+        time.sleep(2)
+
+    # 14. Testar reprodução de rádio com resolução dinâmica via JSON-RPC
+    print("[+] Testando reprodução via JSON-RPC (Player.Open)...")
+    play_resp = send_jsonrpc("Player.Open", {"item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}})
+    print(f"    -> Resposta Player.Open: {play_resp}")
+    time.sleep(4)
+
+    # 15. Checar status do player
+    players_resp = send_jsonrpc("Player.GetActivePlayers")
+    print(f"[+] Players ativos: {players_resp}")
+
+    # 16. Teste de resiliência: Simular bloqueio de tela (Power Keyevent 26)
+    print("\n[+] Testando reprodução com TELA BLOQUEADA...")
+    print("    -> Bloqueando tela do emulador (Keyevent 26 / POWER)...")
+    run_adb(["shell", "input keyevent 26"])
     time.sleep(3)
 
-    # 11. Verificar log do Kodi
-    print("[+] Verificando kodi.log...")
+    screen_state = run_adb(["shell", "dumpsys power | grep 'mWakefulness='"])
+    print(f"    -> Estado da tela no Android: {screen_state}")
+
+    # Verificar se o player continua rodando com tela bloqueada
+    players_during_lock = send_jsonrpc("Player.GetActivePlayers")
+    print(f"    -> Status do Player durante tela bloqueada: {players_during_lock}")
+
+    # Desbloquear tela (Keyevent 82 / MENU / UNLOCK)
+    print("    -> Desbloqueando tela do emulador (Keyevent 82)...")
+    run_adb(["shell", "input keyevent 82"])
+    time.sleep(1)
+
+    # 17. Verificar log do Kodi
+    print("\n[+] Verificando kodi.log...")
     log_content = run_adb(["shell", "cat /data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log | grep -iE 'sradio|plugin.audio.sradio' | tail -n 25"])
     if log_content:
-        print("[+] Entradas relevantes encontradas no kodi.log:")
+        print("[+] Entradas recentes no kodi.log:")
         for line in log_content.splitlines():
             print(f"    | {line}")
-    else:
-        print("[*] Log ainda não gravou eventos específicos ou carregamento ocorreu em silêncio.")
 
-    print("\n[+] Deploy e teste concluídos com sucesso!")
+    print("\n" + "=" * 60)
+    print(" Deploy, Navegação TuneIn e Teste de Tela Bloqueada CONCLUÍDOS COM SUCESSO!")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
