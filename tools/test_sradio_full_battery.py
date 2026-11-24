@@ -1,4 +1,4 @@
-"""Bateria completa de testes automatizados para todos os menus do sRadio no Kodi (Emulador Android).
+"""Bateria completa de testes automatizados dos menus do sRadio no Kodi (Emulador Android).
 
 Executa navegação em 100% dos menus raiz e submenus, testa busca, favoritos, reprodução
 dinâmica e analisa o arquivo kodi.log linha por linha em busca de erros, exceções ou alertas.
@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ADB = r"C:\dev\android_emulator\sdk\platform-tools\adb.exe"
 SERIAL = "emulator-5554"
@@ -25,16 +25,26 @@ def log(msg: str) -> None:
 
 
 def run_adb(cmd_list: list[str]) -> str:
-    full_cmd = [ADB, "-s", SERIAL] + cmd_list
-    proc = subprocess.run(full_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    full_cmd = [ADB, "-s", SERIAL, *cmd_list]
+    proc = subprocess.run(
+        full_cmd,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
     if proc.returncode != 0:
         log(f"[!] Erro no comando ADB: {' '.join(full_cmd)}")
         log(f"    Stderr: {proc.stderr.strip()}")
     return proc.stdout.strip()
 
 
-def send_jsonrpc(method: str, params: Optional[Dict[str, Any]] = None, timeout: int = 12) -> Optional[Dict[str, Any]]:
-    payload = {
+def send_jsonrpc(
+    method: str,
+    params: dict[str, Any] | None = None,
+    timeout: int = 12,
+) -> dict[str, Any] | None:
+    payload: dict[str, Any] = {
         "jsonrpc": "2.0",
         "method": method,
         "id": 1,
@@ -43,47 +53,45 @@ def send_jsonrpc(method: str, params: Optional[Dict[str, Any]] = None, timeout: 
         payload["params"] = params
 
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(timeout)
-        s.connect(("127.0.0.1", 9090))
-        s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
-
-        # Leitor de stream JSON com rastreamento de profundidade de chaves
         buf = bytearray()
-        depth = 0
-        in_string = False
-        escape = False
-        started = False
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(timeout)
+            s.connect(("127.0.0.1", 9090))
+            s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
 
-        while True:
-            chunk = s.recv(16384)
-            if not chunk:
-                break
-            buf.extend(chunk)
+            depth = 0
+            in_string = False
+            escape = False
+            started = False
 
-            for byte in chunk:
-                char = chr(byte)
-                if escape:
-                    escape = False
-                    continue
-                if char == "\\":
-                    escape = True
-                    continue
-                if char == '"':
-                    in_string = not in_string
-                    continue
-                if not in_string:
-                    if char == "{":
-                        depth += 1
-                        started = True
-                    elif char == "}":
-                        depth -= 1
-                        if started and depth == 0:
-                            break
-            if started and depth == 0:
-                break
+            while True:
+                chunk = s.recv(16384)
+                if not chunk:
+                    break
+                buf.extend(chunk)
 
-        s.close()
+                for byte in chunk:
+                    char = chr(byte)
+                    if escape:
+                        escape = False
+                        continue
+                    if char == "\\":
+                        escape = True
+                        continue
+                    if char == '"':
+                        in_string = not in_string
+                        continue
+                    if not in_string:
+                        if char == "{":
+                            depth += 1
+                            started = True
+                        elif char == "}":
+                            depth -= 1
+                            if started and depth == 0:
+                                break
+                if started and depth == 0:
+                    break
+
         raw_resp = buf.decode("utf-8", errors="replace").strip()
         if not raw_resp:
             return None
@@ -93,10 +101,18 @@ def send_jsonrpc(method: str, params: Optional[Dict[str, Any]] = None, timeout: 
         return None
 
 
-def get_directory(url: str, timeout: int = 12) -> Tuple[bool, List[Dict[str, Any]], str]:
-    resp = send_jsonrpc("Files.GetDirectory", {"directory": url, "media": "files", "properties": ["thumbnail", "art"]}, timeout=timeout)
+def get_directory(url: str, timeout: int = 12) -> tuple[bool, list[dict[str, Any]], str]:
+    resp = send_jsonrpc(
+        "Files.GetDirectory",
+        {"directory": url, "media": "files", "properties": ["thumbnail", "art"]},
+        timeout=timeout,
+    )
     if not resp or "error" in resp:
-        err = resp.get("error", {}).get("message", "Sem resposta do Kodi") if resp else "Timeout ou erro de conexão"
+        err = (
+            resp.get("error", {}).get("message", "Sem resposta do Kodi")
+            if resp
+            else "Timeout ou erro de conexão"
+        )
         return False, [], str(err)
 
     files = resp.get("result", {}).get("files", [])
@@ -105,7 +121,9 @@ def get_directory(url: str, timeout: int = 12) -> Tuple[bool, List[Dict[str, Any
 
 def sync_code_to_emulator() -> None:
     log("[+] Sincronizando código atualizado do sRadio e artwork compartilhada com o emulador...")
-    target_addons = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/plugin.audio.sradio"
+    target_addons = (
+        "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/plugin.audio.sradio"
+    )
     local_sradio = ADDONS_DIR / "plugin.audio.sradio"
 
     run_adb(["push", str(local_sradio), "/data/local/tmp/"])
@@ -113,7 +131,9 @@ def sync_code_to_emulator() -> None:
     run_adb(["shell", f"chown -R u0_a193:ext_data_rw {target_addons}"])
     run_adb(["shell", f"chmod -R 775 {target_addons}"])
 
-    target_images = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/resource.images.saile"
+    target_images = (
+        "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/addons/resource.images.saile"
+    )
     local_images = ADDONS_DIR / "resource.images.saile"
     run_adb(["push", str(local_images), "/data/local/tmp/"])
     run_adb(["shell", f"cp -rf /data/local/tmp/resource.images.saile/* {target_images}/"])
@@ -124,15 +144,18 @@ def sync_code_to_emulator() -> None:
 
 
 def get_log_offset() -> int:
-    out = run_adb(["shell", "wc -c /data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log"])
+    out = run_adb(
+        ["shell", "wc -c /data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log"]
+    )
     try:
         return int(out.split()[0])
     except Exception:
         return 0
 
 
-def read_log_since(offset: int) -> List[str]:
-    out = run_adb(["shell", f"tail -c +{offset + 1} /data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log"])
+def read_log_since(offset: int) -> list[str]:
+    log_path = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log"
+    out = run_adb(["shell", f"tail -c +{offset + 1} {log_path}"])
     return out.splitlines()
 
 
@@ -166,7 +189,7 @@ def ensure_kodi_running() -> None:
                 return
 
 
-def run_battery() -> Dict[str, Any]:
+def run_battery() -> dict[str, Any]:
     log("=" * 70)
     log(" Bateria Completa de Testes de Todos os Menus do sRadio")
     log("=" * 70)
@@ -184,25 +207,105 @@ def run_battery() -> Dict[str, Any]:
     # Definição dos menus e rotas para teste sistemático
     test_suite = [
         ("T01_ROOT", "Menu Raiz / Home", "plugin://plugin.audio.sradio/", 10),
-        ("T02_LOCAL", "Rádios Locais (Browse c=local)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dlocal", 1),
-        ("T03_BEST", "Melhores & Em Alta (Browse c=best)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dbest", 3),
-        ("T04_BRAZIL", "Brasil Cidades & Estados (Browse id=r101223)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr101223", 5),
-        ("T05_BRAZIL_SUB", "Submenu Brasil - Cidades de SP (id=r101223 subfolder)", "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dr101223%26partnerId%3DxwhZkVKi", 5),
-        ("T06_MUSIC", "Música por Gênero (Browse c=music)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dmusic", 5),
-        ("T07_MUSIC_ROCK", "Submenu Música - Gênero Rock (id=c57951)", "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dc57951%26partnerId%3DxwhZkVKi", 3),
-        ("T08_TALK", "Notícias & Conversas (Browse c=talk)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dtalk", 3),
-        ("T09_SPORTS", "Esportes ao Vivo (Browse c=sports)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dsports", 2),
-        ("T10_LOCATION", "Por Localização / Mundo (Browse id=r0)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr0", 5),
-        ("T11_LOCATION_SA", "Submenu Localização - América do Sul (id=r101219)", "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dr101219%26partnerId%3DxwhZkVKi", 5),
-        ("T12_LANG", "Por Idioma (Browse c=lang)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dlang", 5),
-        ("T13_PODCAST", "Podcasts & Programas (Browse c=podcast)", "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dpodcast", 3),
-        ("T14_OFFLINE_CACHE", "Catálogo em Cache Offline (action=all_stations)", "plugin://plugin.audio.sradio/?action=all_stations", 1000),
-        ("T15_SEARCH_NAME", "Busca em Tempo Real por Nome (query=Jovem Pan)", "plugin://plugin.audio.sradio/?action=search&query=Jovem+Pan", 1),
-        ("T16_SEARCH_FREQ", "Busca em Tempo Real por Frequência (query=100.1)", "plugin://plugin.audio.sradio/?action=search&query=100.1", 1),
-        ("T17_FAVORITES", "Menu de Favoritos (action=favorites)", "plugin://plugin.audio.sradio/?action=favorites", 0),
+        (
+            "T02_LOCAL",
+            "Rádios Locais (Browse c=local)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dlocal",
+            1,
+        ),
+        (
+            "T03_BEST",
+            "Melhores & Em Alta (Browse c=best)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dbest",
+            3,
+        ),
+        (
+            "T04_BRAZIL",
+            "Brasil Cidades & Estados (Browse id=r101223)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr101223",
+            5,
+        ),
+        (
+            "T05_BRAZIL_SUB",
+            "Submenu Brasil - Cidades de SP (id=r101223 subfolder)",
+            "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dr101223%26partnerId%3DxwhZkVKi",
+            5,
+        ),
+        (
+            "T06_MUSIC",
+            "Música por Gênero (Browse c=music)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dmusic",
+            5,
+        ),
+        (
+            "T07_MUSIC_ROCK",
+            "Submenu Música - Gênero Rock (id=c57951)",
+            "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dc57951%26partnerId%3DxwhZkVKi",
+            3,
+        ),
+        (
+            "T08_TALK",
+            "Notícias & Conversas (Browse c=talk)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dtalk",
+            3,
+        ),
+        (
+            "T09_SPORTS",
+            "Esportes ao Vivo (Browse c=sports)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dsports",
+            2,
+        ),
+        (
+            "T10_LOCATION",
+            "Por Localização / Mundo (Browse id=r0)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr0",
+            5,
+        ),
+        (
+            "T11_LOCATION_SA",
+            "Submenu Localização - América do Sul (id=r101219)",
+            "plugin://plugin.audio.sradio/?action=browse&url=http%3A%2F%2Fopml.radiotime.com%2FBrowse.ashx%3Fid%3Dr101219%26partnerId%3DxwhZkVKi",
+            5,
+        ),
+        (
+            "T12_LANG",
+            "Por Idioma (Browse c=lang)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dlang",
+            5,
+        ),
+        (
+            "T13_PODCAST",
+            "Podcasts & Programas (Browse c=podcast)",
+            "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dpodcast",
+            3,
+        ),
+        (
+            "T14_OFFLINE_CACHE",
+            "Catálogo em Cache Offline (action=all_stations)",
+            "plugin://plugin.audio.sradio/?action=all_stations",
+            1000,
+        ),
+        (
+            "T15_SEARCH_NAME",
+            "Busca em Tempo Real por Nome (query=Jovem Pan)",
+            "plugin://plugin.audio.sradio/?action=search&query=Jovem+Pan",
+            1,
+        ),
+        (
+            "T16_SEARCH_FREQ",
+            "Busca em Tempo Real por Frequência (query=100.1)",
+            "plugin://plugin.audio.sradio/?action=search&query=100.1",
+            1,
+        ),
+        (
+            "T17_FAVORITES",
+            "Menu de Favoritos (action=favorites)",
+            "plugin://plugin.audio.sradio/?action=favorites",
+            0,
+        ),
     ]
 
-    results: Dict[str, Any] = {
+    results: dict[str, Any] = {
         "total": len(test_suite) + 2,
         "passed": 0,
         "failed": 0,
@@ -221,11 +324,28 @@ def run_battery() -> Dict[str, Any]:
             for it in items[:3]:
                 log(f"         - {it.get('label')}")
             results["passed"] += 1
-            results["tests"].append({"id": tid, "name": tname, "status": "PASS", "items": len(items), "elapsed": elapsed})
+            results["tests"].append(
+                {
+                    "id": tid,
+                    "name": tname,
+                    "status": "PASS",
+                    "items": len(items),
+                    "elapsed": elapsed,
+                }
+            )
         else:
             log(f"    [FALHA] Retornou {len(items)} itens (esperava >= {min_items}). Erro: {err}")
             results["failed"] += 1
-            results["tests"].append({"id": tid, "name": tname, "status": "FAIL", "items": len(items), "error": err, "elapsed": elapsed})
+            results["tests"].append(
+                {
+                    "id": tid,
+                    "name": tname,
+                    "status": "FAIL",
+                    "items": len(items),
+                    "error": err,
+                    "elapsed": elapsed,
+                }
+            )
 
     # Teste 18: Toggle de Favoritos
     log("\n[*] Executando [T18_FAV_TOGGLE] Adicionar e Remover dos Favoritos...")
@@ -237,23 +357,46 @@ def run_battery() -> Dict[str, Any]:
     get_directory(fav_toggle_url)
     time.sleep(1)
     ok_fav, fav_items, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
-    is_in_fav = any(test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "") for it in fav_items)
+    is_in_fav = any(
+        test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "")
+        for it in fav_items
+    )
 
     # 2. Remover via toggle para limpar
     get_directory(fav_toggle_url)
     time.sleep(1)
     ok_fav2, fav_items2, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
-    is_removed = not any(test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "") for it in fav_items2)
+    is_removed = not any(
+        test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "")
+        for it in fav_items2
+    )
 
     elapsed = round(time.time() - t0, 2)
     if is_in_fav and is_removed:
         log(f"    [OK] Favorito adicionado e removido com sucesso via toggle em {elapsed}s")
         results["passed"] += 1
-        results["tests"].append({"id": "T18_FAV_TOGGLE", "name": "Toggle de Favoritos", "status": "PASS", "elapsed": elapsed})
+        results["tests"].append(
+            {
+                "id": "T18_FAV_TOGGLE",
+                "name": "Toggle de Favoritos",
+                "status": "PASS",
+                "elapsed": elapsed,
+            }
+        )
     else:
-        log(f"    [FALHA] Falha no ciclo toggle de favoritos (adicionado={is_in_fav}, removido={is_removed}).")
+        log(
+            f"    [FALHA] Falha no ciclo toggle de favoritos "
+            f"(adicionado={is_in_fav}, removido={is_removed})."
+        )
         results["failed"] += 1
-        results["tests"].append({"id": "T18_FAV_TOGGLE", "name": "Toggle de Favoritos", "status": "FAIL", "elapsed": elapsed})
+        results["tests"].append(
+            {
+                "id": "T18_FAV_TOGGLE",
+                "name": "Toggle de Favoritos",
+                "status": "FAIL",
+                "elapsed": elapsed,
+            }
+        )
 
     # Teste 19: Reprodução ao Vivo e Verificação do Player
     log("\n[*] Executando [T19_PLAYBACK] Reprodução de Rádio e Player OSD...")
@@ -261,7 +404,13 @@ def run_battery() -> Dict[str, Any]:
     # Player.Open com URL plugin:// direta é recusado pelo Kodi ("ListItem type must be audio
     # or video") sem executar o plugin; pela playlist de áudio o item é resolvido como num clique.
     send_jsonrpc("Playlist.Clear", {"playlistid": 0})
-    send_jsonrpc("Playlist.Add", {"playlistid": 0, "item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}})
+    send_jsonrpc(
+        "Playlist.Add",
+        {
+            "playlistid": 0,
+            "item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"},
+        },
+    )
     play_resp = send_jsonrpc("Player.Open", {"item": {"playlistid": 0, "position": 0}})
 
     active_players: list = []
@@ -272,7 +421,10 @@ def run_battery() -> Dict[str, Any]:
         players_resp = send_jsonrpc("Player.GetActivePlayers")
         active_players = players_resp.get("result", []) if players_resp else []
         if active_players:
-            props = send_jsonrpc("Player.GetProperties", {"playerid": active_players[0]["playerid"], "properties": ["time"]})
+            props = send_jsonrpc(
+                "Player.GetProperties",
+                {"playerid": active_players[0]["playerid"], "properties": ["time"]},
+            )
             t = (props or {}).get("result", {}).get("time", {})
             played_seconds = t.get("minutes", 0) * 60 + t.get("seconds", 0)
             gui = send_jsonrpc("GUI.GetProperties", {"properties": ["currentwindow"]})
@@ -290,11 +442,28 @@ def run_battery() -> Dict[str, Any]:
     if played_seconds >= 3 and window_id in (12005, 12006):
         log(f"    [OK] Rádio tocando em tela cheia ({played_seconds}s) em {elapsed}s")
         results["passed"] += 1
-        results["tests"].append({"id": "T19_PLAYBACK", "name": "Reprodução de Rádio ao Vivo", "status": "PASS", "elapsed": elapsed})
+        results["tests"].append(
+            {
+                "id": "T19_PLAYBACK",
+                "name": "Reprodução de Rádio ao Vivo",
+                "status": "PASS",
+                "elapsed": elapsed,
+            }
+        )
     else:
-        log(f"    [FALHA] Sem reprodução em tela cheia: resposta={play_resp}, tocou={played_seconds}s, janela={window_id}")
+        log(
+            f"    [FALHA] Sem reprodução em tela cheia: "
+            f"resposta={play_resp}, tocou={played_seconds}s, janela={window_id}"
+        )
         results["failed"] += 1
-        results["tests"].append({"id": "T19_PLAYBACK", "name": "Reprodução de Rádio ao Vivo", "status": "FAIL", "elapsed": elapsed})
+        results["tests"].append(
+            {
+                "id": "T19_PLAYBACK",
+                "name": "Reprodução de Rádio ao Vivo",
+                "status": "FAIL",
+                "elapsed": elapsed,
+            }
+        )
 
     # 3. Análise Detalhada dos Logs do Kodi
     log("\n" + "=" * 70)
@@ -304,15 +473,19 @@ def run_battery() -> Dict[str, Any]:
     log_lines = read_log_since(log_offset_start)
     log(f"[+] Total de linhas registradas no log durante a bateria: {len(log_lines)}")
 
-    errors: List[str] = []
-    warnings: List[str] = []
-    sradio_events: List[str] = []
+    errors: list[str] = []
+    warnings: list[str] = []
+    sradio_events: list[str] = []
 
     for line in log_lines:
         line_strip = line.strip()
         line_lower = line_strip.lower()
 
-        if "error <general>" in line_lower or "traceback (most recent call last)" in line_lower or "exception" in line_lower:
+        if (
+            "error <general>" in line_lower
+            or "traceback (most recent call last)" in line_lower
+            or "exception" in line_lower
+        ):
             if not any(ign in line_lower for ign in ["failed to update input device", "zeroconf"]):
                 errors.append(line_strip)
         elif "warning <general>" in line_lower:
@@ -343,7 +516,11 @@ def run_battery() -> Dict[str, Any]:
 
     # Resumo Final
     log("\n" + "=" * 70)
-    log(f" RESUMO DA BATERIA: {results['passed']}/{results['total']} TESTES APROVADOS ({results['passed'] / results['total'] * 100:.1f}%)")
+    pct = results["passed"] / results["total"] * 100
+    log(
+        f" RESUMO DA BATERIA: {results['passed']}/{results['total']} "
+        f"TESTES APROVADOS ({pct:.1f}%)"
+    )
     log("=" * 70)
 
     return results

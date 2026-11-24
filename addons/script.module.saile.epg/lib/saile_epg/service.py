@@ -24,18 +24,24 @@ class EpgService:
         self.repository = EpgRepository(self.database)
 
     @classmethod
-    def for_profile(cls, profile_path: str | Path) -> "EpgService":
+    def for_profile(cls, profile_path: str | Path) -> EpgService:
         return cls(Path(profile_path) / "epg.db")
 
     @classmethod
-    def for_kodi(cls) -> "EpgService":
+    def for_kodi(cls) -> EpgService:
         from saile_core.paths import addon_data_path
 
         return cls(addon_data_path("script.module.saile.epg", "epg.db"))
 
-    def _store_snapshot(self, snapshot: EpgSnapshot, source: str) -> dict[str, object]:
+    def _store_snapshot(
+        self,
+        snapshot: EpgSnapshot,
+        source: str,
+        *,
+        wipe_all: bool = False,
+    ) -> dict[str, object]:
         try:
-            self.repository.replace_snapshot(snapshot)
+            self.repository.replace_snapshot(snapshot, wipe_all=wipe_all)
         except Exception as exc:
             raise EpgSyncError(
                 "EPG-STORE",
@@ -54,11 +60,9 @@ class EpgService:
         window_hours: int = 36,
         wipe_legacy: bool = True,
     ) -> dict[str, object]:
-        """Sincroniza o guia oficial da Claro TV+ diretamente via API oficial com logos em alta resolução."""
-        if wipe_legacy:
-            self.repository.clear_all()
+        """Sincroniza o guia oficial da Claro TV+ preservando o cache caso a rede falhe."""
         snapshot = ClaroEpgProvider(provider_id=provider_id).fetch(window_hours=window_hours)
-        return self._store_snapshot(snapshot, "Claro TV+ Oficial")
+        return self._store_snapshot(snapshot, "Claro TV+ Oficial", wipe_all=wipe_legacy)
 
     def sync_xmltv(
         self,
@@ -69,9 +73,7 @@ class EpgService:
         snapshot = XmltvProvider(url=url, provider_id=provider_id).fetch()
         source = "XMLTV"
         if live_streams is not None:
-            by_epg_id = {
-                channel.epg_id.casefold(): channel for channel in snapshot.channels
-            }
+            by_epg_id = {channel.epg_id.casefold(): channel for channel in snapshot.channels}
             before = len(by_epg_id)
             for channel in extract_xtream_channels(live_streams, provider_id):
                 by_epg_id.setdefault(channel.epg_id.casefold(), channel)

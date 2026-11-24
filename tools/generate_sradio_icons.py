@@ -1,12 +1,14 @@
 """Script para buscar icones oficiais do Google Fonts Material Symbols Outlined,
 salvar SVG, HTML e PNG na pasta artwork/common e sincronizar no resource.images.saile.
 """
+
 from __future__ import annotations
 
 import asyncio
 import urllib.parse
 import urllib.request
 from pathlib import Path
+
 from playwright.async_api import async_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,7 +31,9 @@ ICON_DEFS = [
         "symbol": "whatshot",
         "png": "alta.png",
         "codepoint": "e80e",
-        "description": "Esse icone sera utilizado para o menu de melhores e radios em alta no sRadio",
+        "description": (
+            "Esse icone sera utilizado para o menu de melhores e radios em alta no sRadio"
+        ),
     },
     {
         "symbol": "flag",
@@ -77,19 +81,23 @@ ICON_DEFS = [
         "symbol": "radio",
         "png": "radio.png",
         "codepoint": "e03e",
-        "description": "Esse icone sera utilizado para o menu de catalogo e estacoes de radio no sRadio",
+        "description": (
+            "Esse icone sera utilizado para o menu de catalogo e estacoes de radio no sRadio"
+        ),
     },
 ]
 
 
 def fetch_svg_from_google(symbol_name: str) -> str:
-    url = f"https://raw.githubusercontent.com/google/material-design-icons/master/symbols/web/{symbol_name}/materialsymbolsoutlined/{symbol_name}_48px.svg"
+    url = (
+        "https://raw.githubusercontent.com/google/material-design-icons/master/"
+        f"symbols/web/{symbol_name}/materialsymbolsoutlined/{symbol_name}_48px.svg"
+    )
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=10) as resp:
         content = resp.read().decode("utf-8").strip()
 
-    # Formatar de maneira 100% compativel com o padrao de artwork/common/svg
-    # Exemplo padrao: <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#FFFFFF"><path d="..."/></svg>
+    # Formatar compativel com o padrao de artwork/common/svg (48px, fill #FFFFFF)
     content = content.replace('height="48"', 'height="48px"').replace('width="48"', 'width="48px"')
     if 'fill="' not in content:
         content = content.replace("<svg ", '<svg fill="#FFFFFF" ')
@@ -101,13 +109,21 @@ def generate_html_content(item: dict) -> str:
     symbol = item["symbol"]
     desc = item["description"]
     codepoint = item["codepoint"]
+    var_href = (
+        "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:"
+        f"opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names={symbol}"
+    )
+    static_href = (
+        "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:"
+        f"opsz,wght,FILL,GRAD@48,400,0,0&icon_names={symbol}"
+    )
 
     return f"""<!-- {desc} -->
 
 <!-- https://fonts.google.com/icons -->
 
 <!-- Variable icon font -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names={symbol}" />
+<link rel="stylesheet" href="{var_href}" />
 <style>
 .material-symbols-outlined {{
   font-variation-settings:
@@ -119,7 +135,7 @@ def generate_html_content(item: dict) -> str:
 </style>
 
 <!-- Static icon font -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names={symbol}" />
+<link rel="stylesheet" href="{static_href}" />
 
 <!-- Inserting the icon -->
 <span class="material-symbols-outlined">
@@ -173,7 +189,9 @@ async def render_icons(icons_to_render: list[dict], gradient: str):
 </html>"""
             await page.set_content(html_content)
             await page.wait_for_timeout(50)
-            await page.locator(".mask-container").screenshot(path=str(png_file), omit_background=True)
+            await page.locator(".mask-container").screenshot(
+                path=str(png_file), omit_background=True
+            )
             print(f"[RENDER] {png_name} gerado a partir de {symbol}")
 
         await browser.close()
@@ -202,7 +220,7 @@ def main():
         html_path.write_text(html_content, encoding="utf-8")
         print(f"[HTML] {html_filename} salvo")
 
-    print(f"\nRenderizando PNGs 512x512 com Playwright e gradiente canonico...")
+    print("\nRenderizando PNGs 512x512 com Playwright e gradiente canonico...")
     asyncio.run(render_icons(ICON_DEFS, OFFICIAL_GRADIENT))
 
     print("\nProcesso concluido com sucesso!")

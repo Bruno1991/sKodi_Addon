@@ -48,7 +48,9 @@ class ViewPreferencesTests(unittest.TestCase):
         app_default = AppContainer({"profile_path": self.temp_dir.name})
         self.assertEqual(app_default.preferred_view_mode, 54)
 
-        app_custom = AppContainer({"profile_path": self.temp_dir.name, "preferred_view_mode": "500"})
+        app_custom = AppContainer(
+            {"profile_path": self.temp_dir.name, "preferred_view_mode": "500"}
+        )
         self.assertEqual(app_custom.preferred_view_mode, 500)
 
     def test_init_and_finish_directory_enforces_infowall_view_mode(self) -> None:
@@ -204,7 +206,9 @@ class ViewPreferencesTests(unittest.TestCase):
 
     def test_app_container_prioritizes_database_preference_when_setting_is_empty(self) -> None:
         self.repo.set_preference("view_mode", "54")
-        app_empty_setting = AppContainer({"profile_path": self.temp_dir.name, "preferred_view_mode": ""})
+        app_empty_setting = AppContainer(
+            {"profile_path": self.temp_dir.name, "preferred_view_mode": ""}
+        )
         self.assertEqual(app_empty_setting.preferred_view_mode, 54)
 
         self.repo.set_preference("view_mode", "500")

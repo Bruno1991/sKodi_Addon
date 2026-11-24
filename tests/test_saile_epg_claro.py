@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import json
+import sys
 import time
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+EPG_LIB = Path(__file__).resolve().parents[1] / "addons" / "script.module.saile.epg" / "lib"
+if str(EPG_LIB) not in sys.path:
+    sys.path.insert(0, str(EPG_LIB))
+
 from saile_epg.models import EpgSnapshot
-from saile_epg.providers.claro import ClaroEpgProvider, CLARO_OFFICIAL_CHANNELS
+from saile_epg.providers.claro import CLARO_OFFICIAL_CHANNELS, ClaroEpgProvider
 
 
 class ClaroEpgProviderTests(unittest.TestCase):
@@ -16,7 +22,9 @@ class ClaroEpgProviderTests(unittest.TestCase):
         self.assertGreater(len(CLARO_OFFICIAL_CHANNELS), 30)
 
     @patch("urllib.request.urlopen")
-    def test_fetch_parses_live_channels_and_programs_with_logos(self, mock_urlopen: MagicMock) -> None:
+    def test_fetch_parses_live_channels_and_programs_with_logos(
+        self, mock_urlopen: MagicMock
+    ) -> None:
         now = int(time.time())
         fake_api_response = {
             "status": 200,
@@ -32,7 +40,9 @@ class ClaroEpgProviderTests(unittest.TestCase):
                             {
                                 "title": "Peppa Pig",
                                 "episodeName": "A Festa do Pijama",
-                                "description": "Peppa e seus amigos vão dormir na casa da Zoe Zebra.",
+                                "description": (
+                                    "Peppa e seus amigos vão dormir na casa da Zoe Zebra."
+                                ),
                                 "startTime": now - 600,
                                 "endTime": now + 600,
                                 "seasonNumber": 2,

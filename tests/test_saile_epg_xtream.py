@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import sys
 import unittest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -20,7 +20,7 @@ def encoded(value: str) -> str:
 
 class XtreamEpgProviderTests(unittest.TestCase):
     def test_short_epg_builds_snapshot_and_deduplicates_quality_variants(self) -> None:
-        now = int(datetime(2026, 8, 18, 13, 0, tzinfo=timezone.utc).timestamp())
+        now = int(datetime(2026, 8, 18, 13, 0, tzinfo=UTC).timestamp())
         streams = [
             {
                 "stream_id": "1",
@@ -58,7 +58,7 @@ class XtreamEpgProviderTests(unittest.TestCase):
         self.assertEqual(snapshot.programs[0].description, "Notícias do Rio.")
 
     def test_failure_of_first_channel_does_not_abort_other_channels(self) -> None:
-        now = int(datetime(2026, 8, 18, 13, 0, tzinfo=timezone.utc).timestamp())
+        now = int(datetime(2026, 8, 18, 13, 0, tzinfo=UTC).timestamp())
         streams = [
             {"stream_id": "1", "name": "Canal indisponível", "epg_channel_id": "off"},
             {"stream_id": "2", "name": "Globo HD", "epg_channel_id": "globo"},

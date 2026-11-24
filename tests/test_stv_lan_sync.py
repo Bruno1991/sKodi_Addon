@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import json
+import sys
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock
+
+STV_LIB = Path(__file__).resolve().parents[1] / "addons" / "plugin.video.stv" / "resources" / "lib"
+if str(STV_LIB) not in sys.path:
+    sys.path.insert(0, str(STV_LIB))
 
 from stv.app.lan_sync import (
     ADDON_ID,
@@ -16,15 +22,19 @@ from stv.app.services import AppContainer
 
 class LanSyncTests(unittest.TestCase):
     def test_build_export_payload_sanitizes_secrets(self) -> None:
-        app = AppContainer({
-            "xtream_url": "http://secret-server.com:8080",
-            "xtream_username": "my_secret_user",
-            "xtream_password": "my_secret_password",
-            "parental_pin": "1234",
-            "profile_path": "",
-        })
+        app = AppContainer(
+            {
+                "xtream_url": "http://secret-server.com:8080",
+                "xtream_username": "my_secret_user",
+                "xtream_password": "my_secret_password",
+                "parental_pin": "1234",
+                "profile_path": "",
+            }
+        )
         mock_catalog = MagicMock()
-        mock_catalog.get_favorite_ids.side_effect = lambda scope: ["101", "102"] if scope == "live" else ["201"] if scope == "vod" else ["301"]
+        mock_catalog.get_favorite_ids.side_effect = lambda scope: (
+            ["101", "102"] if scope == "live" else ["201"] if scope == "vod" else ["301"]
+        )
         app._catalog_repo = mock_catalog
 
         payload = build_export_payload(app)

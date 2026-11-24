@@ -16,7 +16,9 @@ TEMPLATES_DIR = ROOT / "templates"
 
 def run_adb(cmd_list: list[str]) -> str:
     full_cmd = [ADB, "-s", SERIAL] + cmd_list
-    proc = subprocess.run(full_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    proc = subprocess.run(
+        full_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     if proc.returncode != 0:
         print(f"[!] Erro no comando ADB: {' '.join(full_cmd)}")
         print(f"    Stderr: {proc.stderr.strip()}")
@@ -33,12 +35,11 @@ def send_jsonrpc(method: str, params: dict | None = None) -> dict | None:
         payload["params"] = params
 
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(5)
-        s.connect(("127.0.0.1", 9090))
-        s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
-        resp_data = s.recv(8192)
-        s.close()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(5)
+            s.connect(("127.0.0.1", 9090))
+            s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
+            resp_data = s.recv(8192)
         return json.loads(resp_data.decode("utf-8", errors="replace"))
     except Exception:
         return None
@@ -104,7 +105,13 @@ def deploy_and_test():
     if adv_settings_src.exists():
         print("[+] Instalando advancedsettings.xml para reprodução contínua com tela bloqueada...")
         run_adb(["push", str(adv_settings_src), "/data/local/tmp/advancedsettings.xml"])
-        run_adb(["shell", f"cp -f /data/local/tmp/advancedsettings.xml {target_userdata}/advancedsettings.xml"])
+        run_adb(
+            [
+                "shell",
+                f"cp -f /data/local/tmp/advancedsettings.xml "
+                f"{target_userdata}/advancedsettings.xml",
+            ]
+        )
 
     # 8. Ajustar permissões e proprietário
     print(f"[+] Ajustando permissões ({uid_str}:ext_data_rw)...")
@@ -112,7 +119,7 @@ def deploy_and_test():
     run_adb(["shell", f"chmod -R 775 {target_addons}"])
     run_adb(["shell", f"chown -R {uid_str}:ext_data_rw {target_userdata}"])
 
-    # 9. Aplicar permissões do SO Android para reprodução com tela bloqueada (Doze Whitelist + WakeLock)
+    # 9. Aplicar permissões Android para tela bloqueada (Doze Whitelist + WakeLock)
     print("[+] Aplicando permissões Android: Whitelist de Bateria e WakeLock...")
     run_adb(["shell", "dumpsys deviceidle whitelist +org.xbmc.kodi"])
     run_adb(["shell", "appops set org.xbmc.kodi RUN_IN_BACKGROUND allow"])
@@ -121,14 +128,30 @@ def deploy_and_test():
     # 10. Habilitar add-ons no banco de dados Addons33.db
     db_path = f"{target_userdata}/Database/Addons33.db"
     sql_commands = [
-        "CREATE TABLE IF NOT EXISTS installed (id INTEGER PRIMARY KEY, addonID TEXT NOT NULL UNIQUE, enabled INTEGER, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, origin TEXT);",
-        "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) VALUES ('resource.images.saile', 1, datetime('now'));",
-        "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) VALUES ('script.module.saile.core', 1, datetime('now'));",
-        "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) VALUES ('plugin.audio.sradio', 1, datetime('now'));",
-        "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) VALUES ('repository.srepo', 1, datetime('now'));",
+        (
+            "CREATE TABLE IF NOT EXISTS installed ("
+            "id INTEGER PRIMARY KEY, addonID TEXT NOT NULL UNIQUE, enabled INTEGER, "
+            "installDate TEXT, lastUpdated TEXT, lastUsed TEXT, origin TEXT);"
+        ),
+        (
+            "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) "
+            "VALUES ('resource.images.saile', 1, datetime('now'));"
+        ),
+        (
+            "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) "
+            "VALUES ('script.module.saile.core', 1, datetime('now'));"
+        ),
+        (
+            "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) "
+            "VALUES ('plugin.audio.sradio', 1, datetime('now'));"
+        ),
+        (
+            "INSERT OR REPLACE INTO installed (addonID, enabled, installDate) "
+            "VALUES ('repository.srepo', 1, datetime('now'));"
+        ),
     ]
     for sql in sql_commands:
-        run_adb(["shell", f"sqlite3 {db_path} \"{sql}\""])
+        run_adb(["shell", f'sqlite3 {db_path} "{sql}"'])
 
     # 11. Redirecionar portas para JSON-RPC e Web
     print("[+] Redirecionando porta JSON-RPC (9090) e WebServer (8080)...")
@@ -143,18 +166,21 @@ def deploy_and_test():
     # 13. Testar rotas via Intent
     print("[+] Testando navegação dinâmica do sRadio...")
     test_urls = [
-        "plugin://plugin.audio.sradio/?action=featured",
+        "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dbest",
         "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fc%3Dmusic",
         "plugin://plugin.audio.sradio/?action=browse&url=Browse.ashx%3Fid%3Dr101223",
     ]
     for t_url in test_urls:
         print(f"    -> Abrindo {t_url}...")
-        run_adb(["shell", f"am start -a android.intent.action.VIEW -d \"{t_url}\" org.xbmc.kodi"])
+        run_adb(["shell", f'am start -a android.intent.action.VIEW -d "{t_url}" org.xbmc.kodi'])
         time.sleep(2)
 
     # 14. Testar reprodução de rádio com resolução dinâmica via JSON-RPC
     print("[+] Testando reprodução via JSON-RPC (Player.Open)...")
-    play_resp = send_jsonrpc("Player.Open", {"item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}})
+    play_resp = send_jsonrpc(
+        "Player.Open",
+        {"item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}},
+    )
     print(f"    -> Resposta Player.Open: {play_resp}")
     time.sleep(4)
 
@@ -182,7 +208,13 @@ def deploy_and_test():
 
     # 17. Verificar log do Kodi
     print("\n[+] Verificando kodi.log...")
-    log_content = run_adb(["shell", "cat /data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log | grep -iE 'sradio|plugin.audio.sradio' | tail -n 25"])
+    log_path = "/data/media/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log"
+    log_content = run_adb(
+        [
+            "shell",
+            f"cat {log_path} | grep -iE 'sradio|plugin.audio.sradio' | tail -n 25",
+        ]
+    )
     if log_content:
         print("[+] Entradas recentes no kodi.log:")
         for line in log_content.splitlines():

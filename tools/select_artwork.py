@@ -1,5 +1,7 @@
-import json
+from __future__ import annotations
+
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -10,9 +12,10 @@ MANIFEST = ARTWORK_DIR / "artwork-manifest.json"
 ADDONS = [
     "repository.srepo",
     "plugin.video.stv",
+    "plugin.audio.sradio",
     "resource.images.saile",
     "script.module.saile.core",
-    "script.module.saile.epg"
+    "script.module.saile.epg",
 ]
 
 COMMON_MAP = {
@@ -41,81 +44,98 @@ EXTRA_SHARED_ASSETS = [
     ("favoritos.png", "stv", "stv/favoritos.png"),
 ]
 
+
 def get_available_styles(category: str) -> list[str]:
     path = ARTWORK_DIR / "addons" / category
     if not path.is_dir():
         return []
     return [d.name for d in path.iterdir() if d.is_dir()]
 
-def generate_manifest(icon_style: str, fanart_style: str) -> dict:
+
+def generate_manifest(icon_style: str, fanart_style: str) -> dict[str, object]:
     assets = []
-    
-    # Addon Icons
+
     for addon in ADDONS:
         icon_src = ARTWORK_DIR / "addons" / "icons" / icon_style / addon / "icon.png"
         if icon_src.exists():
-            assets.append({
-                "source": f"artwork/addons/icons/{icon_style}/{addon}/icon.png",
-                "addon_id": addon,
-                "role": "addon_icon",
-                "destination": f"addons/{addon}/icon.png",
-                "temporary": False
-            })
-        
-    # Addon Fanarts
+            assets.append(
+                {
+                    "source": f"artwork/addons/icons/{icon_style}/{addon}/icon.png",
+                    "addon_id": addon,
+                    "role": "addon_icon",
+                    "destination": f"addons/{addon}/icon.png",
+                    "temporary": False,
+                }
+            )
+
     for addon in ADDONS:
         fanart_src = ARTWORK_DIR / "addons" / "fanarts" / fanart_style / addon / "fanart.jpg"
         if fanart_src.exists():
-            assets.append({
-                "source": f"artwork/addons/fanarts/{fanart_style}/{addon}/fanart.jpg",
-                "addon_id": addon,
-                "role": "addon_fanart",
-                "destination": f"addons/{addon}/fanart.jpg",
-                "temporary": False
-            })
-            
-    # Common and shared assets
-    all_shared = list(COMMON_MAP.items()) + [(fn, (sc, ds)) for fn, sc, ds in EXTRA_SHARED_ASSETS]
-    for filename, (scope, dest_suffix) in all_shared:
-        assets.append({
-            "source": f"artwork/common/png/{filename}",
-            "addon_id": "resource.images.saile",
-            "role": "shared_ui_asset",
-            "scope": scope,
-            "destination": f"addons/resource.images.saile/resources/media/{dest_suffix}",
-            "temporary": False
-        })
+            assets.append(
+                {
+                    "source": f"artwork/addons/fanarts/{fanart_style}/{addon}/fanart.jpg",
+                    "addon_id": addon,
+                    "role": "addon_fanart",
+                    "destination": f"addons/{addon}/fanart.jpg",
+                    "temporary": False,
+                }
+            )
 
-    manifest = {
+    all_shared = [*COMMON_MAP.items(), *((fn, (sc, ds)) for fn, sc, ds in EXTRA_SHARED_ASSETS)]
+    for filename, (scope, dest_suffix) in all_shared:
+        assets.append(
+            {
+                "source": f"artwork/common/png/{filename}",
+                "addon_id": "resource.images.saile",
+                "role": "shared_ui_asset",
+                "scope": scope,
+                "destination": f"addons/resource.images.saile/resources/media/{dest_suffix}",
+                "temporary": False,
+            }
+        )
+
+    return {
         "version": "2.0.0",
         "status": "dynamic-artwork",
         "shared_resource_addon": "resource.images.saile",
         "fixed_shared_asset_count": len(all_shared),
-        "replacement_rule": "Replace files keeping the canonical filename and compatible dimensions.",
+        "replacement_rule": (
+            "Replace files keeping the canonical filename and compatible dimensions."
+        ),
         "icon_style": icon_style,
         "fanart_style": fanart_style,
-        "assets": assets
+        "assets": assets,
     }
-    return manifest
 
-def main():
+
+def main() -> int:
     parser = argparse.ArgumentParser(description="Select and apply artwork styles.")
-    
+
     icon_styles = get_available_styles("icons")
     fanart_styles = get_available_styles("fanarts")
-    
-    parser.add_argument("--icon-style", choices=icon_styles, 
-                        default=icon_styles[0] if icon_styles else None,
-                        help="Select the icon style")
-    parser.add_argument("--fanart-style", choices=fanart_styles, 
-                        default=fanart_styles[0] if fanart_styles else None,
-                        help="Select the fanart style")
-    parser.add_argument("--common-color", type=str, default=None,
-                        help="CSS background style for common icons (e.g. 'red', 'linear-gradient(...)')")
+
+    parser.add_argument(
+        "--icon-style",
+        choices=icon_styles,
+        default=icon_styles[0] if icon_styles else None,
+        help="Select the icon style",
+    )
+    parser.add_argument(
+        "--fanart-style",
+        choices=fanart_styles,
+        default=fanart_styles[0] if fanart_styles else None,
+        help="Select the fanart style",
+    )
+    parser.add_argument(
+        "--common-color",
+        type=str,
+        default=None,
+        help="CSS background style for common icons (e.g. 'red', 'linear-gradient(...)')",
+    )
     parser.add_argument("--list", action="store_true", help="List available styles")
-    
+
     args = parser.parse_args()
-    
+
     if args.list:
         print("Available Icon Styles:")
         for s in icon_styles:
@@ -131,21 +151,25 @@ def main():
 
     if args.common_color:
         import subprocess
+
         print(f"Applying common color: '{args.common_color}'...")
         color_script = ROOT / "tools" / "colorize_common_svgs.py"
         subprocess.run([sys.executable, str(color_script), args.common_color], check=True)
 
-    print(f"Generating manifest for Icon Style: '{args.icon_style}', Fanart Style: '{args.fanart_style}'...")
-    
+    print(
+        f"Generating manifest for Icon Style: '{args.icon_style}', "
+        f"Fanart Style: '{args.fanart_style}'..."
+    )
+
     manifest_data = generate_manifest(args.icon_style, args.fanart_style)
-    
     with open(MANIFEST, "w", encoding="utf-8") as f:
         json.dump(manifest_data, f, indent=2, ensure_ascii=False)
         f.write("\n")
-        
+
     print("Manifest updated successfully.")
     print("Run `python tools/bootstrap_artwork.py` to apply the changes to the addons.")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

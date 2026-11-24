@@ -1,9 +1,19 @@
 from __future__ import annotations
 
+import sys
 import time
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
+
+ROOT = Path(__file__).resolve().parents[1]
+for _lib in (
+    ROOT / "addons" / "plugin.video.stv" / "resources" / "lib",
+    ROOT / "addons" / "script.module.saile.epg" / "lib",
+):
+    if str(_lib) not in sys.path:
+        sys.path.insert(0, str(_lib))
 
 from saile_epg.models import EpgChannel, EpgProgram
 from stv.app.services import AppContainer

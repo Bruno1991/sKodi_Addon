@@ -13,8 +13,8 @@ for path in (
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-from saile_epg.models import EpgChannel
 from saile_epg import EpgSyncError
+from saile_epg.models import EpgChannel
 from stv.app.services import AppContainer
 from stv.app.sync import sync_live_catalog
 from stv.domain.live_channels import (
@@ -80,12 +80,8 @@ class LiveChannelCatalogTests(unittest.TestCase):
 
     def test_only_categories_with_unmatched_or_uncached_channels_remain(self) -> None:
         epg = (EpgChannel("xtream", "globo", "globo", "Globo", "GLOBO"),)
-        matched = MediaItem(
-            "live", "1", "Globo", "10", epg_id="globo", normalized_name="GLOBO"
-        )
-        unmatched = MediaItem(
-            "live", "2", "Canal Local", "20", normalized_name="CANAL LOCAL"
-        )
+        matched = MediaItem("live", "1", "Globo", "10", epg_id="globo", normalized_name="GLOBO")
+        unmatched = MediaItem("live", "2", "Canal Local", "20", normalized_name="CANAL LOCAL")
         catalog = build_live_catalog(epg, (matched, unmatched))
 
         self.assertEqual(catalog.visible_category_ids(("10", "20", "30")), {"20", "30"})

@@ -31,11 +31,7 @@ def git_paths(*args: str) -> set[str]:
         check=True,
         stdout=subprocess.PIPE,
     )
-    return {
-        item.decode("utf-8").replace("\\", "/")
-        for item in result.stdout.split(b"\0")
-        if item
-    }
+    return {item.decode("utf-8").replace("\\", "/") for item in result.stdout.split(b"\0") if item}
 
 
 def package_paths() -> list[str]:

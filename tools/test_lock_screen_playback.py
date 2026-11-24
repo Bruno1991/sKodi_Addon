@@ -1,11 +1,12 @@
 """Teste dedicado de reprodução contínua com TELA BLOQUEADA no Kodi / sRadio (Android Emulator)."""
+
 from __future__ import annotations
 
 import json
 import socket
 import subprocess
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 ADB = r"C:\dev\android_emulator\sdk\platform-tools\adb.exe"
 SERIAL = "emulator-5554"
@@ -16,54 +17,63 @@ def log(msg: str) -> None:
 
 
 def run_adb(cmd_list: list[str]) -> str:
-    full_cmd = [ADB, "-s", SERIAL] + cmd_list
-    proc = subprocess.run(full_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    full_cmd = [ADB, "-s", SERIAL, *cmd_list]
+    proc = subprocess.run(
+        full_cmd,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
     return proc.stdout.strip()
 
 
-def send_jsonrpc(method: str, params: Optional[Dict[str, Any]] = None, timeout: int = 10) -> Optional[Dict[str, Any]]:
-    payload = {"jsonrpc": "2.0", "method": method, "id": 1}
+def send_jsonrpc(
+    method: str,
+    params: dict[str, Any] | None = None,
+    timeout: int = 10,
+) -> dict[str, Any] | None:
+    payload: dict[str, Any] = {"jsonrpc": "2.0", "method": method, "id": 1}
     if params is not None:
         payload["params"] = params
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(timeout)
-        s.connect(("127.0.0.1", 9090))
-        s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
-
         buf = bytearray()
-        depth = 0
-        in_string = False
-        escape = False
-        started = False
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(timeout)
+            s.connect(("127.0.0.1", 9090))
+            s.sendall(json.dumps(payload).encode("utf-8") + b"\n")
 
-        while True:
-            chunk = s.recv(8192)
-            if not chunk:
-                break
-            buf.extend(chunk)
-            for byte in chunk:
-                char = chr(byte)
-                if escape:
-                    escape = False
-                    continue
-                if char == "\\":
-                    escape = True
-                    continue
-                if char == '"':
-                    in_string = not in_string
-                    continue
-                if not in_string:
-                    if char == "{":
-                        depth += 1
-                        started = True
-                    elif char == "}":
-                        depth -= 1
-                        if started and depth == 0:
-                            break
-            if started and depth == 0:
-                break
-        s.close()
+            depth = 0
+            in_string = False
+            escape = False
+            started = False
+
+            while True:
+                chunk = s.recv(8192)
+                if not chunk:
+                    break
+                buf.extend(chunk)
+                for byte in chunk:
+                    char = chr(byte)
+                    if escape:
+                        escape = False
+                        continue
+                    if char == "\\":
+                        escape = True
+                        continue
+                    if char == '"':
+                        in_string = not in_string
+                        continue
+                    if not in_string:
+                        if char == "{":
+                            depth += 1
+                            started = True
+                        elif char == "}":
+                            depth -= 1
+                            if started and depth == 0:
+                                break
+                if started and depth == 0:
+                    break
         return json.loads(buf.decode("utf-8", errors="replace").strip())
     except Exception as e:
         log(f"    [!] Erro JSON-RPC ({method}): {e}")
@@ -95,17 +105,20 @@ def main():
     send_jsonrpc("Playlist.Add", {"playlistid": 0, "item": {"file": play_url}})
     play_resp = send_jsonrpc("Player.Open", {"item": {"playlistid": 0, "position": 0}})
     log(f"    -> Resposta Player.Open: {play_resp}")
-    
+
     # Aguardar início da reprodução
     active_player_id = None
-    for i in range(15):
+    for _ in range(15):
         time.sleep(1)
         resp = send_jsonrpc("Player.GetActivePlayers")
         players = resp.get("result", []) if resp else []
         if players:
             active_player_id = players[0]["playerid"]
             player_type = players[0].get("type", "desconhecido")
-            log(f"    -> Rádio conectada e tocando! Player ID: {active_player_id} (Tipo: {player_type})")
+            log(
+                f"    -> Rádio conectada e tocando! "
+                f"Player ID: {active_player_id} (Tipo: {player_type})"
+            )
             break
 
     if active_player_id is None:
@@ -113,7 +126,9 @@ def main():
         return 1
 
     # Obter propriedades iniciais
-    props_before = send_jsonrpc("Player.GetProperties", {"playerid": active_player_id, "properties": ["time", "speed"]})
+    props_before = send_jsonrpc(
+        "Player.GetProperties", {"playerid": active_player_id, "properties": ["time", "speed"]}
+    )
     log(f"    -> Propriedades antes do bloqueio: {props_before.get('result', {})}")
 
     # 4. Bloquear tela (Power Keyevent 26)
@@ -135,10 +150,17 @@ def main():
             log(f"    [!] Segundo {sec}: Player PAROU com a tela bloqueada!")
             success = False
             break
-        props = send_jsonrpc("Player.GetProperties", {"playerid": players[0]["playerid"], "properties": ["time", "speed"]})
+        props = send_jsonrpc(
+            "Player.GetProperties",
+            {"playerid": players[0]["playerid"], "properties": ["time", "speed"]},
+        )
         cur_time = props.get("result", {}).get("time", {}) if props else {}
         time_str = f"{cur_time.get('minutes', 0):02d}:{cur_time.get('seconds', 0):02d}"
-        log(f"    [OK] Segundo {sec} bloqueado: Player ATIVO, tempo de áudio: {time_str}, velocidade: {props.get('result', {}).get('speed')}")
+        speed = props.get("result", {}).get("speed") if props else None
+        log(
+            f"    [OK] Segundo {sec} bloqueado: Player ATIVO, "
+            f"tempo de áudio: {time_str}, velocidade: {speed}"
+        )
 
     # 6. Desbloquear a tela
     log("\n[4] Desbloqueando a tela do emulador...")

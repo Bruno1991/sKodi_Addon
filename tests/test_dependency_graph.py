@@ -11,7 +11,11 @@ ADDONS = ROOT / "addons"
 def dependencies(addon_id: str) -> set[str]:
     root = ET.parse(ADDONS / addon_id / "addon.xml").getroot()
     requires = root.find("requires")
-    return {node.attrib["addon"] for node in requires.findall("import")} if requires is not None else set()
+    return (
+        {node.attrib["addon"] for node in requires.findall("import")}
+        if requires is not None
+        else set()
+    )
 
 
 class DependencyGraphTests(unittest.TestCase):
@@ -22,7 +26,10 @@ class DependencyGraphTests(unittest.TestCase):
             "script.module.saile.epg",
         }
         self.assertTrue(expected <= dependencies("plugin.video.stv"))
-        self.assertTrue({"resource.images.saile", "script.module.saile.core"} <= dependencies("plugin.audio.sradio"))
+        self.assertTrue(
+            {"resource.images.saile", "script.module.saile.core"}
+            <= dependencies("plugin.audio.sradio")
+        )
 
     def test_core_uses_shared_artwork(self) -> None:
         self.assertIn("resource.images.saile", dependencies("script.module.saile.core"))

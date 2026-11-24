@@ -1,11 +1,13 @@
 """Gerenciador de reprodução de vídeo compatível com Kodi setResolvedUrl e resume point."""
+
 from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 import xbmc
 import xbmcgui
 import xbmcplugin
 
-from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from stv.app.services import AppContainer
 
@@ -24,7 +26,7 @@ def resume_progress_to_save(position: float, total: float) -> tuple[float, float
 
 
 def track_playback_progress(
-    app: "AppContainer",
+    app: AppContainer,
     media_type: str,
     item_id: str,
     url: str,
@@ -62,13 +64,13 @@ def track_playback_progress(
 
 def play_video(
     handle: int,
-    app: "AppContainer",
+    app: AppContainer,
     media_type: str,
     item_id: str,
     url: str,
     video_quality: str = "",
 ) -> None:
-    """Resolve a URL de reprodução para o Kodi, encerrando o spinner de carregamento imediatamente."""
+    """Resolve a URL de reprodução para o Kodi, encerrando o carregamento imediatamente."""
     listitem = xbmcgui.ListItem(path=url, offscreen=True)
     listitem.setProperty("IsPlayable", "true")
     if video_quality:

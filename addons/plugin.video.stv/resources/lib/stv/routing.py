@@ -15,7 +15,7 @@ class Request:
         return self.params.get("action", "home")
 
     @classmethod
-    def from_argv(cls, argv: list[str]) -> "Request":
+    def from_argv(cls, argv: list[str]) -> Request:
         base_url = argv[0] if argv else "plugin://plugin.video.stv/"
         handle = int(argv[1]) if len(argv) > 1 and argv[1] else -1
         query = argv[2][1:] if len(argv) > 2 and argv[2].startswith("?") else ""

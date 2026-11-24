@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import sqlite3
-from contextlib import contextmanager
+from collections.abc import Iterator
+from contextlib import contextmanager, suppress
 from pathlib import Path
-from typing import Iterator
 
 CURRENT_SCHEMA_VERSION = 8
 
@@ -87,10 +87,14 @@ CREATE TABLE IF NOT EXISTS tmdb_season_cache (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (series_name, season_num)
 );
-
 """
 
-FTS5_SCHEMA = """
+_FTS_TRIGGERS = ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au")
+
+
+def _build_fts5_schema(tokenize_clause: str = "") -> str:
+    extra = f",\n    tokenize='{tokenize_clause}'" if tokenize_clause else ""
+    return f"""
 CREATE VIRTUAL TABLE IF NOT EXISTS media_items_fts USING fts5(
     media_type UNINDEXED,
     item_id UNINDEXED,
@@ -98,8 +102,7 @@ CREATE VIRTUAL TABLE IF NOT EXISTS media_items_fts USING fts5(
     plot,
     category_id UNINDEXED,
     content='media_items',
-    content_rowid='rowid',
-    tokenize='unicode61 remove_diacritics 2'
+    content_rowid='rowid'{extra}
 );
 
 CREATE TRIGGER IF NOT EXISTS trg_media_items_ai AFTER INSERT ON media_items BEGIN
@@ -108,53 +111,65 @@ CREATE TRIGGER IF NOT EXISTS trg_media_items_ai AFTER INSERT ON media_items BEGI
 END;
 
 CREATE TRIGGER IF NOT EXISTS trg_media_items_ad AFTER DELETE ON media_items BEGIN
-    INSERT INTO media_items_fts(media_items_fts, rowid, media_type, item_id, name, plot, category_id)
+    INSERT INTO media_items_fts(
+        media_items_fts, rowid, media_type, item_id, name, plot, category_id
+    )
     VALUES ('delete', old.rowid, old.media_type, old.item_id, old.name, old.plot, old.category_id);
 END;
 
 CREATE TRIGGER IF NOT EXISTS trg_media_items_au AFTER UPDATE ON media_items BEGIN
-    INSERT INTO media_items_fts(media_items_fts, rowid, media_type, item_id, name, plot, category_id)
+    INSERT INTO media_items_fts(
+        media_items_fts, rowid, media_type, item_id, name, plot, category_id
+    )
     VALUES ('delete', old.rowid, old.media_type, old.item_id, old.name, old.plot, old.category_id);
     INSERT INTO media_items_fts(rowid, media_type, item_id, name, plot, category_id)
     VALUES (new.rowid, new.media_type, new.item_id, new.name, new.plot, new.category_id);
 END;
 """
 
-FTS5_FALLBACK_SCHEMA = """
-CREATE VIRTUAL TABLE IF NOT EXISTS media_items_fts USING fts5(
-    media_type UNINDEXED,
-    item_id UNINDEXED,
-    name,
-    plot,
-    category_id UNINDEXED,
-    content='media_items',
-    content_rowid='rowid'
-);
 
-CREATE TRIGGER IF NOT EXISTS trg_media_items_ai AFTER INSERT ON media_items BEGIN
-    INSERT INTO media_items_fts(rowid, media_type, item_id, name, plot, category_id)
-    VALUES (new.rowid, new.media_type, new.item_id, new.name, new.plot, new.category_id);
-END;
+FTS5_SCHEMA = _build_fts5_schema("unicode61 remove_diacritics 2")
+FTS5_FALLBACK_SCHEMA = _build_fts5_schema()
 
-CREATE TRIGGER IF NOT EXISTS trg_media_items_ad AFTER DELETE ON media_items BEGIN
-    INSERT INTO media_items_fts(media_items_fts, rowid, media_type, item_id, name, plot, category_id)
-    VALUES ('delete', old.rowid, old.media_type, old.item_id, old.name, old.plot, old.category_id);
-END;
 
-CREATE TRIGGER IF NOT EXISTS trg_media_items_au AFTER UPDATE ON media_items BEGIN
-    INSERT INTO media_items_fts(media_items_fts, rowid, media_type, item_id, name, plot, category_id)
-    VALUES ('delete', old.rowid, old.media_type, old.item_id, old.name, old.plot, old.category_id);
-    INSERT INTO media_items_fts(rowid, media_type, item_id, name, plot, category_id)
-    VALUES (new.rowid, new.media_type, new.item_id, new.name, new.plot, new.category_id);
-END;
-"""
+def _drop_fts_triggers(connection: sqlite3.Connection) -> None:
+    for trigger in _FTS_TRIGGERS:
+        with suppress(Exception):
+            connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
+
+
+def _rebuild_fts(connection: sqlite3.Connection) -> None:
+    try:
+        connection.execute("INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')")
+        connection.executescript(FTS5_SCHEMA)
+    except Exception:
+        with suppress(Exception):
+            connection.executescript(FTS5_FALLBACK_SCHEMA)
+
+
+def _ensure_covering_indexes(connection: sqlite3.Connection) -> None:
+    connection.execute(
+        "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
+        "ON media_items(media_type, normalized_name)"
+    )
+    connection.execute(
+        "CREATE INDEX IF NOT EXISTS idx_favorites_order "
+        "ON favorites(media_type, created_at DESC, item_id)"
+    )
+    connection.execute(
+        "CREATE INDEX IF NOT EXISTS idx_categories_order "
+        "ON categories(media_type, name COLLATE NOCASE)"
+    )
 
 
 def _setup_fts(connection: sqlite3.Connection) -> bool:
-    """Configura o mecanismo FTS5 ou remove triggers de forma segura caso o FTS5 não esteja disponível no SQLite."""
+    """Configura FTS5 ou remove triggers caso FTS5 não esteja compilado no SQLite."""
     fts_flavor: str | None = None
     try:
-        connection.execute("CREATE VIRTUAL TABLE IF NOT EXISTS temp._probe_fts5 USING fts5(x, tokenize='unicode61 remove_diacritics 2')")
+        connection.execute(
+            "CREATE VIRTUAL TABLE IF NOT EXISTS temp._probe_fts5 "
+            "USING fts5(x, tokenize='unicode61 remove_diacritics 2')"
+        )
         connection.execute("DROP TABLE IF EXISTS temp._probe_fts5")
         fts_flavor = "unicode61"
     except Exception:
@@ -166,26 +181,15 @@ def _setup_fts(connection: sqlite3.Connection) -> bool:
             fts_flavor = None
 
     if fts_flavor is not None:
-        try:
-            if fts_flavor == "unicode61":
-                connection.executescript(FTS5_SCHEMA)
-            else:
-                connection.executescript(FTS5_FALLBACK_SCHEMA)
+        with suppress(Exception):
+            connection.executescript(
+                FTS5_SCHEMA if fts_flavor == "unicode61" else FTS5_FALLBACK_SCHEMA
+            )
             return True
-        except Exception:
-            pass
 
-    # Se FTS5 não estiver compilado/disponível, remove triggers do media_items para evitar 'no such module: fts5'
-    for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):
-        try:
-            connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
-        except Exception:
-            pass
-    try:
+    _drop_fts_triggers(connection)
+    with suppress(Exception):
         connection.execute("DROP TABLE IF EXISTS media_items_fts")
-    except Exception:
-        pass
-
     return False
 
 
@@ -201,6 +205,7 @@ class Database:
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
         connection.execute("PRAGMA journal_mode = WAL")
+        connection.execute("PRAGMA busy_timeout = 10000")
         try:
             yield connection
             connection.commit()
@@ -212,16 +217,12 @@ class Database:
 
     def optimize(self) -> None:
         """Executa otimização de estatísticas e query planner no SQLite."""
-        try:
-            with self.connect() as connection:
-                connection.execute("PRAGMA optimize")
-        except Exception:
-            pass
+        with suppress(Exception), self.connect() as connection:
+            connection.execute("PRAGMA optimize")
 
     def initialize(self) -> None:
         with self.connect() as connection:
             connection.executescript(SCHEMA)
-
             self.fts_available = _setup_fts(connection)
 
             row = connection.execute("SELECT version FROM schema_version LIMIT 1").fetchone()
@@ -230,23 +231,13 @@ class Database:
                     "INSERT INTO schema_version(version) VALUES (?)",
                     (CURRENT_SCHEMA_VERSION,),
                 )
-                connection.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
-                    "ON media_items(media_type, normalized_name)"
-                )
-                connection.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_favorites_order "
-                    "ON favorites(media_type, created_at DESC, item_id)"
-                )
-                connection.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_categories_order "
-                    "ON categories(media_type, name COLLATE NOCASE)"
-                )
+                _ensure_covering_indexes(connection)
                 return
 
             version = int(row["version"])
             if version > CURRENT_SCHEMA_VERSION:
                 raise RuntimeError(f"Schema sTv não suportado: {version}")
+
             if version < 4:
                 columns = {
                     str(item["name"])
@@ -256,16 +247,12 @@ class Database:
                     connection.execute(
                         "ALTER TABLE media_items ADD COLUMN epg_id TEXT NOT NULL DEFAULT ''"
                     )
-                # O EPG passou a ter banco próprio no script.module.saile.epg.
                 connection.execute("DROP TABLE IF EXISTS epg_programs")
-                connection.execute(
-                    "UPDATE schema_version SET version = ?",
-                    (4,),
-                )
+                connection.execute("UPDATE schema_version SET version = ?", (4,))
+
             if version < 5:
                 if self.fts_available:
-                    for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):
-                        connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
+                    _drop_fts_triggers(connection)
                 columns = {
                     str(item["name"])
                     for item in connection.execute("PRAGMA table_info(media_items)").fetchall()
@@ -276,10 +263,15 @@ class Database:
                     )
                 if "normalized_name" not in columns:
                     connection.execute(
-                        "ALTER TABLE media_items ADD COLUMN normalized_name TEXT NOT NULL DEFAULT ''"
+                        "ALTER TABLE media_items "
+                        "ADD COLUMN normalized_name TEXT NOT NULL DEFAULT ''"
                     )
 
-                from saile_epg import clean_channel_title, normalize_channel_name, normalize_search_term
+                from saile_epg import (
+                    clean_channel_title,
+                    normalize_channel_name,
+                    normalize_search_term,
+                )
 
                 rows = connection.execute(
                     "SELECT media_type, item_id, name FROM media_items"
@@ -310,25 +302,13 @@ class Database:
                     """,
                     updates,
                 )
-                connection.execute(
-                    "UPDATE schema_version SET version = ?",
-                    (5,),
-                )
+                connection.execute("UPDATE schema_version SET version = ?", (5,))
                 if self.fts_available:
-                    try:
-                        connection.execute(
-                            "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
-                        )
-                        connection.executescript(FTS5_SCHEMA)
-                    except Exception:
-                        try:
-                            connection.executescript(FTS5_FALLBACK_SCHEMA)
-                        except Exception:
-                            pass
+                    _rebuild_fts(connection)
+
             if version < 8:
                 if self.fts_available:
-                    for trigger in ("trg_media_items_ai", "trg_media_items_ad", "trg_media_items_au"):
-                        connection.execute(f"DROP TRIGGER IF EXISTS {trigger}")
+                    _drop_fts_triggers(connection)
 
                 from saile_epg import normalize_search_term
 
@@ -336,50 +316,26 @@ class Database:
                     "SELECT media_type, item_id, name, source_name, normalized_name "
                     "FROM media_items WHERE media_type != 'live' OR normalized_name = ''"
                 ).fetchall()
-                vod_updates = []
-                for item in rows:
-                    source = str(item["source_name"]) or str(item["name"])
-                    norm = normalize_search_term(source)
-                    vod_updates.append((norm, item["media_type"], item["item_id"]))
+                vod_updates = [
+                    (
+                        normalize_search_term(str(item["source_name"]) or str(item["name"])),
+                        item["media_type"],
+                        item["item_id"],
+                    )
+                    for item in rows
+                ]
                 if vod_updates:
                     connection.executemany(
-                        "UPDATE media_items SET normalized_name = ? WHERE media_type = ? AND item_id = ?",
+                        "UPDATE media_items SET normalized_name = ? "
+                        "WHERE media_type = ? AND item_id = ?",
                         vod_updates,
                     )
 
-                connection.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_favorites_order "
-                    "ON favorites(media_type, created_at DESC, item_id)"
-                )
-                connection.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_categories_order "
-                    "ON categories(media_type, name COLLATE NOCASE)"
-                )
                 connection.execute(
                     "UPDATE schema_version SET version = ?",
                     (CURRENT_SCHEMA_VERSION,),
                 )
                 if self.fts_available:
-                    try:
-                        connection.execute(
-                            "INSERT INTO media_items_fts(media_items_fts) VALUES ('rebuild')"
-                        )
-                        connection.executescript(FTS5_SCHEMA)
-                    except Exception:
-                        try:
-                            connection.executescript(FTS5_FALLBACK_SCHEMA)
-                        except Exception:
-                            pass
+                    _rebuild_fts(connection)
 
-            connection.execute(
-                "CREATE INDEX IF NOT EXISTS idx_media_items_normalized "
-                "ON media_items(media_type, normalized_name)"
-            )
-            connection.execute(
-                "CREATE INDEX IF NOT EXISTS idx_favorites_order "
-                "ON favorites(media_type, created_at DESC, item_id)"
-            )
-            connection.execute(
-                "CREATE INDEX IF NOT EXISTS idx_categories_order "
-                "ON categories(media_type, name COLLATE NOCASE)"
-            )
+            _ensure_covering_indexes(connection)

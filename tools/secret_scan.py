@@ -18,7 +18,11 @@ PATTERNS = {
 def main() -> int:
     findings: list[str] = []
     for path in ROOT.rglob("*"):
-        if not path.is_file() or path.name in EXCLUDED_FILES or path.suffix.lower() not in TEXT_SUFFIXES:
+        if (
+            not path.is_file()
+            or path.name in EXCLUDED_FILES
+            or path.suffix.lower() not in TEXT_SUFFIXES
+        ):
             continue
         if any(part in EXCLUDED_DIRS for part in path.parts):
             continue

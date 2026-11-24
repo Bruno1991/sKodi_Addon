@@ -1,4 +1,5 @@
-"""Manipulador de diretórios e itens de interface do Kodi com suporte nativo e forçado ao modo InfoWall / Poster."""
+"""Manipulador de diretórios e itens de interface do Kodi com suporte nativo ao modo InfoWall."""
+
 from __future__ import annotations
 
 INFOWALL_VIEW_MODE = 54
@@ -26,12 +27,13 @@ def add_folder(
     label2: str = "",
     properties: dict[str, str] | None = None,
 ) -> None:
-    """Adiciona um item ao diretório Kodi garantindo que poster e thumb estejam 100% preenchidos para InfoWall."""
+    """Adiciona um item ao diretório Kodi preenchendo poster e thumb para o InfoWall."""
     import xbmcgui
     import xbmcplugin
 
     if is_folder and not icon:
         from saile_core.artwork import common_art
+
         icon = common_art("folder.png")
 
     try:
@@ -129,7 +131,9 @@ def add_folder(
     xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=item, isFolder=is_folder)
 
 
-def init_directory(handle: int, content: str = "movies", view_mode: int = INFOWALL_VIEW_MODE) -> None:
+def init_directory(
+    handle: int, content: str = "movies", view_mode: int = INFOWALL_VIEW_MODE
+) -> None:
     """Inicializa o diretório definindo o tipo de conteúdo antes de adicionar itens."""
     import xbmcplugin
 
@@ -144,7 +148,7 @@ def finish_directory(
     content: str = "movies",
     view_mode: int = INFOWALL_VIEW_MODE,
 ) -> None:
-    """Finaliza qualquer diretório e aplica o contrato universal InfoWall 54 com preservação de cache de navegação."""
+    """Finaliza o diretório aplicando InfoWall 54 com preservação de cache de navegação."""
     import xbmc
     import xbmcplugin
 
@@ -157,7 +161,7 @@ def finish_directory(
     except Exception:
         pass
 
-    # Usar cacheToDisc=True permite que o Kodi guarde a pilha de diretórios navegados sem reconstruir para o modo List no retorno (Back button)
+    # cacheToDisc=True preserva a pilha navegada sem voltar ao modo List no botão Voltar
     xbmcplugin.endOfDirectory(handle, succeeded=True, cacheToDisc=True)
 
     if view_mode:
@@ -174,7 +178,7 @@ def finish_directory(
 
 
 def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%") -> None:
-    """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54) de forma portável."""
+    """Garante que o banco ViewModes6.db grave todas as rotas como 131126 (InfoWall 54)."""
     import os
     import sqlite3
     from contextlib import closing
@@ -184,6 +188,7 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
         db_candidates: list[Path] = []
         try:
             import xbmcvfs
+
             kodi_db_path = xbmcvfs.translatePath("special://database/ViewModes6.db")
             if kodi_db_path:
                 db_candidates.append(Path(kodi_db_path))
@@ -213,10 +218,9 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
             if db_path.exists():
                 with closing(sqlite3.connect(str(db_path), timeout=0.5)) as conn, conn:
                     conn.execute(
-                        "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
+                        "UPDATE view SET viewMode = 131126 "
+                        "WHERE path LIKE ? AND viewMode != 131126",
                         (path_pattern,),
                     )
     except Exception:
         pass
-
-

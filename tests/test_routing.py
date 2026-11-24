@@ -13,7 +13,9 @@ from stv.routing import Request as StvRequest
 
 class RoutingTests(unittest.TestCase):
     def test_stv_request_parsing(self) -> None:
-        request = StvRequest.from_argv(["plugin://plugin.video.stv/", "7", "?action=live&category_id=2"])
+        request = StvRequest.from_argv(
+            ["plugin://plugin.video.stv/", "7", "?action=live&category_id=2"]
+        )
         self.assertEqual(request.handle, 7)
         self.assertEqual(request.action, "live")
         self.assertEqual(request.params.get("category_id"), "2")
@@ -37,13 +39,24 @@ class RoutingTests(unittest.TestCase):
         self.assertEqual(app.xtream.host, "https://example.com:8080")
         self.assertEqual(app.xtream.username, "testuser")
 
-
     def test_stv_series_routing_params(self) -> None:
-        req1 = StvRequest.from_argv(["plugin://plugin.video.stv/", "1", "?action=series_info&section=series&series_id=45&title=MinhaSerie"])
+        req1 = StvRequest.from_argv(
+            [
+                "plugin://plugin.video.stv/",
+                "1",
+                "?action=series_info&section=series&series_id=45&title=MinhaSerie",
+            ]
+        )
         self.assertEqual(req1.action, "series_info")
         self.assertEqual(req1.params.get("series_id"), "45")
 
-        req2 = StvRequest.from_argv(["plugin://plugin.video.stv/", "1", "?action=series_episodes&section=series&series_id=45&season_num=2&title=MinhaSerie"])
+        req2 = StvRequest.from_argv(
+            [
+                "plugin://plugin.video.stv/",
+                "1",
+                "?action=series_episodes&section=series&series_id=45&season_num=2&title=MinhaSerie",
+            ]
+        )
         self.assertEqual(req2.action, "series_episodes")
         self.assertEqual(req2.params.get("season_num"), "2")
 

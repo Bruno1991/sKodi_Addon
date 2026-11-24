@@ -25,7 +25,9 @@ def tearDownModule() -> None:
 class FakePlayer:
     """Toca `ticks` leituras de posição e depois para, como o xbmc.Player."""
 
-    def __init__(self, positions: list[float], total: float, playing_file: str = URL, start_after: int = 0):
+    def __init__(
+        self, positions: list[float], total: float, playing_file: str = URL, start_after: int = 0
+    ):
         self.positions = list(positions)
         self.total = total
         self.playing_file = playing_file
@@ -61,7 +63,9 @@ class FakeCatalog:
     def __init__(self) -> None:
         self.saved: list[tuple[str, str, float, float]] = []
 
-    def update_playback_progress(self, media_type: str, item_id: str, position: float, total: float) -> None:
+    def update_playback_progress(
+        self, media_type: str, item_id: str, position: float, total: float
+    ) -> None:
         self.saved.append((media_type, item_id, position, total))
 
 
@@ -92,7 +96,9 @@ class PlaybackProgressTests(unittest.TestCase):
 
     def test_gives_up_when_playback_never_starts(self) -> None:
         player = FakePlayer([], total=0.0)
-        track_playback_progress(self.app, "vod", "42", URL, player, FakeMonitor(), start_timeout_s=2)
+        track_playback_progress(
+            self.app, "vod", "42", URL, player, FakeMonitor(), start_timeout_s=2
+        )
         self.assertEqual(self.app.catalog.saved, [])
 
 

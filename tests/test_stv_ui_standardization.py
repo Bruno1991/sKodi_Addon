@@ -18,11 +18,13 @@ for path in (STV_LIB, CORE_LIB, EPG_LIB):
 
 from stv.app.sync import _parse_streams
 from stv.bootstrap import (
-    _add_promoted_live_channel,
     _episode_thumbnail,
-    _format_live_channel_metadata,
+    _format_epg_card,
     _item_icon,
+    _normalize_tmdb_still_url,
+    _render_media_items,
     _series_artwork,
+    _show_category,
     _show_section,
 )
 from stv.domain.models import Category, MediaItem
@@ -31,30 +33,33 @@ from stv.ui.directory import INFOWALL_VIEW_MODE, finish_directory
 
 
 class UIStandardizationTests(unittest.TestCase):
-    def test_promoted_channel_card_uses_settings_instead_of_quality_dialog(self) -> None:
-        from saile_epg.models import EpgChannel
-        from stv.domain.live_channels import LiveChannelGroup
-
-        group = LiveChannelGroup(
-            EpgChannel("xtream", "globo", "globo", "Globo", "GLOBO"),
-            (MediaItem("live", "1", "Globo", epg_id="globo", source_name="Globo HD"),),
+    def test_render_media_items_unifies_live_vod_and_series_cards(self) -> None:
+        app = SimpleNamespace(
+            get_items_epg_schedule=lambda _items: {},
+            get_channel_epg=lambda *_args, **_kwargs: (None, None),
         )
-        app = SimpleNamespace(get_channel_epg=lambda *_args, **_kwargs: (None, None))
         request = Request("plugin://plugin.video.stv/", 7, {})
-        with patch("stv.ui.directory.add_folder") as add_folder:
-            _add_promoted_live_channel(request, app, group, "fanart.jpg")
+        live_item = MediaItem("live", "1", "BR | GLOBO HD", epg_id="globo")
+        vod_item = MediaItem("vod", "2", "Matrix", extension="mkv", icon="http://img/m.jpg")
+        series_item = MediaItem("series", "3", "Dark", icon="http://img/s.jpg")
 
-        kwargs = add_folder.call_args.kwargs
-        labels = [label for label, _action in kwargs["context_menu"]]
-        self.assertIn("Configurações de reprodução", labels)
-        self.assertNotIn("Escolher Qualidade", labels)
-        self.assertEqual(kwargs["label2"], "Programação indisponível")
-        self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
+        rendered: list[tuple[str, dict[str, object]]] = []
+        with patch(
+            "stv.ui.directory.add_folder",
+            side_effect=lambda _h, label, _url, **kw: rendered.append((label, kw)),
+        ):
+            _render_media_items(request, app, "live", [live_item], "fanart.jpg")
+            _render_media_items(request, app, "vod", [vod_item], "fanart.jpg")
+            _render_media_items(request, app, "series", [series_item], "fanart.jpg")
+
+        self.assertEqual([label for label, _kw in rendered], ["Globo", "Matrix", "Dark"])
+        self.assertEqual(rendered[0][1]["label2"], "Programação indisponível")
+        self.assertEqual(rendered[1][1]["media_type"], "movie")
+        self.assertTrue(rendered[2][1]["is_folder"])
+        self.assertEqual(rendered[2][1]["media_type"], "tvshow")
 
     def test_live_root_renders_fixed_entries_and_xtream_categories(self) -> None:
-        matched = MediaItem(
-            "live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT"
-        )
+        matched = MediaItem("live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT")
         app = SimpleNamespace(
             get_channel_epg=lambda *_args, **_kwargs: (None, None),
             catalog=SimpleNamespace(
@@ -91,7 +96,6 @@ class UIStandardizationTests(unittest.TestCase):
                 side_effect=lambda _handle, label, *_args, **_kwargs: cat_labels.append(label),
             ),
         ):
-            from stv.bootstrap import _show_category
             _show_category(request, app, "live", "10", "fanart.jpg", "Abertos")
 
         self.assertIn("SBT", cat_labels)
@@ -148,18 +152,27 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(series_parsed[0].normalized_name, "SERIE 1")
 
     def test_item_icon_fallback_by_section(self) -> None:
-        self.assertEqual(_item_icon("live", "http://example.com/logo.png"), "http://example.com/logo.png")
-        self.assertEqual(_item_icon("vod", "https://example.com/poster.jpg"), "https://example.com/poster.jpg")
-        self.assertEqual(_item_icon("series", "special://home/art.png"), "special://home/art.png")
+        self.assertEqual(
+            _item_icon("live", "http://example.com/logo.png"),
+            "http://example.com/logo.png",
+        )
+        self.assertEqual(
+            _item_icon("vod", "https://example.com/poster.jpg"),
+            "https://example.com/poster.jpg",
+        )
+        self.assertEqual(
+            _item_icon("series", "special://home/art.png"),
+            "special://home/art.png",
+        )
         self.assertTrue(_item_icon("live", "").endswith("live.png"))
         self.assertTrue(_item_icon("vod", "").endswith("vod.png"))
         self.assertTrue(_item_icon("series", "").endswith("series.png"))
         self.assertTrue(_item_icon("other", "").endswith("folder.png"))
 
     def test_episode_frame_has_priority_over_series_cover(self) -> None:
-        from stv.bootstrap import _normalize_tmdb_still_url
-
-        tmdb_vert_url = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uYSkeGzyZMWl7jSFiWuPhN54edb.jpg"
+        tmdb_vert_url = (
+            "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uYSkeGzyZMWl7jSFiWuPhN54edb.jpg"
+        )
         self.assertEqual(
             _normalize_tmdb_still_url(tmdb_vert_url),
             "https://image.tmdb.org/t/p/w500/uYSkeGzyZMWl7jSFiWuPhN54edb.jpg",
@@ -174,28 +187,40 @@ class UIStandardizationTests(unittest.TestCase):
             _episode_thumbnail({}, "https://img.example/series-cover.jpg"),
             "https://img.example/series-cover.jpg",
         )
-        # Prioriza metadados do TMDB
         tmdb_meta = {"still_url": "https://image.tmdb.org/t/p/w500/still1.jpg"}
         self.assertEqual(
-            _episode_thumbnail(episode, "https://img.example/series-cover.jpg", tmdb_ep_meta=tmdb_meta),
+            _episode_thumbnail(
+                episode,
+                "https://img.example/series-cover.jpg",
+                tmdb_ep_meta=tmdb_meta,
+            ),
             "https://image.tmdb.org/t/p/w500/still1.jpg",
         )
 
     def test_series_artwork_prefers_backdrop_then_addon_fanart_then_cover(self) -> None:
         cover = "https://img.example/cover.jpg"
         self.assertEqual(
-            _series_artwork({"cover": cover, "backdrop_path": [" https://img.example/bd.jpg "]}, "fan.jpg"),
+            _series_artwork(
+                {"cover": cover, "backdrop_path": [" https://img.example/bd.jpg "]},
+                "fan.jpg",
+            ),
             (cover, "https://img.example/bd.jpg", "https://img.example/bd.jpg"),
         )
         self.assertEqual(
             _series_artwork({"cover": cover, "backdrop_path": "https://img.example/bd2.jpg"}, ""),
             (cover, "https://img.example/bd2.jpg", "https://img.example/bd2.jpg"),
         )
-        self.assertEqual(_series_artwork({"cover": cover, "backdrop_path": []}, "fan.jpg"), (cover, "", "fan.jpg"))
+        self.assertEqual(
+            _series_artwork({"cover": cover, "backdrop_path": []}, "fan.jpg"),
+            (cover, "", "fan.jpg"),
+        )
         self.assertEqual(_series_artwork({"cover": cover}, ""), (cover, "", cover))
-        self.assertEqual(_series_artwork({"cover": "capa-local.jpg"}, ""), ("capa-local.jpg", "", ""))
+        self.assertEqual(
+            _series_artwork({"cover": "capa-local.jpg"}, ""),
+            ("capa-local.jpg", "", ""),
+        )
 
-    def test_format_live_channel_metadata_uses_module_cache(self) -> None:
+    def test_format_epg_card_uses_module_cache(self) -> None:
         from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
         from stv.app.services import AppContainer
 
@@ -206,23 +231,18 @@ class UIStandardizationTests(unittest.TestCase):
                 "epg_enabled": "true",
             }
             app = AppContainer(settings)
-            title, plot = _format_live_channel_metadata(
-                app,
-                "BR | GLOBO SP FHD",
-                default_plot="Canal de TV",
-                epg_id="globo.sp.br",
-            )
-            self.assertEqual(title, "Globo SP")
+            now_prog, next_prog = app.get_channel_epg("BR | GLOBO SP FHD", epg_id="globo.sp.br")
+            plot, label2, props = _format_epg_card("Globo SP", "Canal de TV", now_prog, next_prog)
             self.assertEqual(plot, "Canal de TV")
+            self.assertEqual(label2, "Programação indisponível")
+            self.assertEqual(props["EPG.Status"], "unavailable")
 
             now = int(time.time())
             snapshot = EpgSnapshot(
                 provider_id="xtream",
                 fetched_at_utc=now,
                 channels=(
-                    EpgChannel(
-                        "xtream", "globo.sp.br", "globo.sp.br", "Globo SP", "GLOBO SP"
-                    ),
+                    EpgChannel("xtream", "globo.sp.br", "globo.sp.br", "Globo SP", "GLOBO SP"),
                 ),
                 programs=(
                     EpgProgram(
@@ -244,17 +264,15 @@ class UIStandardizationTests(unittest.TestCase):
             )
             app.epg.repository.replace_snapshot(snapshot)
 
-            title_epg, plot_epg = _format_live_channel_metadata(
-                app,
-                "BR | GLOBO SP FHD",
-                epg_id="globo.sp.br",
-            )
-            self.assertEqual(title_epg, "Globo SP")
+            now_prog, next_prog = app.get_channel_epg("BR | GLOBO SP FHD", epg_id="globo.sp.br")
+            plot_epg, label2_epg, props_epg = _format_epg_card("Globo SP", "", now_prog, next_prog)
             self.assertIn("AGORA", plot_epg)
             self.assertIn("Jornal Nacional", plot_epg)
             self.assertIn("Notícias do dia no Brasil.", plot_epg)
             self.assertIn("[B]A SEGUIR[/B]", plot_epg)
             self.assertIn("Novela das Nove", plot_epg)
+            self.assertIn("Jornal Nacional", label2_epg)
+            self.assertEqual(props_epg["EPG.Status"], "available")
 
     def test_finish_directory_enforces_infowall_before_and_after_completion(self) -> None:
         calls: list[str] = []
@@ -275,7 +293,6 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(INFOWALL_VIEW_MODE, 54)
         self.assertEqual(calls.count(view_call), 1)
         self.assertEqual(calls[-1], view_call)
-
 
 
 if __name__ == "__main__":

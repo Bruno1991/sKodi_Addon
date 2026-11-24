@@ -30,9 +30,7 @@ class EpgPersistenceTests(unittest.TestCase):
         return EpgSnapshot(
             provider_id="xtream",
             fetched_at_utc=1_000,
-            channels=(
-                EpgChannel("xtream", "globo.sp.br", "globo.sp.br", "Globo SP", "GLOBO SP"),
-            ),
+            channels=(EpgChannel("xtream", "globo.sp.br", "globo.sp.br", "Globo SP", "GLOBO SP"),),
             programs=(
                 EpgProgram("xtream", "globo.sp.br", "Jornal", 900, 1_100, "Notícias"),
                 EpgProgram("xtream", "globo.sp.br", "Novela", 1_100, 1_300),
@@ -82,7 +80,9 @@ class EpgPersistenceTests(unittest.TestCase):
         )
         self.repository.replace_snapshot(snapshot)
 
-        self.assertEqual([channel.epg_id for channel in self.repository.list_channels("xtream")], ["local"])
+        self.assertEqual(
+            [channel.epg_id for channel in self.repository.list_channels("xtream")], ["local"]
+        )
         self.assertEqual(self.repository.sync_status("xtream")["program_count"], 0)
 
     def test_now_next_many_returns_all_requested_channels(self) -> None:

@@ -1,15 +1,29 @@
 """Sincronização otimizada do catálogo Xtream com o banco SQLite local."""
+
 from __future__ import annotations
 
 import time
 from typing import TYPE_CHECKING
 
 from saile_epg import clean_channel_title, normalize_channel_name, normalize_search_term
+
 from stv.domain.catalog import first_backdrop
 from stv.domain.models import Category, MediaItem
 
 if TYPE_CHECKING:
     from stv.app.services import AppContainer
+
+_CATEGORY_ACTIONS = {
+    "live": "get_live_categories",
+    "vod": "get_vod_categories",
+    "series": "get_series_categories",
+}
+_STREAM_ACTIONS = {
+    "live": "get_live_streams",
+    "vod": "get_vod_streams",
+    "series": "get_series",
+}
+_UPSERT_CHUNK_SIZE = 500
 
 
 def _parse_categories(media_type: str, generation_id: int, data: object) -> list[Category]:
@@ -37,7 +51,12 @@ def _parse_categories(media_type: str, generation_id: int, data: object) -> list
     return categories
 
 
-def _parse_streams(media_type: str, generation_id: int, data: object, default_category_id: str = "") -> list[MediaItem]:
+def _parse_streams(
+    media_type: str,
+    generation_id: int,
+    data: object,
+    default_category_id: str = "",
+) -> list[MediaItem]:
     if not isinstance(data, list):
         return []
 
@@ -55,9 +74,18 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
             else normalize_search_term(source_name)
         )
         raw_cat = str(item.get("category_id") or "").strip()
-        category_id = raw_cat if (raw_cat and raw_cat != "0") else (default_category_id or raw_cat or "0")
+        category_id = (
+            raw_cat if (raw_cat and raw_cat != "0") else (default_category_id or raw_cat or "0")
+        )
 
-        icon = str(item.get("stream_icon") or item.get("logo") or item.get("icon") or item.get("cover") or item.get("movie_image") or "").strip()
+        icon = str(
+            item.get("stream_icon")
+            or item.get("logo")
+            or item.get("icon")
+            or item.get("cover")
+            or item.get("movie_image")
+            or ""
+        ).strip()
         fanart = str(item.get("fanart") or "").strip()
         if not fanart and media_type in {"vod", "series"}:
             fanart = first_backdrop(item.get("backdrop_path"))
@@ -86,25 +114,18 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
     return items
 
 
-def _get_category_action(section: str) -> str:
-    mapping = {
-        "live": "get_live_categories",
-        "vod": "get_vod_categories",
-        "series": "get_series_categories",
-    }
-    return mapping.get(section, "")
+def _upsert_items_in_chunks(app: AppContainer, items: list[MediaItem]) -> None:
+    for offset in range(0, len(items), _UPSERT_CHUNK_SIZE):
+        app.catalog.upsert_media_items(items[offset : offset + _UPSERT_CHUNK_SIZE])
 
 
-def _get_stream_action(section: str) -> str:
-    mapping = {
-        "live": "get_live_streams",
-        "vod": "get_vod_streams",
-        "series": "get_series",
-    }
-    return mapping.get(section, "")
+def _finalize_section_sync(app: AppContainer, section: str, generation_id: int) -> None:
+    app.catalog.clean_obsolete_categories(section, generation_id)
+    app.catalog.clean_obsolete_items(section, generation_id)
+    app.catalog.mark_catalog_synced(section, generation_id)
 
 
-def ensure_categories_loaded(app: "AppContainer", section: str) -> None:
+def ensure_categories_loaded(app: AppContainer, section: str) -> None:
     """Carrega sob demanda as categorias da seção para o SQLite se ainda não existirem."""
     existing = app.catalog.get_categories(section)
     try:
@@ -116,51 +137,54 @@ def ensure_categories_loaded(app: "AppContainer", section: str) -> None:
 
     if not app.xtream.is_configured:
         from saile_core.notifications import notify_info
+
         notify_info("sTv", "Configure os dados do Xtream nas configurações")
         return
 
-    action = _get_category_action(section)
+    action = _CATEGORY_ACTIONS.get(section, "")
     if not action:
         return
 
     try:
         raw_cats = app.xtream.request(action)
-        generation_id = int(time.time())
-        parsed = _parse_categories(section, generation_id, raw_cats)
+        parsed = _parse_categories(section, int(time.time()), raw_cats)
         if parsed:
             app.catalog.upsert_categories(parsed)
     except Exception as exc:
         from saile_core.notifications import notify_error
+
         notify_error("sTv", f"Erro ao obter categorias: {exc}")
 
 
-def ensure_streams_loaded(app: "AppContainer", section: str, category_id: str) -> None:
+def ensure_streams_loaded(app: AppContainer, section: str, category_id: str) -> None:
     """Carrega sob demanda as mídias de uma categoria específica para o SQLite."""
-    existing = app.catalog.get_media_items(section, category_id)
-    if existing:
+    if app.catalog.get_media_items(section, category_id) or not app.xtream.is_configured:
         return
 
-    if not app.xtream.is_configured:
-        return
-
-    action = _get_stream_action(section)
+    action = _STREAM_ACTIONS.get(section, "")
     if not action:
         return
 
     try:
         raw_streams = app.xtream.request(action, category_id=category_id)
-        generation_id = int(time.time())
-        parsed = _parse_streams(section, generation_id, raw_streams, default_category_id=category_id)
+        parsed = _parse_streams(
+            section,
+            int(time.time()),
+            raw_streams,
+            default_category_id=category_id,
+        )
         if parsed:
-            chunk_size = 500
-            for i in range(0, len(parsed), chunk_size):
-                app.catalog.upsert_media_items(parsed[i : i + chunk_size])
+            _upsert_items_in_chunks(app, parsed)
     except Exception as exc:
         from saile_core.notifications import notify_error
+
         notify_error("sTv", f"Erro ao carregar mídias: {exc}")
 
 
-def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) -> dict[str, int]:
+def sync_live_catalog(
+    app: AppContainer,
+    raw_streams: object | None = None,
+) -> dict[str, int]:
     """Atualiza toda a TV ao vivo durante uma ação manual de sincronização."""
     if not app.xtream.is_configured:
         raise ValueError("Dados Xtream não configurados")
@@ -173,58 +197,48 @@ def sync_live_catalog(app: "AppContainer", raw_streams: object | None = None) ->
         raise ValueError("O provedor retornou categorias de TV vazias")
     app.catalog.upsert_categories(categories)
 
-    streams_payload = (
-        app.xtream.request("get_live_streams") if raw_streams is None else raw_streams
-    )
+    streams_payload = app.xtream.request("get_live_streams") if raw_streams is None else raw_streams
     streams = _parse_streams("live", generation_id, streams_payload)
     if not streams:
         raise ValueError("O provedor retornou canais de TV vazios")
-    for offset in range(0, len(streams), 500):
-        app.catalog.upsert_media_items(streams[offset : offset + 500])
+    _upsert_items_in_chunks(app, streams)
 
-    app.catalog.clean_obsolete_categories("live", generation_id)
-    app.catalog.clean_obsolete_items("live", generation_id)
-    app.catalog.mark_catalog_synced("live", generation_id)
+    _finalize_section_sync(app, "live", generation_id)
     if hasattr(app.catalog, "optimize"):
         app.catalog.optimize()
     return {"category_count": len(categories), "stream_count": len(streams)}
 
 
-def sync_section_catalog(app: "AppContainer", section: str) -> dict[str, int]:
+def sync_section_catalog(app: AppContainer, section: str) -> dict[str, int]:
     """Sincroniza uma seção específica (live, vod ou series) silenciosamente no SQLite."""
-    if not app.xtream.is_configured:
+    cat_action = _CATEGORY_ACTIONS.get(section, "")
+    stream_action = _STREAM_ACTIONS.get(section, "")
+    if not app.xtream.is_configured or not cat_action or not stream_action:
         return {"category_count": 0, "stream_count": 0}
 
     generation_id = int(time.time())
     app.catalog.begin_catalog_sync((section,))
 
-    cat_action = _get_category_action(section)
-    raw_cats = app.xtream.request(cat_action)
-    parsed_cats = _parse_categories(section, generation_id, raw_cats)
+    parsed_cats = _parse_categories(section, generation_id, app.xtream.request(cat_action))
     if parsed_cats:
         app.catalog.upsert_categories(parsed_cats)
 
-    stream_action = _get_stream_action(section)
-    raw_streams = app.xtream.request(stream_action)
-    parsed_streams = _parse_streams(section, generation_id, raw_streams)
+    parsed_streams = _parse_streams(section, generation_id, app.xtream.request(stream_action))
     if parsed_streams:
-        chunk_size = 500
-        for i in range(0, len(parsed_streams), chunk_size):
-            app.catalog.upsert_media_items(parsed_streams[i : i + chunk_size])
+        _upsert_items_in_chunks(app, parsed_streams)
 
-    app.catalog.clean_obsolete_categories(section, generation_id)
-    app.catalog.clean_obsolete_items(section, generation_id)
-    app.catalog.mark_catalog_synced(section, generation_id)
+    _finalize_section_sync(app, section, generation_id)
     if hasattr(app.catalog, "optimize"):
         app.catalog.optimize()
 
     return {"category_count": len(parsed_cats), "stream_count": len(parsed_streams)}
 
 
-def sync_full_catalog(app: "AppContainer") -> bool:
-    """Executa a sincronização completa de todas as categorias e canais/filmes/séries com barra de progresso."""
+def sync_full_catalog(app: AppContainer) -> bool:
+    """Sincroniza todas as categorias e canais/filmes/séries com barra de progresso."""
     if not app.xtream.is_configured:
         from saile_core.notifications import notify_error
+
         notify_error("sTv", "Preencha URL, Usuário e Senha nas configurações")
         return False
 
@@ -241,9 +255,8 @@ def sync_full_catalog(app: "AppContainer") -> bool:
         for idx, (section, title) in enumerate(sections):
             pct_base = int((idx / len(sections)) * 100)
             dialog.update(pct_base, f"Baixando categorias de {title}...")
-            
-            cat_action = _get_category_action(section)
-            raw_cats = app.xtream.request(cat_action)
+
+            raw_cats = app.xtream.request(_CATEGORY_ACTIONS[section])
             parsed_cats = _parse_categories(section, generation_id, raw_cats)
             if not parsed_cats:
                 raise ValueError(f"O provedor retornou categorias vazias para {title}")
@@ -253,23 +266,18 @@ def sync_full_catalog(app: "AppContainer") -> bool:
                 return False
 
             dialog.update(pct_base + 15, f"Baixando lista de {title}...")
-            stream_action = _get_stream_action(section)
-            raw_streams = app.xtream.request(stream_action)
+            raw_streams = app.xtream.request(_STREAM_ACTIONS[section])
             parsed_streams = _parse_streams(section, generation_id, raw_streams)
             if not parsed_streams:
                 raise ValueError(f"O provedor retornou conteúdo vazio para {title}")
-            chunk_size = 500
-            for i in range(0, len(parsed_streams), chunk_size):
-                app.catalog.upsert_media_items(parsed_streams[i : i + chunk_size])
+            _upsert_items_in_chunks(app, parsed_streams)
 
             if dialog.iscanceled():
                 return False
 
         dialog.update(95, "Limpando registros antigos...")
         for section, _ in sections:
-            app.catalog.clean_obsolete_categories(section, generation_id)
-            app.catalog.clean_obsolete_items(section, generation_id)
-            app.catalog.mark_catalog_synced(section, generation_id)
+            _finalize_section_sync(app, section, generation_id)
 
         if hasattr(app.catalog, "optimize"):
             app.catalog.optimize()
@@ -278,6 +286,7 @@ def sync_full_catalog(app: "AppContainer") -> bool:
         return True
     except Exception as exc:
         from saile_core.notifications import notify_error
+
         notify_error("sTv", f"Falha na sincronização: {exc}")
         return False
     finally:

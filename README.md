@@ -1,6 +1,6 @@
-# sRepo — Ecossistema sKodi (sTv / sEPG / sArtwork / sCore)
+# sRepo — Ecossistema sKodi (sTv / sRadio / sEPG / sArtwork / sCore)
 
-Monorepo local-first que desenvolve e distribui o add-on **sTv** (IPTV / Xtream) e seus módulos compartilhados por um repositório Kodi hospedado estaticamente no GitHub Pages.
+Monorepo local-first que desenvolve e distribui os add-ons **sTv** (IPTV / Xtream), **sRadio** (Rádios ao Vivo / TuneIn) e seus módulos compartilhados por um repositório Kodi hospedado estaticamente no GitHub Pages.
 
 🌐 **Portal de Add-ons & Repositório (GitHub Pages):**  
 👉 [https://bruno1991.github.io/sKodi_Addon/](https://bruno1991.github.io/sKodi_Addon/)
@@ -19,14 +19,16 @@ addons/
 ├── resource.images.saile/     (sArtwork - Recursos de imagem e ícones)
 ├── script.module.saile.core/  (sCore - Infraestrutura Python compartilhada)
 ├── script.module.saile.epg/   (sEPG - Guia de programação e normalização)
-└── plugin.video.stv/          (sTv - Cliente IPTV, VOD, Séries e Player)
+├── plugin.video.stv/          (sTv - Cliente IPTV, VOD, Séries e Player)
+└── plugin.audio.sradio/       (sRadio - Rádios ao vivo via TuneIn e catálogo offline)
 ```
 
 - `repository.srepo` (**sRepo**): instala e atualiza os add-ons do ecossistema no Kodi.
-- `resource.images.saile` (**sArtwork**): 9 ícones fixos compartilhados em alta definição.
+- `resource.images.saile` (**sArtwork**): 20 ícones fixos compartilhados em alta definição (`common/` e `stv/`).
 - `script.module.saile.core` (**sCore**): caminhos portáveis, artwork, notificações, erros padronizados e detecção de capacidades.
 - `script.module.saile.epg` (**sEPG**): Integração direta com a API da Claro TV+ (AVSClient v1.2), motor de aliases para 100% dos canais brasileiros e afiliadas regionais, horários UTC e cache SQLite independente.
 - `plugin.video.stv` (**sTv**): cliente de TV ao vivo com categorias nativas Xtream, VOD e séries com persistência SQLite, auto-sincronização de catálogo e EPG, sincronização LAN P2P UDP e metadados TMDB.
+- `plugin.audio.sradio` (**sRadio**): rádios ao vivo globais e nacionais via API TuneIn com busca em tempo real, favoritos e catálogo em cache offline.
 
 ## Navegação Oficial (Contrato Imutável)
 

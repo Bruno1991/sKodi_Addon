@@ -13,13 +13,16 @@ EPG_LIB = ROOT / "addons" / "script.module.saile.epg" / "lib"
 sys.path.insert(0, str(STV_LIB))
 sys.path.insert(0, str(EPG_LIB))
 
-from stv.persistence.database import Database as StvDatabase
 from saile_epg.database import EpgDatabase
+from stv.persistence.database import Database as StvDatabase
 
 
 def table_names(path: Path) -> set[str]:
     with closing(sqlite3.connect(path)) as connection:
-        return {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        return {
+            row[0]
+            for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        }
 
 
 class DatabaseTests(unittest.TestCase):
@@ -163,7 +166,9 @@ class DatabaseTests(unittest.TestCase):
                     "SELECT normalized_name FROM media_items WHERE item_id = '20'"
                 ).fetchone()[0]
                 indices = {row[1] for row in connection.execute("PRAGMA index_list(favorites)")}
-                cat_indices = {row[1] for row in connection.execute("PRAGMA index_list(categories)")}
+                cat_indices = {
+                    row[1] for row in connection.execute("PRAGMA index_list(categories)")
+                }
 
             self.assertEqual(version, 8)
             self.assertEqual(vod_row, "POKEMON DETETIVE PIKACHU")

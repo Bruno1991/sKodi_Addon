@@ -1,4 +1,5 @@
 """Cliente para integração robusta com a API Xtream Codes (player_api.php)."""
+
 from __future__ import annotations
 
 from typing import Any

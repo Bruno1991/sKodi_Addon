@@ -1,4 +1,5 @@
 """Diálogos e menus interativos de sincronização LAN e gerenciamento de estado."""
+
 from __future__ import annotations
 
 import json
@@ -31,13 +32,14 @@ def _exception_fingerprint(exc: Exception) -> str:
     return " > ".join(frames[-8:]) or "sem-rastreio"
 
 
-def show_sync_dialog(app: "AppContainer") -> None:
+def show_sync_dialog(app: AppContainer) -> None:
     """Exibe o menu modal de sincronização e gerenciamento de dados do sTv."""
     import xbmc
     import xbmcgui
     from saile_core.notifications import notify_error, notify_info, notify_success
+
+    from stv.app.lan_sync import apply_import_payload, broadcast_lan_sync, build_export_payload
     from stv.app.sync import sync_full_catalog
-    from stv.app.lan_sync import broadcast_lan_sync, build_export_payload, apply_import_payload
 
     options = [
         "Sincronizar Tudo (Catálogo + EPG)",
@@ -53,27 +55,25 @@ def show_sync_dialog(app: "AppContainer") -> None:
     choice = dialog.select("sTv — Sincronizar Dados", options)
 
     if choice == 0:
-        # Sincronizar Tudo (Catálogo + EPG)
-        if not app.xtream.is_configured:
-            notify_error("sTv", "Configure os dados do Xtream nas configurações")
+        if not sync_full_catalog(app):
             return
         progress = xbmcgui.DialogProgress()
-        progress.create("sTv", "Sincronizando Catálogo e EPG...")
+        progress.create("sTv", "Sincronizando Guia de Programação (EPG)...")
         try:
-            progress.update(20, "Baixando catálogo Xtream...")
-            sync_full_catalog(app)
-            progress.update(70, "Baixando guia de programação (EPG)...")
-            result = app.sync_epg(refresh_live_catalog=True)
+            progress.update(50, "Baixando guia de programação (EPG)...")
+            result = app.sync_epg(refresh_live_catalog=False)
             progress.update(100, "Sincronização concluída!")
-            notify_success("sTv", f"Tudo atualizado! {result.get('program_count', 0)} programas no guia.")
+            notify_success(
+                "sTv",
+                f"Tudo atualizado! {result.get('program_count', 0)} programas no guia.",
+            )
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
-            notify_error("sTv", f"Falha na sincronização: {exc}")
+            notify_error("sTv", f"Falha na sincronização do EPG: {exc}")
         finally:
             progress.close()
 
     elif choice == 1:
-        # Sincronizar Catálogo
         if sync_full_catalog(app):
             xbmc.executebuiltin("Container.Refresh")
 
@@ -101,8 +101,7 @@ def show_sync_dialog(app: "AppContainer") -> None:
 
             error_code = getattr(exc, "code", "EPG-UNEXPECTED")
             xbmc.log(
-                f"[sTv][EPG] {type(exc).__name__} {error_code} "
-                f"({_exception_fingerprint(exc)})",
+                f"[sTv][EPG] {type(exc).__name__} {error_code} ({_exception_fingerprint(exc)})",
                 xbmc.LOGERROR,
             )
             if isinstance(exc, EpgSyncError):
@@ -114,7 +113,6 @@ def show_sync_dialog(app: "AppContainer") -> None:
             progress.close()
 
     elif choice == 3:
-        # Sincronização em LAN
         progress = xbmcgui.DialogProgress()
         progress.create("sTv", "Buscando outros aparelhos Kodi na rede local...")
         try:
@@ -124,7 +122,10 @@ def show_sync_dialog(app: "AppContainer") -> None:
             peers = res.get("peers_found", 0)
             favs = res.get("favorites_synced", 0)
             if peers > 0:
-                notify_success("sTv", f"LAN: {peers} dispositivo(s) encontrado(s), {favs} favoritos mesclados!")
+                notify_success(
+                    "sTv",
+                    f"LAN: {peers} dispositivo(s) encontrado(s), {favs} favoritos mesclados!",
+                )
                 xbmc.executebuiltin("Container.Refresh")
             else:
                 local_ip = _get_local_ip()
@@ -132,7 +133,8 @@ def show_sync_dialog(app: "AppContainer") -> None:
                     "sTv — Sincronização LAN",
                     f"Nenhum outro aparelho sTv foi detectado nesta busca.\n\n"
                     f"Seu IP Local: {local_ip}\n"
-                    f"Certifique-se de que o outro dispositivo Kodi esteja ligado na mesma rede Wi-Fi/LAN com o sTv aberto."
+                    "Certifique-se de que o outro dispositivo Kodi esteja ligado na mesma "
+                    "rede Wi-Fi/LAN com o sTv aberto.",
                 )
         except Exception as exc:
             notify_error("sTv", f"Erro na sincronização LAN: {exc}")
@@ -140,7 +142,6 @@ def show_sync_dialog(app: "AppContainer") -> None:
             progress.close()
 
     elif choice == 4:
-        # Exportar backup
         profile_path = app.settings.get("profile_path", "")
         if not profile_path:
             notify_error("sTv", "Caminho do perfil não localizado")
@@ -156,15 +157,17 @@ def show_sync_dialog(app: "AppContainer") -> None:
             notify_error("sTv", f"Erro ao exportar: {exc}")
 
     elif choice == 5:
-        # Importar backup
         profile_path = app.settings.get("profile_path", "")
         export_file = os.path.join(profile_path, "stv_backup.json")
         if not os.path.exists(export_file):
-            dialog.ok("sTv — Importar Dados", "Nenhum arquivo stv_backup.json encontrado na pasta de perfil.")
+            dialog.ok(
+                "sTv — Importar Dados",
+                "Nenhum arquivo stv_backup.json encontrado na pasta de perfil.",
+            )
             return
 
         try:
-            with open(export_file, "r", encoding="utf-8") as f:
+            with open(export_file, encoding="utf-8") as f:
                 data = json.load(f)
             res = apply_import_payload(app, data)
             count = res.get("favorites_applied", 0)
@@ -174,15 +177,18 @@ def show_sync_dialog(app: "AppContainer") -> None:
             notify_error("sTv", f"Erro ao importar: {exc}")
 
     elif choice == 6:
-        # Limpar Cache
-        confirm = dialog.yesno("sTv — Limpar Cache", "Deseja apagar todo o catálogo local e forçar novo download?")
+        confirm = dialog.yesno(
+            "sTv — Limpar Cache",
+            "Deseja apagar todo o catálogo local e forçar novo download?",
+        )
         if confirm:
             try:
                 with app.database.connect() as conn:
                     conn.execute("DELETE FROM categories")
                     conn.execute("DELETE FROM media_items")
                     conn.execute("DELETE FROM catalog_sync_state")
-                app.epg.clear()
+                    conn.execute("DELETE FROM tmdb_season_cache")
+                app.epg.clear("")
                 notify_success("sTv", "Catálogo local limpo com sucesso!")
                 xbmc.executebuiltin("Container.Refresh")
             except Exception as exc:

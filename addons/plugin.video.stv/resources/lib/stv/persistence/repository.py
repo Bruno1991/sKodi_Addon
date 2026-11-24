@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Sequence
+import json
+import re
+import sqlite3
+from collections.abc import Sequence
+from contextlib import suppress
 
-from stv.domain.catalog import sanitize_title_for_search
 from stv.domain.models import Category, MediaItem
 from stv.persistence.database import Database
-
 
 
 class CatalogRepository:
@@ -13,6 +15,23 @@ class CatalogRepository:
 
     def __init__(self, db: Database) -> None:
         self.db = db
+
+    @staticmethod
+    def _media_item_from_row(row: sqlite3.Row) -> MediaItem:
+        return MediaItem(
+            media_type=row["media_type"],
+            item_id=row["item_id"],
+            name=row["name"],
+            category_id=row["category_id"],
+            icon=row["icon"],
+            fanart=row["fanart"],
+            plot=row["plot"],
+            extension=row["extension"],
+            epg_id=row["epg_id"],
+            source_name=row["source_name"],
+            normalized_name=row["normalized_name"],
+            generation_id=row["generation_id"],
+        )
 
     def upsert_categories(self, categories: Sequence[Category]) -> None:
         """Insere ou atualiza categorias preservando integridade."""
@@ -28,8 +47,7 @@ class CatalogRepository:
             updated_at = CURRENT_TIMESTAMP
         """
         data = [
-            (c.media_type, c.category_id, c.name, c.parent_id, c.generation_id)
-            for c in categories
+            (c.media_type, c.category_id, c.name, c.parent_id, c.generation_id) for c in categories
         ]
         with self.db.connect() as connection:
             connection.executemany(sql, data)
@@ -47,7 +65,9 @@ class CatalogRepository:
             category_id = excluded.category_id,
             name = excluded.name,
             icon = CASE WHEN excluded.icon != '' THEN excluded.icon ELSE media_items.icon END,
-            fanart = CASE WHEN excluded.fanart != '' THEN excluded.fanart ELSE media_items.fanart END,
+            fanart = CASE
+                WHEN excluded.fanart != '' THEN excluded.fanart ELSE media_items.fanart
+            END,
             plot = CASE WHEN excluded.plot != '' THEN excluded.plot ELSE media_items.plot END,
             extension = excluded.extension,
             epg_id = excluded.epg_id,
@@ -111,7 +131,7 @@ class CatalogRepository:
         title: str,
     ) -> bool:
         """Busca metadados estendidos no TMDB para um item específico e salva no SQLite."""
-        search_title = sanitize_title_for_search(title)
+        search_title = title.strip()
         if not search_title:
             return False
         if media_type == "vod" and hasattr(tmdb_client, "search_movie"):
@@ -128,17 +148,14 @@ class CatalogRepository:
         backdrop_path = data.get("backdrop_path")
         poster_path = data.get("poster_path")
 
-        fanart = ""
-        if backdrop_path:
-            fanart = f"https://image.tmdb.org/t/p/w1280{backdrop_path}"
-        elif poster_path:
-            fanart = f"https://image.tmdb.org/t/p/w500{poster_path}"
+        from stv.providers.tmdb.client import TmdbClient
 
+        fanart = TmdbClient.format_fanart_url(backdrop_path, poster_path)
         self.enrich_media_item(
             media_type,
             item_id,
             plot=plot,
-            fanart=fanart if fanart else None,
+            fanart=fanart or None,
         )
         return True
 
@@ -161,27 +178,13 @@ class CatalogRepository:
 
     def get_media_items(self, media_type: str, category_id: str) -> list[MediaItem]:
         """Recupera itens de mídia associados a uma categoria específica."""
-        sql = "SELECT * FROM media_items WHERE media_type = ? AND category_id = ? ORDER BY name COLLATE NOCASE"
+        sql = (
+            "SELECT * FROM media_items "
+            "WHERE media_type = ? AND category_id = ? ORDER BY name COLLATE NOCASE"
+        )
         with self.db.connect() as connection:
             rows = connection.execute(sql, (media_type, category_id)).fetchall()
-
-        return [
-            MediaItem(
-                media_type=row["media_type"],
-                item_id=row["item_id"],
-                name=row["name"],
-                category_id=row["category_id"],
-                icon=row["icon"],
-                fanart=row["fanart"],
-                plot=row["plot"],
-                extension=row["extension"],
-                epg_id=row["epg_id"],
-                source_name=row["source_name"],
-                normalized_name=row["normalized_name"],
-                generation_id=row["generation_id"],
-            )
-            for row in rows
-        ]
+        return [self._media_item_from_row(row) for row in rows]
 
     def search_media(self, media_type: str, query: str) -> list[MediaItem]:
         """Pesquisa itens de mídia usando FTS5 e busca normalizada insensível a acentos."""
@@ -189,7 +192,6 @@ class CatalogRepository:
         if not cleaned_query:
             return []
 
-        import re
         from saile_epg import normalize_channel_name, normalize_search_term
 
         normalized_query = (
@@ -201,7 +203,6 @@ class CatalogRepository:
 
         results_by_id: dict[tuple[str, str], MediaItem] = {}
 
-        # 1. Tentar busca via FTS5 (se disponível no SQLite)
         if getattr(self.db, "fts_available", False):
             fts_sql = """
             SELECT m.* FROM media_items m
@@ -210,32 +211,15 @@ class CatalogRepository:
             ORDER BY rank
             LIMIT 100
             """
-            try:
+            with suppress(Exception):
                 tokens = re.findall(r"\w+", cleaned_query)
                 if tokens:
                     fts_query = " ".join(f'"{token}"*' for token in tokens)
                     with self.db.connect() as connection:
-                        rows = connection.execute(fts_sql, (media_type, fts_query)).fetchall()
-                        for row in rows:
-                            item = MediaItem(
-                                media_type=row["media_type"],
-                                item_id=row["item_id"],
-                                name=row["name"],
-                                category_id=row["category_id"],
-                                icon=row["icon"],
-                                fanart=row["fanart"],
-                                plot=row["plot"],
-                                extension=row["extension"],
-                                epg_id=row["epg_id"],
-                                source_name=row["source_name"],
-                                normalized_name=row["normalized_name"],
-                                generation_id=row["generation_id"],
-                            )
+                        for row in connection.execute(fts_sql, (media_type, fts_query)).fetchall():
+                            item = self._media_item_from_row(row)
                             results_by_id[(item.media_type, item.item_id)] = item
-            except Exception:
-                pass
 
-        # 2. Busca e complemento resiliente com LIKE sobre campos originais e normalizados (sem acentos)
         fallback_sql = """
         SELECT * FROM media_items
         WHERE media_type = ?
@@ -247,39 +231,23 @@ class CatalogRepository:
           )
         ORDER BY name COLLATE NOCASE LIMIT 100
         """
-        try:
-            with self.db.connect() as connection:
-                rows = connection.execute(
-                    fallback_sql,
-                    (
-                        media_type,
-                        f"%{cleaned_query}%",
-                        f"%{cleaned_query}%",
-                        normalized_query,
-                        f"%{normalized_query}%",
-                        unaccented_query,
-                        f"%{unaccented_query}%",
-                    ),
-                ).fetchall()
-                for row in rows:
-                    key = (str(row["media_type"]), str(row["item_id"]))
-                    if key not in results_by_id:
-                        results_by_id[key] = MediaItem(
-                            media_type=row["media_type"],
-                            item_id=row["item_id"],
-                            name=row["name"],
-                            category_id=row["category_id"],
-                            icon=row["icon"],
-                            fanart=row["fanart"],
-                            plot=row["plot"],
-                            extension=row["extension"],
-                            epg_id=row["epg_id"],
-                            source_name=row["source_name"],
-                            normalized_name=row["normalized_name"],
-                            generation_id=row["generation_id"],
-                        )
-        except Exception:
-            pass
+        with suppress(Exception), self.db.connect() as connection:
+            rows = connection.execute(
+                fallback_sql,
+                (
+                    media_type,
+                    f"%{cleaned_query}%",
+                    f"%{cleaned_query}%",
+                    normalized_query,
+                    f"%{normalized_query}%",
+                    unaccented_query,
+                    f"%{unaccented_query}%",
+                ),
+            ).fetchall()
+            for row in rows:
+                key = (str(row["media_type"]), str(row["item_id"]))
+                if key not in results_by_id:
+                    results_by_id[key] = self._media_item_from_row(row)
 
         return list(results_by_id.values())[:100]
 
@@ -292,47 +260,14 @@ class CatalogRepository:
         """
         with self.db.connect() as connection:
             rows = connection.execute(sql, (media_type,)).fetchall()
-
-        return [
-            MediaItem(
-                media_type=row["media_type"],
-                item_id=row["item_id"],
-                name=row["name"],
-                category_id=row["category_id"],
-                icon=row["icon"],
-                fanart=row["fanart"],
-                plot=row["plot"],
-                extension=row["extension"],
-                epg_id=row["epg_id"],
-                source_name=row["source_name"],
-                normalized_name=row["normalized_name"],
-                generation_id=row["generation_id"],
-            )
-            for row in rows
-        ]
+        return [self._media_item_from_row(row) for row in rows]
 
     def get_all_media_items(self, media_type: str) -> list[MediaItem]:
         """Recupera o catálogo local completo de uma seção sem alterar categorias."""
         sql = "SELECT * FROM media_items WHERE media_type = ? ORDER BY name COLLATE NOCASE"
         with self.db.connect() as connection:
             rows = connection.execute(sql, (media_type,)).fetchall()
-        return [
-            MediaItem(
-                media_type=row["media_type"],
-                item_id=row["item_id"],
-                name=row["name"],
-                category_id=row["category_id"],
-                icon=row["icon"],
-                fanart=row["fanart"],
-                plot=row["plot"],
-                extension=row["extension"],
-                epg_id=row["epg_id"],
-                source_name=row["source_name"],
-                normalized_name=row["normalized_name"],
-                generation_id=row["generation_id"],
-            )
-            for row in rows
-        ]
+        return [self._media_item_from_row(row) for row in rows]
 
     def get_favorite_ids(self, media_type: str) -> list[str]:
         """Retorna o estado de favoritos mesmo quando o catálogo estiver temporariamente vazio."""
@@ -344,16 +279,21 @@ class CatalogRepository:
         return [str(row["item_id"]) for row in rows]
 
     def toggle_favorite(self, media_type: str, item_id: str) -> bool:
-        """Adiciona aos favoritos se não existir, ou remove se já existir. Retorna True se adicionado."""
+        """Adiciona aos favoritos se não existir, ou remove se já existir."""
         check_sql = "SELECT 1 FROM favorites WHERE media_type = ? AND item_id = ?"
         with self.db.connect() as connection:
             exists = connection.execute(check_sql, (media_type, item_id)).fetchone()
             if exists:
-                connection.execute("DELETE FROM favorites WHERE media_type = ? AND item_id = ?", (media_type, item_id))
+                connection.execute(
+                    "DELETE FROM favorites WHERE media_type = ? AND item_id = ?",
+                    (media_type, item_id),
+                )
                 return False
-            else:
-                connection.execute("INSERT INTO favorites (media_type, item_id) VALUES (?, ?)", (media_type, item_id))
-                return True
+            connection.execute(
+                "INSERT INTO favorites (media_type, item_id) VALUES (?, ?)",
+                (media_type, item_id),
+            )
+            return True
 
     def add_favorite(self, media_type: str, item_id: str) -> None:
         """Adiciona um favorito de modo idempotente, sem remover registros existentes."""
@@ -383,14 +323,17 @@ class CatalogRepository:
             legacy_exists = False
             if legacy_item_ids:
                 placeholders = ",".join("?" for _item_id in legacy_item_ids)
-                legacy_exists = connection.execute(
-                    f"""
-                    SELECT 1 FROM favorites
-                    WHERE media_type = 'live' AND item_id IN ({placeholders})
-                    LIMIT 1
-                    """,
-                    tuple(legacy_item_ids),
-                ).fetchone() is not None
+                legacy_exists = (
+                    connection.execute(
+                        f"""
+                        SELECT 1 FROM favorites
+                        WHERE media_type = 'live' AND item_id IN ({placeholders})
+                        LIMIT 1
+                        """,
+                        tuple(legacy_item_ids),
+                    ).fetchone()
+                    is not None
+                )
             if exists or legacy_exists:
                 connection.execute(
                     "DELETE FROM live_channel_favorites WHERE channel_key = ?",
@@ -457,7 +400,13 @@ class CatalogRepository:
             ).fetchone()
         return row is not None
 
-    def update_playback_progress(self, media_type: str, item_id: str, position: float, total: float) -> None:
+    def update_playback_progress(
+        self,
+        media_type: str,
+        item_id: str,
+        position: float,
+        total: float,
+    ) -> None:
         """Registra o progresso de reprodução em segundos."""
         sql = """
         INSERT INTO playback_progress (media_type, item_id, position, total, updated_at)
@@ -489,18 +438,18 @@ class CatalogRepository:
 
             check_sql = "SELECT (julianday('now') - julianday(?)) * 24 as diff_hours"
             diff_row = connection.execute(check_sql, (row["last_update"],)).fetchone()
-            if diff_row and diff_row["diff_hours"] is not None and diff_row["diff_hours"] <= ttl_hours:
-                return True
-            return False
+            return bool(
+                diff_row
+                and diff_row["diff_hours"] is not None
+                and diff_row["diff_hours"] <= ttl_hours
+            )
 
     def get_preference(self, key: str, default: str = "") -> str:
         """Recupera uma preferência persistida no banco local."""
         sql = "SELECT value FROM user_preferences WHERE key = ?"
         with self.db.connect() as connection:
             row = connection.execute(sql, (key,)).fetchone()
-            if row:
-                return str(row["value"])
-            return default
+            return str(row["value"]) if row else default
 
     def set_preference(self, key: str, value: str) -> None:
         """Salva ou atualiza uma preferência no banco local."""
@@ -521,8 +470,6 @@ class CatalogRepository:
         ttl_hours: int = 168,
     ) -> dict[int, dict[str, object]] | None:
         """Recupera metadados enriquecidos de episódios do cache local SQLite se válido."""
-        import json
-
         sql = """
         SELECT payload_json, updated_at,
                (julianday('now') - julianday(updated_at)) * 24 as diff_hours
@@ -530,14 +477,8 @@ class CatalogRepository:
         WHERE series_name = ? AND season_num = ?
         """
         with self.db.connect() as connection:
-            row = connection.execute(
-                sql, (str(series_name).strip(), int(season_num))
-            ).fetchone()
-            if (
-                row
-                and row["diff_hours"] is not None
-                and row["diff_hours"] <= ttl_hours
-            ):
+            row = connection.execute(sql, (str(series_name).strip(), int(season_num))).fetchone()
+            if row and row["diff_hours"] is not None and row["diff_hours"] <= ttl_hours:
                 try:
                     data = json.loads(row["payload_json"])
                     return {int(k): v for k, v in data.items()}
@@ -552,8 +493,6 @@ class CatalogRepository:
         episodes_map: dict[int, dict[str, object]],
     ) -> None:
         """Salva metadados enriquecidos de episódios de uma temporada no cache local SQLite."""
-        import json
-
         sql = """
         INSERT INTO tmdb_season_cache (series_name, season_num, payload_json, updated_at)
         VALUES (?, ?, ?, CURRENT_TIMESTAMP)
@@ -574,4 +513,3 @@ class CatalogRepository:
     def optimize(self) -> None:
         """Executa otimização de estatísticas e query planner no SQLite."""
         self.db.optimize()
-

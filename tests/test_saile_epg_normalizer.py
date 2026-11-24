@@ -65,9 +65,16 @@ class EpgNormalizerTests(unittest.TestCase):
 
         self.assertEqual(strip_accents("Pokémon: O Filme!"), "Pokemon: O Filme!")
         self.assertEqual(strip_accents("Capitão América"), "Capitao America")
-        self.assertEqual(normalize_search_term("Pokémon: Detetive Pikachu!"), "POKEMON DETETIVE PIKACHU")
-        self.assertEqual(normalize_search_term("Capitão América: Guerra Civil (2016)"), "CAPITAO AMERICA GUERRA CIVIL 2016")
-        self.assertEqual(normalize_search_term("Coração de Ferro [1080p]"), "CORACAO DE FERRO 1080P")
+        self.assertEqual(
+            normalize_search_term("Pokémon: Detetive Pikachu!"), "POKEMON DETETIVE PIKACHU"
+        )
+        self.assertEqual(
+            normalize_search_term("Capitão América: Guerra Civil (2016)"),
+            "CAPITAO AMERICA GUERRA CIVIL 2016",
+        )
+        self.assertEqual(
+            normalize_search_term("Coração de Ferro [1080p]"), "CORACAO DE FERRO 1080P"
+        )
 
 
 if __name__ == "__main__":

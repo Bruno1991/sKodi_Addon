@@ -3,9 +3,9 @@ from __future__ import annotations
 import base64
 import binascii
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
-from typing import Callable
+from datetime import UTC, datetime
 
 from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
@@ -76,11 +76,7 @@ def _timestamp(listing: dict[str, object], numeric_key: str, text_key: str) -> i
         return 0
     for pattern in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
         try:
-            return int(
-                datetime.strptime(raw_text[:19], pattern)
-                .replace(tzinfo=timezone.utc)
-                .timestamp()
-            )
+            return int(datetime.strptime(raw_text[:19], pattern).replace(tzinfo=UTC).timestamp())
         except ValueError:
             continue
     return 0

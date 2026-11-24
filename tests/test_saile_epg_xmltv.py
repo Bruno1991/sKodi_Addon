@@ -4,7 +4,7 @@ import gzip
 import sys
 import unittest
 import zipfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
@@ -16,7 +16,6 @@ if str(EPG_LIB) not in sys.path:
 from saile_epg.errors import EpgSyncError
 from saile_epg.providers.xmltv import XmltvProvider, parse_xmltv_timestamp
 
-
 XMLTV = b"""<?xml version="1.0" encoding="UTF-8"?>
 <tv>
   <channel id="globo.sp.br"><display-name>Globo SP</display-name></channel>
@@ -24,7 +23,7 @@ XMLTV = b"""<?xml version="1.0" encoding="UTF-8"?>
     <title>Encontro</title>
   </programme>
 </tv>"""
-FETCHED_AT = int(datetime(2026, 8, 18, 13, 30, tzinfo=timezone.utc).timestamp())
+FETCHED_AT = int(datetime(2026, 8, 18, 13, 30, tzinfo=UTC).timestamp())
 
 
 class FakeHttpResponse:
@@ -38,7 +37,7 @@ class FakeHttpResponse:
     def read(self, size: int = -1) -> bytes:
         return self._stream.read(size)
 
-    def __enter__(self) -> "FakeHttpResponse":
+    def __enter__(self) -> FakeHttpResponse:
         return self
 
     def __exit__(self, *_args: object) -> None:
@@ -48,7 +47,7 @@ class FakeHttpResponse:
 class XmltvProviderTests(unittest.TestCase):
     def test_timestamp_is_normalized_to_utc(self) -> None:
         actual = parse_xmltv_timestamp("20260818100000 -0300")
-        expected = int(datetime(2026, 8, 18, 13, 0, tzinfo=timezone.utc).timestamp())
+        expected = int(datetime(2026, 8, 18, 13, 0, tzinfo=UTC).timestamp())
         self.assertEqual(actual, expected)
 
     def test_parse_channels_and_programs_in_window(self) -> None:
@@ -82,7 +81,9 @@ class XmltvProviderTests(unittest.TestCase):
             BytesIO(xmltv), fetched_at_utc=FETCHED_AT
         )
 
-        self.assertEqual([channel.epg_id for channel in snapshot.channels], ["canal-local", "globo"])
+        self.assertEqual(
+            [channel.epg_id for channel in snapshot.channels], ["canal-local", "globo"]
+        )
         self.assertEqual([program.channel_key for program in snapshot.programs], ["globo"])
 
     def test_invalid_or_empty_xmltv_is_rejected(self) -> None:

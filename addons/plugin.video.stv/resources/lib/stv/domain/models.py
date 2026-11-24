@@ -1,4 +1,5 @@
 """Modelos de domínio do add-on sTv (IPTV)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

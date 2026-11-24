@@ -5,7 +5,7 @@
 O agente trabalha no monorepo **sRepo**, que administra seis add-ons ativos (IPTV/Xtream e rádio):
 
 - `repository.srepo`: distribuição e atualização pelo GitHub Pages.
-- `resource.images.saile`: nove artes fixas compartilhadas.
+- `resource.images.saile`: vinte artes fixas compartilhadas (`common/` e `stv/`).
 - `script.module.saile.core`: infraestrutura Python comum e sem regras de negócio.
 - `script.module.saile.epg`: provider XMLTV, matching, cache UTC e API de EPG sem UI Kodi.
 - `plugin.video.stv`: IPTV/Xtream, vídeo, TMDB e estado local do sTv.
@@ -53,8 +53,8 @@ Não ordenar alfabeticamente, não ocultar esses atalhos por falta de dados e n�
 ## Artwork
 
 - Cada add-on mantém `icon.png` e `fanart.jpg` próprios.
-- Os nove ícones fixos compartilhados vivem apenas em `resource.images.saile`.
-- `common/`: `search.png`, `erro.png`, `check.png`, `sync.png`, `folder.png`.
+- Os vinte ícones fixos compartilhados vivem apenas em `resource.images.saile`.
+- `common/`: `search.png`, `erro.png`, `check.png`, `sync.png`, `folder.png`, `favoritos.png`, `local.png`, `alta.png`, `brasil.png`, `musica.png`, `noticias.png`, `esportes.png`, `mundo.png`, `idioma.png`, `podcast.png`, `radio.png`.
 - `stv/`: `live.png`, `vod.png`, `series.png`, `favoritos.png`.
 - Pôsteres, logos, thumbnails e fanarts de conteúdo são dinâmicos e não entram nesse recurso.
 - Emojis nunca substituem artwork.
@@ -106,5 +106,5 @@ python tools/build_repo.py
 - Não apagar banco para resolver migração.
 - Não adicionar backend próprio obrigatório.
 - Não embutir `.env`, PAT GitHub, senha Xtream, cookie, token ou URL assinada.
-- Não duplicar os nove ícones compartilhados dentro dos plugins.
+- Não duplicar os ícones fixos compartilhados dentro dos plugins.
 - Não ligar sincronização LAN automática sem as chaves `lan_sync_enabled`/`lan_sync_auto` que permitem desligá-la.

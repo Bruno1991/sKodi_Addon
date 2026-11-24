@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Callable, Sequence
 
 from saile_epg.models import EpgChannel
+from saile_epg.normalizer import get_canonical_channel_name
+
 from stv.domain.models import MediaItem
 
 
@@ -34,21 +36,16 @@ class LiveCatalog:
         if catalog_complete:
             return set(category_ids) & unmatched_category_ids
         cached_category_ids = {
-            item.category_id
-            for group in self.groups
-            for item in group.variants
+            item.category_id for group in self.groups for item in group.variants
         } | unmatched_category_ids
         return {
             category_id
             for category_id in category_ids
-            if category_id not in cached_category_ids
-            or category_id in unmatched_category_ids
+            if category_id not in cached_category_ids or category_id in unmatched_category_ids
         }
 
     def unmatched_in_category(self, category_id: str) -> tuple[MediaItem, ...]:
-        return tuple(
-            item for item in self.unmatched_items if item.category_id == category_id
-        )
+        return tuple(item for item in self.unmatched_items if item.category_id == category_id)
 
 
 _QUALITY_PATTERNS: tuple[tuple[int, str, re.Pattern[str]], ...] = (
@@ -67,74 +64,6 @@ def variant_quality(item: MediaItem) -> tuple[int, str]:
         if pattern.search(value):
             return (rank, label)
     return (0, "AUTO")
-
-
-_CHANNEL_ALIASES: dict[str, str] = {
-    "GLOBO": "GLOBO SAO PAULO",
-    "GLOBO SP": "GLOBO SAO PAULO",
-    "GLOBO RJ": "GLOBO RIO DE JANEIRO",
-    "SPORTV 1": "SPORTV",
-    "HBO 1": "HBO",
-    "HBO 2": "HBO2",
-    "DISC CHANNEL": "DISCOVERY",
-    "DISCOVERY": "DISCOVERY",
-    "DISCOVERY CHANNEL": "DISCOVERY",
-    "DISC H HEALTH": "DISCOVERY HOME HEALTH",
-    "DISC H AND HEALTH": "DISCOVERY HOME HEALTH",
-    "DISC HOME HEALTH": "DISCOVERY HOME HEALTH",
-    "DISCOVERY HOME HEALTH": "DISCOVERY HOME HEALTH",
-    "DISC KIDS": "DISCOVERY KIDS",
-    "DISCOVERY KIDS": "DISCOVERY KIDS",
-    "DISC TURBO": "DISCOVERY TURBO",
-    "DISC THEATER": "DISCOVERY THEATER",
-    "DISC SCIENCE": "DISCOVERY SCIENCE",
-    "DISC WORLD": "DISCOVERY WORLD",
-    "DISC ID": "ID",
-    "INVESTIGATION DISCOVERY": "ID",
-    "INVESTIGACAO DISCOVERY": "ID",
-    "TC PREMIUM": "TELECINE PREMIUM",
-    "TC ACTION": "TELECINE ACTION",
-    "TC PIPOCA": "TELECINE PIPOCA",
-    "TC FUN": "TELECINE FUN",
-    "TC TOUCH": "TELECINE TOUCH",
-    "TC CULT": "TELECINE CULT",
-    "PFC CLUBES": "PREMIERE CLUBES",
-    "PREMIERE CLUBES": "PREMIERE CLUBES",
-    "PFC 2": "PREMIERE 2",
-    "PFC 3": "PREMIERE 3",
-    "PFC 4": "PREMIERE 4",
-    "PFC 5": "PREMIERE 5",
-    "PFC 6": "PREMIERE 6",
-    "PFC 7": "PREMIERE 7",
-    "PFC 8": "PREMIERE 8",
-    "PREMIERE 2": "PREMIERE 2",
-    "PREMIERE 3": "PREMIERE 3",
-    "PREMIERE 4": "PREMIERE 4",
-    "PREMIERE 5": "PREMIERE 5",
-    "PREMIERE 6": "PREMIERE 6",
-    "PREMIERE 7": "PREMIERE 7",
-    "PREMIERE 8": "PREMIERE 8",
-    "CARTOON NETWORK": "CARTOON",
-    "NICK": "NICKELODEON",
-    "UNIVERSAL": "UNIVERSAL TV",
-    "SONY": "SONY CHANNEL",
-    "WARNER": "WARNER CHANNEL",
-    "PARAMOUNT": "PARAMOUNT NETWORK",
-    "CANAL OFF": "OFF",
-    "BANDNEWS": "BAND NEWS",
-    "BANDSPORTS": "BAND SPORTS",
-    "REDETV": "REDE TV",
-    "REDETV SP": "REDE TV",
-    "TV CULTURA": "CULTURA",
-    "TV BRASIL": "TV BRASIL",
-    "FOX SPORTS 2": "ESPN 5",
-    "SABOR E ARTE": "SABOR ARTE",
-    "TRAVEL BOX BRASIL": "TRAVEL BOX",
-    "TCM": "TCM BR",
-    "RECORD SP": "RECORD",
-    "RECORD RIO": "RECORD",
-    "RECORD": "RECORD",
-}
 
 
 def build_live_catalog(
@@ -169,26 +98,34 @@ def build_live_catalog(
         channel = by_id.get(item.epg_id.strip().casefold()) if item.epg_id.strip() else None
         if channel is None and item.normalized_name:
             norm = item.normalized_name
-            aliased = _CHANNEL_ALIASES.get(norm, norm)
-            channel = by_unique_name.get(aliased) or by_unique_name.get(norm)
-            if channel is None:
-                channel = by_unique_name.get(aliased.replace(" ", "")) or by_unique_name.get(norm.replace(" ", ""))
+            canonical = get_canonical_channel_name(item.source_name or item.name or norm)
+            channel = (
+                by_unique_name.get(norm)
+                or by_unique_name.get(canonical)
+                or by_unique_name.get(norm.replace(" ", ""))
+                or by_unique_name.get(canonical.replace(" ", ""))
+            )
         if channel is None:
             unmatched.append(item)
             continue
         entry = grouped.setdefault(channel.channel_key, (channel, []))
         entry[1].append(item)
 
-    groups = []
-    for channel, variants in grouped.values():
-        ordered = tuple(
-            sorted(
-                variants,
-                key=lambda item: (-variant_quality(item)[0], item.item_id),
-            )
+    groups = [
+        LiveChannelGroup(
+            channel=channel,
+            variants=tuple(
+                sorted(
+                    variants,
+                    key=lambda item: (-variant_quality(item)[0], item.item_id),
+                )
+            ),
         )
-        groups.append(LiveChannelGroup(channel=channel, variants=ordered))
-    groups.sort(key=lambda group: (group.channel.display_name.casefold(), group.channel.channel_key))
+        for channel, variants in grouped.values()
+    ]
+    groups.sort(
+        key=lambda group: (group.channel.display_name.casefold(), group.channel.channel_key)
+    )
     unmatched.sort(key=lambda item: (item.name.casefold(), item.item_id))
     return LiveCatalog(tuple(groups), tuple(unmatched))
 
@@ -210,13 +147,7 @@ def choose_live_variant(
         )
         limit = min(limit, allowed_by_bandwidth)
 
-    candidates = [
-        item
-        for item in variants
-        if variant_quality(item)[0] <= limit
-    ]
-    if not candidates:
-        candidates = list(variants)
+    candidates = [item for item in variants if variant_quality(item)[0] <= limit] or list(variants)
     candidates.sort(key=lambda item: (-variant_quality(item)[0], item.item_id))
 
     if probe is not None:

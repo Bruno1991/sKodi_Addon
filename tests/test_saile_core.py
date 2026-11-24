@@ -20,7 +20,6 @@ class SaileCoreTests(unittest.TestCase):
         self.assertTrue(stv_art("channels.png").endswith("channels.png"))
         self.assertEqual(sradio_art("radio.png"), common_art("radio.png"))
 
-
     def test_saile_error_formatting(self) -> None:
         err = SaileError("ERR_AUTH", "Falha de autenticação")
         self.assertEqual(err.code, "ERR_AUTH")

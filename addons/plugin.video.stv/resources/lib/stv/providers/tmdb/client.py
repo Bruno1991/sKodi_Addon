@@ -1,4 +1,5 @@
 """Cliente para busca e enriquecimento de metadados via TMDB API v3 com chave nativa integrada."""
+
 from __future__ import annotations
 
 import urllib.parse
@@ -39,89 +40,58 @@ class TmdbClient:
             query_params.update(params)
 
         url = f"{self.API_BASE}/{endpoint.lstrip('?')}?{urllib.parse.urlencode(query_params)}"
-        headers = {
-            "Accept": "application/json",
-        }
-
         try:
-            result = self.http.get_json(url, headers=headers)
-            if isinstance(result, dict):
-                return result
-            return {}
+            result = self.http.get_json(url, headers={"Accept": "application/json"})
+            return result if isinstance(result, dict) else {}
         except Exception:
             return {}
+
+    def _first_result(self, endpoint: str, params: dict[str, str]) -> dict[str, Any] | None:
+        results = self._request(endpoint, params).get("results", [])
+        return results[0] if isinstance(results, list) and results else None
+
+    def _search_catalog(
+        self,
+        endpoint: str,
+        year_param: str,
+        title: str,
+        year: str = "",
+    ) -> dict[str, Any] | None:
+        if not title:
+            return None
+        try:
+            from saile_epg.normalizer import clean_media_title
+
+            clean_title, extracted_year = clean_media_title(title)
+        except Exception:
+            clean_title, extracted_year = title, ""
+
+        use_year = str(year or extracted_year or "").strip()
+        if use_year and clean_title:
+            hit = self._first_result(endpoint, {"query": clean_title, year_param: use_year})
+            if hit:
+                return hit
+
+        if clean_title:
+            hit = self._first_result(endpoint, {"query": clean_title})
+            if hit:
+                return hit
+
+        if clean_title != title:
+            params = {"query": title}
+            if year:
+                params[year_param] = str(year)
+            return self._first_result(endpoint, params)
+
+        return None
 
     def search_movie(self, title: str, year: str = "") -> dict[str, Any] | None:
         """Busca filmes pelo título com ano opcional e sanitização automática de tags IPTV."""
-        if not title:
-            return None
-        try:
-            from saile_epg.normalizer import clean_media_title
-            clean_title, extracted_year = clean_media_title(title)
-        except Exception:
-            clean_title, extracted_year = title, ""
-
-        use_year = str(year or extracted_year or "").strip()
-        if use_year and clean_title:
-            params = {"query": clean_title, "primary_release_year": use_year}
-            data = self._request("search/movie", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        if clean_title:
-            params = {"query": clean_title}
-            data = self._request("search/movie", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        if clean_title != title:
-            params = {"query": title}
-            if year:
-                params["primary_release_year"] = str(year)
-            data = self._request("search/movie", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        return None
+        return self._search_catalog("search/movie", "primary_release_year", title, year)
 
     def search_tv(self, title: str, year: str = "") -> dict[str, Any] | None:
-        """Busca séries/programas de TV pelo título com ano opcional e sanitização automática de tags IPTV."""
-        if not title:
-            return None
-        try:
-            from saile_epg.normalizer import clean_media_title
-            clean_title, extracted_year = clean_media_title(title)
-        except Exception:
-            clean_title, extracted_year = title, ""
-
-        use_year = str(year or extracted_year or "").strip()
-        if use_year and clean_title:
-            params = {"query": clean_title, "first_air_date_year": use_year}
-            data = self._request("search/tv", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        if clean_title:
-            params = {"query": clean_title}
-            data = self._request("search/tv", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        if clean_title != title:
-            params = {"query": title}
-            if year:
-                params["first_air_date_year"] = str(year)
-            data = self._request("search/tv", params)
-            results = data.get("results", [])
-            if results and isinstance(results, list):
-                return results[0]
-
-        return None
+        """Busca séries/programas de TV pelo título com ano opcional e sanitização de tags IPTV."""
+        return self._search_catalog("search/tv", "first_air_date_year", title, year)
 
     def get_season_episodes(
         self,
@@ -142,11 +112,7 @@ class TmdbClient:
                     except (ValueError, TypeError):
                         continue
                     still_path = ep.get("still_path")
-                    still_url = (
-                        f"{self.IMAGE_BASE_STILL}{still_path}"
-                        if still_path
-                        else ""
-                    )
+                    still_url = f"{self.IMAGE_BASE_STILL}{still_path}" if still_path else ""
                     result[ep_num] = {
                         "name": ep.get("name", ""),
                         "overview": ep.get("overview", ""),
@@ -164,4 +130,3 @@ class TmdbClient:
         if poster_path:
             return f"{cls.IMAGE_BASE_POSTER}{poster_path}"
         return ""
-

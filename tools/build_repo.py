@@ -39,12 +39,13 @@ def zip_addon(addon_dir: Path, version: str, zips_dir: Path) -> Path:
     destination_dir = zips_dir / addon_dir.name
     destination_dir.mkdir(parents=True, exist_ok=True)
     zip_path = destination_dir / f"{addon_dir.name}-{version}.zip"
-    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    with zipfile.ZipFile(
+        zip_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
+    ) as archive:
         for source in sorted(addon_dir.rglob("*")):
             relative = source.relative_to(addon_dir)
             is_historical_changelog = (
-                source.name.startswith("changelog-")
-                and source.name != f"changelog-{version}.txt"
+                source.name.startswith("changelog-") and source.name != f"changelog-{version}.txt"
             )
             if source.is_file() and not is_historical_changelog and should_include(relative):
                 archive.write(source, Path(addon_dir.name) / relative)
@@ -73,13 +74,17 @@ def build_index(packages: list[tuple[str, str, str, Path]], site_dir: Path) -> s
     repo_version = None
     other_addons = []
     for addon_id, name, version, zip_path in packages:
-        href = (zip_path.name if addon_id == "repository.srepo" else zip_path.relative_to(site_dir).as_posix())
+        href = (
+            zip_path.name
+            if addon_id == "repository.srepo"
+            else zip_path.relative_to(site_dir).as_posix()
+        )
         if addon_id == "repository.srepo":
             repo_zip = href
             repo_version = version
         else:
             other_addons.append((addon_id, name, version, href))
-            
+
     cards_html = ""
     for addon_id, name, version, href in other_addons:
         cards_html += f'''
@@ -89,20 +94,33 @@ def build_index(packages: list[tuple[str, str, str, Path]], site_dir: Path) -> s
             <span class="version">v{html.escape(version)}</span>
         </a>'''
 
-    hero_button = f'<a href="{html.escape(str(repo_zip))}" class="hero-btn">Download Repository v{html.escape(str(repo_version))}</a>' if repo_zip else ""
-    
+    hero_button = (
+        f'<a href="{html.escape(str(repo_zip))}" class="hero-btn">'
+        f"Download Repository v{html.escape(str(repo_version))}</a>"
+        if repo_zip
+        else ""
+    )
+
     # Generate hidden raw links for Kodi parsing
     kodi_links = []
     if repo_zip:
-        kodi_links.append(f'<a href="{html.escape(str(repo_zip))}">{html.escape(str(repo_zip))}</a><br>')
+        kodi_links.append(
+            f'<a href="{html.escape(str(repo_zip))}">{html.escape(str(repo_zip))}</a><br>'
+        )
     for _, _, _, href in other_addons:
-        kodi_links.append(f'<a href="{html.escape(href)}">{html.escape(href.split("/")[-1])}</a><br>')
+        kodi_links.append(
+            f'<a href="{html.escape(href)}">{html.escape(href.split("/")[-1])}</a><br>'
+        )
     kodi_links_html = "\n        ".join(kodi_links)
 
     template_path = ROOT / "tools" / "site_template" / "index.html"
     if template_path.exists():
         template_content = template_path.read_text(encoding="utf-8")
-        html_content = template_content.replace("{{HERO_BUTTON}}", hero_button).replace("{{ADDON_CARDS}}", cards_html).replace("{{KODI_LINKS}}", kodi_links_html)
+        html_content = (
+            template_content.replace("{{HERO_BUTTON}}", hero_button)
+            .replace("{{ADDON_CARDS}}", cards_html)
+            .replace("{{KODI_LINKS}}", kodi_links_html)
+        )
         return html_content
     return ""
 
@@ -114,6 +132,7 @@ def _retry_remove(function, path: str, _excinfo: BaseException) -> None:
 
 def remove_path(path: Path) -> None:
     import sys
+
     if path.is_dir():
         if sys.version_info >= (3, 12):
             shutil.rmtree(path, onexc=_retry_remove)
@@ -177,7 +196,9 @@ def build_site(site_dir: Path) -> list[tuple[str, str, str, Path]]:
         hashlib.sha256(addons_gz).hexdigest() + "\n", encoding="utf-8"
     )
 
-    sums = [f"{sha256(path)}  {path.relative_to(site_dir).as_posix()}" for _, _, _, path in packages]
+    sums = [
+        f"{sha256(path)}  {path.relative_to(site_dir).as_posix()}" for _, _, _, path in packages
+    ]
     (site_dir / "SHA256SUMS").write_text("\n".join(sums) + "\n", encoding="utf-8")
     (site_dir / "index.html").write_text(build_index(packages, site_dir), encoding="utf-8")
     return packages

@@ -1,4 +1,5 @@
 """Cliente HTTP seguro, resiliente e leve para consumo de APIs remotas."""
+
 from __future__ import annotations
 
 import gzip
@@ -35,7 +36,7 @@ class HttpClient:
         headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> bytes:
-        """Executa uma requisição GET retornando os bytes decodificados (descomprimindo gzip se necessário)."""
+        """Executa GET retornando os bytes decodificados (descomprimindo gzip se necessário)."""
         request_headers = {
             "User-Agent": self.user_agent,
             "Accept-Encoding": "gzip, deflate",
@@ -51,7 +52,9 @@ class HttpClient:
             ) as response:
                 content = response.read()
                 # Verifica se a resposta está comprimida em Gzip
-                is_gzip = response.info().get("Content-Encoding") == "gzip" or content.startswith(b"\x1f\x8b")
+                is_gzip = response.info().get("Content-Encoding") == "gzip" or content.startswith(
+                    b"\x1f\x8b"
+                )
                 if is_gzip:
                     try:
                         content = gzip.decompress(content)

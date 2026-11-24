@@ -2,20 +2,27 @@
 
 Keep Kodi imports out of this package so services remain unit-testable.
 """
+
 from __future__ import annotations
 
 import os
 import threading
 import time
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from contextlib import suppress
+from typing import TYPE_CHECKING
 
 from stv.persistence.database import Database
 from stv.persistence.repository import CatalogRepository
 from stv.providers.xtream.client import XtreamClient
 
 if TYPE_CHECKING:
+    from saile_epg import EpgService
     from saile_epg.models import EpgProgram
+
+    from stv.domain.live_channels import LiveCatalog
     from stv.domain.models import MediaItem
+    from stv.providers.tmdb.client import TmdbClient
 
 
 class AppContainer:
@@ -28,21 +35,20 @@ class AppContainer:
 
     def __init__(self, settings: dict[str, str]) -> None:
         self.settings = settings
-        
-        # Lazy initialization
         self._xtream_client: XtreamClient | None = None
         self._database: Database | None = None
         self._catalog_repo: CatalogRepository | None = None
-        self._tmdb_client: object | None = None
-        self._epg_service: object | None = None
+        self._tmdb_client: TmdbClient | None = None
+        self._epg_service: EpgService | None = None
 
     @property
     def xtream(self) -> XtreamClient:
         if self._xtream_client is None:
-            host = self.settings.get("xtream_url", "")
-            username = self.settings.get("xtream_username", "")
-            password = self.settings.get("xtream_password", "")
-            self._xtream_client = XtreamClient(host=host, username=username, password=password)
+            self._xtream_client = XtreamClient(
+                host=self.settings.get("xtream_url", ""),
+                username=self.settings.get("xtream_username", ""),
+                password=self.settings.get("xtream_password", ""),
+            )
         return self._xtream_client
 
     @property
@@ -74,15 +80,16 @@ class AppContainer:
             return 54
 
     @property
-    def tmdb(self) -> 'TmdbClient':
+    def tmdb(self) -> TmdbClient:
         from stv.providers.tmdb.client import TmdbClient
+
         if self._tmdb_client is None:
             lang = self.settings.get("tmdb_language", "pt-BR")
             self._tmdb_client = TmdbClient(language=lang)
         return self._tmdb_client
 
     @property
-    def epg(self) -> 'EpgService':
+    def epg(self) -> EpgService:
         from saile_epg import EpgService
 
         if self._epg_service is None:
@@ -106,7 +113,7 @@ class AppContainer:
         return age_seconds < (ttl_hours * 3600)
 
     def trigger_background_epg_sync_if_expired(self) -> bool:
-        """Dispara auto-atualização silenciosa em background se o cache do EPG estiver expirado."""
+        """Dispara auto-atualização silenciosa em background se o cache do EPG expirou."""
         if self.settings.get("epg_enabled", "true").lower() == "false":
             return False
         if self.is_epg_cache_valid():
@@ -131,7 +138,7 @@ class AppContainer:
         return True
 
     def trigger_background_catalog_sync_if_expired(self, section: str | None = None) -> bool:
-        """Dispara sincronização de catálogo em segundo plano se expirado de acordo com o TTL."""
+        """Dispara sincronização de catálogo em segundo plano se expirado pelo TTL."""
         if not self.xtream.is_configured:
             return False
 
@@ -146,9 +153,7 @@ class AppContainer:
         for sec in target_sections:
             if not sec:
                 continue
-            # Se o cache está válido e já tem categorias gravadas, não precisa sincronizar
-            has_categories = bool(self.catalog.get_categories(sec))
-            if has_categories and self.catalog.is_cache_valid(sec, ttl_hours):
+            if self.catalog.get_categories(sec) and self.catalog.is_cache_valid(sec, ttl_hours):
                 continue
 
             with AppContainer._catalog_sync_lock:
@@ -159,6 +164,7 @@ class AppContainer:
             def _catalog_worker(target_sec: str = sec) -> None:
                 try:
                     from stv.app.sync import sync_section_catalog
+
                     sync_section_catalog(self, target_sec)
                 except Exception:
                     pass
@@ -166,7 +172,11 @@ class AppContainer:
                     with AppContainer._catalog_sync_lock:
                         AppContainer._catalog_syncing.discard(target_sec)
 
-            thread = threading.Thread(target=_catalog_worker, daemon=True, name=f"sTv-CatalogSync-{sec}")
+            thread = threading.Thread(
+                target=_catalog_worker,
+                daemon=True,
+                name=f"sTv-CatalogSync-{sec}",
+            )
             thread.start()
             triggered = True
 
@@ -175,13 +185,14 @@ class AppContainer:
     def trigger_background_lan_sync(self) -> bool:
         """Dispara descoberta e sincronização de favoritos na rede local (LAN)."""
         from stv.app.lan_sync import trigger_background_lan_sync
+
         return trigger_background_lan_sync(self)
 
     def get_items_epg_schedule(
         self,
-        items: Sequence['MediaItem'],
-    ) -> dict[str, tuple['EpgProgram' | None, 'EpgProgram' | None]]:
-        """Resolve Agora/Próximo em lote para uma lista de itens/canais em 1 única query SQL."""
+        items: Sequence[MediaItem],
+    ) -> dict[str, tuple[EpgProgram | None, EpgProgram | None]]:
+        """Resolve Agora/Próximo em lote para uma lista de itens/canais em 1 query SQL."""
         if self.settings.get("epg_enabled", "true").lower() == "false" or not items:
             return {}
         item_to_key: dict[str, str] = {}
@@ -194,22 +205,21 @@ class AppContainer:
             return {}
         key_schedule = self.epg.get_now_next_many(unique_keys)
         return {
-            item_id: key_schedule.get(key, (None, None))
-            for item_id, key in item_to_key.items()
+            item_id: key_schedule.get(key, (None, None)) for item_id, key in item_to_key.items()
         }
 
     def get_channel_epg(
         self,
         channel_name: str,
         epg_id: str = "",
-    ) -> tuple['EpgProgram' | None, 'EpgProgram' | None]:
+    ) -> tuple[EpgProgram | None, EpgProgram | None]:
         """Consulta Agora/Próximo apenas no cache local do módulo EPG."""
         if self.settings.get("epg_enabled", "true").lower() == "false":
             return (None, None)
         return self.epg.get_now_next(epg_id=epg_id, channel_name=channel_name)
 
     def sync_epg(self, refresh_live_catalog: bool = False) -> dict[str, object]:
-        """Sincroniza o guia oficial da Claro TV+ como fonte oficial da verdade."""
+        """Sincroniza o guia oficial da Claro TV+ com fallback para XMLTV e Xtream API."""
         live_streams: object | None = None
         if refresh_live_catalog:
             from stv.app.sync import sync_live_catalog
@@ -218,24 +228,17 @@ class AppContainer:
                 live_streams = self.xtream.request("get_live_streams")
             sync_live_catalog(self, raw_streams=live_streams)
 
-        # 1. Fonte Oficial: Claro TV+ (AVSClient v1.2)
         if hasattr(self.epg, "sync_claro"):
-            try:
+            with suppress(Exception):
                 return self.epg.sync_claro()
-            except Exception:
-                pass
 
-        # 2. Fallback: XMLTV
         if hasattr(self.epg, "sync_xmltv") and hasattr(self.xtream, "xmltv_url"):
-            try:
+            with suppress(Exception):
                 xmltv_url = self.xtream.xmltv_url()
                 if live_streams is None:
                     return self.epg.sync_xmltv(xmltv_url)
                 return self.epg.sync_xmltv(xmltv_url, live_streams=live_streams)
-            except Exception:
-                pass
 
-        # 3. Fallback: API curta do Xtream
         if hasattr(self.epg, "sync_xtream") and hasattr(self.xtream, "request"):
             if live_streams is None:
                 live_streams = self.xtream.request("get_live_streams")
@@ -243,26 +246,21 @@ class AppContainer:
 
         return {"channel_count": 0, "program_count": 0, "source": "Indisponível"}
 
-    def get_live_catalog(self) -> 'LiveCatalog':
+    def get_live_catalog(self) -> LiveCatalog:
         from stv.domain.live_channels import build_live_catalog
 
         channels = self.epg.list_channels()
         if not channels:
-            try:
+            with suppress(Exception):
                 self.epg.sync_claro()
                 channels = self.epg.list_channels()
-            except Exception:
-                pass
 
         return build_live_catalog(
             channels,
             self.catalog.get_all_media_items("live"),
         )
 
-    def choose_live_variant(
-        self,
-        channel_key: str,
-    ) -> 'MediaItem':
+    def choose_live_variant(self, channel_key: str) -> MediaItem:
         from stv.domain.live_channels import choose_live_variant
 
         group = self.get_live_catalog().get_group(channel_key)
@@ -312,5 +310,3 @@ class AppContainer:
             episodes_meta = {}
 
         return episodes_meta
-
-

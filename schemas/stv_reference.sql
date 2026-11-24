@@ -81,6 +81,14 @@ CREATE TABLE IF NOT EXISTS user_preferences (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS tmdb_season_cache (
+    series_name TEXT NOT NULL,
+    season_num INTEGER NOT NULL,
+    payload_json TEXT NOT NULL DEFAULT '{}',
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (series_name, season_num)
+);
+
 CREATE VIRTUAL TABLE IF NOT EXISTS media_items_fts USING fts5(
     media_type UNINDEXED,
     item_id UNINDEXED,

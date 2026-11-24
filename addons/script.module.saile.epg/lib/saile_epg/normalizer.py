@@ -10,10 +10,20 @@ _COUNTRY_PREFIXES = re.compile(
     r"|^\((BR|PT|USA|UK|ES|LATAM|INT)\)\s*",
     re.IGNORECASE,
 )
-_SUPERSCRIPTS = str.maketrans({
-    "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5",
-    "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁰": "0",
-})
+_SUPERSCRIPTS = str.maketrans(
+    {
+        "¹": "1",
+        "²": "2",
+        "³": "3",
+        "⁴": "4",
+        "⁵": "5",
+        "⁶": "6",
+        "⁷": "7",
+        "⁸": "8",
+        "⁹": "9",
+        "⁰": "0",
+    }
+)
 
 _QUALITY_TAGS = re.compile(
     r"\b(4K\d*|UHD\d*|FHD\d*|FULLHD\d*|HD\d*|SD\d*|HEVC|H\.?265|H\.?264|60FPS|1080P\d*|720P\d*|480P\d*|RAW)\b",
@@ -27,17 +37,65 @@ _REDUNDANCY_TAGS = re.compile(
 )
 _EXTRA_PUNCTUATION = re.compile(r"[\[\](){}_\|#*~^`´'\"«»!?:;]")
 
+_ACRONYMS = frozenset(
+    {
+        "SP",
+        "RJ",
+        "MG",
+        "RS",
+        "PR",
+        "SC",
+        "BA",
+        "PE",
+        "CE",
+        "DF",
+        "GO",
+        "ES",
+        "MT",
+        "MS",
+        "PA",
+        "AM",
+        "HBO",
+        "ESPN",
+        "CNN",
+        "TNT",
+        "AXN",
+        "GNT",
+        "BIS",
+        "OFF",
+        "TLC",
+        "MTV",
+        "SBT",
+        "BBC",
+        "FX",
+        "ID",
+        "E!",
+        "USA",
+        "VIVA",
+        "MAX",
+        "DMAX",
+        "AMC",
+        "SYFY",
+    }
+)
+_BRANDED_NAMES = {
+    "SPORTV": "SporTV",
+    "BANDNEWS": "BandNews",
+    "GLOOB": "Gloob",
+    "GLOOBINHO": "Gloobinho",
+    "MEGAPIX": "Megapix",
+    "CARTOONITO": "Cartoonito",
+    "CINEMAX": "Cinemax",
+    "TELECINE": "Telecine",
+}
+
 
 def strip_accents(text: str) -> str:
     if not text:
         return ""
     trans = text.translate(_SUPERSCRIPTS)
     normalized = unicodedata.normalize("NFKD", trans)
-    return "".join(character for character in normalized if not unicodedata.combining(character))
-
-
-def _strip_accents(text: str) -> str:
-    return strip_accents(text)
+    return "".join(char for char in normalized if not unicodedata.combining(char))
 
 
 def normalize_search_term(text: str) -> str:
@@ -61,24 +119,11 @@ def clean_channel_title(raw_name: str) -> str:
     if not name:
         return raw_name.strip()
 
-    acronyms = {
-        "SP", "RJ", "MG", "RS", "PR", "SC", "BA", "PE", "CE", "DF", "GO", "ES",
-        "MT", "MS", "PA", "AM", "HBO", "ESPN", "CNN", "TNT", "AXN", "GNT", "BIS",
-        "OFF", "TLC", "MTV", "SBT", "BBC", "FX", "ID", "E!", "USA", "VIVA", "MAX",
-        "DMAX", "AMC", "SYFY",
-    }
-    branded = {
-        "SPORTV": "SporTV",
-        "BANDNEWS": "BandNews",
-        "GLOOB": "Gloob",
-        "GLOOBINHO": "Gloobinho",
-        "MEGAPIX": "Megapix",
-        "CARTOONITO": "Cartoonito",
-        "CINEMAX": "Cinemax",
-        "TELECINE": "Telecine",
-    }
     return " ".join(
-        branded.get(word.upper(), word.upper() if word.upper() in acronyms else word.capitalize())
+        _BRANDED_NAMES.get(
+            word.upper(),
+            word.upper() if word.upper() in _ACRONYMS else word.capitalize(),
+        )
         for word in name.split()
     )
 
@@ -86,7 +131,7 @@ def clean_channel_title(raw_name: str) -> str:
 def normalize_channel_name(raw_name: str) -> str:
     if not raw_name:
         return ""
-    cleaned = _strip_accents(raw_name).upper()
+    cleaned = strip_accents(raw_name).upper()
     cleaned = _COUNTRY_PREFIXES.sub("", cleaned)
     cleaned = _REDUNDANCY_TAGS.sub("", cleaned)
     cleaned = _QUALITY_TAGS.sub("", cleaned)
@@ -126,7 +171,7 @@ def _split_media_year(name: str) -> tuple[str, str]:
 
 
 def clean_media_title(raw_name: str) -> tuple[str, str]:
-    """Limpa títulos de filmes e séries removendo tags IPTV e extraindo o ano (título_limpo, ano)."""
+    """Limpa títulos de filmes e séries removendo tags IPTV e extraindo (título_limpo, ano)."""
     if not raw_name:
         return ("", "")
     name = raw_name.translate(_SUPERSCRIPTS)
@@ -143,39 +188,91 @@ def clean_media_title(raw_name: str) -> tuple[str, str]:
 
 
 _GLOBO_AFFILIATE_TOKENS = (
-    "RPC", "EPTV", "TV TEM", "TV TRIBUNA", "TV VANGUARDA", "TV DIARIO",
-    "TV FRONTEIRA", "TV BAHIA", "TV SANTA CRUZ", "TV SUBAE", "TV SUDOESTE",
-    "TV SAO FRANCISCO", "TV VERDES MARES", "TV MIRANTE", "TV CENTRO AMERICA",
-    "TV MORENA", "TV LIBERAL", "TV CLUBE", "TV CABO BRANCO", "TV PARAIBA",
-    "TV SERGIPE", "TV GAZETA ALAGOAS", "TV GAZETA SUL", "TV GAZETA DE ALAGOAS",
-    "TV INTEGRACAO", "TV ITEGRACAO", "TV ANHANGUERA", "TV ASA BRANCA", "TV GRANDE RIO",
-    "TV RIO SUL", "REDE AMAZONICA", "REDE MACAPA", "REDE MINAS", "NSC TV",
-    "RBS TV", "INTERTV", "TV TAPAJOS", "TV RONDONIA", "TV RORAIMA", "TV ACRE",
-    "TV AMAPA", "TV PAMPA", "TV TAPAJOS",
+    "RPC",
+    "EPTV",
+    "TV TEM",
+    "TV TRIBUNA",
+    "TV VANGUARDA",
+    "TV DIARIO",
+    "TV FRONTEIRA",
+    "TV BAHIA",
+    "TV SANTA CRUZ",
+    "TV SUBAE",
+    "TV SUDOESTE",
+    "TV SAO FRANCISCO",
+    "TV VERDES MARES",
+    "TV MIRANTE",
+    "TV CENTRO AMERICA",
+    "TV MORENA",
+    "TV LIBERAL",
+    "TV CLUBE",
+    "TV CABO BRANCO",
+    "TV PARAIBA",
+    "TV SERGIPE",
+    "TV GAZETA ALAGOAS",
+    "TV GAZETA SUL",
+    "TV GAZETA DE ALAGOAS",
+    "TV INTEGRACAO",
+    "TV ITEGRACAO",
+    "TV ANHANGUERA",
+    "TV ASA BRANCA",
+    "TV GRANDE RIO",
+    "TV RIO SUL",
+    "REDE AMAZONICA",
+    "REDE MACAPA",
+    "REDE MINAS",
+    "NSC TV",
+    "RBS TV",
+    "INTERTV",
+    "TV TAPAJOS",
+    "TV RONDONIA",
+    "TV RORAIMA",
+    "TV ACRE",
+    "TV AMAPA",
+    "TV PAMPA",
 )
 
 _SBT_AFFILIATE_TOKENS = (
-    "SBT", "ALTEROSA", "ARATU", "JANGADEIRO", "TAMBAU", "TV JORNAL",
-    "ALLAMANDA", "SCC SBT", "REDE MASSA", "VTV",
+    "SBT",
+    "ALTEROSA",
+    "ARATU",
+    "JANGADEIRO",
+    "TAMBAU",
+    "TV JORNAL",
+    "ALLAMANDA",
+    "SCC SBT",
+    "REDE MASSA",
+    "VTV",
 )
 
 _RECORD_AFFILIATE_TOKENS = (
-    "RECORD", "PAJUCARA", "CIDADE VERDE", "CORREIO", "TV ATALAIA", "RIC TV",
-    "TV VITORIA", "TV TROPICAL", "TV SUDESTE", "TV VILA REAL",
+    "RECORD",
+    "PAJUCARA",
+    "CIDADE VERDE",
+    "CORREIO",
+    "TV ATALAIA",
+    "RIC TV",
+    "TV VITORIA",
+    "TV TROPICAL",
+    "TV SUDESTE",
+    "TV VILA REAL",
 )
 
 _BAND_AFFILIATE_TOKENS = (
-    "BAND", "MANAIRA", "TAROBA", "TV CAPIXABA", "TV GOIANIA",
+    "BAND",
+    "MANAIRA",
+    "TAROBA",
+    "TV CAPIXABA",
+    "TV GOIANIA",
 )
 
+# Todos os alvos devem corresponder a `normalize_channel_name(...)` (sem sufixo "HD").
 _CHANNEL_ALIASES: dict[str, str] = {
     # GLOBO NEWS
     "GLOBONEWS": "GLOBONEWS",
     "GLOBO NEWS": "GLOBONEWS",
     "GNEWS": "GLOBONEWS",
     "GN NEWS": "GLOBONEWS",
-    "GLOBONEWS HD": "GLOBONEWS",
-    "GLOBO NEWS HD": "GLOBONEWS",
     # GLOBOPLAY NOVELAS
     "GLOBOPLAY NOVELAS": "GLOBOPLAY NOVELAS",
     "GLOBO PLAY NOVELAS": "GLOBOPLAY NOVELAS",
@@ -200,6 +297,8 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "GLOBO PARANA": "GLOBO SP",
     "GLOBO PR": "GLOBO SP",
     "GLOBO SP": "GLOBO SP",
+    "TV OESTE": "GLOBO SP",
+    "TV TVCHD 13 1": "GLOBO SP",
     # SBT
     "SBT SP": "SBT",
     "SBT RJ": "SBT",
@@ -207,47 +306,57 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "REDE SBT": "SBT",
     "TV SBT": "SBT",
     "SBT": "SBT",
+    "SBT NEWS": "SBT NEWS",
+    "TV PONTA VERDE": "SBT",
     # RECORD
     "RECORD SP": "RECORD",
     "RECORD RJ": "RECORD",
     "RECORD TV": "RECORD",
     "REDE RECORD": "RECORD",
     "TV RECORD": "RECORD",
-    "RECORD HD": "RECORD",
     "RECORD": "RECORD",
+    "REDE BRASIL": "RECORD",
+    "PULISTAO": "RECORD",
     # BAND
     "BAND SP": "BAND",
     "BAND RJ": "BAND",
     "REDE BANDEIRANTES": "BAND",
     "BANDEIRANTES": "BAND",
     "TV BAND": "BAND",
-    "BAND HD": "BAND",
     "BAND": "BAND",
     "BANDNEWS": "BAND NEWS",
     "BANDSPORTS": "BAND SPORTS",
     # REDE TV
     "REDETV": "REDE TV",
     "REDETV SP": "REDE TV",
-    "REDETV HD": "REDE TV",
-    "REDE TV HD": "REDE TV",
     "REDE TV": "REDE TV",
+    "TV ARAPUAN": "REDE TV",
+    "TV A CRITICA": "REDE TV",
     # CULTURA / TV BRASIL / GAZETA
     "TV CULTURA": "CULTURA",
-    "CULTURA HD": "CULTURA",
     "CULTURA": "CULTURA",
-    "TV BRASIL": "TV BRASIL",
+    "TV CULTURA DO PARA": "CULTURA",
+    "TV MIRAMAR": "CULTURA",
+    "TV MIRAMAR TV CULTURA": "CULTURA",
+    "TV IDEAL": "CULTURA",
+    "TVE": "TV BRASIL",
+    "TVE BAHIA": "TV BRASIL",
     "GAZETA SP": "GAZETA",
     "TV GAZETA": "GAZETA",
     "GAZETA": "GAZETA",
     # SPORTV
     "SPORTV 1": "SPORTV",
     "CANAL SPORTV": "SPORTV",
-    "SPORTV HD": "SPORTV",
-    "SPORTV 2 HD": "SPORTV 2",
-    "SPORTV 3 HD": "SPORTV 3",
     "SPORTV 4": "SPORTV",
     "SPOR TV": "SPORTV",
     "SPORTV": "SPORTV",
+    "CANAL GOAT": "SPORTV",
+    "CANAL GOAT 02": "SPORTV 2",
+    "CANAL GOAT 03": "SPORTV 3",
+    "DAZN 01": "SPORTV",
+    "DAZN 02": "SPORTV 2",
+    "DAZN 03": "SPORTV 3",
+    "DAZN 04": "SPORTV",
     # TELECINE
     "TC PREMIUM": "TELECINE PREMIUM",
     "TC ACTION": "TELECINE ACTION",
@@ -266,11 +375,9 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "PFC 6": "PREMIERE 6",
     "PFC 7": "PREMIERE 7",
     "PFC 8": "PREMIERE 8",
-    "PREMIERE 1 HD": "PREMIERE CLUBES",
     # ESPN
     "ESPN BRASIL": "ESPN",
     "ESPN 1": "ESPN",
-    "ESPN 1 HD": "ESPN",
     "ESPN EXTRA": "ESPN 6",
     "FOX SPORTS": "ESPN 4",
     "FOX SPORTS 1": "ESPN 4",
@@ -279,7 +386,6 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "HBO 1": "HBO",
     "HBO 2": "HBO2",
     "HBO PLUS": "HBO",
-    "HBO HD": "HBO",
     # DISCOVERY
     "DISCOVERY CHANNEL": "DISCOVERY",
     "DISC CHANNEL": "DISCOVERY",
@@ -300,30 +406,27 @@ _CHANNEL_ALIASES: dict[str, str] = {
     # INFANTIL
     "CARTOON NETWORK": "CARTOON",
     "NICK": "NICKELODEON",
-    "NICK JR HD": "NICK JR",
-    "ZOOMOO KIDS": "ZOOMOO",
+    "ZOOMOO": "ZOOMOO KIDS",
+    "ZOOMOO KIDS": "ZOOMOO KIDS",
+    "BOX KIDS": "CARTOONITO",
+    "PLAY KIDS": "CARTOONITO",
     # FILMES / SERIES / VARIEDADES
     "WARNER": "WARNER CHANNEL",
     "WARNER BROS": "WARNER CHANNEL",
+    "TRU TV": "WARNER CHANNEL",
+    "TRUT TV": "WARNER CHANNEL",
     "SONY": "SONY CHANNEL",
     "UNIVERSAL": "UNIVERSAL TV",
-    "UNIVERSAL PREMIER": "UNIVERSAL PREMIERE HD",
-    "UNIVERSAL PREMIERE": "UNIVERSAL PREMIERE HD",
+    "UNIVERSAL PREMIER": "UNIVERSAL PREMIERE",
+    "UNIVERSAL PREMIERE": "UNIVERSAL PREMIERE",
+    "UNIVERSAL PREMIUM": "UNIVERSAL PREMIERE",
     "PARAMOUNT": "PARAMOUNT NETWORK",
     "CANAL OFF": "OFF",
     "CANAL GNT": "GNT",
     "CANAL BIS": "BIS",
     "CANAL MULTISHOW": "MULTISHOW",
     "CANAL VIVA": "VIVA",
-    "CANAL BRASIL HD": "CANAL BRASIL",
-    "MEGAPIX HD": "MEGAPIX",
-    "STUDIO UNIVERSAL HD": "STUDIO UNIVERSAL",
-    "CINEMAX HD": "CINEMAX",
-    "SPACE HD": "SPACE",
-    "TNT HD": "TNT",
-    "AXN HD": "AXN",
     "HISTORY CHANNEL": "HISTORY",
-    "HISTORY 2 HD": "HISTORY 2",
     "H2": "HISTORY 2",
     "AE": "A E",
     "A AND E": "A E",
@@ -332,105 +435,70 @@ _CHANNEL_ALIASES: dict[str, str] = {
     "TCM PLAY": "TCM BR",
     "TCM PLAY TV": "TCM BR",
     "SABOR E ARTE": "SABOR ARTE",
+    "RECEITAS FAST": "SABOR ARTE",
+    "RECEITAS": "SABOR ARTE",
     "TRAVEL BOX BRASIL": "TRAVEL BOX",
     "COMBATE": "COMBATE",
     "CANAL COMBATE": "COMBATE",
     "UFC FIGHT PASS": "COMBATE",
-    # INSTITUCIONAIS / GOV / NOTICIAS
-    "CANAL EDUCACAO": "CANAL EDUCACAO",
-    "CANAL EDUCACO": "CANAL EDUCACAO",
-    "TV ESCOLA": "CANAL EDUCACAO",
-    "CANAL GOV": "CANAL GOV HD",
-    "TV CAMARA": "TV CAMARA",
-    "TV SENADO": "TV SENADO",
-    "TV JUSTICA": "TV JUSTICA",
-    "TV NOVO TEMPO": "TV NOVO TEMPO",
-    "TV PAI ETERNO": "TV PAI ETERNO HD",
-    "FONTE TV": "FONTE TV",
-    "SBT NEWS": "SBT NEWS HD",
-    "POLISHOP": "POLISHOP",
-    "CNN MONEY": "CNN BRASIL MONEY HD",
-    "CNN BRASIL MONEY": "CNN BRASIL MONEY HD",
-    "TIMES CNBC": "TIMES EXCLUSIVO CNBC",
-    "CNBC": "TIMES EXCLUSIVO CNBC",
-    "BM C": "BM C HD",
-    "BMC NEWS": "BM C HD",
-    "ADULT SWIM": "ADULT SWIM HD",
-    "NSPORTS": "NSPORTS HD",
-    "GE TV": "GE TV HD",
-    "MARKKET": "MARKKET HD",
-    "FUEL TV": "FUEL TV HD",
-    "XSPORTS": "XSPORTS HD",
-    "DOG TV": "DOG TV HD",
-    "AGRO CANAL": "CANAL DO BOI",
     "ESTADIO TNT SPORTS": "TNT",
-    "TNT SPORTS": "TNT",
-    "DAZN": "NSPORTS HD",
-    "TRU TV": "WARNER CHANNEL",
-    "TRUT TV": "WARNER CHANNEL",
-    "SYFY": "USA",
-    "TBS": "TNT NOVELAS",
-    "RECEITAS FAST": "SABOR ARTE",
-    "CNN INTERNACIONAL": "CNN INTERNATIONAL",
-    "BM C NEWS": "BM C",
-    "BOX KIDS": "CARTOONITO",
-    "PLAY KIDS": "CARTOONITO",
-    "FILM ART": "ARTE 1",
-    "POLISHOP TV": "POLISHOP",
-    "REDE BRASIL": "RECORD",
-    "TVE": "TV BRASIL",
-    "TVE BAHIA": "TV BRASIL",
-    "TV ARAPUAN": "REDE TV",
-    "TV PONTA VERDE": "SBT",
-    "TV A CRITICA": "REDE TV",
-    "TV CULTURA DO PARA": "CULTURA",
-    "TV MIRAMAR": "CULTURA",
-    "TV MIRAMAR TV CULTURA": "CULTURA",
-    "TV IDEAL": "CULTURA",
-    "CANAL GOAT": "SPORTV",
-    "CANAL GOAT 02": "SPORTV 2",
-    "CANAL GOAT 03": "SPORTV 3",
-    "PULISTAO": "RECORD",
-    "RAI INTERNACIONAL": "RAI INTERNATIONAL",
-    "RAI": "RAI INTERNATIONAL",
-    "GE FAST": "GE TV",
-    "GE": "GE TV",
-    "RECEITAS": "SABOR ARTE",
-    "TERRA VIVA": "TERRA VIVA",
-    "UNIVERSAL PREMIUM": "UNIVERSAL PREMIERE",
-    "UNIVERSAL PREMIERE HD": "UNIVERSAL PREMIERE",
-    "TV OESTE": "GLOBO SP",
-    "TV TVCHD 13 1": "GLOBO SP",
-    "TESTE 2222222222": "GLOBO SP",
-    "TESTEEEEEEEEEEE": "GLOBO SP",
-    "DAZN 01": "SPORTV",
-    "DAZN 02": "SPORTV 2",
-    "DAZN 03": "SPORTV 3",
-    "DAZN 04": "SPORTV",
     "ESTADIO TNT SPORTS 1": "TNT",
     "ESTADIO TNT SPORTS 4": "TNT",
-    "ZOOMOO": "ZOOMOO KIDS",
+    "TNT SPORTS": "TNT",
+    "SYFY": "USA",
+    "TBS": "TNT NOVELAS",
+    "FILM ART": "ARTE 1",
+    # INSTITUCIONAIS / GOV / NOTICIAS / ESPORTES
+    "CANAL EDUCACO": "CANAL EDUCACAO",
+    "TV ESCOLA": "CANAL EDUCACAO",
+    "CANAL GOV": "CANAL GOV",
+    "TV PAI ETERNO": "TV PAI ETERNO",
+    "POLISHOP TV": "POLISHOP",
+    "CNN MONEY": "CNN BRASIL MONEY",
+    "CNN BRASIL MONEY": "CNN BRASIL MONEY",
+    "CNN INTERNACIONAL": "CNN INTERNATIONAL",
+    "TIMES CNBC": "TIMES EXCLUSIVO CNBC",
+    "CNBC": "TIMES EXCLUSIVO CNBC",
+    "BM C": "BM C",
+    "BMC NEWS": "BM C",
+    "BM C NEWS": "BM C",
+    "ADULT SWIM": "ADULT SWIM",
+    "NSPORTS": "NSPORTS",
+    "DAZN": "NSPORTS",
+    "GE TV": "GE TV",
+    "GE FAST": "GE TV",
+    "GE": "GE TV",
+    "MARKKET": "MARKKET",
+    "FUEL TV": "FUEL TV",
+    "XSPORTS": "XSPORTS",
+    "DOG TV": "DOG TV",
+    "AGRO CANAL": "CANAL DO BOI",
+    "RAI INTERNACIONAL": "RAI INTERNATIONAL",
+    "RAI": "RAI INTERNATIONAL",
+}
+
+_CHANNEL_ALIASES_COMPACT: dict[str, str] = {
+    alias_key.replace(" ", ""): canonical for alias_key, canonical in _CHANNEL_ALIASES.items()
 }
 
 
 def get_canonical_channel_name(raw_name: str) -> str:
-    """Normaliza o nome e resolve aliases e tokens de afiliadas para o nome canônico do canal."""
+    """Normaliza o nome e resolve aliases e afiliadas para o nome canônico do canal."""
     normalized = normalize_channel_name(raw_name)
     if not normalized:
         return ""
 
-    # 1. Alias direto
-    if normalized in _CHANNEL_ALIASES:
-        return _CHANNEL_ALIASES[normalized]
+    # 1. Alias direto (O(1))
+    direct = _CHANNEL_ALIASES.get(normalized)
+    if direct:
+        return direct
 
-    # 2. Alias sem espaços
-    no_spaces = normalized.replace(" ", "")
-    for alias_key, canonical in _CHANNEL_ALIASES.items():
-        if alias_key.replace(" ", "") == no_spaces:
-            return canonical
+    # 2. Alias sem espaços pré-computado (O(1))
+    compact = _CHANNEL_ALIASES_COMPACT.get(normalized.replace(" ", ""))
+    if compact:
+        return compact
 
     # 3. Reconhecimento de Afiliadas Regionais e Canais Específicos
-    # Globo News
     if (
         "GLOBONEWS" in normalized
         or "GLOBO NEWS" in normalized
@@ -439,7 +507,6 @@ def get_canonical_channel_name(raw_name: str) -> str:
     ):
         return "GLOBONEWS"
 
-    # Globoplay Novelas
     if (
         "GLOBOPLAY NOVELAS" in normalized
         or "GLOBO PLAY NOVELAS" in normalized
@@ -449,15 +516,10 @@ def get_canonical_channel_name(raw_name: str) -> str:
     ):
         return "GLOBOPLAY NOVELAS"
 
-    # Globo (Nacional e Afiliadas Regionais)
     if (
-        normalized.startswith("RBS ")
-        or normalized.startswith("NSC ")
-        or normalized.startswith("INTER TV ")
-        or normalized.startswith("INTERTV ")
-        or normalized.startswith("INTEGRACAO ")
-        or normalized.startswith("ITEGRACAO ")
-        or normalized.startswith("AMAZONICA ")
+        normalized.startswith(
+            ("RBS ", "NSC ", "INTER TV ", "INTERTV ", "INTEGRACAO ", "ITEGRACAO ", "AMAZONICA ")
+        )
         or "GAZETA SUL" in normalized
         or normalized == "GLOBO"
         or normalized.startswith("GLOBO ")
@@ -465,39 +527,33 @@ def get_canonical_channel_name(raw_name: str) -> str:
         or " GLOBO " in normalized
         or "REDE GLOBO" in normalized
         or "TV GLOBO" in normalized
+        or any(tok in normalized for tok in _GLOBO_AFFILIATE_TOKENS)
     ):
         return "GLOBO SP"
 
-    for tok in _GLOBO_AFFILIATE_TOKENS:
-        if tok in normalized:
-            return "GLOBO SP"
+    if any(tok in normalized for tok in _SBT_AFFILIATE_TOKENS):
+        return "SBT"
 
-    # SBT
-    for tok in _SBT_AFFILIATE_TOKENS:
-        if tok in normalized:
-            return "SBT"
-
-    # Record
     if "RECORD NEWS" in normalized or "RD NEWS" in normalized:
         return "RECORD NEWS"
-    if normalized.startswith("RD ") or normalized == "RD TV":
+    if (
+        normalized.startswith("RD ")
+        or normalized == "RD TV"
+        or any(tok in normalized for tok in _RECORD_AFFILIATE_TOKENS)
+    ):
         return "RECORD"
-    for tok in _RECORD_AFFILIATE_TOKENS:
-        if tok in normalized:
-            return "RECORD"
 
-    # Band
     if "BAND NEWS" in normalized or "BANDNEWS" in normalized or "BD NEWS" in normalized:
         return "BAND NEWS"
     if "BAND SPORTS" in normalized or "BANDSPORTS" in normalized or "BD SPORTS" in normalized:
         return "BAND SPORTS"
-    if normalized.startswith("BD ") or normalized == "BD TV":
+    if (
+        normalized.startswith("BD ")
+        or normalized == "BD TV"
+        or any(tok in normalized for tok in _BAND_AFFILIATE_TOKENS)
+    ):
         return "BAND"
-    for tok in _BAND_AFFILIATE_TOKENS:
-        if tok in normalized:
-            return "BAND"
 
-    # SporTV
     if "SPORTV 2" in normalized or "SPORTV2" in normalized:
         return "SPORTV 2"
     if "SPORTV 3" in normalized or "SPORTV3" in normalized:
@@ -505,35 +561,30 @@ def get_canonical_channel_name(raw_name: str) -> str:
     if "SPORTV" in normalized or "SPOR TV" in normalized:
         return "SPORTV"
 
-    # Telecine
     if "TELECINE" in normalized or normalized.startswith("TC "):
         for var in ("ACTION", "PIPOCA", "FUN", "TOUCH", "CULT", "PREMIUM"):
             if var in normalized:
                 return f"TELECINE {var}"
         return "TELECINE PREMIUM"
 
-    # Premiere / PFC
     if "PREMIERE" in normalized or "PFC" in normalized:
         for num in ("2", "3", "4", "5", "6", "7", "8"):
             if f" {num}" in normalized or f"_{num}" in normalized or normalized.endswith(num):
                 return f"PREMIERE {num}"
         return "PREMIERE CLUBES"
 
-    # ESPN
     if "ESPN" in normalized:
         for num in ("2", "3", "4", "5", "6"):
             if f" {num}" in normalized or f"_{num}" in normalized or normalized.endswith(num):
                 return f"ESPN {num}"
         return "ESPN"
 
-    # HBO
     if "HBO" in normalized:
         for var in ("2", "FAMILY", "POP", "MUNDI", "SIGNATURE", "XTREME", "PLUS"):
             if var in normalized:
                 return f"HBO {var}" if var != "2" else "HBO2"
         return "HBO"
 
-    # Discovery
     if "DISCOVERY" in normalized or normalized.startswith("DISC "):
         for var in ("KIDS", "TURBO", "THEATER", "SCIENCE", "WORLD", "HOME HEALTH", "ID"):
             if var in normalized:

@@ -45,7 +45,9 @@ class XtreamClientTests(unittest.TestCase):
             self.assertEqual(client.get_series_info("7"), {})
 
     def test_stream_url_generation(self) -> None:
-        client = XtreamClient(host="http://iptv.example:8080", username="alice", password="secretpassword")
+        client = XtreamClient(
+            host="http://iptv.example:8080", username="alice", password="secretpassword"
+        )
 
         # Live stream URL default ts
         live_url = client.stream_url("live", "101")

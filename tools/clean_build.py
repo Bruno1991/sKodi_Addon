@@ -4,8 +4,8 @@ import os
 import shutil
 import stat
 import sys
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 

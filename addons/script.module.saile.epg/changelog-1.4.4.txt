@@ -1,0 +1,4 @@
+1.4.4
+- Corrigido: falhas de rede ao sincronizar a Claro TV+ preservam integralmente o guia já salvo no cache local (limpeza executada apenas dentro da transação pós-download).
+- Corrigido: 16 aliases de canais (CNN Money, BMC News, DAZN, Universal Premier, SBT News, Canal GOV, Adult Swim, Dog TV e correlatos) agora casam corretamente com os nomes normalizados da Claro TV+.
+- Alterado: resolução de aliases sem espaços otimizada para O(1), compactação da tabela oficial de canais e remoção de entradas legadas de teste.

@@ -9,6 +9,5 @@ if LIB_DIR not in sys.path:
 
 from stv.bootstrap import run  # noqa: E402
 
-
 if __name__ == "__main__":
     run(sys.argv)

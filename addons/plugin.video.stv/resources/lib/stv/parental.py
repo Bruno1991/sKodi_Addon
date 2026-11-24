@@ -1,4 +1,5 @@
-"""Módulo de Controle Parental para proteção por senha (PIN de até 6 dígitos) de conteúdos adultos e configurações."""
+"""Módulo de Controle Parental (PIN até 6 dígitos) para conteúdos adultos e configurações."""
+
 from __future__ import annotations
 
 import re
@@ -51,7 +52,9 @@ _WORD_BOUNDARY_PATTERNS = [
 ]
 
 
-def is_restricted(name: str = "", plot: str = "", category_name: str = "", tmdb_adult: bool = False) -> bool:
+def is_restricted(
+    name: str = "", plot: str = "", category_name: str = "", tmdb_adult: bool = False
+) -> bool:
     """Verifica se o conteúdo ou categoria possui classificação restrita/adulta."""
     if tmdb_adult:
         return True
@@ -96,7 +99,9 @@ def verify_parental_pin(addon: object, reason: str = "Conteúdo Restrito") -> bo
 
     # 1. Caso não haja senha cadastrada ainda -> Solicita criação inicial de 1 a 6 dígitos
     if not current_pin:
-        notify_info("Controle Parental", "Cadastre uma senha de até 6 dígitos para proteger o conteúdo.")
+        notify_info(
+            "Controle Parental", "Cadastre uma senha de até 6 dígitos para proteger o conteúdo."
+        )
         new_pin = prompt_pin_dialog("Criar Senha Parental (até 6 dígitos):")
         if not new_pin or not new_pin.isdigit():
             notify_error("Controle Parental", "Criação de senha cancelada.")

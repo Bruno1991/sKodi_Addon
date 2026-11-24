@@ -1,7 +1,11 @@
--- Schema de referência do script.module.saile.epg
+-- Schema de referência do script.module.saile.epg (v1)
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE epg_channels (
+CREATE TABLE IF NOT EXISTS schema_version (
+    version INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS epg_channels (
     provider_id TEXT NOT NULL,
     channel_key TEXT NOT NULL,
     epg_id TEXT NOT NULL,
@@ -12,7 +16,13 @@ CREATE TABLE epg_channels (
     PRIMARY KEY (provider_id, channel_key)
 );
 
-CREATE TABLE epg_programs (
+CREATE INDEX IF NOT EXISTS idx_epg_channels_id
+ON epg_channels(provider_id, epg_id COLLATE NOCASE);
+
+CREATE INDEX IF NOT EXISTS idx_epg_channels_name
+ON epg_channels(provider_id, normalized_name);
+
+CREATE TABLE IF NOT EXISTS epg_programs (
     provider_id TEXT NOT NULL,
     channel_key TEXT NOT NULL,
     start_utc INTEGER NOT NULL,
@@ -28,5 +38,12 @@ CREATE TABLE epg_programs (
         ON DELETE CASCADE
 );
 
-CREATE INDEX idx_epg_programs_now
+CREATE INDEX IF NOT EXISTS idx_epg_programs_now
 ON epg_programs(provider_id, channel_key, start_utc, end_utc);
+
+CREATE TABLE IF NOT EXISTS epg_sync_state (
+    provider_id TEXT PRIMARY KEY,
+    synced_at_utc INTEGER NOT NULL,
+    channel_count INTEGER NOT NULL,
+    program_count INTEGER NOT NULL
+);

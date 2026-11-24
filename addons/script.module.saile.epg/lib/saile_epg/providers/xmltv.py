@@ -5,7 +5,7 @@ import tempfile
 import time
 import xml.etree.ElementTree as ET
 import zipfile
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import BinaryIO
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -47,8 +47,8 @@ def parse_xmltv_timestamp(value: str) -> int:
         delta = timedelta(hours=int(offset[:2]), minutes=int(offset[2:])) * sign
         moment = moment.replace(tzinfo=timezone(delta))
     else:
-        moment = moment.replace(tzinfo=timezone.utc)
-    return int(moment.astimezone(timezone.utc).timestamp())
+        moment = moment.replace(tzinfo=UTC)
+    return int(moment.astimezone(UTC).timestamp())
 
 
 def _local_tag(element: ET.Element) -> str:
@@ -196,9 +196,7 @@ class XmltvProvider:
         with zipfile.ZipFile(buffer) as archive:
             files = [item for item in archive.infolist() if not item.is_dir()]
             xml_files = [
-                item
-                for item in files
-                if item.filename.lower().endswith((".xml", ".xmltv"))
+                item for item in files if item.filename.lower().endswith((".xml", ".xmltv"))
             ]
             candidates = xml_files or (files if len(files) == 1 else [])
             if not candidates:
@@ -288,13 +286,10 @@ class XmltvProvider:
         if not root_seen:
             raise XmltvFormatError("XMLTV sem elemento raiz")
         if not filtered_channels:
-            raise XmltvEmptyGuideError(
-                "XMLTV não contém canais declarados"
-            )
+            raise XmltvEmptyGuideError("XMLTV não contém canais declarados")
         return EpgSnapshot(
             provider_id=self.provider_id,
             channels=filtered_channels,
             programs=filtered_programs,
             fetched_at_utc=fetched_at,
         )
-

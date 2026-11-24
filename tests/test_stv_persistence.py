@@ -89,7 +89,9 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual(favs[0].name, "Matrix Resurrections")
 
         # 5. Metadata Enrichment
-        self.repo.enrich_media_item("vod", "201", plot="Um clássico de ficção", fanart="https://img.com/fan.jpg")
+        self.repo.enrich_media_item(
+            "vod", "201", plot="Um clássico de ficção", fanart="https://img.com/fan.jpg"
+        )
         enriched = self.repo.get_media_items("vod", "2")
         self.assertEqual(enriched[0].plot, "Um clássico de ficção")
         self.assertEqual(enriched[0].fanart, "https://img.com/fan.jpg")
@@ -120,14 +122,10 @@ class PersistenceTests(unittest.TestCase):
 
     def test_group_favorite_absorbs_legacy_variant_favorite(self) -> None:
         self.repo.add_favorite("live", "101")
-        self.assertFalse(
-            self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102"))
-        )
+        self.assertFalse(self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102")))
         self.assertEqual(self.repo.get_favorite_ids("live"), [])
 
-        self.assertTrue(
-            self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102"))
-        )
+        self.assertTrue(self.repo.toggle_channel_favorite("globo.rj.br", ("101", "102")))
         self.assertEqual(self.repo.get_favorite_channel_keys(), ["globo.rj.br"])
 
     def test_cache_ttl_logic(self) -> None:
@@ -211,8 +209,12 @@ class PersistenceTests(unittest.TestCase):
         self.assertEqual([i.item_id for i in res_pokemon_punct], ["301"])
 
         # 5. Busca "capitao" vs "capitão"
-        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "capitao")}, {"303", "304"})
-        self.assertEqual({i.item_id for i in self.repo.search_media("vod", "capitão")}, {"303", "304"})
+        self.assertEqual(
+            {i.item_id for i in self.repo.search_media("vod", "capitao")}, {"303", "304"}
+        )
+        self.assertEqual(
+            {i.item_id for i in self.repo.search_media("vod", "capitão")}, {"303", "304"}
+        )
         self.assertEqual({i.item_id for i in self.repo.search_media("vod", "america")}, {"303"})
         self.assertEqual({i.item_id for i in self.repo.search_media("vod", "américa")}, {"303"})
 
@@ -247,7 +249,7 @@ class PersistenceTests(unittest.TestCase):
             custom_repo = CatalogRepository(custom_db)
             custom_repo.upsert_media_items(items)
 
-            # Mesmo sem FTS5 (fallback LIKE puro com normalização), a busca insensível a acentos funciona 100%
+            # Mesmo sem FTS5 (fallback LIKE com normalização), busca sem acentos funciona 100%
             res_without_accent = custom_repo.search_media("vod", "pokemon")
             self.assertEqual({i.item_id for i in res_without_accent}, {"401", "402"})
 
@@ -276,4 +278,3 @@ class PersistenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

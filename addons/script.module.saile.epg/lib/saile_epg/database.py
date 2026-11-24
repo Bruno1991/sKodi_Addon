@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import sqlite3
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
 
 SCHEMA_VERSION = 1
 SCHEMA = """
@@ -84,7 +84,9 @@ class EpgDatabase:
             connection.executescript(SCHEMA)
             row = connection.execute("SELECT version FROM schema_version LIMIT 1").fetchone()
             if row is None:
-                connection.execute("INSERT INTO schema_version(version) VALUES (?)", (SCHEMA_VERSION,))
+                connection.execute(
+                    "INSERT INTO schema_version(version) VALUES (?)", (SCHEMA_VERSION,)
+                )
             elif int(row["version"]) != SCHEMA_VERSION:
                 raise RuntimeError(f"Schema EPG não suportado: {row['version']}")
 
