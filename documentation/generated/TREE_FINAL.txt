@@ -6,6 +6,28 @@ s_Kodi_Addon/
 │   │   └── ci.yml
 │   └── pull_request_template.md
 ├── addons/
+│   ├── plugin.audio.sradio/
+│   │   ├── resources/
+│   │   │   ├── data/
+│   │   │   │   └── radios.json
+│   │   │   ├── lib/
+│   │   │   │   └── sradio/
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── bootstrap.py
+│   │   │   │       ├── catalog.py
+│   │   │   │       ├── favorites.py
+│   │   │   │       └── routing.py
+│   │   │   └── settings.xml
+│   │   ├── addon.xml
+│   │   ├── changelog-1.0.0.txt
+│   │   ├── changelog-1.0.1.txt
+│   │   ├── changelog-1.0.2.txt
+│   │   ├── changelog-1.0.3.txt
+│   │   ├── changelog-1.0.4.txt
+│   │   ├── changelog-1.0.5.txt
+│   │   ├── default.py
+│   │   ├── fanart.jpg
+│   │   └── icon.png
 │   ├── plugin.video.stv/
 │   │   ├── resources/
 │   │   │   ├── language/
@@ -93,6 +115,8 @@ s_Kodi_Addon/
 │   │   ├── changelog-0.8.2.txt
 │   │   ├── changelog-0.8.3.txt
 │   │   ├── changelog-0.8.4.txt
+│   │   ├── changelog-0.8.6.txt
+│   │   ├── changelog-0.8.7.txt
 │   │   ├── default.py
 │   │   ├── fanart.jpg
 │   │   └── icon.png
@@ -107,9 +131,20 @@ s_Kodi_Addon/
 │   │   ├── resources/
 │   │   │   └── media/
 │   │   │       ├── common/
+│   │   │       │   ├── alta.png
+│   │   │       │   ├── brasil.png
 │   │   │       │   ├── check.png
 │   │   │       │   ├── erro.png
+│   │   │       │   ├── esportes.png
+│   │   │       │   ├── favoritos.png
 │   │   │       │   ├── folder.png
+│   │   │       │   ├── idioma.png
+│   │   │       │   ├── local.png
+│   │   │       │   ├── mundo.png
+│   │   │       │   ├── musica.png
+│   │   │       │   ├── noticias.png
+│   │   │       │   ├── podcast.png
+│   │   │       │   ├── radio.png
 │   │   │       │   ├── search.png
 │   │   │       │   └── sync.png
 │   │   │       └── stv/
@@ -121,6 +156,7 @@ s_Kodi_Addon/
 │   │   ├── changelog-1.0.0.txt
 │   │   ├── changelog-1.0.2.txt
 │   │   ├── changelog-1.0.3.txt
+│   │   ├── changelog-1.0.4.txt
 │   │   ├── fanart.jpg
 │   │   └── icon.png
 │   ├── script.module.saile.core/
@@ -135,6 +171,7 @@ s_Kodi_Addon/
 │   │   ├── addon.xml
 │   │   ├── changelog-1.0.0.txt
 │   │   ├── changelog-1.0.1.txt
+│   │   ├── changelog-1.0.2.txt
 │   │   ├── fanart.jpg
 │   │   └── icon.png
 │   └── script.module.saile.epg/
@@ -167,6 +204,8 @@ s_Kodi_Addon/
 │       ├── changelog-1.3.2.txt
 │       ├── changelog-1.4.0.txt
 │       ├── changelog-1.4.1.txt
+│       ├── changelog-1.4.3.txt
+│       ├── changelog-1.4.4.txt
 │       ├── fanart.jpg
 │       └── icon.png
 ├── artwork/
@@ -201,17 +240,37 @@ s_Kodi_Addon/
 │   │   │   ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── flag_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── music_note_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── my_location_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── newspaper_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── podcasts_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── public_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── radio_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   │   ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
-│   │   │   └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── sports_soccer_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   ├── translate_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
+│   │   │   └── whatshot_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html
 │   │   ├── png/
+│   │   │   ├── alta.png
+│   │   │   ├── brasil.png
 │   │   │   ├── check.png
 │   │   │   ├── erro.png
+│   │   │   ├── esportes.png
 │   │   │   ├── favoritos.png
 │   │   │   ├── folder.png
+│   │   │   ├── idioma.png
 │   │   │   ├── live.png
+│   │   │   ├── local.png
+│   │   │   ├── mundo.png
+│   │   │   ├── musica.png
+│   │   │   ├── noticias.png
+│   │   │   ├── podcast.png
+│   │   │   ├── radio.png
 │   │   │   ├── search.png
 │   │   │   ├── series.png
 │   │   │   ├── sync.png
@@ -221,11 +280,21 @@ s_Kodi_Addon/
 │   │       ├── cinematic_blur_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── error_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── favorite_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── flag_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── folder_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── live_tv_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── movie_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── music_note_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── my_location_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── newspaper_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── podcasts_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── public_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── radio_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   │       ├── search_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
-│   │       └── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── sports_soccer_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── sync_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       ├── translate_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
+│   │       └── whatshot_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg
 │   ├── artwork-manifest.json
 │   └── README.md
 ├── decisions/
@@ -234,11 +303,18 @@ s_Kodi_Addon/
 │   └── ADR-0003-grade-profissional-e-qualidade-no-player.md
 ├── docs/
 │   ├── zips/
-│   │   ├── plugin.video.stv/
+│   │   ├── plugin.audio.sradio/
+│   │   │   ├── changelog-1.0.5.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.8.5.zip
-│   │   │   └── plugin.video.stv-0.8.5.zip.sha256
+│   │   │   ├── plugin.audio.sradio-1.0.5.zip
+│   │   │   └── plugin.audio.sradio-1.0.5.zip.sha256
+│   │   ├── plugin.video.stv/
+│   │   │   ├── changelog-0.8.7.txt
+│   │   │   ├── fanart.jpg
+│   │   │   ├── icon.png
+│   │   │   ├── plugin.video.stv-0.8.7.zip
+│   │   │   └── plugin.video.stv-0.8.7.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -246,22 +322,23 @@ s_Kodi_Addon/
 │   │   │   ├── repository.srepo-1.1.1.zip
 │   │   │   └── repository.srepo-1.1.1.zip.sha256
 │   │   ├── resource.images.saile/
-│   │   │   ├── changelog-1.0.3.txt
+│   │   │   ├── changelog-1.0.4.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── resource.images.saile-1.0.3.zip
-│   │   │   └── resource.images.saile-1.0.3.zip.sha256
+│   │   │   ├── resource.images.saile-1.0.4.zip
+│   │   │   └── resource.images.saile-1.0.4.zip.sha256
 │   │   ├── script.module.saile.core/
-│   │   │   ├── changelog-1.0.1.txt
+│   │   │   ├── changelog-1.0.2.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── script.module.saile.core-1.0.1.zip
-│   │   │   └── script.module.saile.core-1.0.1.zip.sha256
+│   │   │   ├── script.module.saile.core-1.0.2.zip
+│   │   │   └── script.module.saile.core-1.0.2.zip.sha256
 │   │   └── script.module.saile.epg/
+│   │       ├── changelog-1.4.4.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.epg-1.4.2.zip
-│   │       └── script.module.saile.epg-1.4.2.zip.sha256
+│   │       ├── script.module.saile.epg-1.4.4.zip
+│   │       └── script.module.saile.epg-1.4.4.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz
@@ -284,6 +361,7 @@ s_Kodi_Addon/
 │   │   ├── STRUCTURE_MANIFEST.json
 │   │   └── TREE_FINAL.txt
 │   ├── governance/
+│   │   ├── LEGACY_AUDIT.md
 │   │   ├── SECURITY_AND_ENV_POLICY.md
 │   │   └── SKILLS_INDEX.md
 │   ├── reference/
@@ -302,14 +380,9 @@ s_Kodi_Addon/
 │   ├── epg_reference.sql
 │   ├── LAN_SYNC_CONTRACT.md
 │   └── stv_reference.sql
-├── scratch/
-│   ├── channel_comparison.json
-│   ├── formatted_channel_listing.txt
-│   ├── test_epg.db
-│   ├── test_match_benchmark.py
-│   └── xtream_tv_channels_detailed.txt
 ├── templates/
 │   ├── ADR_TEMPLATE.md
+│   ├── advancedsettings.xml
 │   ├── BUG_REPORT_TEMPLATE.md
 │   ├── CHANGE_PLAN_TEMPLATE.md
 │   ├── RELEASE_CHECKLIST.md
@@ -327,6 +400,7 @@ s_Kodi_Addon/
 │   ├── test_saile_epg_persistence.py
 │   ├── test_saile_epg_xmltv.py
 │   ├── test_saile_epg_xtream.py
+│   ├── test_sradio.py
 │   ├── test_stv_catalog_auto_sync.py
 │   ├── test_stv_epg_resilience.py
 │   ├── test_stv_http_client.py
@@ -334,6 +408,7 @@ s_Kodi_Addon/
 │   ├── test_stv_live_channels.py
 │   ├── test_stv_parental.py
 │   ├── test_stv_persistence.py
+│   ├── test_stv_player_progress.py
 │   ├── test_stv_tmdb_client.py
 │   ├── test_stv_ui_standardization.py
 │   ├── test_stv_view_preferences.py
@@ -347,13 +422,18 @@ s_Kodi_Addon/
 │   ├── build_repo.py
 │   ├── clean_build.py
 │   ├── colorize_common_svgs.py
+│   ├── deploy_kodi_emulator.py
+│   ├── generate_sradio_icons.py
 │   ├── generate_structure_manifest.py
 │   ├── print_tree.py
 │   ├── secret_scan.py
 │   ├── select_artwork.py
+│   ├── test_lock_screen_playback.py
+│   ├── test_sradio_full_battery.py
 │   └── validate_addons.py
 ├── .gitignore
 ├── AGENTS.md
+├── CLAUDE.md
 ├── LICENSE
 ├── Makefile
 ├── pyproject.toml

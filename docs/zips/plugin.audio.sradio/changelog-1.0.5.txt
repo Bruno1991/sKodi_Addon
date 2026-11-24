@@ -1,0 +1,3 @@
+1.0.5
+- Corrigido: sinopse das rádios omite formato ou bitrate ausentes em vez de exibir "None" na tela de informações.
+- Alterado: armazenamento de favoritos unificado pelo sCore, seleção de stream e leitura de outlines consolidados e remoção de rotas/métodos legados sem uso.

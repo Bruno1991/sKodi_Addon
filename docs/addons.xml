@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.4" provider-name="Saile">
+  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.5" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.4" />
@@ -17,14 +17,14 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.4 - Rádios AAC/OGG tocam com o tipo certo, favoritar na busca não reabre o teclado e a tela cheia abre só depois que o áudio começa.</news>
+      <news>1.0.5 - Descrições de estações sem campos vazios ("None"), caminho de favoritos unificado via sCore e limpeza de rotas legadas.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
       </assets>
     </extension>
   </addon>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.6" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.7" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
@@ -42,7 +42,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.6 - Continuar de onde parou em filmes e episódios passa a funcionar. Temporadas não somem quando um episódio vem sem informações, miniaturas de episódio coerentes e busca TMDB correta para títulos com números.</news>
+      <news>0.8.7 - Controle parental efetivo em categorias adultas, configurações de LAN/EPG respeitadas, busca sem reabrir teclado no refresh e unificação interna.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -109,7 +109,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.4.3" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.4.4" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
@@ -121,7 +121,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.4.3 - Limpeza de títulos de filmes e séries preserva os números que fazem parte do título.</news>
+      <news>1.4.4 - Preserva o cache local do EPG se o download da Claro TV+ falhar e corrige resolução de aliases de canais com sufixo HD.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

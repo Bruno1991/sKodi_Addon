@@ -1,0 +1,6 @@
+0.8.7
+- Corrigido: categorias restritas/adultas passam a exigir o PIN parental corretamente ao abrir pela listagem de seções.
+- Corrigido: cancelar ou errar o PIN parental durante a reprodução encerra imediatamente o diálogo de carregamento do Kodi.
+- Corrigido: as chaves lan_sync_enabled, lan_sync_auto e epg_ttl_hours configuradas no Kodi passam a ser lidas e respeitadas na inicialização.
+- Corrigido: favoritar ou enriquecer resultados da busca não reabre mais o teclado virtual, e "Sincronizar Tudo" evita sobrepor barras de progresso ou baixar canais duas vezes.
+- Alterado: unificação da renderização de cards (Categorias, Busca e Favoritos), consultas SQLite, schema FTS5 e buscas TMDB, além de remoção de funções legadas sem uso.

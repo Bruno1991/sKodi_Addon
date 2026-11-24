@@ -11,7 +11,7 @@
   ],
   "skill_count": 0,
   "fixed_shared_artwork_count": 20,
-  "file_count_excluding_manifest": 348,
+  "file_count_excluding_manifest": 360,
   "files": [
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -35,8 +35,13 @@
     },
     {
       "path": "AGENTS.md",
-      "bytes": 4453,
-      "sha256": "ecc3e09adf30331a84bec656d2936f2a89d5c2305bdc94e1de26438fac946501"
+      "bytes": 5182,
+      "sha256": "3ea995fcb82830b9e38f3170c5bb30284910d4e0b52c9cfec9a737c6dbbfc239"
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 5716,
+      "sha256": "a72969707c0b32fd8250b1c4a91ea7a796dc4fdabb8ac1c737226a219ed4f8b1"
     },
     {
       "path": "LICENSE",
@@ -50,13 +55,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 4424,
-      "sha256": "91eabd1c3f165ae97eada6e4921b94e394343a1e09068d93fde71a375d4cd221"
+      "bytes": 4747,
+      "sha256": "878c0824c948c38d1056f07846c5560c5c290e3632b25a08771cbd2c3f261381"
     },
     {
       "path": "addons/plugin.audio.sradio/addon.xml",
-      "bytes": 1661,
-      "sha256": "474534a8f701b49a4aeb973bf948dea823dba88bb5e6a40fc5233baa10d009af"
+      "bytes": 1553,
+      "sha256": "412683243d0e38a65f073777f466b3ca883216ab73224204f96db2a45795dd4a"
     },
     {
       "path": "addons/plugin.audio.sradio/changelog-1.0.0.txt",
@@ -77,6 +82,16 @@
       "path": "addons/plugin.audio.sradio/changelog-1.0.3.txt",
       "bytes": 454,
       "sha256": "5f542694fd377fa2a8dea55fd63ffde312ee3a8a4de46e9c7fff108c4547e3a1"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.4.txt",
+      "bytes": 636,
+      "sha256": "9133faadd60d6a14be5c6fb72a5b661f59bef8320410dd08c3b37c00e2e882d6"
+    },
+    {
+      "path": "addons/plugin.audio.sradio/changelog-1.0.5.txt",
+      "bytes": 286,
+      "sha256": "d92b79a7668a9d316d3ae5a014c4cb7137117eda40e6a2dfb1e4c9b867fe2f01"
     },
     {
       "path": "addons/plugin.audio.sradio/default.py",
@@ -101,27 +116,27 @@
     {
       "path": "addons/plugin.audio.sradio/resources/lib/sradio/__init__.py",
       "bytes": 73,
-      "sha256": "6fcbf851c6e21591ea7df572861244fd365a0fb7ef57893a72221a73880bc362"
+      "sha256": "95ab3e34baa54a58512b48aa988d0e4cbe35f56078a1a4c31ce1962137e632d8"
     },
     {
       "path": "addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py",
-      "bytes": 17942,
-      "sha256": "43050b744ccba9f3f5832fe26c3d20754eedcc028fda1f2fa2dd3df4b155b626"
+      "bytes": 17741,
+      "sha256": "7ad21a60f3302e2ce2cd88fd7ba150e391ce36c0807ac56d42b73f66e9586825"
     },
     {
       "path": "addons/plugin.audio.sradio/resources/lib/sradio/catalog.py",
-      "bytes": 14400,
-      "sha256": "5d6150643db6c79fd89a75352252982422ced18de6f5d81b2acd52de7418ab97"
+      "bytes": 11279,
+      "sha256": "8d2b7329a6bb9bef4cd480d95652b813630f0df637da111bef9db079825e2341"
     },
     {
       "path": "addons/plugin.audio.sradio/resources/lib/sradio/favorites.py",
-      "bytes": 2411,
-      "sha256": "936c1fb99dcd51ca8904a6b305133ca0ef8f54161f83067826f8aef94503ae8a"
+      "bytes": 2355,
+      "sha256": "926a7edbea9a2218d02b5af7d8d247be7938918373e74ec2c478f70928421068"
     },
     {
       "path": "addons/plugin.audio.sradio/resources/lib/sradio/routing.py",
-      "bytes": 946,
-      "sha256": "2e184cedee12407835a1d35dce9d224f7524f9bbb9a3a4f2669f3c0f83b80b58"
+      "bytes": 945,
+      "sha256": "f5ae0562269733da9d1a4e677b45808031aca20233c6a6e8f6121ef04dddb321"
     },
     {
       "path": "addons/plugin.audio.sradio/resources/settings.xml",
@@ -130,8 +145,8 @@
     },
     {
       "path": "addons/plugin.video.stv/addon.xml",
-      "bytes": 1404,
-      "sha256": "ec4297e68fb209727f85370c8a51b2a8371eafba2616bbaba8fabef2c7237210"
+      "bytes": 1413,
+      "sha256": "5e3fb6944919882462a29adb8667b1eb750d12bf16a87cb56283175778596cf3"
     },
     {
       "path": "addons/plugin.video.stv/changelog-0.2.1.txt",
@@ -334,9 +349,19 @@
       "sha256": "ef3097011a7a4a3925f92a0c186bec8d288632e4bb8d460b9c64c3e3571a7662"
     },
     {
+      "path": "addons/plugin.video.stv/changelog-0.8.6.txt",
+      "bytes": 640,
+      "sha256": "f8fca79efc0b1a8e6af308c0afc9496c0e0007de432831f78cfc39c42704af80"
+    },
+    {
+      "path": "addons/plugin.video.stv/changelog-0.8.7.txt",
+      "bytes": 757,
+      "sha256": "1a1a457585c988d955c31e6f3f10cdb2fed19260333242b09537c74b41571a92"
+    },
+    {
       "path": "addons/plugin.video.stv/default.py",
-      "bytes": 280,
-      "sha256": "59606db17a256619364a833bf8a4609719829d540a4e107e5bd0a0794ce2c57d"
+      "bytes": 279,
+      "sha256": "cc858bab6650efdf7676524d45b72403e9193531a629761f9034f88519e2e735"
     },
     {
       "path": "addons/plugin.video.stv/fanart.jpg",
@@ -361,7 +386,7 @@
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/__init__.py",
       "bytes": 22,
-      "sha256": "91447944015cec709e8aa7655f7e9d64e1e4508e7023a57fe3746911c0fc6fed"
+      "sha256": "bd3c2f7493998bc8d96fd53e126efe779d2a34334f4b6cf9d485ea468a2378d3"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/app/__init__.py",
@@ -370,23 +395,23 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/app/lan_sync.py",
-      "bytes": 9724,
-      "sha256": "290ac0ba3593e7011cc548a7e4a045b3bba7bf6f48b13983bb31a3d411ac2316"
+      "bytes": 9356,
+      "sha256": "383d8eecf928b9fb859a3e8420e465cc5385914a4362cdb1f6f9290a25a240ab"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/app/services.py",
-      "bytes": 12249,
-      "sha256": "c0f8a4a07db3054d22cd220ae505db050374a2f7b73200dbe0b342362cf7e8c0"
+      "bytes": 11681,
+      "sha256": "cc436273949237a04e01322ca1066d5a9edfa629a64c6b7aa1c3e758f1eb3531"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/app/sync.py",
-      "bytes": 12217,
-      "sha256": "449f62e8e00fba4593d2107abf7e26dc7bd83b848d468c60fedd765d4364cbea"
+      "bytes": 10483,
+      "sha256": "8de482db1a484da968ddc0f35118aeae62424b46fe361c678ef7351479bf82b7"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/bootstrap.py",
-      "bytes": 37134,
-      "sha256": "ddc041c0d5950eecbdb7cb76cfec0d0e2fe7b61f78e10e0cc82f90d403df29a0"
+      "bytes": 29365,
+      "sha256": "51b7a72b93d9ade7fa9ebf9e2eb9c46efe82c187c9fdae0b5121069168a9136e"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/__init__.py",
@@ -395,18 +420,18 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/catalog.py",
-      "bytes": 863,
-      "sha256": "32b5ab86bc62cc9a66e05642c3f801ff415d0e586c960ee78d1d0ac77d1a7865"
+      "bytes": 385,
+      "sha256": "1455bb1ca13155c2313590341279afbd03a76d6028632b0e6612ad08c67979b1"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/live_channels.py",
-      "bytes": 8076,
-      "sha256": "d3051bae98ac473df43d47c2b3d23795c39da98d75b83414ed6f1f98d959d22c"
+      "bytes": 5986,
+      "sha256": "0762315a577f741c4479f45d38e59d48caa92f82c300b4675eefbf7e157ac9bb"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/domain/models.py",
-      "bytes": 733,
-      "sha256": "cb82a248b0dd7b60ba3e4f4d1ba8a25dfaf26030d0f9281f09b2aeb63464cb67"
+      "bytes": 734,
+      "sha256": "02b2a9c373ec22226e102d31b1d08dc0bed1095f4057c74192559e32785e56cd"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/infrastructure/__init__.py",
@@ -415,8 +440,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/infrastructure/http.py",
-      "bytes": 4383,
-      "sha256": "c2f10ac85101e51bc2a8da31b61438daa32499b2a1f3fb7282eaf8254327eca8"
+      "bytes": 4405,
+      "sha256": "914ba313cb434ac27707ede42ae011a063b01ed62ef35df26814c0259bc4d0d6"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/navigation_contract.py",
@@ -425,8 +450,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/parental.py",
-      "bytes": 4117,
-      "sha256": "24d8d5027ded160744448da44e7d78983b666259b4145ab94adf86574232ee2a"
+      "bytes": 4119,
+      "sha256": "f800d9e0bcbc0aa09ae228e48c2d001c1e9fb29972a3ad484d9c545f8a197722"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/persistence/__init__.py",
@@ -435,13 +460,13 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/persistence/database.py",
-      "bytes": 15255,
-      "sha256": "8d2538a59bf43410ac90a718204ca16929a208a70c6d5a88090bd69913a101ac"
+      "bytes": 12458,
+      "sha256": "bf0104825ef20a14bcab1bc482036e59d17997ac83c9fdabd87f903dbb0c4b1f"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/persistence/repository.py",
-      "bytes": 23641,
-      "sha256": "e1fe7b90bb2807586e6843cbf16cc47f3130d134e522252cc27f615eaeab159e"
+      "bytes": 20753,
+      "sha256": "ea76c440b7f3cf3c21eb5dce1a3e628810a9c26aca5ce804b7156bd1a2eeaf6e"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/__init__.py",
@@ -455,8 +480,8 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py",
-      "bytes": 6320,
-      "sha256": "618ed654b2b3dee0e4d0dde27dfae71198c43273aa7a02db667388e98ecb171a"
+      "bytes": 5069,
+      "sha256": "d363e1a80388eec1fdab5520bd22a25249f005511bdddf03370a6fd0a4b93667"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/__init__.py",
@@ -465,13 +490,13 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/providers/xtream/client.py",
-      "bytes": 3528,
-      "sha256": "d86b6bd6515c6ce7e920f74e4ab5508dbc0f0c93e716d73787ec67ada4ba6ce3"
+      "bytes": 4227,
+      "sha256": "96f144df0eda1a765d06cd5badc1f41b9229a992f2095c35620f513d5dade9b3"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/routing.py",
-      "bytes": 870,
-      "sha256": "e4d4a9594a1dbd79a9025f0ae13bdf379813f9a99c0942cd1f7964b71d0f3dfa"
+      "bytes": 868,
+      "sha256": "4503748ca5c7aa58d7aec9717e128e5d1c4b2419e5c5d9b2c7ac044948b631e8"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/__init__.py",
@@ -480,18 +505,18 @@
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/dialogs.py",
-      "bytes": 7854,
-      "sha256": "e92c06f5599dc575e28bf8526f065783216c36fe6e6b7cf631ba33f348aa0720"
+      "bytes": 7758,
+      "sha256": "bf10e0f3c0709517b3e2f4c9f0a9c326613e9579d8dc31f3871c89f57621e72a"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/directory.py",
-      "bytes": 6711,
-      "sha256": "e1578fb1481909d66161c5e28f63bd4f605147fe131e71814c633017acea996c"
+      "bytes": 6821,
+      "sha256": "fbdfdfde3cc543c82ec55e7c4fd5e2523a83ea32ec1f15501e95115cf8246d87"
     },
     {
       "path": "addons/plugin.video.stv/resources/lib/stv/ui/player.py",
-      "bytes": 2974,
-      "sha256": "fa6aa840dbf09b5749b25564f468d9e4568c457afe295417b5ded1aa26d4b233"
+      "bytes": 4119,
+      "sha256": "649844ce02d7bcc9ad7408ffbfb9e42c1df37d74269dba0b224c7ba40daf2d4b"
     },
     {
       "path": "addons/plugin.video.stv/resources/settings.xml",
@@ -665,8 +690,8 @@
     },
     {
       "path": "addons/script.module.saile.core/addon.xml",
-      "bytes": 975,
-      "sha256": "80942e1af1d1fed8264b92a450b258e8a7094512224e8542d7756b5c331405ae"
+      "bytes": 954,
+      "sha256": "a4d229eaaff699e8ad8b6ad06f7b2b513bd81d6f392b8efbe217ef9ebb971c07"
     },
     {
       "path": "addons/script.module.saile.core/changelog-1.0.0.txt",
@@ -677,6 +702,11 @@
       "path": "addons/script.module.saile.core/changelog-1.0.1.txt",
       "bytes": 76,
       "sha256": "6c87a82ed48c19993e2ad9e5571c33b2e66d10a743a1dc31f4ba8b8c930dfc52"
+    },
+    {
+      "path": "addons/script.module.saile.core/changelog-1.0.2.txt",
+      "bytes": 121,
+      "sha256": "6440275904cb2ce80410014676a6e1e23941ff0bcc8d6533e4af4dccd7e14fa6"
     },
     {
       "path": "addons/script.module.saile.core/fanart.jpg",
@@ -691,17 +721,17 @@
     {
       "path": "addons/script.module.saile.core/lib/saile_core/__init__.py",
       "bytes": 110,
-      "sha256": "ff8e4a125dd3f58e2deb961c1e5a94ce94937004a1a125b924e3be1da41ca8f0"
+      "sha256": "9a64fde3a3588723aa38875ab203a3fdfeb2704291c09c63a683635643a8bf46"
     },
     {
       "path": "addons/script.module.saile.core/lib/saile_core/artwork.py",
-      "bytes": 1552,
-      "sha256": "e40cf06a6849aeedc27ecaa9ae9c7ac151bfcef17c92570fdd566172d64b5ed1"
+      "bytes": 1513,
+      "sha256": "3a69b6576fbbcffb4d7105ea04ed241392a4685cfa7485e44d08e4158edee28a"
     },
     {
       "path": "addons/script.module.saile.core/lib/saile_core/capabilities.py",
-      "bytes": 1380,
-      "sha256": "32b2d722d47092e515111e08055b5a15d93a2a5aafd14d7b40a2281b922db181"
+      "bytes": 1369,
+      "sha256": "04170ac99526968e350443d205d68e9aea68c57e953d705ad1c89c54ef18ba9b"
     },
     {
       "path": "addons/script.module.saile.core/lib/saile_core/errors.py",
@@ -720,8 +750,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/addon.xml",
-      "bytes": 1050,
-      "sha256": "158f2cf069813a988ea5cb6fc07e4f8bed9ff4549468e9ff6120d269039e7213"
+      "bytes": 1051,
+      "sha256": "97c1b1ce4eff010c60d9bfc95ca3ba8a6596c394aff77987bd5f87cb3c507d1d"
     },
     {
       "path": "addons/script.module.saile.epg/changelog-1.0.0.txt",
@@ -789,6 +819,16 @@
       "sha256": "76bf5c8c0d339648bd2a50355fefdde74d79f00b53be04ac234144ccaac79f53"
     },
     {
+      "path": "addons/script.module.saile.epg/changelog-1.4.3.txt",
+      "bytes": 292,
+      "sha256": "99510a78af6973a50eb39be0f8971175b00e46a4af4956d3abc38fcedfe6c030"
+    },
+    {
+      "path": "addons/script.module.saile.epg/changelog-1.4.4.txt",
+      "bytes": 534,
+      "sha256": "9cc86b3d7e96c4d099c867af6a24a341d1d1cd073d4e06599c4cec763907b3a7"
+    },
+    {
       "path": "addons/script.module.saile.epg/fanart.jpg",
       "bytes": 117484,
       "sha256": "d8b201617be4904a126d3c649aabf4892b1850d53368dad35ed694d297e692d3"
@@ -801,12 +841,12 @@
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/__init__.py",
       "bytes": 699,
-      "sha256": "1e1db829286b86de91049c4818ee1ed2934cbe5099bf0355eaf85ac9801d4698"
+      "sha256": "27c6b05628fc948dcd4b42e1e3419bf9a33e7c4f6e863c7a957a77abdc0d8317"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/database.py",
-      "bytes": 3104,
-      "sha256": "5d8d95b56d7f0d00a1ce0ac2bb4d857c2e67844f4650a13089c0a66ed5b21630"
+      "bytes": 3151,
+      "sha256": "fd1d2a1be42944a598a6db39d20ff2379006dfcaee5fc7641e6f8c56927117f8"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/errors.py",
@@ -820,8 +860,8 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/normalizer.py",
-      "bytes": 17633,
-      "sha256": "5e4af9b38664b82c84c0165c90624ca8bd931688742ed4f262300695e221f9e5"
+      "bytes": 17143,
+      "sha256": "6988b8f9cd70e4bec7edcdc8ab8bbff11a650cd29ac4925cd744e1b548ae4d20"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/__init__.py",
@@ -835,28 +875,28 @@
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/claro.py",
-      "bytes": 28404,
-      "sha256": "a427e3e1f8cbf332351c65c4bb3f6536b74bfd9e331ea0a1e7437ab29b709bcd"
+      "bytes": 17278,
+      "sha256": "b031b9bfe8dc37f5315422530772d8090f90e2d1d91bf3d5bef15d288edfd344"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xmltv.py",
-      "bytes": 11465,
-      "sha256": "f25c568ebe9dc295d4854de9c60cdbf448ce4439bf26603640524e73734eb937"
+      "bytes": 11389,
+      "sha256": "3b116f9838587c9e6bc9ad3160b8b487348365a859d03c32091235dabab3bd8d"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/providers/xtream.py",
-      "bytes": 7562,
-      "sha256": "89962c9b4e1dda4130f72d02ac4ff57d4f6aa509cc1bf5931b42a72b5a8a37b8"
+      "bytes": 7493,
+      "sha256": "bde08e42b70cac1928ecd4757cb73276e5c94a2cae450d397fc070ec315a60d7"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/repository.py",
-      "bytes": 15923,
-      "sha256": "ee3eef2960d0cf67cf2a255cc2e664ddaa6bea5d9f3f038df21d000bdf86e2fc"
+      "bytes": 12767,
+      "sha256": "51d22442db96763f6896b639bc84c31c52df966e7e6aef4454483ebeaf663a20"
     },
     {
       "path": "addons/script.module.saile.epg/lib/saile_epg/service.py",
-      "bytes": 5191,
-      "sha256": "f255b0281230c0403513fc1e6c82f2bdea7af8249cb8f5bd9a56ccbf56e29aa6"
+      "bytes": 5188,
+      "sha256": "05398127154f033898ebf1bbdeec79bd980e9e9b0bb67736146d788c44212510"
     },
     {
       "path": "artwork/README.md",
@@ -1226,42 +1266,42 @@
     {
       "path": "docs/SHA256SUMS",
       "bytes": 742,
-      "sha256": "c0b24d4131c3481423f261aef95fcefcff992dedaed10e4b93574845ecb6fe40"
+      "sha256": "75ba4b73be12df9787a3c74647b04b1fb1711f30db15303425d5301e5f08fb3a"
     },
     {
       "path": "docs/addons.xml",
-      "bytes": 7200,
-      "sha256": "04fae5df042dd32bd80dff84048255ca0471369e64846ad138f92935dd24fcb3"
+      "bytes": 7081,
+      "sha256": "3252123c7beb14b2b2eb568e746bb94d5f7bcac6b69aa3c73c49473f874ee979"
     },
     {
       "path": "docs/addons.xml.gz",
-      "bytes": 1827,
-      "sha256": "2997681451e844a7889e8584db6d4613aef02780cfd16c2f216aacb27145da0b"
+      "bytes": 1823,
+      "sha256": "c8dad20d8c4fc403c2d9c7f7fdd63c3a0426beff9275a6194e5554648b041869"
     },
     {
       "path": "docs/addons.xml.gz.md5",
       "bytes": 34,
-      "sha256": "efc353fbe32fa7ad80be8ffaad5c558b0f78e7adae6e8a0ab5ff25ed022c8056"
+      "sha256": "e4629687260349df9a784d0b61e3c7d1519c1149f00e2c7a1fb16d8057663be6"
     },
     {
       "path": "docs/addons.xml.gz.sha256",
       "bytes": 66,
-      "sha256": "fd5d0a70e582bce30eb398a66aed3a0cd6d680cabd0c13479da8486afa75b89a"
+      "sha256": "4c5c1eaaa31bc64e7740158454a06ba3322a0022e2c4a2a7dc59f2944c134334"
     },
     {
       "path": "docs/addons.xml.md5",
       "bytes": 34,
-      "sha256": "f3870d29a87187b61db8f1607fe594e1679536d4d874b0d1b718f86721ce0547"
+      "sha256": "6059f0733c48eabc7b737fab7a85ed82a9285136980ace3b57e62c51a2d216c7"
     },
     {
       "path": "docs/addons.xml.sha256",
       "bytes": 66,
-      "sha256": "9c41bbcf407adefd759cb2c0745c5173812c2d6ffbafca3fdd41f2a08dc9b067"
+      "sha256": "c41fca7a819fd33781cae1d1d491476e370999358e463d974dd9207789af2798"
     },
     {
       "path": "docs/index.html",
       "bytes": 2895,
-      "sha256": "d31142831f175f7d3e611683c054432b76786f251e2942c3eff5056b6f13a766"
+      "sha256": "9a9c73349224d8e9a1267bb431820a701ad23e53bbfd182483076f0383b7071a"
     },
     {
       "path": "docs/repository.srepo-1.1.1.zip",
@@ -1279,9 +1319,9 @@
       "sha256": "29940addea7fcd2aae0da7f9f15d3015367ce0bade49c3b2c44a1804cbc00d08"
     },
     {
-      "path": "docs/zips/plugin.audio.sradio/changelog-1.0.3.txt",
-      "bytes": 454,
-      "sha256": "5f542694fd377fa2a8dea55fd63ffde312ee3a8a4de46e9c7fff108c4547e3a1"
+      "path": "docs/zips/plugin.audio.sradio/changelog-1.0.5.txt",
+      "bytes": 286,
+      "sha256": "d92b79a7668a9d316d3ae5a014c4cb7137117eda40e6a2dfb1e4c9b867fe2f01"
     },
     {
       "path": "docs/zips/plugin.audio.sradio/fanart.jpg",
@@ -1294,14 +1334,19 @@
       "sha256": "58e053705c7e1124fbb2c8cf410338f71f37a8a8a858d4f21b9acfc216dcef34"
     },
     {
-      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.3.zip",
-      "bytes": 443928,
-      "sha256": "8d1f2595c0cacd1b6e87d5a9a2b7a80f0bd697435eac1eaf0b420665c51e3b67"
+      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.5.zip",
+      "bytes": 443438,
+      "sha256": "c839ef986e958955dc33a576eba8eb385c84ab3230be42b037fb6ab4dd4f502f"
     },
     {
-      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.3.zip.sha256",
+      "path": "docs/zips/plugin.audio.sradio/plugin.audio.sradio-1.0.5.zip.sha256",
       "bytes": 66,
-      "sha256": "da1bc97cf8766043272939176b9f8d3467551b41b1f16253351775ddb7587cbf"
+      "sha256": "715060b066e71f25f136c1e64f94c7c429abe060252bd8dd002649a0dc8fe32b"
+    },
+    {
+      "path": "docs/zips/plugin.video.stv/changelog-0.8.7.txt",
+      "bytes": 757,
+      "sha256": "1a1a457585c988d955c31e6f3f10cdb2fed19260333242b09537c74b41571a92"
     },
     {
       "path": "docs/zips/plugin.video.stv/fanart.jpg",
@@ -1314,14 +1359,14 @@
       "sha256": "96f7722f1e870848ad1608bc6da90c5c3cb686a213368d9e66375976c7ff4063"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.5.zip",
-      "bytes": 325932,
-      "sha256": "beecf25588a529b7a74bbb26a76a8e12db6bd68bbff73525333643ee36f7e390"
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.7.zip",
+      "bytes": 324726,
+      "sha256": "8a32bbc246fa1498bd5bc27ce7378b9d2a6bf6192b0ddbf0d1306fa65c9c6696"
     },
     {
-      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.5.zip.sha256",
+      "path": "docs/zips/plugin.video.stv/plugin.video.stv-0.8.7.zip.sha256",
       "bytes": 66,
-      "sha256": "be6a441f8f697afacb68588997be508b5596ff6d95a60ccc0ba48a12fb751164"
+      "sha256": "44032b7eebe1f51194d4e4117035a4f87808b19d34e442f3f6766bb4d7f1c58c"
     },
     {
       "path": "docs/zips/repository.srepo/changelog-1.1.1.txt",
@@ -1374,9 +1419,9 @@
       "sha256": "5de2feccb91aff03bad1a94e4ee2c61798118b6adce7df825129b2c21f1e9f95"
     },
     {
-      "path": "docs/zips/script.module.saile.core/changelog-1.0.1.txt",
-      "bytes": 76,
-      "sha256": "6c87a82ed48c19993e2ad9e5571c33b2e66d10a743a1dc31f4ba8b8c930dfc52"
+      "path": "docs/zips/script.module.saile.core/changelog-1.0.2.txt",
+      "bytes": 121,
+      "sha256": "6440275904cb2ce80410014676a6e1e23941ff0bcc8d6533e4af4dccd7e14fa6"
     },
     {
       "path": "docs/zips/script.module.saile.core/fanart.jpg",
@@ -1389,14 +1434,19 @@
       "sha256": "cab50b34c15f4efc36f13077a066ecf24dd67170dc7710e1d76897f54e3ad9d5"
     },
     {
-      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.1.zip",
-      "bytes": 149521,
-      "sha256": "c1fb7fc8ef3c3b70a45869bba12e63965481d328800fa9b05b300f1bf263e060"
+      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.2.zip",
+      "bytes": 149534,
+      "sha256": "7b66744cdf1a8e8947ac932daf60a48feb053fb3c6f92c6aa9e0fff7df890d18"
     },
     {
-      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.1.zip.sha256",
+      "path": "docs/zips/script.module.saile.core/script.module.saile.core-1.0.2.zip.sha256",
       "bytes": 66,
-      "sha256": "4cc9a61b6634e97c32d6b8eec99e9e3fc1ed8b06f5b10e5b236da3fc03f35f1c"
+      "sha256": "b9ebc7b8bf696e888705afd1d90c50110c700774593526e2a898e7be424bb7c4"
+    },
+    {
+      "path": "docs/zips/script.module.saile.epg/changelog-1.4.4.txt",
+      "bytes": 534,
+      "sha256": "9cc86b3d7e96c4d099c867af6a24a341d1d1cd073d4e06599c4cec763907b3a7"
     },
     {
       "path": "docs/zips/script.module.saile.epg/fanart.jpg",
@@ -1409,14 +1459,14 @@
       "sha256": "5ebb5a46acb7f66317f7b4f4b806446e4775ea234085608f1a96e239051ca1f8"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.2.zip",
-      "bytes": 150474,
-      "sha256": "af224ee4bcfb23a9962d24c5124d9109526b4760c22776eeecab77a2d10bedfe"
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.4.zip",
+      "bytes": 150879,
+      "sha256": "ca5139b9795429402999f85a9b83a3146baa3d1fac27c70d5a57b6216d86f68d"
     },
     {
-      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.2.zip.sha256",
+      "path": "docs/zips/script.module.saile.epg/script.module.saile.epg-1.4.4.zip.sha256",
       "bytes": 66,
-      "sha256": "01532a9f42fc414032d0f1e735b468ad274a362dc94ba5bc511c3e5dcc70ce6b"
+      "sha256": "a2e7c3e528bd4938843f0c98112b251bf243534503c648373a39eb76d51db460"
     },
     {
       "path": "documentation/README.md",
@@ -1446,12 +1496,17 @@
     {
       "path": "documentation/generated/STRUCTURE_MANIFEST.json",
       "bytes": 65326,
-      "sha256": "eb5dc783ec9a0649172ca558fba54d107dea595eb9e7775ac53dd96c24360b0e"
+      "sha256": "44fdb8be2e058a35b2707cf626af603d3433715401930eb95d22208fcb0f3ea5"
     },
     {
       "path": "documentation/generated/TREE_FINAL.txt",
       "bytes": 15769,
       "sha256": "083e40de68d40050b2de47967947a7e4c4bdb5a5fe1b97f6f0498b7dfa6a6fc4"
+    },
+    {
+      "path": "documentation/governance/LEGACY_AUDIT.md",
+      "bytes": 8924,
+      "sha256": "7bc661071c302f154744f2361cadc3d634e230e2ea0fed3d9965de6d3539b962"
     },
     {
       "path": "documentation/governance/SECURITY_AND_ENV_POLICY.md",
@@ -1485,8 +1540,8 @@
     },
     {
       "path": "documentation/release/STATE.md",
-      "bytes": 4401,
-      "sha256": "fb44aca6a392e9fff01772342f2c7522558adf803ecd5da9ed50664d4b31642a"
+      "bytes": 4687,
+      "sha256": "f3a4d8f2c90b128605fc6a9b2c514c71b3a0b408a4dfc84061025139de225fa6"
     },
     {
       "path": "examples/kodi_router_pattern.py",
@@ -1505,8 +1560,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 246,
-      "sha256": "361908bf02a06d0b9e179419093ecc5f8f5359e8847ab36072dfffa24b5534e7"
+      "bytes": 305,
+      "sha256": "ec1c20a592da7b07a9d6a648bdd7ceef7c99bffc94417057fe78a11a33234918"
     },
     {
       "path": "schemas/LAN_SYNC_CONTRACT.md",
@@ -1515,13 +1570,13 @@
     },
     {
       "path": "schemas/epg_reference.sql",
-      "bytes": 1002,
-      "sha256": "88d6bef801b878ecc995bde8b12fa986619f859f3e58994e66215dd34be95758"
+      "bytes": 1513,
+      "sha256": "8ece9f90ecb3e404d34bd7f2c5dcdfddac86d476f0a30dcd1367d6102d1c2441"
     },
     {
       "path": "schemas/stv_reference.sql",
-      "bytes": 2815,
-      "sha256": "ba10ee48fbc7b2a25e882fa57ebca69e8536c4d5bd8872539023de7a403c5dab"
+      "bytes": 3073,
+      "sha256": "f0981779e6c0494561c304db19fce7a8f808e1d1dfd4dcfda910e6c3ec11d482"
     },
     {
       "path": "templates/ADR_TEMPLATE.md",
@@ -1560,73 +1615,73 @@
     },
     {
       "path": "tests/test_databases.py",
-      "bytes": 8391,
-      "sha256": "0bb44c6708eff3d7e734ecb3759bbe99bd809ff0e542d9c7612655f13dbfa603"
+      "bytes": 8463,
+      "sha256": "ba112da6966d473be90ad9b60749ff6100fe86b13f8a49d753044ab526c1288b"
     },
     {
       "path": "tests/test_dependency_graph.py",
-      "bytes": 1333,
-      "sha256": "89d9d4c0acc45ff160924ac351bf181324bc04b56916ccc72d9ad8f84938ed1b"
+      "bytes": 1399,
+      "sha256": "8b750bc36df65287be72171232eea69b09982e52d1055674fea062ec8796cad7"
     },
     {
       "path": "tests/test_navigation_contract.py",
-      "bytes": 848,
-      "sha256": "57cad276a813e28384615744c67dbd76a680292a0b037f48394efdec2adc3d92"
+      "bytes": 905,
+      "sha256": "e69edf8cea904ebfd41116aceea47bf5b24c2f9eee9c02eec88236752042c23f"
     },
     {
       "path": "tests/test_routing.py",
-      "bytes": 2120,
-      "sha256": "a965d829159c35fbf558db58457a81061c793ea2c65279a9825284b0a8eda865"
+      "bytes": 2311,
+      "sha256": "5dcccdea3c8c95f53b124f6c4bb99aa1f9b2936dad49eab058141894b222a81d"
     },
     {
       "path": "tests/test_saile_core.py",
-      "bytes": 1365,
-      "sha256": "ff44ed999058a6c5602ac80e3ed83abc49695ec8abbe8b11f45b784f5cf2d01a"
+      "bytes": 1364,
+      "sha256": "1ca04a88fe18028bdd85697416c685b099ec3155bad46eb87f648895cac5fb83"
     },
     {
       "path": "tests/test_saile_epg_aliases.py",
-      "bytes": 7562,
-      "sha256": "b7d0fff45016fd1d049e40434181fe5317e68c4514362957b33f9f1dd3ac9583"
+      "bytes": 7094,
+      "sha256": "1bf8e3dbc955349d81d20227e52f691ba244500fb1c27ee28a448eb2f8776339"
     },
     {
       "path": "tests/test_saile_epg_claro.py",
-      "bytes": 3512,
-      "sha256": "c15a662e71d4b414a643acfe133eb6b80fa1e0ffbef05987fa718def912b7a1b"
+      "bytes": 3774,
+      "sha256": "99f322ce5707d48935235ba18b40dec7bc22cc779c0d5f9fd1414cc8f2f183e5"
     },
     {
       "path": "tests/test_saile_epg_normalizer.py",
-      "bytes": 2347,
-      "sha256": "31736fd5eb416ec3522ae96c30c32db7c961b6b99a8c1a22c1d2cc3be65350d4"
+      "bytes": 3196,
+      "sha256": "b6a82bdca4f41bfce12ebcb4d7ca1f1d4e961904e0beb9bd867717a374f83683"
     },
     {
       "path": "tests/test_saile_epg_persistence.py",
-      "bytes": 4800,
-      "sha256": "7cd4f2a2e1c9b69c6a908aeaea31dba99260ce9dcc9c85b003f9929dfef50098"
+      "bytes": 4792,
+      "sha256": "12ce5e35da12fe829bf2bf242cd8439a3d08c1747ac3ab690000c18c53874359"
     },
     {
       "path": "tests/test_saile_epg_xmltv.py",
-      "bytes": 7079,
-      "sha256": "aa2dc9f524447c9b154328a47702341f4581588d6926043c8459dd0d52002ffb"
+      "bytes": 7075,
+      "sha256": "ea1d83b9ee0bf9d29260c53369906116589814421bd928c0e24dd228d557c87b"
     },
     {
       "path": "tests/test_saile_epg_xtream.py",
-      "bytes": 3814,
-      "sha256": "6a5e4f25ed5f1be390561c04bdf28eddc2cca9b163ccd0b2385d9e4dd1c16eef"
+      "bytes": 3791,
+      "sha256": "af9b910876d410d6eafb319c34775016157d5890004e3b3df58891cc1dd04992"
     },
     {
       "path": "tests/test_sradio.py",
-      "bytes": 11342,
-      "sha256": "3e165b4427f8b0e336a30542dfbfc72a3e5cf41f82a99fe927c09c6c3c5e11cd"
+      "bytes": 12795,
+      "sha256": "027a5656134776a08cf8f2488df908f52ee253af1b4b3cee882c98492bf8cd6a"
     },
     {
       "path": "tests/test_stv_catalog_auto_sync.py",
-      "bytes": 2373,
-      "sha256": "abf51ad5baefc2940d4c688d54a2008a8e6aef19ca8686fda5e33dec20b17835"
+      "bytes": 2774,
+      "sha256": "1357a8118d70634430e25349e5615d7ad9fffd3b5cd294776ac5f4aa8de8dd87"
     },
     {
       "path": "tests/test_stv_epg_resilience.py",
-      "bytes": 3433,
-      "sha256": "a78321cba3545c877897b363adc021e42657f0b755cb58461deffed5f6e6803b"
+      "bytes": 3723,
+      "sha256": "1c0aa42dbfde6834d4bd158f1acf1a1b90e7d4d3a59128ab63a1480259c5e724"
     },
     {
       "path": "tests/test_stv_http_client.py",
@@ -1635,23 +1690,28 @@
     },
     {
       "path": "tests/test_stv_lan_sync.py",
-      "bytes": 3597,
-      "sha256": "8b6d75893a093536d82ebeede95d6c060e8c138c9f7720c21c172a91f7b096a9"
+      "bytes": 3867,
+      "sha256": "13d65b5e78d3bc54d6bdd62fec5ea47b3577e93309afb188bc6f0fe989967ee3"
     },
     {
       "path": "tests/test_stv_live_channels.py",
-      "bytes": 7818,
-      "sha256": "cb8bd31a1130dc7213f2540751961a79891b7f469f4b6fc673fa4d4ec85f4d6a"
+      "bytes": 7774,
+      "sha256": "daaefd29978358dc07c2b5bd0eeec9a1309dc091e253459bf907b2f1b4f121b3"
     },
     {
       "path": "tests/test_stv_parental.py",
-      "bytes": 1820,
-      "sha256": "b8ecc0fdfd4a9a8f7bab2ddc47a6a00ab4778d9381a9aa22c975deb24187549b"
+      "bytes": 5203,
+      "sha256": "297eb087c67032c1c3450f3a69f5f2997566505ed8a9194d35692a48d8afe021"
     },
     {
       "path": "tests/test_stv_persistence.py",
-      "bytes": 11878,
-      "sha256": "b7c31ef56abc36169a3ea603d8280fd1c55c543841441acff311ede46ae08dbc"
+      "bytes": 11872,
+      "sha256": "144b515cc644ed51937b024bf14a6a5b80b7b5ae59921367578b092fb40744fc"
+    },
+    {
+      "path": "tests/test_stv_player_progress.py",
+      "bytes": 3705,
+      "sha256": "553c4ae869b13f9eb10834dd109ad73bb8cc20414e87dd0068eb3493a3a12c2f"
     },
     {
       "path": "tests/test_stv_tmdb_client.py",
@@ -1660,18 +1720,18 @@
     },
     {
       "path": "tests/test_stv_ui_standardization.py",
-      "bytes": 11427,
-      "sha256": "e067dc8e26b8f99627770770526645f25011b31bb599373ce6a9d7f52a5da384"
+      "bytes": 12797,
+      "sha256": "06b60b577802437f15a6473c636a68178710cbb00bdf203c379ca8e0f418a420"
     },
     {
       "path": "tests/test_stv_view_preferences.py",
-      "bytes": 9237,
-      "sha256": "eca2dee9f8d57a825caa7c3c5dcc1c3b1b6fbd97ecb5992e5c4dac3cd2a329b0"
+      "bytes": 9281,
+      "sha256": "a44851f9cf14d15418fa3e2c5b1f50f901890bf2d907f63a139233df641b7bcf"
     },
     {
       "path": "tests/test_stv_xtream_client.py",
-      "bytes": 2066,
-      "sha256": "acc8070a74c5f1aaaf2822824378e4a0e0104e4a06fc11f1548a8c5d05d7bc18"
+      "bytes": 2927,
+      "sha256": "56b34caee799a9b5ebad47154b99e66dc6925b38dbcad2fdfcedbd9bb60e3e3d"
     },
     {
       "path": "tools/bootstrap_artwork.py",
@@ -1680,48 +1740,48 @@
     },
     {
       "path": "tools/build_repo.py",
-      "bytes": 7598,
-      "sha256": "b478838c243ea24f4f61b494dd417b032649dd835fc80dedda7eb889818da99a"
+      "bytes": 7779,
+      "sha256": "d6af587925f430b546ab55e6a22dca16b31860c5fbd1e5c2db928444d4942330"
     },
     {
       "path": "tools/clean_build.py",
-      "bytes": 1168,
-      "sha256": "69ca05fa413aa945f46d7b63bb3f3d0b8813e6e222a30ed3f3e3399954c135a5"
+      "bytes": 1177,
+      "sha256": "ba0ac85e07f4ddfcfc16f9c6d6058cca8aae2e4ac2d9909a07f4c7f159d9f352"
     },
     {
       "path": "tools/colorize_common_svgs.py",
-      "bytes": 3495,
-      "sha256": "a273dfa12eb8b460fd6474188dc39e9a703a73b1becd67883c62e24ac9a24932"
+      "bytes": 3426,
+      "sha256": "cf41e9805d67c71fbe05456cc612948afeedbd2489946bc03fd9d9c035a484fe"
     },
     {
       "path": "tools/deploy_kodi_emulator.py",
-      "bytes": 8321,
-      "sha256": "fe0d0acf664e50c7f01660b0b4fefc577bc5d37c9d07338758840d2c889e5bed"
+      "bytes": 8723,
+      "sha256": "ac99bd30dac54ef37a213133248960938e95b834cfdbf13c665ce4c8bb145377"
     },
     {
       "path": "tools/generate_sradio_icons.py",
-      "bytes": 7205,
-      "sha256": "093d29c4fad6746c7ff430c9321086d2e12028f21625562b40029f4d68828134"
+      "bytes": 7237,
+      "sha256": "d73042f0066d6f1bca4ae6d14b03340a3045139232dd4db71c942d1d733023a9"
     },
     {
       "path": "tools/generate_structure_manifest.py",
-      "bytes": 3031,
-      "sha256": "d935ec9693cf72e27717de41980a47b3d2bfb18ede29a2268d3c121e233cde11"
+      "bytes": 2997,
+      "sha256": "99f60234abe99a115160ee7310d34c1f65310c00ba7a5bc837be96a64f220ca5"
     },
     {
       "path": "tools/print_tree.py",
-      "bytes": 1335,
-      "sha256": "7dc3a540716c31985a4cdac5ac22f137f319291a2c6acd3290fe8b4104f61292"
+      "bytes": 1343,
+      "sha256": "f8d0a3e9aaa77dca42e92abb1623f253baa0248883fe9e3f5792698207633ff7"
     },
     {
       "path": "tools/secret_scan.py",
-      "bytes": 1471,
-      "sha256": "da05aca08e0b086d2412ef4ff2e5037d51fc32e77e235409db02354b08986f60"
+      "bytes": 1519,
+      "sha256": "e1a325dc46d8f26b745f060da2f56d0adc7a01653083fad254ecec25090fc464"
     },
     {
       "path": "tools/select_artwork.py",
-      "bytes": 5623,
-      "sha256": "cc12da7a337dadc6fd789ff1b6366824f633603702f119bc44573fe2e2d249aa"
+      "bytes": 5766,
+      "sha256": "1228da4ceb9e45a25c964b75084e5e0e70ab0d5c55c194335d3823e74fc58b27"
     },
     {
       "path": "tools/site_template/index.html",
@@ -1740,13 +1800,13 @@
     },
     {
       "path": "tools/test_lock_screen_playback.py",
-      "bytes": 6422,
-      "sha256": "08e18fbb7025fc3fb1b3153735069c534bddb46a2302e03ca743ff0112f15b48"
+      "bytes": 6774,
+      "sha256": "bb6c38da3c37ed4880a817805086444f396fdbee311b3a703f5f6ea609ac896a"
     },
     {
       "path": "tools/test_sradio_full_battery.py",
-      "bytes": 15066,
-      "sha256": "30e85e5122f1d93aa2740889fad3d6eec81fee8c1baca8a7c19f3154fcc36e40"
+      "bytes": 18405,
+      "sha256": "41dab0a94f4d7c84efa2a9e3aa8b0146ab4e24304bc52731c2f907d7b9149b14"
     },
     {
       "path": "tools/validate_addons.py",
