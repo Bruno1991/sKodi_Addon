@@ -2,7 +2,6 @@ from __future__ import annotations
 
 
 from stv.domain.live_channels import LiveChannelGroup
-from stv.domain.models import MediaItem
 from stv.navigation_contract import HOME_ENTRIES, SECTION_FIXED_ENTRIES, VALID_SECTIONS
 from stv.parental import is_restricted, verify_parental_pin, verify_settings_access
 from stv.routing import Request
@@ -81,42 +80,6 @@ def _add_promoted_live_channel(
         media_type="video",
         label2=label2,
         properties=epg_properties,
-    )
-
-
-def _add_unmatched_live_item(
-    request: Request,
-    app: AppContainer,
-    item: MediaItem,
-    fanart: str,
-) -> None:
-    from stv.ui.directory import add_folder
-
-    icon_url = _item_icon("live", item.icon)
-    favorite_action = request.url(
-        action="toggle_fav",
-        section="live",
-        stream_id=item.item_id,
-    )
-    add_folder(
-        request.handle,
-        item.name,
-        request.url(
-            action="play",
-            section="live",
-            stream_id=item.item_id,
-            extension=item.extension,
-            title=item.name,
-        ),
-        icon=icon_url,
-        clearlogo=icon_url,
-        landscape=icon_url,
-        fanart=item.fanart or fanart,
-        is_folder=False,
-        is_playable=True,
-        context_menu=[("Adicionar/Remover Favoritos", f"RunPlugin({favorite_action})")],
-        plot=item.plot,
-        media_type="video",
     )
 
 

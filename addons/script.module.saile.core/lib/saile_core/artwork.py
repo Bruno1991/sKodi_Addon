@@ -6,10 +6,6 @@ ARTWORK_ADDON_ID = "resource.images.saile"
 _ALLOWED_SCOPES = frozenset({"common", "stv"})
 
 
-def _resource_root() -> str:
-    return "resource://resource.images.saile/media"
-
-
 def artwork_path(scope: str, filename: str) -> str:
     """Retorna o caminho absoluto no sistema de arquivos para uma arte compartilhada."""
     return artwork_absolute_path(scope, filename)

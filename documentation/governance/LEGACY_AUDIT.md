@@ -32,12 +32,12 @@ Fora do relatório (mantidos de propósito):
 Evidência: ruff F401/F811/F841, e nenhum `patch("modulo.nome")` ou acesso por atributo a esses nomes em testes e ferramentas.
 
 ## Lote 2 (Risco Baixo/Médio): funções sem referência
-- [ ] `addons/plugin.audio.sradio/resources/lib/sradio/catalog.py:361`: `RadioCatalog.get_international_groups`. Remover. Evidência: nenhuma referência em código, XML, testes ou docs.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/app/services.py:262`: `AppContainer.get_live_schedule`. Remover. Evidência: nenhuma referência (o Agora/Próximo usa a consulta em lote).
-- [ ] `addons/plugin.video.stv/resources/lib/stv/app/sync.py:166`: `ensure_all_live_streams_loaded`. Remover. Evidência: só era importada (sem uso) em `bootstrap.py`; o auto-sync substituiu a função.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py:90`: `_add_unmatched_live_item`. Remover. Evidência: nenhuma referência.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/domain/catalog.py:8`: `filter_categories_by_parent`. Remover. Evidência: nenhuma referência.
-- [ ] `addons/script.module.saile.core/lib/saile_core/artwork.py:9`: `_resource_root` (privada). Remover. Evidência: nenhuma referência; o caminho é resolvido por `artwork_absolute_path`.
+- [x] `addons/plugin.audio.sradio/resources/lib/sradio/catalog.py:361`: `RadioCatalog.get_international_groups`. Remover. Evidência: nenhuma referência em código, XML, testes ou docs.
+- [x] `addons/plugin.video.stv/resources/lib/stv/app/services.py:262`: `AppContainer.get_live_schedule`. Remover. Evidência: nenhuma referência (o Agora/Próximo usa a consulta em lote).
+- [x] `addons/plugin.video.stv/resources/lib/stv/app/sync.py:166`: `ensure_all_live_streams_loaded`. Remover. Evidência: só era importada (sem uso) em `bootstrap.py`; o auto-sync substituiu a função.
+- [x] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py:90`: `_add_unmatched_live_item`. Remover. Evidência: nenhuma referência.
+- [x] `addons/plugin.video.stv/resources/lib/stv/domain/catalog.py:8`: `filter_categories_by_parent`. Remover. Evidência: nenhuma referência.
+- [x] `addons/script.module.saile.core/lib/saile_core/artwork.py:9`: `_resource_root` (privada). Remover. Evidência: nenhuma referência; o caminho é resolvido por `artwork_absolute_path`.
 
 Fronteiras Kodi conferidas: nenhum desses nomes aparece em `addon.xml`, `resources/settings.xml` nem nas rotas
 `action=` dos plugins.

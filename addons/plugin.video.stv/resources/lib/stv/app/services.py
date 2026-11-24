@@ -259,14 +259,6 @@ class AppContainer:
             self.catalog.get_all_media_items("live"),
         )
 
-    def get_live_schedule(
-        self,
-        channel_keys: tuple[str, ...],
-    ) -> dict[str, tuple['EpgProgram' | None, 'EpgProgram' | None]]:
-        if self.settings.get("epg_enabled", "true").lower() == "false":
-            return {key: (None, None) for key in channel_keys}
-        return self.epg.get_now_next_many(channel_keys)
-
     def choose_live_variant(
         self,
         channel_key: str,

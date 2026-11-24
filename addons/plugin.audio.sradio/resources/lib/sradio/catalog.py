@@ -358,18 +358,3 @@ class RadioCatalog:
 
         return dict(sorted(genres.items()))
 
-    def get_international_groups(self) -> Dict[str, List[Dict[str, Any]]]:
-        """Agrupa rádios internacionais por país/região no catálogo em cache."""
-        self.load()
-        intl: Dict[str, List[Dict[str, Any]]] = {}
-
-        for s in self._stations:
-            cat = s.get("category", "")
-            if "Internacional >" in cat:
-                parts = [p.strip() for p in cat.split(">")]
-                region = parts[1] if len(parts) > 1 else "Mundo"
-                if region not in intl:
-                    intl[region] = []
-                intl[region].append(s)
-
-        return dict(sorted(intl.items()))
