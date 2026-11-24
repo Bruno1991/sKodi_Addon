@@ -456,12 +456,7 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     else:
         player.play(stream_url, item)
 
-    _open_fullscreen_player(xbmc, player)
-
-
-def stream_mimetype(media_type: str) -> str:
-    """Mimetype do stream TuneIn; vazio quando o tipo é desconhecido (o Kodi detecta)."""
-    return _STREAM_MIMETYPES.get((media_type or "").strip().lower(), "")
+    _open_fullscreen_player(player)
 
 
 _STREAM_MIMETYPES = {
@@ -472,18 +467,27 @@ _STREAM_MIMETYPES = {
 }
 
 
-def _open_fullscreen_player(xbmc: Any, player: Any, timeout_s: float = 15.0) -> None:
+def stream_mimetype(media_type: str) -> str:
+    """Mimetype do stream TuneIn; vazio quando o tipo é desconhecido (o Kodi detecta)."""
+    return _STREAM_MIMETYPES.get((media_type or "").strip().lower(), "")
+
+
+def _open_fullscreen_player(player: Any) -> None:
     """Abre o player em tela cheia com o OSD frontal quando a reprodução já começou.
 
     setResolvedUrl/play retornam antes do stream abrir, e o Kodi ignora a janela de tela
-    cheia sem reprodução ativa; por isso espera o player ligar (ou desiste no timeout).
+    cheia sem reprodução ativa; por isso espera o player ligar por até 15 s.
     """
+    import xbmc
+
     monitor = xbmc.Monitor()
-    waited = 0.0
-    while not player.isPlaying():
-        if waited >= timeout_s or monitor.waitForAbort(0.25):
+    for _ in range(60):
+        if player.isPlaying():
+            break
+        if monitor.waitForAbort(0.25):
             return
-        waited += 0.25
+    else:
+        return
     window = "fullscreenvideo" if player.isPlayingVideo() else "visualisation"
     xbmc.executebuiltin(f"ActivateWindow({window})")
 

@@ -177,6 +177,7 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
     """Garante que o banco ViewModes6.db do Kodi tenha todas as rotas gravadas como 131126 (InfoWall 54) de forma portável."""
     import os
     import sqlite3
+    from contextlib import closing
     from pathlib import Path
 
     try:
@@ -210,15 +211,11 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
 
         for db_path in db_candidates:
             if db_path.exists():
-                conn = sqlite3.connect(str(db_path), timeout=0.5)
-                try:
-                    with conn:
-                        conn.execute(
-                            "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
-                            (path_pattern,),
-                        )
-                finally:
-                    conn.close()
+                with closing(sqlite3.connect(str(db_path), timeout=0.5)) as conn, conn:
+                    conn.execute(
+                        "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
+                        (path_pattern,),
+                    )
     except Exception:
         pass
 

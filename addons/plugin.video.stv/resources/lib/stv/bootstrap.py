@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-
+from stv.domain.catalog import first_backdrop
 from stv.domain.live_channels import LiveChannelGroup
 from stv.navigation_contract import HOME_ENTRIES, SECTION_FIXED_ENTRIES, VALID_SECTIONS
 from stv.parental import is_restricted, verify_parental_pin, verify_settings_access
@@ -97,19 +97,18 @@ def _normalize_tmdb_still_url(url: str) -> str:
 def _series_artwork(info: dict, fanart: str) -> tuple[str, str, str]:
     """Capa, backdrop 16:9 e fanart de fundo de uma série a partir do get_series_info do Xtream."""
     cover = info.get("cover") or ""
-    backdrop = ""
-    backdrop_list = info.get("backdrop_path")
-    if isinstance(backdrop_list, list) and backdrop_list:
-        backdrop = str(backdrop_list[0]).strip()
-    elif isinstance(backdrop_list, str):
-        backdrop = backdrop_list.strip()
-    cover_url = cover if (cover.startswith("http") or cover.startswith("/")) else ""
+    backdrop = first_backdrop(info.get("backdrop_path"))
+    cover_url = cover if _is_remote_or_absolute(cover) else ""
     return cover, backdrop, backdrop or fanart or cover_url
+
+
+def _is_remote_or_absolute(path: str) -> bool:
+    return path.startswith(("http", "/"))
 
 
 def _episode_thumbnail(
     episode: dict[str, object],
-    series_fanart: str = "",
+    series_backdrop: str = "",
     tmdb_ep_meta: dict[str, object] | None = None,
 ) -> str:
     """Prioriza um frame real 16:9 do episódio (TMDB / Xtream) e NUNCA usa a capa vertical da série."""
@@ -136,12 +135,11 @@ def _episode_thumbnail(
         normalized = _normalize_tmdb_still_url(raw_thumb)
         return _item_icon("series", normalized)
 
-    # 3. Fallback neutro 16:9 (fanart de fundo da série ou ícone neutro)
-    if series_fanart and (series_fanart.startswith("http") or series_fanart.startswith("/")):
-        return series_fanart
+    # 3. Fallback neutro 16:9 (backdrop da série, nunca a capa vertical, ou ícone neutro)
+    if series_backdrop and _is_remote_or_absolute(series_backdrop):
+        return series_backdrop
 
     return _item_icon("series", "")
-
 
 
 def _format_live_channel_metadata(
@@ -428,7 +426,7 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
         data = app.xtream.get_series_info(series_id)
         episodes_by_season = data.get("episodes", {})
         info = data.get("info", {})
-        series_cover, series_backdrop, series_fanart = _series_artwork(info, fanart)
+        series_cover, _, series_fanart = _series_artwork(info, fanart)
         series_plot = info.get("plot", "")
         seasons_meta = {str(s.get("season_number", "")): s for s in data.get("seasons", []) if isinstance(s, dict)}
 
@@ -463,8 +461,8 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
                 icon=season_cover,
                 poster=season_cover,
                 thumb=season_cover,
-                landscape=series_fanart or fanart,
-                fanart=series_fanart or fanart,
+                landscape=series_fanart,
+                fanart=series_fanart,
                 is_folder=True,
                 plot=season_plot,
                 media_type="season",
@@ -494,7 +492,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
         data = app.xtream.get_series_info(series_id)
         episodes_by_season = data.get("episodes", {})
         info = data.get("info", {})
-        series_cover, series_backdrop, series_fanart = _series_artwork(info, fanart)
+        _, series_backdrop, series_fanart = _series_artwork(info, fanart)
         series_plot = info.get("plot", "")
         episodes = episodes_by_season.get(str(season_num), [])
 
@@ -525,13 +523,12 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 or f"Episódio {ep_num}"
             ).strip()
             ep_ext = str(ep.get("container_extension", "mp4"))
-            ep_info = ep.get("info")
             ep_plot = str(
                 (tmdb_meta.get("overview") if tmdb_meta else "")
-                or (ep_info.get("plot") if isinstance(ep_info, dict) else "")
+                or ep.get("info", {}).get("plot")
                 or series_plot
             )
-            ep_thumb = _episode_thumbnail(ep, series_fanart=series_backdrop, tmdb_ep_meta=tmdb_meta)
+            ep_thumb = _episode_thumbnail(ep, series_backdrop=series_backdrop, tmdb_ep_meta=tmdb_meta)
             label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
             url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)
@@ -543,7 +540,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 thumb=ep_thumb,
                 landscape=ep_thumb,
                 poster=ep_thumb,
-                fanart=series_fanart or fanart,
+                fanart=series_fanart,
                 is_folder=False,
                 is_playable=True,
                 plot=ep_plot,

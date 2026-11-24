@@ -5,6 +5,7 @@ import time
 from typing import TYPE_CHECKING
 
 from saile_epg import clean_channel_title, normalize_channel_name, normalize_search_term
+from stv.domain.catalog import first_backdrop
 from stv.domain.models import Category, MediaItem
 
 if TYPE_CHECKING:
@@ -59,11 +60,7 @@ def _parse_streams(media_type: str, generation_id: int, data: object, default_ca
         icon = str(item.get("stream_icon") or item.get("logo") or item.get("icon") or item.get("cover") or item.get("movie_image") or "").strip()
         fanart = str(item.get("fanart") or "").strip()
         if not fanart and media_type in {"vod", "series"}:
-            backdrop = item.get("backdrop_path")
-            if isinstance(backdrop, list) and backdrop:
-                fanart = str(backdrop[0]).strip()
-            elif isinstance(backdrop, str):
-                fanart = backdrop.strip()
+            fanart = first_backdrop(item.get("backdrop_path"))
 
         extension = str(item.get("container_extension", "")).strip()
         plot = str(item.get("plot", "")).strip()

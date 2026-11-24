@@ -25,6 +25,25 @@ class XtreamClientTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             client_empty.request("get_live_categories")
 
+    def test_series_info_normalizes_info_sent_as_list(self) -> None:
+        from unittest.mock import patch
+
+        payload = {
+            "info": [],
+            "episodes": {
+                "1": [{"id": "10", "info": []}, {"id": "11", "info": {"plot": "Piloto"}}, "lixo"],
+                "2": "sem lista",
+            },
+        }
+        client = XtreamClient("http://iptv.example", "u", "p")
+        with patch.object(XtreamClient, "request", return_value=payload):
+            data = client.get_series_info("7")
+        self.assertEqual(data["info"], {})
+        self.assertEqual(data["episodes"]["1"][0]["info"], {})
+        self.assertEqual(data["episodes"]["1"][1]["info"], {"plot": "Piloto"})
+        with patch.object(XtreamClient, "request", return_value=[]):
+            self.assertEqual(client.get_series_info("7"), {})
+
     def test_stream_url_generation(self) -> None:
         client = XtreamClient(host="http://iptv.example:8080", username="alice", password="secretpassword")
 

@@ -61,9 +61,23 @@ class XtreamClient:
         )
 
     def get_series_info(self, series_id: str) -> dict[str, Any]:
-        """Obtém detalhes de temporadas e episódios de uma série."""
+        """Obtém temporadas e episódios de uma série, com `info` sempre como dict.
+
+        Painéis Xtream mandam `"info": []` quando não há dados; normalizar aqui evita
+        guardas espalhadas em quem lê a série ou os episódios.
+        """
         data = self.request("get_series_info", series_id=series_id)
-        return data if isinstance(data, dict) else {}
+        if not isinstance(data, dict):
+            return {}
+        if not isinstance(data.get("info"), dict):
+            data["info"] = {}
+        episodes = data.get("episodes")
+        if isinstance(episodes, dict):
+            for season_episodes in episodes.values():
+                for episode in season_episodes if isinstance(season_episodes, list) else ():
+                    if isinstance(episode, dict) and not isinstance(episode.get("info"), dict):
+                        episode["info"] = {}
+        return data
 
     def xmltv_url(self) -> str:
         """Gera a URL XMLTV autorizada do provedor sem realizar a requisição."""

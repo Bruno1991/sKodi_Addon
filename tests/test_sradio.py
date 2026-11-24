@@ -277,8 +277,6 @@ class SRadioArtworkCoherenceTests(unittest.TestCase):
             self.assertTrue((html_dir / f"{s}_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html").is_file())
 
 
-
-
 class SRadioPlaybackTests(unittest.TestCase):
     def test_stream_mimetype_maps_each_tunein_format(self) -> None:
         from sradio.bootstrap import stream_mimetype

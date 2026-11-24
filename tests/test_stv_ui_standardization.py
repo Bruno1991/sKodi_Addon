@@ -52,7 +52,6 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
 
     def test_live_root_renders_fixed_entries_and_xtream_categories(self) -> None:
-
         matched = MediaItem(
             "live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT"
         )
