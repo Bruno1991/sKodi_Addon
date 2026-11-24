@@ -1,7 +1,6 @@
 """Deploy e automação de teste dos add-ons sRepo no Kodi instalado no emulador Android."""
 
 import json
-import os
 import socket
 import subprocess
 import sys
@@ -41,7 +40,7 @@ def send_jsonrpc(method: str, params: dict | None = None) -> dict | None:
         resp_data = s.recv(8192)
         s.close()
         return json.loads(resp_data.decode("utf-8", errors="replace"))
-    except Exception as e:
+    except Exception:
         return None
 
 

@@ -4,10 +4,6 @@ salvar SVG, HTML e PNG na pasta artwork/common e sincronizar no resource.images.
 from __future__ import annotations
 
 import asyncio
-import json
-import os
-import re
-import shutil
 import urllib.parse
 import urllib.request
 from pathlib import Path

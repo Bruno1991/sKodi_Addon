@@ -5,7 +5,7 @@ import time
 import unittest
 from unittest.mock import MagicMock, patch
 
-from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
+from saile_epg.models import EpgSnapshot
 from saile_epg.providers.claro import ClaroEpgProvider, CLARO_OFFICIAL_CHANNELS
 
 

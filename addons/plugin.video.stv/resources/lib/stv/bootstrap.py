@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import sys
-import unicodedata
 
 from stv.domain.live_channels import LiveChannelGroup
 from stv.domain.models import MediaItem
@@ -10,7 +8,6 @@ from stv.parental import is_restricted, verify_parental_pin, verify_settings_acc
 from stv.routing import Request
 from stv.app.services import AppContainer
 from stv.app.sync import (
-    ensure_all_live_streams_loaded,
     ensure_categories_loaded,
     ensure_streams_loaded,
 )

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import time
 import unittest
-from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from stv.app.services import AppContainer

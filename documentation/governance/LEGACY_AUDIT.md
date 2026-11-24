@@ -19,15 +19,15 @@ Fora do relatório (mantidos de propósito):
 - Sem código comentado (ERA001 limpo).
 
 ## Lote 1 (Risco Baixo): imports e variáveis sem uso
-- [ ] `addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py:3,4,7`: `sys`, `urllib.parse`, `TuneInAPI` sem uso. Remover.
-- [ ] `addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py:360`: variável `folder_icon` atribuída e não usada. Remover.
-- [ ] `addons/plugin.audio.sradio/resources/lib/sradio/favorites.py:4`: `os` sem uso. Remover.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py:3,4,13`: `sys`, `unicodedata`, `ensure_all_live_streams_loaded` sem uso. Remover.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/domain/catalog.py:5`: `MediaItem` sem uso. Remover.
-- [ ] `addons/script.module.saile.core/lib/saile_core/capabilities.py:5`: `sys` sem uso. Remover.
-- [ ] `addons/script.module.saile.epg/lib/saile_epg/providers/claro.py:9`: `Sequence` sem uso. Remover.
-- [ ] `tests/*`: 10 imports sem uso e 1 redefinição (`Category` em `test_stv_ui_standardization.py`), mais a variável `png_dir` em `test_sradio.py:263`. Remover.
-- [ ] `tools/*`: 9 imports sem uso (`colorize_common_svgs`, `deploy_kodi_emulator`, `generate_sradio_icons`, `print_tree`, `test_sradio_full_battery`) e `except ... as e` sem uso em `deploy_kodi_emulator.py:44`. Remover.
+- [x] `addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py:3,4,7`: `sys`, `urllib.parse`, `TuneInAPI` sem uso. Remover.
+- [x] `addons/plugin.audio.sradio/resources/lib/sradio/bootstrap.py:360`: variável `folder_icon` atribuída e não usada. Remover.
+- [x] `addons/plugin.audio.sradio/resources/lib/sradio/favorites.py:4`: `os` sem uso. Remover.
+- [x] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py:3,4,13`: `sys`, `unicodedata`, `ensure_all_live_streams_loaded` sem uso. Remover.
+- [x] `addons/plugin.video.stv/resources/lib/stv/domain/catalog.py:5`: `MediaItem` sem uso. Remover.
+- [x] `addons/script.module.saile.core/lib/saile_core/capabilities.py:5`: `sys` sem uso. Remover.
+- [x] `addons/script.module.saile.epg/lib/saile_epg/providers/claro.py:9`: `Sequence` sem uso. Remover.
+- [x] `tests/*`: 10 imports sem uso e 1 redefinição (`Category` em `test_stv_ui_standardization.py`), mais a variável `png_dir` em `test_sradio.py:263`. Remover.
+- [x] `tools/*`: 9 imports sem uso (`colorize_common_svgs`, `deploy_kodi_emulator`, `generate_sradio_icons`, `print_tree`, `test_sradio_full_battery`) e `except ... as e` sem uso em `deploy_kodi_emulator.py:44`. Remover.
 
 Evidência: ruff F401/F811/F841, e nenhum `patch("modulo.nome")` ou acesso por atributo a esses nomes em testes e ferramentas.
 

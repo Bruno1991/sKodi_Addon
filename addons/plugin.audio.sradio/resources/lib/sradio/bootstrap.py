@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import sys
-import urllib.parse
 from typing import Any, Dict, List, Optional
 
-from .catalog import RadioCatalog, TuneInAPI
+from .catalog import RadioCatalog
 from .favorites import FavoritesManager
 from .routing import Request
 
@@ -357,7 +355,6 @@ def show_browse_directory(
         show_home(request, catalog, favorites, fanart)
         return
 
-    folder_icon = _icon("common", "folder.png")
     for item in items:
         if item.get("is_folder"):
             sub_url = item.get("url", "")

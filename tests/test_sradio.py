@@ -260,7 +260,6 @@ class SRadioArtworkCoherenceTests(unittest.TestCase):
     def test_artwork_sources_exist_in_artwork(self) -> None:
         svg_dir = ROOT / "artwork" / "common" / "svg"
         html_dir = ROOT / "artwork" / "common" / "html"
-        png_dir = ROOT / "artwork" / "common" / "png"
         symbols = [
             "my_location",
             "whatshot",

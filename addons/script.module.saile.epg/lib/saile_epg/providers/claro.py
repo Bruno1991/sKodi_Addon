@@ -6,7 +6,6 @@ import ssl
 import time
 import urllib.parse
 import urllib.request
-from typing import Sequence
 
 from saile_epg.errors import EpgSyncError
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot

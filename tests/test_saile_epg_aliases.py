@@ -8,9 +8,7 @@ import time
 from saile_epg.database import EpgDatabase
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
 from saile_epg.normalizer import (
-    clean_channel_title,
     get_canonical_channel_name,
-    normalize_channel_name,
 )
 from saile_epg.repository import EpgRepository
 

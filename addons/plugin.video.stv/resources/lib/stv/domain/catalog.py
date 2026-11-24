@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from typing import Sequence
-from stv.domain.models import Category, MediaItem
+from stv.domain.models import Category
 
 
 def filter_categories_by_parent(categories: Sequence[Category], parent_id: str = "0") -> list[Category]:

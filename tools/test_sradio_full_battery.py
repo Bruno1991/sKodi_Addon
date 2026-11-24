@@ -7,7 +7,6 @@ dinâmica e analisa o arquivo kodi.log linha por linha em busca de erros, exceç
 from __future__ import annotations
 
 import json
-import os
 import socket
 import subprocess
 import sys

@@ -24,7 +24,6 @@ from stv.bootstrap import (
     _item_icon,
     _show_section,
 )
-from stv.domain.live_channels import build_live_catalog
 from stv.domain.models import Category, MediaItem
 from stv.routing import Request
 from stv.ui.directory import INFOWALL_VIEW_MODE, finish_directory
@@ -52,7 +51,6 @@ class UIStandardizationTests(unittest.TestCase):
         self.assertEqual(kwargs["properties"]["EPG.Status"], "unavailable")
 
     def test_live_root_renders_fixed_entries_and_xtream_categories(self) -> None:
-        from stv.domain.models import Category
 
         matched = MediaItem(
             "live", "1", "SBT HD", "10", epg_id="sbt", normalized_name="SBT"
