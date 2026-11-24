@@ -258,25 +258,41 @@ def run_battery() -> Dict[str, Any]:
     # Teste 19: Reprodução ao Vivo e Verificação do Player
     log("\n[*] Executando [T19_PLAYBACK] Reprodução de Rádio e Player OSD...")
     t0 = time.time()
-    play_resp = send_jsonrpc("Player.Open", {"item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}})
-    time.sleep(4)
+    # Player.Open com URL plugin:// direta é recusado pelo Kodi ("ListItem type must be audio
+    # or video") sem executar o plugin; pela playlist de áudio o item é resolvido como num clique.
+    send_jsonrpc("Playlist.Clear", {"playlistid": 0})
+    send_jsonrpc("Playlist.Add", {"playlistid": 0, "item": {"file": "plugin://plugin.audio.sradio/?action=play&guide_id=s7047"}})
+    play_resp = send_jsonrpc("Player.Open", {"item": {"playlistid": 0, "position": 0}})
 
-    players_resp = send_jsonrpc("Player.GetActivePlayers")
-    active_players = players_resp.get("result", []) if players_resp else []
-    log(f"    -> Players ativos: {active_players}")
+    active_players: list = []
+    played_seconds = 0
+    window_id = None
+    for _ in range(15):
+        time.sleep(2)
+        players_resp = send_jsonrpc("Player.GetActivePlayers")
+        active_players = players_resp.get("result", []) if players_resp else []
+        if active_players:
+            props = send_jsonrpc("Player.GetProperties", {"playerid": active_players[0]["playerid"], "properties": ["time"]})
+            t = (props or {}).get("result", {}).get("time", {})
+            played_seconds = t.get("minutes", 0) * 60 + t.get("seconds", 0)
+            gui = send_jsonrpc("GUI.GetProperties", {"properties": ["currentwindow"]})
+            window_id = (gui or {}).get("result", {}).get("currentwindow", {}).get("id")
+            if played_seconds >= 3:
+                break
+    log(f"    -> Players ativos: {active_players} | tocou {played_seconds}s | janela {window_id}")
 
     # Parar reprodução para liberar recursos
-    if active_players:
-        for p in active_players:
-            send_jsonrpc("Player.Stop", {"playerid": p.get("playerid", 0)})
+    for p in active_players:
+        send_jsonrpc("Player.Stop", {"playerid": p.get("playerid", 0)})
 
     elapsed = round(time.time() - t0, 2)
-    if play_resp and "result" in play_resp:
-        log(f"    [OK] Resolução de stream e comando do player aceitos em {elapsed}s")
+    # 12006 = visualização de áudio, 12005 = vídeo em tela cheia
+    if played_seconds >= 3 and window_id in (12005, 12006):
+        log(f"    [OK] Rádio tocando em tela cheia ({played_seconds}s) em {elapsed}s")
         results["passed"] += 1
         results["tests"].append({"id": "T19_PLAYBACK", "name": "Reprodução de Rádio ao Vivo", "status": "PASS", "elapsed": elapsed})
     else:
-        log(f"    [FALHA] Falha ao enviar Player.Open: {play_resp}")
+        log(f"    [FALHA] Sem reprodução em tela cheia: resposta={play_resp}, tocou={played_seconds}s, janela={window_id}")
         results["failed"] += 1
         results["tests"].append({"id": "T19_PLAYBACK", "name": "Reprodução de Rádio ao Vivo", "status": "FAIL", "elapsed": elapsed})
 

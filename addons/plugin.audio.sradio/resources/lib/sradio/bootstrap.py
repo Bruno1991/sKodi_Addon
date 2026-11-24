@@ -475,14 +475,15 @@ def stream_mimetype(media_type: str) -> str:
 def _open_fullscreen_player(player: Any) -> None:
     """Abre o player em tela cheia com o OSD frontal quando a reprodução já começou.
 
-    setResolvedUrl/play retornam antes do stream abrir, e o Kodi ignora a janela de tela
-    cheia sem reprodução ativa; por isso espera o player ligar por até 15 s.
+    setResolvedUrl/play retornam antes do stream abrir, e o Kodi recusa a janela de tela
+    cheia sem reprodução ativa ou com o diálogo modal "Carregando" aberto (visto no
+    kodi.log do emulador); por isso espera as duas condições por até 15 s.
     """
     import xbmc
 
     monitor = xbmc.Monitor()
     for _ in range(60):
-        if player.isPlaying():
+        if player.isPlaying() and not xbmc.getCondVisibility("System.HasActiveModalDialog"):
             break
         if monitor.waitForAbort(0.25):
             return
