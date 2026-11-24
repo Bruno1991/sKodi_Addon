@@ -22,6 +22,7 @@ from stv.bootstrap import (
     _episode_thumbnail,
     _format_live_channel_metadata,
     _item_icon,
+    _series_artwork,
     _show_section,
 )
 from stv.domain.models import Category, MediaItem
@@ -180,6 +181,20 @@ class UIStandardizationTests(unittest.TestCase):
             _episode_thumbnail(episode, "https://img.example/series-cover.jpg", tmdb_ep_meta=tmdb_meta),
             "https://image.tmdb.org/t/p/w500/still1.jpg",
         )
+
+    def test_series_artwork_prefers_backdrop_then_addon_fanart_then_cover(self) -> None:
+        cover = "https://img.example/cover.jpg"
+        self.assertEqual(
+            _series_artwork({"cover": cover, "backdrop_path": [" https://img.example/bd.jpg "]}, "fan.jpg"),
+            (cover, "https://img.example/bd.jpg", "https://img.example/bd.jpg"),
+        )
+        self.assertEqual(
+            _series_artwork({"cover": cover, "backdrop_path": "https://img.example/bd2.jpg"}, ""),
+            (cover, "https://img.example/bd2.jpg", "https://img.example/bd2.jpg"),
+        )
+        self.assertEqual(_series_artwork({"cover": cover, "backdrop_path": []}, "fan.jpg"), (cover, "", "fan.jpg"))
+        self.assertEqual(_series_artwork({"cover": cover}, ""), (cover, "", cover))
+        self.assertEqual(_series_artwork({"cover": "capa-local.jpg"}, ""), ("capa-local.jpg", "", ""))
 
     def test_format_live_channel_metadata_uses_module_cache(self) -> None:
         from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot

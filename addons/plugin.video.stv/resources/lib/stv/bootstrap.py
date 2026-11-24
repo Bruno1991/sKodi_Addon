@@ -94,6 +94,19 @@ def _normalize_tmdb_still_url(url: str) -> str:
     return url
 
 
+def _series_artwork(info: dict, fanart: str) -> tuple[str, str, str]:
+    """Capa, backdrop 16:9 e fanart de fundo de uma série a partir do get_series_info do Xtream."""
+    cover = info.get("cover") or ""
+    backdrop = ""
+    backdrop_list = info.get("backdrop_path")
+    if isinstance(backdrop_list, list) and backdrop_list:
+        backdrop = str(backdrop_list[0]).strip()
+    elif isinstance(backdrop_list, str):
+        backdrop = backdrop_list.strip()
+    cover_url = cover if (cover.startswith("http") or cover.startswith("/")) else ""
+    return cover, backdrop, backdrop or fanart or cover_url
+
+
 def _episode_thumbnail(
     episode: dict[str, object],
     series_fanart: str = "",
@@ -415,14 +428,7 @@ def _show_series_seasons(request: Request, app: AppContainer, series_id: str, se
         data = app.xtream.get_series_info(series_id)
         episodes_by_season = data.get("episodes", {})
         info = data.get("info", {})
-        series_cover = info.get("cover") or ""
-        series_backdrop = ""
-        backdrop_list = info.get("backdrop_path")
-        if isinstance(backdrop_list, list) and backdrop_list:
-            series_backdrop = str(backdrop_list[0]).strip()
-        elif isinstance(backdrop_list, str):
-            series_backdrop = backdrop_list.strip()
-        series_fanart = series_backdrop or fanart or (series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else "")
+        series_cover, series_backdrop, series_fanart = _series_artwork(info, fanart)
         series_plot = info.get("plot", "")
         seasons_meta = {str(s.get("season_number", "")): s for s in data.get("seasons", []) if isinstance(s, dict)}
 
@@ -488,14 +494,7 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
         data = app.xtream.get_series_info(series_id)
         episodes_by_season = data.get("episodes", {})
         info = data.get("info", {})
-        series_cover = info.get("cover") or ""
-        series_backdrop = ""
-        backdrop_list = info.get("backdrop_path")
-        if isinstance(backdrop_list, list) and backdrop_list:
-            series_backdrop = str(backdrop_list[0]).strip()
-        elif isinstance(backdrop_list, str):
-            series_backdrop = backdrop_list.strip()
-        series_fanart = series_backdrop or fanart or (series_cover if (series_cover.startswith("http") or series_cover.startswith("/")) else "")
+        series_cover, series_backdrop, series_fanart = _series_artwork(info, fanart)
         series_plot = info.get("plot", "")
         episodes = episodes_by_season.get(str(season_num), [])
 

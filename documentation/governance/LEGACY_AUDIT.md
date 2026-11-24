@@ -1,7 +1,7 @@
 # Auditoria de Código Legado
 Data: 2026-11-24 | Escopo: repositório inteiro (`addons/`, `tools/`, `tests/`) | Linha de base dos testes: 121/121 OK
 (`python -m unittest discover -s tests -p "test_*.py"`), `validate_addons` OK, `secret_scan` OK, `compileall` OK.
-Ponto de retorno: commit `cc62e62`.
+Ponto de retorno: commit `cc62e62`. Lotes 1–3 executados em 2026-11-24 (122/122 testes OK ao final).
 
 Local do arquivo: `documentation/governance/` e não `docs/`, porque `docs/` é gerado por `tools/build_repo.py`
 (apagado e recriado a cada build) e publicado no GitHub Pages.
@@ -43,7 +43,7 @@ Fronteiras Kodi conferidas: nenhum desses nomes aparece em `addon.xml`, `resourc
 `action=` dos plugins.
 
 ## Lote 3 (Risco Médio): duplicação dentro da mesma fronteira
-- [ ] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py` (listagem de temporadas e de episódios): extração de
+- [x] `addons/plugin.video.stv/resources/lib/stv/bootstrap.py` (listagem de temporadas e de episódios): extração de
   `cover`/`backdrop_path`/`series_fanart` copiada nas duas funções. Consolidar em `_series_artwork(info, fanart)`
   dentro do próprio sTv, com comportamento idêntico.
 
