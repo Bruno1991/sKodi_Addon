@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.3" provider-name="Saile">
+  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.4" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.4" />
@@ -17,14 +17,14 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.3 - Ícones dedicados e coerentes para cada menu principal (Brasil, Música, Notícias, Esportes, Localização, Idioma, Podcasts, Melhores, Rádios Locais) entregues via resource.images.saile a partir do Google Fonts Material Symbols.</news>
+      <news>1.0.4 - Rádios AAC/OGG tocam com o tipo certo, favoritar na busca não reabre o teclado e a tela cheia abre só depois que o áudio começa.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
       </assets>
     </extension>
   </addon>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.5" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.6" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
@@ -42,7 +42,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.5 - Integração com sEPG v1.4.2 (distinção precisa entre canais Globo e notícias) e otimização de renderização de cards EPG no InfoWall.</news>
+      <news>0.8.6 - Continuar de onde parou em filmes e episódios passa a funcionar. Temporadas não somem quando um episódio vem sem informações, miniaturas de episódio coerentes e busca TMDB correta para títulos com números.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -90,7 +90,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.core" name="sCore" version="1.0.1" provider-name="Saile">
+  <addon id="script.module.saile.core" name="sCore" version="1.0.2" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.0" />
@@ -102,14 +102,14 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.1 - Atualização dos metadados e compatibilidade do ecossistema sKodi.</news>
+      <news>1.0.2 - Helper de artwork do sRadio e limpeza interna.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.4.2" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.4.3" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="script.module.saile.core" version="1.0.1" />
@@ -121,7 +121,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.4.2 - Correção na resolução de aliases para canais do grupo Globo (GloboNews, Globoplay Novelas e Globo SP independentes).</news>
+      <news>1.4.3 - Limpeza de títulos de filmes e séries preserva os números que fazem parte do título.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
