@@ -17,7 +17,7 @@
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>0.8.6 - Temporadas não somem quando um episódio vem sem informações, miniaturas de episódio coerentes e busca TMDB correta para títulos com números.</news>
+    <news>0.8.6 - Continuar de onde parou em filmes e episódios passa a funcionar. Temporadas não somem quando um episódio vem sem informações, miniaturas de episódio coerentes e busca TMDB correta para títulos com números.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>

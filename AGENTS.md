@@ -2,17 +2,18 @@
 
 ## Identidade do sistema
 
-O agente trabalha no monorepo **sRepo**, que administra cinco add-ons ativos focados em IPTV/Xtream:
+O agente trabalha no monorepo **sRepo**, que administra seis add-ons ativos (IPTV/Xtream e rádio):
 
 - `repository.srepo`: distribuição e atualização pelo GitHub Pages.
 - `resource.images.saile`: nove artes fixas compartilhadas.
 - `script.module.saile.core`: infraestrutura Python comum e sem regras de negócio.
 - `script.module.saile.epg`: provider XMLTV, matching, cache UTC e API de EPG sem UI Kodi.
 - `plugin.video.stv`: IPTV/Xtream, vídeo, TMDB e estado local do sTv.
+- `plugin.audio.sradio`: rádios ao vivo via TuneIn, com catálogo local em `resources/data/radios.json`.
 
 Itens condicionais ou futuros não devem ser criados sem ADR e prova técnica:
 - `service.saile.monitor`: somente se houver necessidade comprovada de serviço contínuo.
-- `repository.srepo.beta`, PVR avançado e sincronização automática: fora da V1.
+- `repository.srepo.beta` e PVR avançado: fora da V1.
 
 ## Ordem obrigatória de leitura
 
@@ -21,7 +22,6 @@ Itens condicionais ou futuros não devem ser criados sem ADR e prova técnica:
 3. `documentation/architecture/REPOSITORY_BLUEPRINT.md`
 4. `documentation/governance/SECURITY_AND_ENV_POLICY.md`
 5. ADRs em `decisions/` e schemas em `schemas/`
-6. Mega Biblioteca de Engenharia em `../engineering-library/`
 
 ## Fronteiras
 
@@ -61,17 +61,21 @@ Não ordenar alfabeticamente, não ocultar esses atalhos por falta de dados e n�
 
 ## Sincronização LAN
 
-- Sempre manual e iniciada pelo usuário no item `Sincronizar Dados`.
-- Nunca ocorre automaticamente ao abrir, fechar ou navegar.
+- Descoberta Zero-Config por UDP na porta 54242 (`stv/app/lan_sync.py`), em thread daemon.
+- Automática em segundo plano somente com `lan_sync_enabled` e `lan_sync_auto` ligados (padrão: ligados); o
+  usuário desliga nas configurações. Exportar, importar e mesclar manualmente ficam em `Sincronizar Dados`.
 - Nunca compartilha o arquivo SQLite por SMB/NFS.
 - Nunca transmite credenciais, cookies, tokens ou URLs temporárias.
-- Sincroniza somente estado do usuário por registros versionados; catálogos e caches são reconstruídos localmente.
+- Sincroniza somente estado do usuário (hoje, favoritos) por registros versionados conforme
+  `schemas/LAN_SYNC_CONTRACT.md`; catálogos e caches são reconstruídos localmente.
 
 ## EPG
 
 - Vive em `script.module.saile.epg`, com banco próprio no perfil desse módulo.
-- A fonte V1 é o XMLTV autorizado fornecido pelo Xtream configurado pelo usuário.
-- A sincronização é manual pelo item `Sincronizar Dados`; navegação nunca baixa EPG.
+- Fontes: Claro TV+ (provider principal) e o XMLTV/short EPG do Xtream configurado pelo usuário.
+- Atualização em segundo plano (thread daemon) quando o cache passa do TTL `cache_ttl_hours`, e sob demanda em
+  `Sincronizar Dados`. Renderizar uma listagem nunca espera download de EPG: lê só o cache local.
+- O catálogo Xtream (TV ao Vivo, VOD, Séries) segue a mesma regra de TTL em segundo plano.
 - Horários são persistidos como Unix timestamp UTC e convertidos somente na apresentação.
 - Matching prioriza `epg_channel_id` exato e usa nome normalizado apenas como fallback seguro.
 
@@ -103,4 +107,4 @@ python tools/build_repo.py
 - Não adicionar backend próprio obrigatório.
 - Não embutir `.env`, PAT GitHub, senha Xtream, cookie, token ou URL assinada.
 - Não duplicar os nove ícones compartilhados dentro dos plugins.
-- Não transformar sincronização LAN em rotina automática.
+- Não ligar sincronização LAN automática sem as chaves `lan_sync_enabled`/`lan_sync_auto` que permitem desligá-la.

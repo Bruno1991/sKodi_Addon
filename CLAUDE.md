@@ -7,13 +7,9 @@ GitHub Pages (`docs/`). Repositório remoto: `Bruno1991/sKodi_Addon`. Textos, co
 
 @AGENTS.md
 
-O `AGENTS.md` acima é o contrato operacional (navegação imutável, artwork, fronteiras), mas está **defasado em três
-pontos**. Na dúvida, vale o código atual:
-- Não cita o `plugin.audio.sradio` (sRadio), que é um add-on ativo.
-- Diz que a sincronização LAN e a de EPG são só manuais. O código tem auto-sync em thread daemon: catálogo e EPG
-  por TTL (`stv/app/services.py`) e LAN por UDP na porta 54242 (`stv/app/lan_sync.py`). O README descreve o
-  comportamento atual.
-- A `../engineering-library` citada não existe nesta máquina.
+O `AGENTS.md` acima é o contrato operacional: navegação imutável, artwork, fronteiras e as regras de sincronização
+(catálogo e EPG por TTL em segundo plano; LAN automática só com `lan_sync_enabled`/`lan_sync_auto`). Ao mudar um
+desses comportamentos no código, atualize o `AGENTS.md` no mesmo commit.
 
 ## Comandos
 
@@ -60,6 +56,10 @@ No sTv, `AppContainer` (`stv/app/services.py`) monta tudo a partir das settings 
 (`providers/xtream`), `TmdbClient` (`providers/tmdb`), catálogo SQLite `stv.db` no perfil do add-on
 (`persistence/`) e o `EpgService` do sEPG no perfil do módulo sEPG. A UI fica em `stv/ui/`
 (`directory.py`: `add_folder`/`finish_directory`; `player.py`: `play_video`).
+
+Retomada de VOD e episódios: `play_video` aplica o `StartOffset` salvo e depois **mantém o processo do plugin vivo**
+em `track_playback_progress`, lendo a posição por polling até a reprodução parar. Não troque isso por callbacks
+`onPlayBackStopped`: nessa hora o `getTime()` já não responde.
 
 ### Contratos que os testes travam
 

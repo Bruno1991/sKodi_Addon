@@ -48,17 +48,19 @@ Fronteiras Kodi conferidas: nenhum desses nomes aparece em `addon.xml`, `resourc
   dentro do próprio sTv, com comportamento idêntico.
 
 ## Lote 4 (Revisão Manual): aguardam decisão
-- [ ] `addons/plugin.video.stv/resources/lib/stv/ui/player.py:13`: `SailePlayer` nunca é instanciado, então
-  `update_playback_progress` nunca roda e o "continuar de onde parou" (`StartOffset` em `play_video`) nunca encontra
-  progresso salvo. **Decidir:** ligar o `SailePlayer` (exige um loop de monitoramento após `setResolvedUrl`) ou remover
-  o recurso de retomada.
-- [ ] `tools/select_artwork.py`, `tools/colorize_common_svgs.py`, `tools/generate_sradio_icons.py`: geradores de
-  artwork usados uma vez, citados só em docs gerados e em `artwork/README.md`. **Decidir:** manter como ferramenta
-  de manutenção ou remover.
-- [ ] `tools/deploy_kodi_emulator.py`, `tools/test_lock_screen_playback.py`, `tools/test_sradio_full_battery.py`:
-  testes manuais via adb/JSON-RPC fora da suíte automática. Recomendação: manter.
-- [ ] `addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py:17`: `DEFAULT_API_KEY` do TMDB embutida
-  (chave pública do app, distribuída no ZIP). Tirar dali muda o contrato: o usuário passaria a ter de informar
-  a própria chave. **Decidir.**
-- [ ] `addons/plugin.video.stv/resources/lib/stv/providers/xtream/client.py:20`: atributo `raw_host` sem leitura.
-  Ganho mínimo; pode ser lido por código de diagnóstico futuro. Recomendação: manter.
+- [x] `addons/plugin.video.stv/resources/lib/stv/ui/player.py:13`: `SailePlayer` nunca era instanciado, então o
+  "continuar de onde parou" nunca encontrava progresso salvo. **Decidido (2026-11-24):** recurso ligado. O
+  `SailePlayer` foi trocado por `track_playback_progress` (polling da posição; nos callbacks de parada o `getTime()`
+  já não responde), com testes em `tests/test_stv_player_progress.py`.
+- [x] `tools/select_artwork.py`, `tools/colorize_common_svgs.py`, `tools/generate_sradio_icons.py`: geradores de
+  artwork. **Decidido:** manter como ferramentas de manutenção (necessários para regerar os ícones).
+- [x] `tools/deploy_kodi_emulator.py`, `tools/test_lock_screen_playback.py`, `tools/test_sradio_full_battery.py`:
+  testes manuais via adb/JSON-RPC fora da suíte automática. **Decidido:** manter.
+- [x] `addons/plugin.video.stv/resources/lib/stv/providers/tmdb/client.py:17`: `DEFAULT_API_KEY` do TMDB embutida
+  (chave pública do app, distribuída no ZIP). **Decidido:** manter; tirar obrigaria cada usuário a informar a própria
+  chave.
+- [x] `addons/plugin.video.stv/resources/lib/stv/providers/xtream/client.py:20`: atributo `raw_host` sem leitura.
+  **Decidido:** manter (ganho mínimo).
+- [x] `addons/script.module.saile.epg/lib/saile_epg/normalizer.py` (`_CHANNEL_ALIASES`): 8 chaves repetidas
+  (F601). Removidas as ocorrências anteriores, que já eram sobrescritas; o mapeamento final (224 chaves) foi conferido
+  idêntico antes e depois.

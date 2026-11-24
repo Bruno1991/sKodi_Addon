@@ -1,3 +1,3 @@
 1.4.3
 - Corrigido: clean_media_title usa como ano só o que está entre parênteses ou colchetes, ou um ano final plausível; números do título (Blade Runner 2049, 1917) são preservados.
-- Alterado: limpeza de imports sem uso.
+- Alterado: limpeza de imports sem uso e de aliases de canais duplicados (sem mudança no resultado).

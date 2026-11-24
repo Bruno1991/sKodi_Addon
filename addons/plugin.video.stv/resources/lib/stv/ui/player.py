@@ -5,34 +5,59 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from stv.app.services import AppContainer
 
+# Abaixo disso a retomada é oferecida; acima, o item conta como assistido.
+RESUME_MAX_RATIO = 0.95
+RESUMABLE_MEDIA_TYPES = frozenset({"vod", "series"})
 
-class SailePlayer(xbmc.Player):
-    """Monitor de eventos de reprodução para salvar progresso do usuário."""
 
-    def __init__(self, app: "AppContainer", media_type: str, item_id: str) -> None:
-        super().__init__()
-        self.app = app
-        self.media_type = media_type
-        self.item_id = item_id
+def resume_progress_to_save(position: float, total: float) -> tuple[float, float] | None:
+    """Progresso a gravar ao fim da reprodução; (0, 0) limpa o resume de item assistido."""
+    if total <= 0 or position <= 0:
+        return None
+    if position / total >= RESUME_MAX_RATIO:
+        return (0.0, 0.0)
+    return (position, total)
 
-    def onPlayBackStopped(self) -> None:
+
+def track_playback_progress(
+    app: "AppContainer",
+    media_type: str,
+    item_id: str,
+    url: str,
+    player: Any,
+    monitor: Any,
+    start_timeout_s: float = 30.0,
+) -> None:
+    """Acompanha a reprodução de VOD/episódio e grava o ponto de retomada quando ela termina.
+
+    Lê a posição por polling enquanto o próprio item toca: nos callbacks de parada do
+    xbmc.Player o getTime() já não responde, então a última posição lida é a que vale.
+    """
+    waited = 0.0
+    while not player.isPlayingVideo():
+        if waited >= start_timeout_s or monitor.waitForAbort(0.5):
+            return
+        waited += 0.5
+
+    position = total = 0.0
+    while not monitor.abortRequested() and player.isPlayingVideo():
         try:
-            position = self.getTime()
-            total = self.getTotalTime()
-            if total > 0 and position > 0:
-                self.app.catalog.update_playback_progress(self.media_type, self.item_id, position, total)
-        except Exception:
-            pass
+            if player.getPlayingFile() != url:
+                break  # o usuário trocou de item; não atribuir outro progresso a este
+            position = player.getTime()
+            total = player.getTotalTime()
+        except RuntimeError:
+            break
+        if monitor.waitForAbort(1):
+            break
 
-    def onPlayBackEnded(self) -> None:
-        try:
-            self.app.catalog.update_playback_progress(self.media_type, self.item_id, 0, 0)
-        except Exception:
-            pass
+    progress = resume_progress_to_save(position, total)
+    if progress is not None:
+        app.catalog.update_playback_progress(media_type, item_id, *progress)
 
 
 def play_video(
@@ -74,12 +99,17 @@ def play_video(
     # Retomada de onde parou (Resume Point)
     resume = app.catalog.get_playback_progress(media_type, item_id)
     if resume and resume.get("position", 0) > 0 and resume.get("total", 0) > 0:
-        if (resume["position"] / resume["total"]) < 0.95:
+        if (resume["position"] / resume["total"]) < RESUME_MAX_RATIO:
             listitem.setProperty("StartOffset", str(resume["position"]))
 
+    player = xbmc.Player()
     if handle >= 0:
         # Clique em item navegável: resolve a URL pelo handle do diretório.
         xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=listitem)
     else:
         # Ações de contexto usam RunPlugin e não recebem um handle reproduzível.
-        xbmc.Player().play(url, listitem=listitem)
+        player.play(url, listitem=listitem)
+
+    if media_type in RESUMABLE_MEDIA_TYPES:
+        # TV ao vivo não tem ponto de retomada; VOD e episódios gravam onde pararam.
+        track_playback_progress(app, media_type, item_id, url, player, xbmc.Monitor())
