@@ -211,12 +211,14 @@ def ensure_infowall_in_kodi_db(path_pattern: str = "plugin://plugin.video.stv%")
         for db_path in db_candidates:
             if db_path.exists():
                 conn = sqlite3.connect(str(db_path), timeout=0.5)
-                conn.execute(
-                    "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
-                    (path_pattern,),
-                )
-                conn.commit()
-                conn.close()
+                try:
+                    with conn:
+                        conn.execute(
+                            "UPDATE view SET viewMode = 131126 WHERE path LIKE ? AND viewMode != 131126",
+                            (path_pattern,),
+                        )
+                finally:
+                    conn.close()
     except Exception:
         pass
 

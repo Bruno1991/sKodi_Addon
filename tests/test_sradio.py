@@ -7,7 +7,10 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SRADIO_LIB = ROOT / "addons" / "plugin.audio.sradio" / "resources" / "lib"
-sys.path.insert(0, str(SRADIO_LIB))
+CORE_LIB = ROOT / "addons" / "script.module.saile.core" / "lib"
+for lib in (SRADIO_LIB, CORE_LIB):
+    if str(lib) not in sys.path:
+        sys.path.insert(0, str(lib))
 
 from sradio.catalog import RadioCatalog, TuneInAPI, normalize_text
 from sradio.favorites import FavoritesManager
@@ -273,6 +276,21 @@ class SRadioArtworkCoherenceTests(unittest.TestCase):
         for s in symbols:
             self.assertTrue((svg_dir / f"{s}_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.svg").is_file())
             self.assertTrue((html_dir / f"{s}_256dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.html").is_file())
+
+
+
+
+class SRadioPlaybackTests(unittest.TestCase):
+    def test_stream_mimetype_maps_each_tunein_format(self) -> None:
+        from sradio.bootstrap import stream_mimetype
+
+        self.assertEqual(stream_mimetype("mp3"), "audio/mpeg")
+        self.assertEqual(stream_mimetype("AAC"), "audio/aac")
+        self.assertEqual(stream_mimetype("ogg"), "audio/ogg")
+        self.assertEqual(stream_mimetype("hls"), "application/x-mpegURL")
+        # Tipo desconhecido: sem mimetype, o Kodi detecta sozinho.
+        self.assertEqual(stream_mimetype("flash"), "")
+        self.assertEqual(stream_mimetype(""), "")
 
 
 if __name__ == "__main__":

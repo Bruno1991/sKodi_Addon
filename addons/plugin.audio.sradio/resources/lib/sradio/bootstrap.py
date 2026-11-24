@@ -429,7 +429,11 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     fanart_path = _sradio_fanart()
 
     item = xbmcgui.ListItem(label=name, path=stream_url, offscreen=True)
-    item.setContentLookup(False)
+    mimetype = stream_mimetype(media_type)
+    if mimetype:
+        # Só desliga a detecção do Kodi quando o tipo é conhecido; senão ele descobre sozinho.
+        item.setContentLookup(False)
+        item.setMimeType(mimetype)
     item.setArt({
         "icon": logo,
         "thumb": logo,
@@ -447,16 +451,44 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
     )
     item.setProperty("IsPlayable", "true")
     item.setProperty("KeepAlive", "true")
-    item.setProperty("mimetype", "audio/mpeg" if media_type == "mp3" else "application/x-mpegURL")
 
-    # Resolver URL para o Kodi iniciar a reprodução
-    if request.handle > 0:
+    # Resolver URL para o Kodi iniciar a reprodução (handle 0 é válido; -1 vem de RunPlugin)
+    player = xbmc.Player()
+    if request.handle >= 0:
         xbmcplugin.setResolvedUrl(request.handle, True, item)
     else:
-        xbmc.Player().play(stream_url, item)
+        player.play(stream_url, item)
 
-    # Forçar a abertura da janela do player em tela cheia com barra de controles frontais
-    xbmc.executebuiltin("ActivateWindow(fullscreenvideo)")
+    _open_fullscreen_player(xbmc, player)
+
+
+def stream_mimetype(media_type: str) -> str:
+    """Mimetype do stream TuneIn; vazio quando o tipo é desconhecido (o Kodi detecta)."""
+    return _STREAM_MIMETYPES.get((media_type or "").strip().lower(), "")
+
+
+_STREAM_MIMETYPES = {
+    "mp3": "audio/mpeg",
+    "aac": "audio/aac",
+    "ogg": "audio/ogg",
+    "hls": "application/x-mpegURL",
+}
+
+
+def _open_fullscreen_player(xbmc: Any, player: Any, timeout_s: float = 15.0) -> None:
+    """Abre o player em tela cheia com o OSD frontal quando a reprodução já começou.
+
+    setResolvedUrl/play retornam antes do stream abrir, e o Kodi ignora a janela de tela
+    cheia sem reprodução ativa; por isso espera o player ligar (ou desiste no timeout).
+    """
+    monitor = xbmc.Monitor()
+    waited = 0.0
+    while not player.isPlaying():
+        if waited >= timeout_s or monitor.waitForAbort(0.25):
+            return
+        waited += 0.25
+    window = "fullscreenvideo" if player.isPlayingVideo() else "visualisation"
+    xbmc.executebuiltin(f"ActivateWindow({window})")
 
 
 def handle_toggle_fav(request: Request, catalog: RadioCatalog, favorites: FavoritesManager) -> None:
@@ -489,6 +521,14 @@ def handle_search(request: Request, catalog: RadioCatalog, favorites: FavoritesM
         import xbmcgui
         dialog = xbmcgui.Dialog()
         query = dialog.input("Buscar Rádio (Nome, Cidade ou Frequência):", type=xbmcgui.INPUT_ALPHANUM)
+        if query and request.handle >= 0:
+            # A listagem passa a carregar a busca na URL: o Container.Refresh do
+            # favoritar recarrega os resultados em vez de reabrir o teclado.
+            import xbmc
+            import xbmcplugin
+            xbmcplugin.endOfDirectory(request.handle, succeeded=False)
+            xbmc.executebuiltin(f"Container.Update({request.url(action='search', query=query)})")
+            return
     if not query:
         show_home(request, catalog, favorites, fanart)
         return

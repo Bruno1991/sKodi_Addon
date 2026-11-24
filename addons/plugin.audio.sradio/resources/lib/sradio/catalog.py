@@ -22,7 +22,6 @@ class TuneInAPI:
 
     BASE_URL = "http://opml.radiotime.com"
     PARTNER_ID = "xwhZkVKi"
-    PARTNER_KEY = "kJ3B0f1qvBAU"
     USER_AGENT = "TuneIn/31.0 (Android; Mobile; rv:120.0)"
 
     @classmethod

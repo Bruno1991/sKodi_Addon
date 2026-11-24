@@ -566,12 +566,13 @@ def _show_series_episodes(request: Request, app: AppContainer, series_id: str, s
                 or f"Episódio {ep_num}"
             ).strip()
             ep_ext = str(ep.get("container_extension", "mp4"))
+            ep_info = ep.get("info")
             ep_plot = str(
                 (tmdb_meta.get("overview") if tmdb_meta else "")
-                or ep.get("info", {}).get("plot")
+                or (ep_info.get("plot") if isinstance(ep_info, dict) else "")
                 or series_plot
             )
-            ep_thumb = _episode_thumbnail(ep, series_fanart=series_fanart, tmdb_ep_meta=tmdb_meta)
+            ep_thumb = _episode_thumbnail(ep, series_fanart=series_backdrop, tmdb_ep_meta=tmdb_meta)
             label = f"T{str(season_num).zfill(2)}E{ep_num.zfill(2)} - {ep_title}"
 
             url = request.url(action="play", section="series", stream_id=ep_id, extension=ep_ext, title=ep_title)

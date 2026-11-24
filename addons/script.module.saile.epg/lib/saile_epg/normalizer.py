@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import time
 import unicodedata
 
 _COUNTRY_PREFIXES = re.compile(
@@ -106,10 +107,22 @@ _MEDIA_SEASON_TAGS = re.compile(
     r"|\b(S\d{1,2}(?:\s*-\s*S\d{1,2})?|TEMPORADA\s*\d{1,2}|TEMP\s*\d{1,2}|T\d{1,2}|COMPLETA|COMPLETO)\b",
     re.IGNORECASE,
 )
-_MEDIA_YEAR_REGEX = re.compile(
-    r"[\(\[\-]\s*\b(19\d{2}|20\d{2})\b\s*[\)\]]|\b(19\d{2}|20\d{2})\b",
-    re.IGNORECASE,
-)
+# Ano entre parênteses/colchetes tem prioridade; o último vence ("Blade Runner 2049 (2017)").
+_MEDIA_YEAR_BRACKETED = re.compile(r"[\(\[]\s*((?:19|20)\d{2})\s*[\)\]]")
+# Ano solto só no fim e depois de outra palavra ("Halloween 2018"); "1917" sozinho é título.
+_MEDIA_YEAR_TRAILING = re.compile(r"(?<=\S)[\s\-_.]+((?:19|20)\d{2})\s*$")
+
+
+def _split_media_year(name: str) -> tuple[str, str]:
+    bracketed = list(_MEDIA_YEAR_BRACKETED.finditer(name))
+    if bracketed:
+        match = bracketed[-1]
+        return name[: match.start()] + " " + name[match.end() :], match.group(1)
+    match = _MEDIA_YEAR_TRAILING.search(name)
+    # Ano futuro faz parte do título ("Blade Runner 2049"), não é ano de lançamento.
+    if match and int(match.group(1)) <= time.gmtime().tm_year + 1:
+        return name[: match.start()], match.group(1)
+    return name, ""
 
 
 def clean_media_title(raw_name: str) -> tuple[str, str]:
@@ -122,11 +135,7 @@ def clean_media_title(raw_name: str) -> tuple[str, str]:
     name = _MEDIA_AUDIO_TAGS.sub("", name)
     name = _MEDIA_SEASON_TAGS.sub("", name)
 
-    year = ""
-    m = _MEDIA_YEAR_REGEX.search(name)
-    if m:
-        year = m.group(1) or m.group(2) or ""
-        name = _MEDIA_YEAR_REGEX.sub(" ", name)
+    name, year = _split_media_year(name)
 
     name = re.sub(r"[{}\[\]\(\)\-_|#*~^`´\"«»!?:;]", " ", name)
     name = re.sub(r"\s+", " ", name).strip(" -:.")
