@@ -1,0 +1,5 @@
+0.8.6
+- Corrigido: uma temporada inteira deixava de listar episódios quando o painel Xtream mandava um episódio sem informações.
+- Corrigido: episódio sem imagem usa o fundo da série ou o ícone neutro, igual em Android, Linux e Windows.
+- Corrigido: filmes e séries com número no título (Blade Runner 2049, 1917) são encontrados corretamente no TMDB (sEPG 1.4.3).
+- Alterado: conexão com o banco de visualização do Kodi sempre fechada; limpeza de código interno sem uso.

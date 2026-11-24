@@ -1,0 +1,6 @@
+1.0.4
+- Corrigido: rádios em AAC e OGG eram abertas como lista HLS e não tocavam; agora cada formato usa o tipo certo e formatos desconhecidos são detectados pelo Kodi.
+- Corrigido: adicionar ou remover favorito nos resultados da busca reabria o teclado; a lista de resultados agora é recarregada.
+- Corrigido: o player em tela cheia é aberto só depois que a reprodução começa (vídeo em tela cheia ou visualização de áudio).
+- Corrigido: reprodução iniciada com handle 0 não ficava esperando a resolução do Kodi.
+- Alterado: preferência de bitrate respeitada na escolha do stream; limpeza de código interno sem uso.
