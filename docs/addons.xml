@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.5" provider-name="Saile">
+  <addon id="plugin.audio.sradio" name="sRadio" version="1.0.6" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.4" />
-      <import addon="script.module.saile.core" version="1.0.1" />
+      <import addon="script.module.saile.core" version="1.0.3" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>audio video</provides>
@@ -17,19 +17,19 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.5 - Descrições de estações sem campos vazios ("None"), caminho de favoritos unificado via sCore e limpeza de rotas legadas.</news>
+      <news>1.0.6 - Proteção HTTP contra esquemas inválidos e respostas gigantes, correção de handle em falha de stream e cancelamento limpo do teclado de busca.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
       </assets>
     </extension>
   </addon>
-  <addon id="plugin.video.stv" name="sTv" version="0.8.7" provider-name="Saile">
+  <addon id="plugin.video.stv" name="sTv" version="0.8.8" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.3" />
-      <import addon="script.module.saile.core" version="1.0.1" />
-      <import addon="script.module.saile.epg" version="1.4.2" />
+      <import addon="script.module.saile.core" version="1.0.3" />
+      <import addon="script.module.saile.epg" version="1.4.5" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
       <provides>video</provides>
@@ -42,7 +42,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>0.8.7 - Controle parental efetivo em categorias adultas, configurações de LAN/EPG respeitadas, busca sem reabrir teclado no refresh e unificação interna.</news>
+      <news>0.8.8 - Resolução de EPG em lote sem N+1, bloqueio de esquemas não-HTTP e limite de memória, controle parental por categoria em Busca/Favoritos, sincronização LAN de favoritos de canais e sanitização de erros na UI.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
@@ -90,7 +90,7 @@
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.core" name="sCore" version="1.0.2" provider-name="Saile">
+  <addon id="script.module.saile.core" name="sCore" version="1.0.3" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
       <import addon="resource.images.saile" version="1.0.0" />
@@ -102,17 +102,17 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.0.2 - Helper de artwork do sRadio e limpeza interna.</news>
+      <news>1.0.3 - Sanitização centralizada de mensagens de erro sem vazamento de URLs ou credenciais.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>
       </assets>
     </extension>
   </addon>
-  <addon id="script.module.saile.epg" name="sEPG" version="1.4.4" provider-name="Saile">
+  <addon id="script.module.saile.epg" name="sEPG" version="1.4.5" provider-name="Saile">
     <requires>
       <import addon="xbmc.python" version="3.0.0" />
-      <import addon="script.module.saile.core" version="1.0.1" />
+      <import addon="script.module.saile.core" version="1.0.3" />
     </requires>
     <extension point="xbmc.python.module" library="lib" />
     <extension point="xbmc.addon.metadata">
@@ -121,7 +121,7 @@
       <platform>all</platform>
       <license>GPL-3.0-or-later</license>
       <source>https://github.com/Bruno1991/sKodi_Addon</source>
-      <news>1.4.4 - Preserva o cache local do EPG se o download da Claro TV+ falhar e corrige resolução de aliases de canais com sufixo HD.</news>
+      <news>1.4.5 - Resolução de canais EPG em lote (1 conexão SQLite por categoria) e proteção defensiva contra respostas nulas na API Claro TV+.</news>
       <assets>
         <icon>icon.png</icon>
         <fanart>fanart.jpg</fanart>

@@ -1,3 +1,0 @@
-1.0.2
-- Adicionado: helper sradio_art para artes do sRadio.
-- Alterado: remoção de função interna e imports sem uso.
