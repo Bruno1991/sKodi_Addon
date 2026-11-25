@@ -151,9 +151,9 @@ def ensure_categories_loaded(app: AppContainer, section: str) -> None:
         if parsed:
             app.catalog.upsert_categories(parsed)
     except Exception as exc:
-        from saile_core.notifications import notify_error
+        from saile_core.notifications import notify_error, sanitize_error_message
 
-        notify_error("sTv", f"Erro ao obter categorias: {exc}")
+        notify_error("sTv", f"Erro ao obter categorias: {sanitize_error_message(exc)}")
 
 
 def ensure_streams_loaded(app: AppContainer, section: str, category_id: str) -> None:
@@ -176,9 +176,9 @@ def ensure_streams_loaded(app: AppContainer, section: str, category_id: str) -> 
         if parsed:
             _upsert_items_in_chunks(app, parsed)
     except Exception as exc:
-        from saile_core.notifications import notify_error
+        from saile_core.notifications import notify_error, sanitize_error_message
 
-        notify_error("sTv", f"Erro ao carregar mídias: {exc}")
+        notify_error("sTv", f"Erro ao carregar mídias: {sanitize_error_message(exc)}")
 
 
 def sync_live_catalog(
@@ -285,9 +285,9 @@ def sync_full_catalog(app: AppContainer) -> bool:
         time.sleep(0.5)
         return True
     except Exception as exc:
-        from saile_core.notifications import notify_error
+        from saile_core.notifications import notify_error, sanitize_error_message
 
-        notify_error("sTv", f"Falha na sincronização: {exc}")
+        notify_error("sTv", f"Falha na sincronização: {sanitize_error_message(exc)}")
         return False
     finally:
         dialog.close()

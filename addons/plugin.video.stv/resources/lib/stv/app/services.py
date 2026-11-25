@@ -10,7 +10,7 @@ import threading
 import time
 from collections.abc import Sequence
 from contextlib import suppress
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from stv.persistence.database import Database
 from stv.persistence.repository import CatalogRepository
@@ -28,10 +28,10 @@ if TYPE_CHECKING:
 class AppContainer:
     """Dependency injection container for the application."""
 
-    _epg_sync_lock: threading.Lock = threading.Lock()
-    _epg_syncing: bool = False
-    _catalog_sync_lock: threading.Lock = threading.Lock()
-    _catalog_syncing: set[str] = set()
+    _epg_sync_lock: ClassVar[threading.Lock] = threading.Lock()
+    _epg_syncing: ClassVar[bool] = False
+    _catalog_sync_lock: ClassVar[threading.Lock] = threading.Lock()
+    _catalog_syncing: ClassVar[set[str]] = set()
 
     def __init__(self, settings: dict[str, str]) -> None:
         self.settings = settings
@@ -192,15 +192,26 @@ class AppContainer:
         self,
         items: Sequence[MediaItem],
     ) -> dict[str, tuple[EpgProgram | None, EpgProgram | None]]:
-        """Resolve Agora/Próximo em lote para uma lista de itens/canais em 1 query SQL."""
+        """Resolve Agora/Próximo em lote para uma lista de itens/canais sem N+1."""
         if self.settings.get("epg_enabled", "true").lower() == "false" or not items:
             return {}
         item_to_key: dict[str, str] = {}
-        for item in items:
-            ch = self.epg.resolve_channel(item.epg_id, item.name)
-            if ch and ch.channel_key:
-                item_to_key[item.item_id] = ch.channel_key
-        unique_keys = tuple(set(item_to_key.values()))
+        resolved_map = (
+            self.epg.resolve_channels_many([(item.epg_id, item.name) for item in items])
+            if hasattr(self.epg, "resolve_channels_many")
+            else None
+        )
+        if isinstance(resolved_map, dict):
+            for item in items:
+                ch = resolved_map.get((item.epg_id, item.name))
+                if ch and ch.channel_key:
+                    item_to_key[item.item_id] = ch.channel_key
+        else:
+            for item in items:
+                ch = self.epg.resolve_channel(item.epg_id, item.name)
+                if ch and ch.channel_key:
+                    item_to_key[item.item_id] = ch.channel_key
+        unique_keys = tuple(dict.fromkeys(item_to_key.values()))
         if not unique_keys:
             return {}
         key_schedule = self.epg.get_now_next_many(unique_keys)

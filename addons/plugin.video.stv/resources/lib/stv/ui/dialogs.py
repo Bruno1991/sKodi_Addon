@@ -36,7 +36,12 @@ def show_sync_dialog(app: AppContainer) -> None:
     """Exibe o menu modal de sincronização e gerenciamento de dados do sTv."""
     import xbmc
     import xbmcgui
-    from saile_core.notifications import notify_error, notify_info, notify_success
+    from saile_core.notifications import (
+        notify_error,
+        notify_info,
+        notify_success,
+        sanitize_error_message,
+    )
 
     from stv.app.lan_sync import apply_import_payload, broadcast_lan_sync, build_export_payload
     from stv.app.sync import sync_full_catalog
@@ -69,7 +74,7 @@ def show_sync_dialog(app: AppContainer) -> None:
             )
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
-            notify_error("sTv", f"Falha na sincronização do EPG: {exc}")
+            notify_error("sTv", f"Falha na sincronização do EPG: {sanitize_error_message(exc)}")
         finally:
             progress.close()
 
@@ -137,7 +142,7 @@ def show_sync_dialog(app: AppContainer) -> None:
                     "rede Wi-Fi/LAN com o sTv aberto.",
                 )
         except Exception as exc:
-            notify_error("sTv", f"Erro na sincronização LAN: {exc}")
+            notify_error("sTv", f"Erro na sincronização LAN: {sanitize_error_message(exc)}")
         finally:
             progress.close()
 
@@ -154,7 +159,7 @@ def show_sync_dialog(app: AppContainer) -> None:
                 json.dump(export_data, f, indent=2, ensure_ascii=False)
             notify_success("sTv", "Backup salvo em stv_backup.json")
         except Exception as exc:
-            notify_error("sTv", f"Erro ao exportar: {exc}")
+            notify_error("sTv", f"Erro ao exportar: {sanitize_error_message(exc)}")
 
     elif choice == 5:
         profile_path = app.settings.get("profile_path", "")
@@ -174,7 +179,7 @@ def show_sync_dialog(app: AppContainer) -> None:
             notify_success("sTv", f"{count} favoritos restaurados com sucesso!")
             xbmc.executebuiltin("Container.Refresh")
         except Exception as exc:
-            notify_error("sTv", f"Erro ao importar: {exc}")
+            notify_error("sTv", f"Erro ao importar: {sanitize_error_message(exc)}")
 
     elif choice == 6:
         confirm = dialog.yesno(
@@ -192,4 +197,4 @@ def show_sync_dialog(app: AppContainer) -> None:
                 notify_success("sTv", "Catálogo local limpo com sucesso!")
                 xbmc.executebuiltin("Container.Refresh")
             except Exception as exc:
-                notify_error("sTv", f"Erro ao limpar banco: {exc}")
+                notify_error("sTv", f"Erro ao limpar banco: {sanitize_error_message(exc)}")

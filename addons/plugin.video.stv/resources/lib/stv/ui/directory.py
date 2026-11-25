@@ -131,9 +131,7 @@ def add_folder(
     xbmcplugin.addDirectoryItem(handle=handle, url=url, listitem=item, isFolder=is_folder)
 
 
-def init_directory(
-    handle: int, content: str = "movies", view_mode: int = INFOWALL_VIEW_MODE
-) -> None:
+def init_directory(handle: int, content: str = "movies") -> None:
     """Inicializa o diretório definindo o tipo de conteúdo antes de adicionar itens."""
     import xbmcplugin
 

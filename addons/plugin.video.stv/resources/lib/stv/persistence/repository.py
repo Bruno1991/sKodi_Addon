@@ -186,6 +186,22 @@ class CatalogRepository:
             rows = connection.execute(sql, (media_type, category_id)).fetchall()
         return [self._media_item_from_row(row) for row in rows]
 
+    def get_item_category_name(self, media_type: str, item_id: str) -> str:
+        """Recupera o nome da categoria associada a um item do catálogo local."""
+        if not media_type or not item_id:
+            return ""
+        sql = """
+        SELECT c.name
+        FROM media_items m
+        JOIN categories c
+          ON c.media_type = m.media_type AND c.category_id = m.category_id
+        WHERE m.media_type = ? AND m.item_id = ?
+        LIMIT 1
+        """
+        with self.db.connect() as connection:
+            row = connection.execute(sql, (media_type, item_id)).fetchone()
+        return str(row["name"]) if row and row["name"] else ""
+
     def search_media(self, media_type: str, query: str) -> list[MediaItem]:
         """Pesquisa itens de mídia usando FTS5 e busca normalizada insensível a acentos."""
         cleaned_query = query.strip()
@@ -303,12 +319,40 @@ class CatalogRepository:
                 (media_type, item_id),
             )
 
+    def remove_favorite(self, media_type: str, item_id: str) -> None:
+        """Remove um favorito de modo idempotente."""
+        with self.db.connect() as connection:
+            connection.execute(
+                "DELETE FROM favorites WHERE media_type = ? AND item_id = ?",
+                (media_type, item_id),
+            )
+
     def get_favorite_channel_keys(self) -> list[str]:
         with self.db.connect() as connection:
             rows = connection.execute(
                 "SELECT channel_key FROM live_channel_favorites ORDER BY created_at"
             ).fetchall()
         return [str(row["channel_key"]) for row in rows]
+
+    def add_channel_favorite(self, channel_key: str) -> None:
+        """Adiciona um canal lógico do EPG aos favoritos de modo idempotente."""
+        if not channel_key:
+            return
+        with self.db.connect() as connection:
+            connection.execute(
+                "INSERT OR IGNORE INTO live_channel_favorites(channel_key) VALUES (?)",
+                (channel_key,),
+            )
+
+    def remove_channel_favorite(self, channel_key: str) -> None:
+        """Remove um canal lógico do EPG dos favoritos de modo idempotente."""
+        if not channel_key:
+            return
+        with self.db.connect() as connection:
+            connection.execute(
+                "DELETE FROM live_channel_favorites WHERE channel_key = ?",
+                (channel_key,),
+            )
 
     def toggle_channel_favorite(
         self,

@@ -3,10 +3,27 @@ from __future__ import annotations
 import json
 import os
 import unicodedata
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
+
+
+class _SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Bloqueia redirecionamentos HTTP para esquemas locais ou não-HTTP."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # type: ignore[override]
+        if not str(newurl or "").startswith(("http://", "https://")):
+            raise urllib.error.URLError("Redirecionamento para esquema não permitido")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_HTTP_OPENER = urllib.request.build_opener(
+    urllib.request.HTTPHandler(),
+    urllib.request.HTTPSHandler(),
+    _SafeRedirectHandler(),
+)
 
 
 def normalize_text(text: str) -> str:
@@ -44,6 +61,7 @@ class TuneInAPI:
     BASE_URL = "http://opml.radiotime.com"
     PARTNER_ID = "xwhZkVKi"
     USER_AGENT = "TuneIn/31.0 (Android; Mobile; rv:120.0)"
+    MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 
     @classmethod
     def _build_url(cls, endpoint_or_url: str, params: dict[str, str] | None = None) -> str:
@@ -72,6 +90,8 @@ class TuneInAPI:
     @classmethod
     def _fetch_json(cls, url: str, timeout: int = 8) -> dict[str, Any] | None:
         """Realiza requisição HTTP GET com tratamento robusto de erros e decodificação UTF-8."""
+        if not str(url or "").startswith(("http://", "https://")):
+            return None
         try:
             req = urllib.request.Request(
                 url,
@@ -80,9 +100,12 @@ class TuneInAPI:
                     "Accept": "application/json, text/plain, */*",
                 },
             )
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                raw_bytes = resp.read()
-                return json.loads(raw_bytes.decode("utf-8", errors="replace"))
+            with _HTTP_OPENER.open(req, timeout=timeout) as resp:
+                raw_bytes = resp.read(cls.MAX_RESPONSE_BYTES + 1)
+                if len(raw_bytes) > cls.MAX_RESPONSE_BYTES:
+                    return None
+                parsed = json.loads(raw_bytes.decode("utf-8", errors="replace"))
+                return parsed if isinstance(parsed, dict) else None
         except Exception:
             return None
 

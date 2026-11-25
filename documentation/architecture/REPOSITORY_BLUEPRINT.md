@@ -16,9 +16,12 @@ s_kodi_addon/
 │   │   └── lib/saile_core/
 │   ├── script.module.saile.epg/
 │   │   └── lib/saile_epg/
-│   └── plugin.video.stv/
-│       └── resources/lib/stv/
+│   ├── plugin.video.stv/
+│   │   └── resources/lib/stv/
+│   └── plugin.audio.sradio/
+│       └── resources/lib/sradio/
 ├── artwork/                             # fontes e assets visuais canônicos
+├── documentation/                       # documentação técnica e governança
 ├── tests/                               # suíte de testes unitários
 ├── tools/                               # automação, build e validação
 ├── docs/                                # repositório estático publicado no GitHub Pages
@@ -37,15 +40,20 @@ flowchart TD
   CORE[script.module.saile.core]
   EPG[script.module.saile.epg]
   STV[plugin.video.stv]
+  SRADIO[plugin.audio.sradio]
 
   CORE --> ART
   STV --> CORE
   EPG --> CORE
   STV --> EPG
   STV --> ART
+  SRADIO --> CORE
+  SRADIO --> ART
   REPO -. distribui .-> ART
   REPO -. distribui .-> CORE
+  REPO -. distribui .-> EPG
   REPO -. distribui .-> STV
+  REPO -. distribui .-> SRADIO
 ```
 
 ## Conteúdo permitido no core (`script.module.saile.core`)

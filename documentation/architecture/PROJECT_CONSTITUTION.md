@@ -7,10 +7,11 @@ sTv executa no dispositivo do usuário dentro do Kodi. Serviços externos são p
 ## Artigo 2 — Responsabilidades dos add-ons ativos
 
 - `repository.srepo` (**sRepo**): descoberta, instalação e atualização pelo GitHub Pages.
-- `resource.images.saile` (**sArtwork**): artes fixas compartilhadas e somente elas (9 ícones).
+- `resource.images.saile` (**sArtwork**): artes fixas compartilhadas e somente elas (20 ícones em `common/` e `stv/`).
 - `script.module.saile.core` (**sCore**): infraestrutura comum estável, sem regras de domínio.
-- `script.module.saile.epg` (**sEPG**): ingestão XMLTV, matching de canais, cache UTC e consultas de programação.
+- `script.module.saile.epg` (**sEPG**): ingestão Claro TV+ / XMLTV, matching de canais, cache UTC e consultas em lote de programação.
 - `plugin.video.stv` (**sTv**): Xtream, TV ao vivo, VOD, séries, favoritos, busca, TMDB e reprodução de vídeo.
+- `plugin.audio.sradio` (**sRadio**): rádios ao vivo globais e brasileiras via TuneIn, busca em tempo real, favoritos e catálogo em cache offline.
 
 Dependências comuns são explícitas e versionadas.
 

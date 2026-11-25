@@ -5,7 +5,18 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_DIRS = {".git", ".venv", "venv", "site", "dist", "build", "vendor", "__pycache__"}
+EXCLUDED_DIRS = {
+    ".git",
+    ".venv",
+    "venv",
+    "site",
+    "dist",
+    "build",
+    "vendor",
+    "__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+}
 EXCLUDED_FILES = {".env", "secret_scan.py", "radios.json"}
 TEXT_SUFFIXES = {".py", ".md", ".xml", ".yml", ".yaml", ".json", ".txt", ".sql", ".toml"}
 PATTERNS = {

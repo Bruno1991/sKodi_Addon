@@ -63,6 +63,19 @@ def build_export_payload(app: AppContainer) -> dict[str, Any]:
         for scope in ("live", "vod", "series")
         for fav_id in app.catalog.get_favorite_ids(scope)
     ]
+    if hasattr(app.catalog, "get_favorite_channel_keys"):
+        for channel_key in app.catalog.get_favorite_channel_keys():
+            if channel_key:
+                entities.append(
+                    {
+                        "entity": "channel_favorite",
+                        "scope": "live_channel",
+                        "key": str(channel_key),
+                        "updated_at": now_iso,
+                        "deleted": False,
+                        "payload": {},
+                    }
+                )
 
     return {
         "protocol_version": PROTOCOL_VERSION,
@@ -86,9 +99,10 @@ def apply_import_payload(app: AppContainer, payload: dict[str, Any]) -> dict[str
 
     entities = payload.get("entities", [])
     if not isinstance(entities, list):
-        return {"favorites_applied": 0}
+        return {"favorites_applied": 0, "favorites_removed": 0}
 
     applied_count = 0
+    removed_count = 0
     for entity in entities:
         if not isinstance(entity, dict):
             continue
@@ -97,12 +111,26 @@ def apply_import_payload(app: AppContainer, payload: dict[str, Any]) -> dict[str
         key = entity.get("key")
         deleted = bool(entity.get("deleted", False))
 
-        if entity_type == "favorite" and scope in {"live", "vod", "series"} and key and not deleted:
+        if entity_type == "favorite" and scope in {"live", "vod", "series"} and key:
             with suppress(Exception):
-                app.catalog.add_favorite(scope, str(key))
-                applied_count += 1
+                if deleted:
+                    if hasattr(app.catalog, "remove_favorite"):
+                        app.catalog.remove_favorite(scope, str(key))
+                        removed_count += 1
+                else:
+                    app.catalog.add_favorite(scope, str(key))
+                    applied_count += 1
+        elif entity_type == "channel_favorite" and scope == "live_channel" and key:
+            with suppress(Exception):
+                if deleted:
+                    if hasattr(app.catalog, "remove_channel_favorite"):
+                        app.catalog.remove_channel_favorite(str(key))
+                        removed_count += 1
+                elif hasattr(app.catalog, "add_channel_favorite"):
+                    app.catalog.add_channel_favorite(str(key))
+                    applied_count += 1
 
-    return {"favorites_applied": applied_count}
+    return {"favorites_applied": applied_count, "favorites_removed": removed_count}
 
 
 def start_lan_listener_if_needed(app: AppContainer, port: int = DEFAULT_LAN_PORT) -> None:

@@ -20,7 +20,7 @@ Este documento descreve as skills operacionais e fluxos de trabalho especializad
 
 | Script / Ferramenta | Responsabilidade | Como Executar |
 | :--- | :--- | :--- |
-| **`tools/bootstrap_artwork.py`** | Sincroniza e distribui os 9 ícones HD de `sArtwork` (`resource.images.saile`) e os ícones locais (`icon.png`/`fanart.jpg`) para todos os add-ons do ecossistema. | `python tools/bootstrap_artwork.py` |
+| **`tools/bootstrap_artwork.py`** | Sincroniza e distribui os 20 ícones HD de `sArtwork` (`resource.images.saile`) e os ícones locais (`icon.png`/`fanart.jpg`) para todos os add-ons do ecossistema. | `python tools/bootstrap_artwork.py` |
 | **`tools/validate_addons.py`** | Validação estática de XML (`addon.xml`, `settings.xml`), presença de artwork obrigatório e integridade estrutural de cada add-on. | `python tools/validate_addons.py` |
 | **`tools/secret_scan.py`** | Auditoria de segurança em arquivos versionáveis para garantir zero exposição de credenciais, tokens ou chaves de API. | `python tools/secret_scan.py` |
 | **`tools/build_repo.py`** | Compacta os add-ons em ZIPs com compressão nível 9, calcula checksums SHA256/MD5, gera `addons.xml`, `addons.xml.gz` e constrói o portal estático no GitHub Pages (`docs/`). | `python tools/build_repo.py` |
@@ -43,8 +43,8 @@ python tools/validate_addons.py
 # 3. Executar auditoria de segredos
 python tools/secret_scan.py
 
-# 4. Executar suíte de 78 testes automatizados
-python -m unittest discover -s tests -p "test_*.py" -v
+# 4. Executar suíte completa de testes automatizados
+python -m pytest -q
 
 # 5. Construir repositório Kodi e portal estático
 python tools/build_repo.py

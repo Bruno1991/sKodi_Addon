@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 import time
+from collections.abc import Sequence
 
 from saile_epg.database import EpgDatabase
 from saile_epg.models import EpgChannel, EpgProgram, EpgSnapshot
@@ -205,6 +206,69 @@ class EpgRepository:
 
         return None
 
+    def resolve_channels_many(
+        self,
+        provider_id: str,
+        candidates: Sequence[tuple[str, str]],
+    ) -> dict[tuple[str, str], EpgChannel]:
+        """Resolve múltiplos canais em uma única leitura SQLite preservando a precedência."""
+        unique_candidates = tuple(dict.fromkeys(candidates))
+        if not unique_candidates:
+            return {}
+
+        with self.database.connect() as connection:
+            if provider_id:
+                rows = connection.execute(
+                    """
+                    SELECT * FROM epg_channels
+                    WHERE provider_id = ?
+                    ORDER BY channel_key
+                    """,
+                    (provider_id,),
+                ).fetchall()
+            else:
+                rows = connection.execute(
+                    """
+                    SELECT * FROM epg_channels
+                    ORDER BY provider_id, channel_key
+                    """,
+                ).fetchall()
+
+        if not rows:
+            return {}
+
+        by_epg_id: dict[str, EpgChannel] = {}
+        by_norm: dict[str, EpgChannel] = {}
+        by_compact: dict[str, EpgChannel] = {}
+        for row in rows:
+            channel = self._channel_from_row(row)
+            clean_id = channel.epg_id.strip()
+            if clean_id:
+                by_epg_id.setdefault(clean_id.casefold(), channel)
+            if channel.normalized_name:
+                by_norm.setdefault(channel.normalized_name, channel)
+                by_compact.setdefault(channel.normalized_name.replace(" ", ""), channel)
+
+        resolved: dict[tuple[str, str], EpgChannel] = {}
+        for epg_id, channel_name in unique_candidates:
+            matched: EpgChannel | None = None
+            clean_epg_id = (epg_id or "").strip()
+            if clean_epg_id:
+                matched = by_epg_id.get(clean_epg_id.casefold())
+            if matched is None:
+                canonical = get_canonical_channel_name(channel_name)
+                if canonical:
+                    matched = by_norm.get(canonical)
+                normalized = normalize_channel_name(channel_name)
+                if matched is None and normalized and normalized != canonical:
+                    matched = by_norm.get(normalized)
+                if matched is None and normalized:
+                    matched = by_compact.get(normalized.replace(" ", ""))
+            if matched is not None:
+                resolved[(epg_id, channel_name)] = matched
+
+        return resolved
+
     def _resolve_channel_key(self, provider_id: str, epg_id: str, channel_name: str) -> str:
         channel = self.resolve_channel(provider_id, epg_id, channel_name)
         return channel.channel_key if channel else ""
@@ -279,9 +343,10 @@ class EpgRepository:
                     ).fetchall()
                 )
 
-        result: dict[str, tuple[EpgProgram | None, EpgProgram | None]] = {
-            key: (None, None) for key in unique_keys
-        }
+        result: dict[str, tuple[EpgProgram | None, EpgProgram | None]] = dict.fromkeys(
+            unique_keys,
+            (None, None),
+        )
         for row in rows:
             program = self._program_from_row(row)
             current, next_program = result.get(program.channel_key, (None, None))

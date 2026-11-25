@@ -464,7 +464,8 @@ def handle_play(request: Request, catalog: RadioCatalog) -> None:
         from saile_core.notifications import notify_error
 
         notify_error("sRadio", f"Stream indisponível para {name}")
-        xbmcplugin.setResolvedUrl(request.handle, False, xbmcgui.ListItem())
+        if request.handle >= 0:
+            xbmcplugin.setResolvedUrl(request.handle, False, xbmcgui.ListItem(offscreen=True))
         return
 
     stream_url = stream_info["url"]
@@ -558,7 +559,10 @@ def handle_search(
             xbmc.executebuiltin(f"Container.Update({request.url(action='search', query=query)})")
             return
     if not query:
-        show_home(request, catalog, favorites, fanart)
+        if request.handle >= 0:
+            import xbmcplugin
+
+            xbmcplugin.endOfDirectory(request.handle, succeeded=False)
         return
 
     results = catalog.search(query)

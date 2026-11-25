@@ -133,7 +133,7 @@ class DatabaseTests(unittest.TestCase):
                         PRIMARY KEY (media_type, item_id)
                     );
                     INSERT INTO media_items(media_type, item_id, name, source_name, normalized_name)
-                    VALUES 
+                    VALUES
                         ('vod', '10', 'Pokémon: Detetive Pikachu', 'Pokemon Detetive Pikachu', ''),
                         ('series', '20', 'Capitão América', 'Capitão América', '');
                     CREATE TABLE favorites (

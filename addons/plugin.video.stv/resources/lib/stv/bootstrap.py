@@ -88,6 +88,24 @@ def _episode_thumbnail(
     return _item_icon("series", "")
 
 
+def _local_hhmm(timestamp_utc: int) -> str:
+    """Converte Unix timestamp UTC para HH:MM no fuso local do dispositivo."""
+    from datetime import datetime, timezone
+
+    dt_utc = datetime.fromtimestamp(timestamp_utc, tz=timezone.utc)  # noqa: UP017
+    return dt_utc.astimezone().strftime("%H:%M")
+
+
+def _item_category_name(app: AppContainer, media_type: str, item_id: str) -> str:
+    catalog = getattr(app, "catalog", None)
+    if catalog is not None and hasattr(catalog, "get_item_category_name"):
+        try:
+            return str(catalog.get_item_category_name(media_type, item_id) or "")
+        except Exception:
+            return ""
+    return ""
+
+
 def _format_epg_card(
     channel_title: str,
     default_plot: str,
@@ -96,7 +114,6 @@ def _format_epg_card(
 ) -> tuple[str, str, dict[str, str]]:
     """Formata um card de canal com Agora/Próximo e progresso reutilizável."""
     import time
-    from datetime import datetime
 
     if not now_prog and not next_prog:
         return (
@@ -109,8 +126,8 @@ def _format_epg_card(
     properties = {"EPG.Status": "available", "EPG.Progress": "0"}
     label2 = "Programação indisponível"
     if now_prog:
-        start_label = datetime.fromtimestamp(now_prog.start_utc).strftime("%H:%M")
-        end_label = datetime.fromtimestamp(now_prog.end_utc).strftime("%H:%M")
+        start_label = _local_hhmm(now_prog.start_utc)
+        end_label = _local_hhmm(now_prog.end_utc)
         plot_parts.append(
             f"[B][COLOR=FF4FC3F7]AGORA[/COLOR][/B]  {start_label} — {end_label}\n"
             f"[B]{now_prog.title}[/B]"
@@ -133,8 +150,8 @@ def _format_epg_card(
             plot_parts.append(f"\n{now_prog.description}")
 
     if next_prog:
-        next_start = datetime.fromtimestamp(next_prog.start_utc).strftime("%H:%M")
-        next_end = datetime.fromtimestamp(next_prog.end_utc).strftime("%H:%M")
+        next_start = _local_hhmm(next_prog.start_utc)
+        next_end = _local_hhmm(next_prog.end_utc)
         prefix = "\n\n" if plot_parts else ""
         plot_parts.append(f"{prefix}[B]A SEGUIR[/B]  {next_start} — {next_end}\n{next_prog.title}")
         properties.update(
@@ -280,7 +297,7 @@ def _show_home(request: Request, app: AppContainer, fanart: str) -> None:
         app.trigger_background_lan_sync()
 
     view_mode = getattr(app, "preferred_view_mode", 54)
-    init_directory(request.handle, "movies", view_mode=view_mode)
+    init_directory(request.handle, "movies")
 
     for label, action, section, scope, filename in HOME_ENTRIES:
         url = request.url(action=action, section=section) if section else request.url(action=action)
@@ -306,7 +323,7 @@ def _show_section(request: Request, app: AppContainer, section: str, fanart: str
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type, view_mode=view_mode)
+    init_directory(request.handle, content_type)
 
     for label, action, scope, filename in SECTION_FIXED_ENTRIES:
         add_folder(
@@ -356,7 +373,7 @@ def _show_category(
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type, view_mode=view_mode)
+    init_directory(request.handle, content_type)
 
     if is_restricted(category_name=category_name):
         import xbmcaddon
@@ -392,18 +409,19 @@ def _show_series_seasons(
     series_title: str,
     fanart: str,
 ) -> None:
-    from saile_core.notifications import notify_error
+    from saile_core.notifications import notify_error, sanitize_error_message
 
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
     view_mode = getattr(app, "preferred_view_mode", 54)
-    init_directory(request.handle, "seasons", view_mode=view_mode)
+    init_directory(request.handle, "seasons")
 
-    if is_restricted(name=series_title):
+    cat_name = _item_category_name(app, "series", series_id)
+    if is_restricted(name=series_title, category_name=cat_name):
         import xbmcaddon
 
         addon = xbmcaddon.Addon()
-        if not verify_parental_pin(addon, reason=series_title):
+        if not verify_parental_pin(addon, reason=series_title or cat_name):
             finish_directory(request.handle, content="seasons", view_mode=view_mode)
             return
 
@@ -459,7 +477,7 @@ def _show_series_seasons(
                 media_type="season",
             )
     except Exception as exc:
-        notify_error("sTv", f"Erro ao obter temporadas: {exc}")
+        notify_error("sTv", f"Erro ao obter temporadas: {sanitize_error_message(exc)}")
 
     finish_directory(request.handle, content="seasons", view_mode=view_mode)
 
@@ -472,18 +490,19 @@ def _show_series_episodes(
     series_title: str,
     fanart: str,
 ) -> None:
-    from saile_core.notifications import notify_error
+    from saile_core.notifications import notify_error, sanitize_error_message
 
     from stv.ui.directory import add_folder, finish_directory, init_directory
 
     view_mode = getattr(app, "preferred_view_mode", 54)
-    init_directory(request.handle, "episodes", view_mode=view_mode)
+    init_directory(request.handle, "episodes")
 
-    if is_restricted(name=series_title):
+    cat_name = _item_category_name(app, "series", series_id)
+    if is_restricted(name=series_title, category_name=cat_name):
         import xbmcaddon
 
         addon = xbmcaddon.Addon()
-        if not verify_parental_pin(addon, reason=series_title):
+        if not verify_parental_pin(addon, reason=series_title or cat_name):
             finish_directory(request.handle, content="episodes", view_mode=view_mode)
             return
 
@@ -554,7 +573,7 @@ def _show_series_episodes(
                 media_type="episode",
             )
     except Exception as exc:
-        notify_error("sTv", f"Erro ao obter episódios: {exc}")
+        notify_error("sTv", f"Erro ao obter episódios: {sanitize_error_message(exc)}")
 
     finish_directory(request.handle, content="episodes", view_mode=view_mode)
 
@@ -587,7 +606,7 @@ def _show_search(request: Request, app: AppContainer, section: str, fanart: str)
                 xbmcplugin.endOfDirectory(request.handle, succeeded=False)
             return
 
-    init_directory(request.handle, content_type, view_mode=view_mode)
+    init_directory(request.handle, content_type)
     items = app.catalog.search_media(section, query)
     _render_media_items(request, app, section, items, fanart)
     finish_directory(request.handle, content=content_type, view_mode=view_mode)
@@ -598,7 +617,7 @@ def _show_favorites(request: Request, app: AppContainer, section: str, fanart: s
 
     view_mode = getattr(app, "preferred_view_mode", 54)
     content_type = "tvshows" if section == "series" else "movies"
-    init_directory(request.handle, content_type, view_mode=view_mode)
+    init_directory(request.handle, content_type)
 
     items = app.catalog.get_favorites(section)
     _render_media_items(request, app, section, items, fanart)
@@ -622,16 +641,24 @@ def _play_item(
     title: str = "",
 ) -> None:
     import xbmcaddon
+    from saile_core.notifications import notify_error, sanitize_error_message
 
-    from stv.ui.player import play_video
-
-    if is_restricted(name=title):
+    cat_name = _item_category_name(app, section, stream_id)
+    if is_restricted(name=title, category_name=cat_name):
         addon = xbmcaddon.Addon()
-        if not verify_parental_pin(addon, reason=title or "Conteúdo Restrito"):
+        if not verify_parental_pin(addon, reason=title or cat_name or "Conteúdo Restrito"):
             _fail_playable(request.handle)
             return
 
-    url = app.xtream.stream_url(section, stream_id, extension)
+    try:
+        url = app.xtream.stream_url(section, stream_id, extension)
+    except Exception as exc:
+        notify_error("sTv", f"Não foi possível reproduzir: {sanitize_error_message(exc)}")
+        _fail_playable(request.handle)
+        return
+
+    from stv.ui.player import play_video
+
     play_video(request.handle, app, section, stream_id, url)
 
 
@@ -642,9 +669,9 @@ def _play_live_channel(
     title: str,
 ) -> None:
     import xbmcaddon
+    from saile_core.notifications import notify_error, sanitize_error_message
 
     from stv.domain.live_channels import variant_quality
-    from stv.ui.player import play_video
 
     if is_restricted(name=title):
         addon = xbmcaddon.Addon()
@@ -652,9 +679,17 @@ def _play_live_channel(
             _fail_playable(request.handle)
             return
 
-    variant = app.choose_live_variant(channel_key)
-    _rank, quality_label = variant_quality(variant)
-    url = app.xtream.stream_url("live", variant.item_id, variant.extension)
+    try:
+        variant = app.choose_live_variant(channel_key)
+        _rank, quality_label = variant_quality(variant)
+        url = app.xtream.stream_url("live", variant.item_id, variant.extension)
+    except Exception as exc:
+        notify_error("sTv", f"Canal indisponível: {sanitize_error_message(exc)}")
+        _fail_playable(request.handle)
+        return
+
+    from stv.ui.player import play_video
+
     play_video(
         request.handle,
         app,
@@ -692,10 +727,6 @@ def run(argv: list[str]) -> None:
         "epg_profile_path": xbmcvfs.translatePath(epg_addon.getAddonInfo("profile")),
     }
     app = AppContainer(settings)
-
-    from stv.ui.directory import ensure_infowall_in_kodi_db
-
-    ensure_infowall_in_kodi_db()
 
     if request.action in {"", "home"}:
         _show_home(request, app, fanart)

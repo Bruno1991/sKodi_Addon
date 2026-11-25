@@ -1,7 +1,7 @@
 # STATE.md — Estado Atual do Projeto sRepo / sTv
 
-**Data de Atualização:** 24 de Novembro de 2026
-**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.8.7, sEPG v1.4.4, sRadio v1.0.5)
+**Data de Atualização:** 25 de Novembro de 2026
+**Status do Projeto:** Implementado, sincronizado e validado no host e no Kodi (sTv v0.8.8, sEPG v1.4.5, sRadio v1.0.6, sCore v1.0.3)
 **Repositório GitHub:** [https://github.com/Bruno1991/sKodi_Addon](https://github.com/Bruno1991/sKodi_Addon)
 **Repositório Kodi (GitHub Pages):** `https://bruno1991.github.io/sKodi_Addon/`
 
@@ -11,12 +11,12 @@
 
 | Add-on ID | Nome | Versão Atual | Descrição / Responsabilidade |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | `0.8.7` | Add-on IPTV/Xtream com auto-sincronização do catálogo (TTL), EPG Claro TV+ com 100% de match de canais e afiliados regionais, sincronização LAN (UDP) e InfoWall 54. |
-| **`plugin.audio.sradio`** | **sRadio** | `1.0.5` | Add-on de rádios ao vivo via TuneIn com navegação global/Brasil, busca em tempo real, favoritos e catálogo local offline. |
+| **`plugin.video.stv`** | **sTv** | `0.8.8` | Add-on IPTV/Xtream com auto-sincronização do catálogo (TTL), EPG Claro TV+ em lote sem N+1, controle parental por categoria em Busca/Favoritos, sincronização LAN (UDP) completa e InfoWall 54. |
+| **`plugin.audio.sradio`** | **sRadio** | `1.0.6` | Add-on de rádios ao vivo via TuneIn com navegação global/Brasil, busca em tempo real, favoritos, proteção HTTP e catálogo local offline. |
 | **`repository.srepo`** | **sRepo** | `1.1.1` | Repositório oficial para instalação e atualizações automáticas via Kodi. |
 | **`resource.images.saile`** | **sArtwork** | `1.0.4` | 20 ícones fixos compartilhados originais em alta definição (`common/` e `stv/`). |
-| **`script.module.saile.core`** | **sCore** | `1.0.2` | Módulo base Python (artwork, notificações, erros, capabilities). |
-| **`script.module.saile.epg`** | **sEPG** | `1.4.4` | Integração dinâmica em tempo real com Claro TV+, motor de aliases e correspondência de 100% dos canais nacionais, distinção exata entre canais Globo e todas as afiliadas regionais brasileiras. |
+| **`script.module.saile.core`** | **sCore** | `1.0.3` | Módulo base Python (artwork, notificações sanitizadas, erros, capabilities). |
+| **`script.module.saile.epg`** | **sEPG** | `1.4.5` | Integração dinâmica em tempo real com Claro TV+, resolução de canais em lote (`resolve_channels_many`), motor de aliases e correspondência de 100% dos canais nacionais e afiliadas regionais. |
 
 ---
 
@@ -52,7 +52,7 @@ python tools/generate_structure_manifest.py
 python tools/print_tree.py
 ```
 
-- **Testes Unitários:** 129/129 testes aprovados no host (incluindo execução isolada por módulo e `ruff` 100% limpo).
+- **Testes Unitários:** 141/141 testes aprovados no host (incluindo execução isolada por módulo e `ruff` 100% limpo).
 - **Scanner de Segredos:** Nenhum segredo ou chave privada exposta.
 - **Repositório Kodi (`docs/`):** gerado com os 6 add-ons; smoke test em Kodi real fica para instalação pelo usuário.
 

@@ -1,24 +1,24 @@
-# Inventário do pacote V2 (IPTV Focus)
+# Inventário do pacote V2 (Ecossistema sKodi)
 
 ## Resumo
 
-- Add-ons ativos: **5**
-- Artes fixas compartilhadas: **9** (5 comuns + 4 sTv)
-- Testes unitários: **98**
-- ZIPs Kodi gerados em `docs/zips/`: **5**
+- Add-ons ativos: **6**
+- Artes fixas compartilhadas: **20** (16 comuns + 4 sTv)
+- ZIPs Kodi gerados em `docs/`: **6**
 - Manifesto estrutural de referência: `../generated/STRUCTURE_MANIFEST.json`
 
 ## Add-ons Ativos
 
 - `plugin.video.stv` (**sTv**): Add-on principal de IPTV/Xtream (TV ao Vivo com categorias nativas, VOD, Séries, Favoritos, TMDB, auto-sync de catálogo e EPG e sincronização LAN P2P).
+- `plugin.audio.sradio` (**sRadio**): Add-on de rádios online ao vivo (TuneIn global/Brasil, busca em tempo real, favoritos e catálogo offline).
 - `repository.srepo` (**sRepo**): Repositório oficial para Kodi (distribuição via GitHub Pages).
-- `resource.images.saile` (**sArtwork**): Recurso com 9 ícones de interface compartilhados.
+- `resource.images.saile` (**sArtwork**): Recurso com 20 ícones de interface compartilhados.
 - `script.module.saile.core` (**sCore**): Infraestrutura Python comum estável.
-- `script.module.saile.epg` (**sEPG**): Provider Claro TV+ oficial dinâmico em tempo real, 100% de correspondência de canais e afiliados regionais, matching multi-estágio e cache SQLite UTC independente.
+- `script.module.saile.epg` (**sEPG**): Provider Claro TV+ oficial dinâmico em tempo real, 100% de correspondência de canais e afiliados regionais, resolução em lote sem N+1 e cache SQLite UTC independente.
 
 ## Decisões Incorporadas
 
-- `resource.images.saile` (**sArtwork**) centraliza exatamente 9 artes fixas em PNG.
+- `resource.images.saile` (**sArtwork**) centraliza 20 artes fixas em PNG.
 - `script.module.saile.core` (**sCore**) provê apenas caminhos portáveis, artwork, notificações, erros e capabilities.
 - `script.module.saile.epg` (**sEPG**) concentra toda a regra e persistência de EPG fora do sTv e do core, com integração direta na API Claro TV+ e tabela universal de aliases.
 - Contrato imutável de navegação do sTv:
@@ -30,11 +30,11 @@
 ## Validações Executadas
 
 ```text
-5 add-ons válidos
-9 artes compartilhadas válidas
-98 testes unitários aprovados
+6 add-ons válidos
+20 artes compartilhadas válidas
+Suíte completa de testes unitários aprovada (pytest + unittest)
 0 segredos conhecidos encontrados
-5 ZIPs Kodi gerados
+6 ZIPs Kodi gerados
 ```
 
 ## Ferramentas Operacionais

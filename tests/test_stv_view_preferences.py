@@ -66,7 +66,7 @@ class ViewPreferencesTests(unittest.TestCase):
             endOfDirectory=lambda *_args, **_kwargs: calls.append("endOfDirectory"),
         )
         with patch.dict(sys.modules, {"xbmc": fake_xbmc, "xbmcplugin": fake_xbmcplugin}):
-            init_directory(10, content="movies", view_mode=54)
+            init_directory(10, content="movies")
             finish_directory(10, content="movies", view_mode=54)
 
         view_cmd = f"Container.SetViewMode({INFOWALL_VIEW_MODE})"

@@ -54,7 +54,7 @@ sTv
 
 ## Artwork
 
-`resource.images.saile` contém exatamente nove artes fixas de menu/pop-up/fallback (5 comuns + 4 sTv). Cada add-on mantém sua identidade (`icon.png` e `fanart.jpg`). Capas e fanarts de conteúdo são dinâmicas, fornecidas por Xtream ou TMDB e cacheadas pelo Kodi.
+`resource.images.saile` contém 20 artes fixas compartilhadas de menu/pop-up/fallback (16 comuns + 4 sTv). Cada add-on mantém sua identidade (`icon.png` e `fanart.jpg`). Capas e fanarts de conteúdo são dinâmicas, fornecidas por Xtream, TuneIn ou TMDB e cacheadas pelo Kodi.
 
 ## Sincronização LAN
 

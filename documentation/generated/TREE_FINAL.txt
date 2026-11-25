@@ -304,17 +304,15 @@ s_Kodi_Addon/
 ├── docs/
 │   ├── zips/
 │   │   ├── plugin.audio.sradio/
-│   │   │   ├── changelog-1.0.5.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.audio.sradio-1.0.5.zip
-│   │   │   └── plugin.audio.sradio-1.0.5.zip.sha256
+│   │   │   ├── plugin.audio.sradio-1.0.6.zip
+│   │   │   └── plugin.audio.sradio-1.0.6.zip.sha256
 │   │   ├── plugin.video.stv/
-│   │   │   ├── changelog-0.8.7.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── plugin.video.stv-0.8.7.zip
-│   │   │   └── plugin.video.stv-0.8.7.zip.sha256
+│   │   │   ├── plugin.video.stv-0.8.8.zip
+│   │   │   └── plugin.video.stv-0.8.8.zip.sha256
 │   │   ├── repository.srepo/
 │   │   │   ├── changelog-1.1.1.txt
 │   │   │   ├── fanart.jpg
@@ -328,17 +326,15 @@ s_Kodi_Addon/
 │   │   │   ├── resource.images.saile-1.0.4.zip
 │   │   │   └── resource.images.saile-1.0.4.zip.sha256
 │   │   ├── script.module.saile.core/
-│   │   │   ├── changelog-1.0.2.txt
 │   │   │   ├── fanart.jpg
 │   │   │   ├── icon.png
-│   │   │   ├── script.module.saile.core-1.0.2.zip
-│   │   │   └── script.module.saile.core-1.0.2.zip.sha256
+│   │   │   ├── script.module.saile.core-1.0.3.zip
+│   │   │   └── script.module.saile.core-1.0.3.zip.sha256
 │   │   └── script.module.saile.epg/
-│   │       ├── changelog-1.4.4.txt
 │   │       ├── fanart.jpg
 │   │       ├── icon.png
-│   │       ├── script.module.saile.epg-1.4.4.zip
-│   │       └── script.module.saile.epg-1.4.4.zip.sha256
+│   │       ├── script.module.saile.epg-1.4.5.zip
+│   │       └── script.module.saile.epg-1.4.5.zip.sha256
 │   ├── .nojekyll
 │   ├── addons.xml
 │   ├── addons.xml.gz
@@ -389,6 +385,7 @@ s_Kodi_Addon/
 │   └── RFC_TEMPLATE.md
 ├── tests/
 │   ├── test_artwork_manifest.py
+│   ├── test_code_review_hardening.py
 │   ├── test_databases.py
 │   ├── test_dependency_graph.py
 │   ├── test_navigation_contract.py

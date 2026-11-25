@@ -1,13 +1,14 @@
-# Notas de Release do Ecossistema sKodi (V2 - IPTV Focus)
+# Notas de Release do Ecossistema sKodi
 
 ## Versões Ativas dos Componentes
 
 | Add-on ID | Nome | Versão | Destaques da Versão |
 | :--- | :--- | :--- | :--- |
-| **`plugin.video.stv`** | **sTv** | **`0.8.4`** | Integração atualizada com sEPG v1.4.1 trazendo correspondência de 100% dos canais nacionais e afiliadas regionais, auto-sincronização do catálogo e InfoWall 54. |
-| **`script.module.saile.epg`** | **sEPG** | **`1.4.1`** | Mapeamento exaustivo de 100% dos canais e todas as afiliadas regionais brasileiras (Globo, SBT, Record, Band), reconhecimento de siglas RD/BD/RBS/NSC/EPTV/RPC e limpeza avançada. |
-| **`resource.images.saile`** | **sArtwork** | **`1.0.3`** | Nove ícones fixos compartilhados originais em alta definição (5 comuns + 4 sTv). |
-| **`script.module.saile.core`** | **sCore** | **`1.0.1`** | Infraestrutura base Python compartilhada (artwork, notificações, caminhos portáveis, erros padronizados, detecção de capabilities e metadados atualizados). |
+| **`plugin.video.stv`** | **sTv** | **`0.8.8`** | Resolução de EPG em lote sem N+1, bloqueio de esquemas não-HTTP e limite de memória, controle parental por categoria em Busca/Favoritos, sincronização LAN de favoritos de canais e sanitização de erros na UI. |
+| **`plugin.audio.sradio`** | **sRadio** | **`1.0.6`** | Proteção HTTP contra esquemas inválidos e respostas gigantes, correção de handle em falha de stream e cancelamento limpo do teclado de busca. |
+| **`script.module.saile.epg`** | **sEPG** | **`1.4.5`** | Resolução de canais EPG em lote (`resolve_channels_many` em 1 conexão SQLite), preservação de cache em falha de rede e guards defensivos na API Claro TV+. |
+| **`resource.images.saile`** | **sArtwork** | **`1.0.4`** | 20 ícones fixos compartilhados originais em alta definição (`common/` e `stv/`). |
+| **`script.module.saile.core`** | **sCore** | **`1.0.3`** | Infraestrutura base Python compartilhada com sanitização centralizada de mensagens de erro sem exposição de URLs ou credenciais. |
 | **`repository.srepo`** | **sRepo** | **`1.1.1`** | Repositório estático Kodi para distribuição contínua e auto-updates via GitHub Pages. |
 
 ---
@@ -41,6 +42,6 @@
 
 ## Validação e Qualidade
 
-- **Testes Unitários:** 98/98 testes automatizados aprovados (100% de sucesso).
+- **Testes Unitários:** Suíte completa automatizada aprovada com 100% de sucesso (`pytest` e `ruff`).
 - **Auditoria de Segurança:** 0 credenciais ou segredos em arquivos versionáveis.
 - **Deploy:** Repositório estático atualizado com checksums SHA256/MD5 e XMLs gzip em `docs/`.

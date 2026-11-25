@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 from saile_epg.database import EpgDatabase
@@ -138,6 +139,13 @@ class EpgService:
         provider_id: str = DEFAULT_PROVIDER_ID,
     ) -> EpgChannel | None:
         return self.repository.resolve_channel(provider_id, epg_id, channel_name)
+
+    def resolve_channels_many(
+        self,
+        candidates: Sequence[tuple[str, str]],
+        provider_id: str = DEFAULT_PROVIDER_ID,
+    ) -> dict[tuple[str, str], EpgChannel]:
+        return self.repository.resolve_channels_many(provider_id, candidates)
 
     def status(self, provider_id: str = "claro") -> dict[str, int] | None:
         return self.repository.sync_status(provider_id)

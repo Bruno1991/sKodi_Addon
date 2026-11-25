@@ -20,6 +20,7 @@ def artwork_absolute_path(scope: str, filename: str) -> str:
     try:
         import xbmcaddon
         import xbmcvfs
+
         addon_path = xbmcaddon.Addon(ARTWORK_ADDON_ID).getAddonInfo("path")
         full_path = os.path.join(addon_path, "resources", "media", scope, clean_name)
         return xbmcvfs.translatePath(full_path)
@@ -41,4 +42,3 @@ def stv_art(filename: str) -> str:
 def sradio_art(filename: str) -> str:
     """Retorna uma arte do escopo do sRadio (compartilhado em common)."""
     return common_art(filename)
-

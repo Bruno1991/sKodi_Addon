@@ -105,13 +105,10 @@ def deploy_and_test():
     if adv_settings_src.exists():
         print("[+] Instalando advancedsettings.xml para reprodução contínua com tela bloqueada...")
         run_adb(["push", str(adv_settings_src), "/data/local/tmp/advancedsettings.xml"])
-        run_adb(
-            [
-                "shell",
-                f"cp -f /data/local/tmp/advancedsettings.xml "
-                f"{target_userdata}/advancedsettings.xml",
-            ]
+        cp_adv_cmd = (
+            f"cp -f /data/local/tmp/advancedsettings.xml {target_userdata}/advancedsettings.xml"
         )
+        run_adb(["shell", cp_adv_cmd])
 
     # 8. Ajustar permissões e proprietário
     print(f"[+] Ajustando permissões ({uid_str}:ext_data_rw)...")

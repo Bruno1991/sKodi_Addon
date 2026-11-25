@@ -356,7 +356,7 @@ def run_battery() -> dict[str, Any]:
     # 1. Adicionar via toggle
     get_directory(fav_toggle_url)
     time.sleep(1)
-    ok_fav, fav_items, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
+    _ok_fav, fav_items, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
     is_in_fav = any(
         test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "")
         for it in fav_items
@@ -365,7 +365,7 @@ def run_battery() -> dict[str, Any]:
     # 2. Remover via toggle para limpar
     get_directory(fav_toggle_url)
     time.sleep(1)
-    ok_fav2, fav_items2, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
+    _ok_fav2, fav_items2, _ = get_directory("plugin://plugin.audio.sradio/?action=favorites")
     is_removed = not any(
         test_id in it.get("file", "") or "Estacao Teste Bateria" in it.get("label", "")
         for it in fav_items2
@@ -517,10 +517,7 @@ def run_battery() -> dict[str, Any]:
     # Resumo Final
     log("\n" + "=" * 70)
     pct = results["passed"] / results["total"] * 100
-    log(
-        f" RESUMO DA BATERIA: {results['passed']}/{results['total']} "
-        f"TESTES APROVADOS ({pct:.1f}%)"
-    )
+    log(f" RESUMO DA BATERIA: {results['passed']}/{results['total']} TESTES APROVADOS ({pct:.1f}%)")
     log("=" * 70)
 
     return results

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.audio.sradio" name="sRadio" version="1.0.5" provider-name="Saile">
+<addon id="plugin.audio.sradio" name="sRadio" version="1.0.6" provider-name="Saile">
   <requires>
     <import addon="xbmc.python" version="3.0.0" />
     <import addon="resource.images.saile" version="1.0.4" />
-    <import addon="script.module.saile.core" version="1.0.1" />
+    <import addon="script.module.saile.core" version="1.0.3" />
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>audio video</provides>
@@ -16,7 +16,7 @@
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
     <source>https://github.com/Bruno1991/sKodi_Addon</source>
-    <news>1.0.5 - Descrições de estações sem campos vazios ("None"), caminho de favoritos unificado via sCore e limpeza de rotas legadas.</news>
+    <news>1.0.6 - Proteção HTTP contra esquemas inválidos e respostas gigantes, correção de handle em falha de stream e cancelamento limpo do teclado de busca.</news>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
